@@ -1,0 +1,17 @@
+**/bin/
+**/obj/
+.git/
+.github/
+.vs/
+.vscode/
+.agents/
+.claude/
+docs/
+tests/
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/appsettings.Production.json
+**/*.user
+**/*.pfx
+*.md
+*.log
