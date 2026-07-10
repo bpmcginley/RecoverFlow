@@ -23,6 +23,11 @@ public sealed class StripeOAuthClient(IOptions<StripeOptions> stripeOptions) : I
             },
             cancellationToken: ct);
 
+        // Stripe.net flags AccessToken/RefreshToken obsolete, recommending the platform key +
+        // StripeUserId (Stripe-Account header) pattern instead. RecoverFlow's spec calls for
+        // storing an encrypted merchant token, so we keep reading it deliberately for now.
+#pragma warning disable CS0618
         return new StripeOAuthTokenResult(token.StripeUserId, token.AccessToken, token.RefreshToken, token.Scope);
+#pragma warning restore CS0618
     }
 }
