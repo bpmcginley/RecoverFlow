@@ -1,0 +1,38 @@
+# Render Blueprint — provisions the API and its Postgres in one deploy.
+# Secrets (Stripe keys, encryption key, SendGrid) are marked `sync: false`:
+# Render prompts for them in the dashboard and never stores them in git.
+
+databases:
+  - name: recoverflow-db
+    databaseName: recoverflow
+    plan: basic-256mb          # free tier is deleted after 30 days; basic is always-on
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: recoverflow-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: starter              # always-on; free spins down and would miss live webhooks
+    healthCheckPath: /health
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: Database__ConnectionString
+        fromDatabase:
+          name: recoverflow-db
+          property: connectionString
+      - key: Stripe__OAuthRedirectUri
+        value: https://api.recoverflow.org/connect/stripe/callback
+      - key: App__BaseUrl
+        value: https://api.recoverflow.org
+      - key: Stripe__SecretKey
+        sync: false
+      - key: Stripe__ClientId
+        sync: false
+      - key: Stripe__WebhookSecret
+        sync: false
+      - key: Encryption__Key
+        sync: false
+      - key: Email__ApiKey
+        sync: false
