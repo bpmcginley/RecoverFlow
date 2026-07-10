@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/RecoverFlow.Api/RecoverFlow.Api.csproj" />
+    <Project Path="src/RecoverFlow.Application/RecoverFlow.Application.csproj" />
+    <Project Path="src/RecoverFlow.Domain/RecoverFlow.Domain.csproj" />
+    <Project Path="src/RecoverFlow.Infrastructure/RecoverFlow.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RecoverFlow.Tests.Integration/RecoverFlow.Tests.Integration.csproj" />
+    <Project Path="tests/RecoverFlow.Tests.Unit/RecoverFlow.Tests.Unit.csproj" />
+  </Folder>
+</Solution>

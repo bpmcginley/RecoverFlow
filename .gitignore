@@ -1,0 +1,24 @@
+## .NET
+bin/
+obj/
+*.user
+*.suo
+
+## Secrets — never commit real Stripe/SendGrid keys or the encryption key
+appsettings.Development.json
+appsettings.Local.json
+appsettings.Production.json
+*.pfx
+
+## Logs
+*.log
+
+## Skills lockfile symlink noise (safe to keep, but ignore local cache if regenerated)
+.agents/.cache/
+
+## Editor/office lock files
+~$*
+
+## OS
+.DS_Store
+Thumbs.db
