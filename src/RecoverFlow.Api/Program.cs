@@ -44,6 +44,7 @@ try
     builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection(StripeOptions.Section));
     builder.Services.Configure<RetryOptions>(builder.Configuration.GetSection(RetryOptions.Section));
     builder.Services.Configure<EncryptionOptions>(builder.Configuration.GetSection(EncryptionOptions.Section));
+    builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.Section));
 
     // Stripe.net calls (including the OAuth token exchange) authenticate using this
     // static platform key rather than per-request options.
