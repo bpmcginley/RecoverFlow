@@ -6,6 +6,7 @@ using RecoverFlow.Application.Connect;
 using RecoverFlow.Application.Dashboard;
 using RecoverFlow.Application.Recovery;
 using RecoverFlow.Infrastructure.Email;
+using RecoverFlow.Infrastructure.Jobs;
 using RecoverFlow.Infrastructure.Persistence;
 using RecoverFlow.Infrastructure.Security;
 using RecoverFlow.Infrastructure.Stripe;
@@ -26,7 +27,10 @@ public static class DependencyInjection
 
         services.AddScoped<PaymentRecoveryService>();
         services.AddScoped<MerchantDashboardService>();
+        services.AddScoped<RetryExecutionService>();
         services.AddScoped<IStripeWebhookProcessor, StripeWebhookProcessor>();
+        services.AddScoped<IStripeInvoicePayer, StripeInvoicePayer>();
+        services.AddScoped<IRetryJobScheduler, HangfireRetryJobScheduler>();
 
         services.AddScoped<IEmailSender, SendGridEmailSender>();
         services.AddScoped<DunningEmailService>();
