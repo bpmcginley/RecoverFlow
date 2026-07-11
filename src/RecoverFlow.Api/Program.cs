@@ -85,6 +85,8 @@ try
     }
 
     app.UseHttpsRedirection();
+    app.UseDefaultFiles();
+    app.UseStaticFiles();
     app.UseMiddleware<TenantResolutionMiddleware>();
     app.MapControllers();
     app.MapHealthChecks("/health");
