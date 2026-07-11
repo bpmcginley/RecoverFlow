@@ -4,8 +4,14 @@ using RecoverFlow.Domain.Entities;
 
 namespace RecoverFlow.Infrastructure.Persistence;
 
-public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options), IAppDbContext
+public class AppDbContext(DbContextOptions<AppDbContext> options, ITenantContext? tenant = null)
+    : DbContext(options), IAppDbContext
 {
+    // Query filters below reference this instance property, so EF re-evaluates it per
+    // query against the current scope's tenant. Null (no tenant resolved, or design
+    // time) disables the filters entirely.
+    private Guid? CurrentMerchantId => tenant?.MerchantId;
+
     public DbSet<Merchant> Merchants => Set<Merchant>();
     public DbSet<FailedPayment> FailedPayments => Set<FailedPayment>();
     public DbSet<RetryAttempt> RetryAttempts => Set<RetryAttempt>();
@@ -23,6 +29,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(m => m.Plan).HasMaxLength(50);
             e.Property(m => m.SettingsJson).HasColumnType("jsonb");
             e.HasIndex(m => m.StripeAccountId).IsUnique();
+            e.HasQueryFilter(m => CurrentMerchantId == null || m.Id == CurrentMerchantId);
         });
 
         b.Entity<FailedPayment>(e =>
@@ -39,6 +46,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.HasIndex(p => new { p.MerchantId, p.StripeInvoiceId }).IsUnique();
             e.HasIndex(p => p.Status);
             e.HasOne(p => p.Merchant).WithMany(m => m.FailedPayments).HasForeignKey(p => p.MerchantId);
+            e.HasQueryFilter(p => CurrentMerchantId == null || p.MerchantId == CurrentMerchantId);
         });
 
         b.Entity<RetryAttempt>(e =>
@@ -47,12 +55,14 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(a => a.DeclineCodeReceived).HasMaxLength(100);
             e.HasIndex(a => a.ScheduledFor);
             e.HasOne(a => a.FailedPayment).WithMany(p => p.RetryAttempts).HasForeignKey(a => a.FailedPaymentId);
+            e.HasQueryFilter(a => CurrentMerchantId == null || a.FailedPayment.MerchantId == CurrentMerchantId);
         });
 
         b.Entity<EmailSequenceEntry>(e =>
         {
             e.Property(s => s.EmailType).HasMaxLength(50);
             e.HasOne(s => s.FailedPayment).WithMany(p => p.EmailEntries).HasForeignKey(s => s.FailedPaymentId);
+            e.HasQueryFilter(s => CurrentMerchantId == null || s.FailedPayment.MerchantId == CurrentMerchantId);
         });
 
         b.Entity<CardUpdateSession>(e =>
@@ -61,6 +71,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             e.Property(s => s.NewPaymentMethodId).HasMaxLength(255);
             e.HasIndex(s => s.Token).IsUnique();
             e.HasOne(s => s.FailedPayment).WithMany().HasForeignKey(s => s.FailedPaymentId);
+            e.HasQueryFilter(s => CurrentMerchantId == null || s.FailedPayment.MerchantId == CurrentMerchantId);
         });
 
         b.Entity<ProcessedWebhookEvent>(e =>
