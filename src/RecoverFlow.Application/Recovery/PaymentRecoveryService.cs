@@ -11,6 +11,7 @@ namespace RecoverFlow.Application.Recovery;
 public sealed class PaymentRecoveryService(
     IAppDbContext db,
     DunningEmailService dunningEmails,
+    IRetryJobScheduler retryJobs,
     IOptions<RetryOptions> retryOptions,
     ILogger<PaymentRecoveryService> log)
 {
@@ -54,11 +55,15 @@ public sealed class PaymentRecoveryService(
         payment.DeclineReason = e.DeclineReason;
         payment.FailureType = DeclineCodeClassifier.Classify(e.DeclineCode);
 
-        ScheduleNextRetry(payment, e.FailedAt);
+        var attempt = ScheduleNextRetry(payment, e.FailedAt);
         await db.SaveChangesAsync(ct);
 
         if (isNewCase)
             await dunningEmails.SendStepAsync(payment.Id, 1, ct);
+
+        // After the save, so the job can never fire against a row that doesn't exist yet.
+        if (attempt is not null)
+            retryJobs.ScheduleAttempt(attempt.Id, attempt.ScheduledFor);
 
         log.LogInformation(
             "Recovery {PaymentId} for invoice {InvoiceId}: {Amount} {Currency}, decline {DeclineCode} ({FailureType})",
@@ -91,27 +96,36 @@ public sealed class PaymentRecoveryService(
             e.InvoiceId, payment.AmountCents, payment.Currency, payment.RecoveryMethod);
     }
 
-    private void ScheduleNextRetry(FailedPayment payment, DateTime failedAt)
+    private RetryAttempt? ScheduleNextRetry(FailedPayment payment, DateTime failedAt)
     {
         if (!DeclineCodeClassifier.ShouldRetry(payment.DeclineCode))
         {
             log.LogInformation("Hard decline {DeclineCode} on invoice {InvoiceId} — no retry", payment.DeclineCode, payment.StripeInvoiceId);
-            return;
+            return null;
         }
 
+        // A pending attempt already covers this invoice (e.g. our own failed retry
+        // re-triggered invoice.payment_failed) — never stack a second one.
+        if (payment.RetryAttempts.Any(a => a.AttemptedAt is null && a.Result is null))
+            return null;
+
         var attemptNumber = payment.RetryAttempts.Count + 1;
-        if (attemptNumber > _retry.MaxRetryAttempts) return;
+        if (attemptNumber > _retry.MaxRetryAttempts) return null;
 
         var at = RetryScheduler.CalculateNextRetry(payment.DeclineCode, attemptNumber, failedAt);
-        if (at == DateTime.MaxValue) return; // Card-update path or schedule exhausted
+        if (at == DateTime.MaxValue) return null; // Card-update path or schedule exhausted
 
-        payment.RetryAttempts.Add(new RetryAttempt
+        var attempt = new RetryAttempt
         {
             Id = Guid.NewGuid(),
             FailedPaymentId = payment.Id,
             AttemptNumber = attemptNumber,
             ScheduledFor = at,
-        });
+        };
+        // Via the DbSet: added through the tracked payment's navigation, EF would
+        // take the set Guid key to mean an existing row and issue an UPDATE.
+        db.RetryAttempts.Add(attempt);
+        return attempt;
     }
 
     // Attribution per spec: our retry succeeded > card update completed > email nudged them.
