@@ -19,6 +19,9 @@ public static class DependencyInjection
             .UseSnakeCaseNamingConvention());
         services.AddScoped<IAppDbContext>(sp => sp.GetRequiredService<AppDbContext>());
 
+        services.AddScoped<TenantContext>();
+        services.AddScoped<ITenantContext>(sp => sp.GetRequiredService<TenantContext>());
+
         services.AddScoped<PaymentRecoveryService>();
         services.AddScoped<IStripeWebhookProcessor, StripeWebhookProcessor>();
 

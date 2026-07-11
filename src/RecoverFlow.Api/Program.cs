@@ -2,6 +2,7 @@ using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using RecoverFlow.Api.Middleware;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Infrastructure;
 using RecoverFlow.Infrastructure.Persistence;
@@ -83,6 +84,7 @@ try
     }
 
     app.UseHttpsRedirection();
+    app.UseMiddleware<TenantResolutionMiddleware>();
     app.MapControllers();
     app.MapHealthChecks("/health");
 
