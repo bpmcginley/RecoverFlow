@@ -20,6 +20,15 @@ public sealed class RetryOptions
     public int DefaultSequenceSteps { get; set; } = 3;
 }
 
+public sealed class EmailOptions
+{
+    public const string Section = "Email";
+
+    public string ApiKey { get; set; } = "";
+    public string FromAddress { get; set; } = "";
+    public string FromName { get; set; } = "";
+}
+
 public sealed class EncryptionOptions
 {
     public const string Section = "Encryption";

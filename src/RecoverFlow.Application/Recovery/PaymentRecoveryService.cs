@@ -10,6 +10,7 @@ namespace RecoverFlow.Application.Recovery;
 
 public sealed class PaymentRecoveryService(
     IAppDbContext db,
+    DunningEmailService dunningEmails,
     IOptions<RetryOptions> retryOptions,
     ILogger<PaymentRecoveryService> log)
 {
@@ -29,6 +30,7 @@ public sealed class PaymentRecoveryService(
             .Include(p => p.RetryAttempts)
             .FirstOrDefaultAsync(p => p.MerchantId == merchant.Id && p.StripeInvoiceId == e.InvoiceId, ct);
 
+        var isNewCase = payment is null;
         if (payment is null)
         {
             payment = new FailedPayment
@@ -54,6 +56,9 @@ public sealed class PaymentRecoveryService(
 
         ScheduleNextRetry(payment, e.FailedAt);
         await db.SaveChangesAsync(ct);
+
+        if (isNewCase)
+            await dunningEmails.SendStepAsync(payment.Id, 1, ct);
 
         log.LogInformation(
             "Recovery {PaymentId} for invoice {InvoiceId}: {Amount} {Currency}, decline {DeclineCode} ({FailureType})",
