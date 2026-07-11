@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Application.Connect;
+using RecoverFlow.Application.Dashboard;
 using RecoverFlow.Application.Recovery;
 using RecoverFlow.Infrastructure.Persistence;
 using RecoverFlow.Infrastructure.Security;
@@ -23,6 +24,7 @@ public static class DependencyInjection
         services.AddScoped<ITenantContext>(sp => sp.GetRequiredService<TenantContext>());
 
         services.AddScoped<PaymentRecoveryService>();
+        services.AddScoped<MerchantDashboardService>();
         services.AddScoped<IStripeWebhookProcessor, StripeWebhookProcessor>();
 
         services.AddSingleton<ITokenEncryptor, TokenEncryptor>();
