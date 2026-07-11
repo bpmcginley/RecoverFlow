@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Application.Connect;
 using RecoverFlow.Application.Recovery;
+using RecoverFlow.Infrastructure.Email;
 using RecoverFlow.Infrastructure.Persistence;
 using RecoverFlow.Infrastructure.Security;
 using RecoverFlow.Infrastructure.Stripe;
@@ -21,6 +22,9 @@ public static class DependencyInjection
 
         services.AddScoped<PaymentRecoveryService>();
         services.AddScoped<IStripeWebhookProcessor, StripeWebhookProcessor>();
+
+        services.AddScoped<IEmailSender, SendGridEmailSender>();
+        services.AddScoped<DunningEmailService>();
 
         services.AddSingleton<ITokenEncryptor, TokenEncryptor>();
         services.AddScoped<IStripeOAuthClient, StripeOAuthClient>();
