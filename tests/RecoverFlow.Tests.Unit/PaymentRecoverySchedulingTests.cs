@@ -11,13 +11,21 @@ namespace RecoverFlow.Tests.Unit;
 /// <summary>Covers the Hangfire-scheduling side of case opening; retry timing itself is RetrySchedulerTests.</summary>
 public class PaymentRecoverySchedulingTests
 {
+    private sealed class NoOpEmailSender : IEmailSender
+    {
+        public Task SendAsync(string toEmail, string subject, string htmlBody, CancellationToken ct = default) =>
+            Task.CompletedTask;
+    }
+
     private readonly AppDbContext _db = new(new DbContextOptionsBuilder<AppDbContext>()
         .UseInMemoryDatabase(Guid.NewGuid().ToString())
         .Options);
     private readonly FakeRetryJobScheduler _scheduler = new();
 
     private PaymentRecoveryService Service() => new(
-        _db, _scheduler,
+        _db,
+        new DunningEmailService(_db, new NoOpEmailSender(), NullLogger<DunningEmailService>.Instance),
+        _scheduler,
         Options.Create(new RetryOptions()),
         NullLogger<PaymentRecoveryService>.Instance);
 
