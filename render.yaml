@@ -26,6 +26,8 @@ services:
         value: https://api.recoverflow.org/connect/stripe/callback
       - key: App__BaseUrl
         value: https://api.recoverflow.org
+      - key: App__DashboardUrl
+        value: https://app.recoverflow.org
       - key: Stripe__SecretKey
         sync: false
       - key: Stripe__ClientId

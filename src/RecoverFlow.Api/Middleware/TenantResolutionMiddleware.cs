@@ -1,19 +1,19 @@
+using RecoverFlow.Api.Auth;
 using RecoverFlow.Application.Common;
 
 namespace RecoverFlow.Api.Middleware;
 
 /// <summary>
-/// STOPGAP until real authentication lands: trusts an X-Merchant-Id header to identify
-/// the tenant. Requests without the header (Stripe webhooks, the OAuth connect flow)
-/// and background jobs run untenanted, which disables the tenant query filters.
+/// Scopes the request to the signed-in merchant by copying their id from the auth
+/// cookie's claim into the tenant context, which drives the EF query filters.
+/// Unauthenticated requests (Stripe webhooks, the OAuth connect flow) and background
+/// jobs carry no claim and run untenanted, which disables the filters.
 /// </summary>
 public sealed class TenantResolutionMiddleware(RequestDelegate next)
 {
-    public const string HeaderName = "X-Merchant-Id";
-
     public Task InvokeAsync(HttpContext http, TenantContext tenant)
     {
-        if (Guid.TryParse(http.Request.Headers[HeaderName], out var merchantId))
+        if (http.User.GetMerchantId() is { } merchantId)
             tenant.MerchantId = merchantId;
         return next(http);
     }

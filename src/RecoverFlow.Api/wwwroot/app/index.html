@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard — RecoverFlow</title>
+<link rel="icon" type="image/png" href="/assets/logo-mark.png">
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #14171f; --dim: #565d6d;
+    --border: #e4e6eb; --accent: #5b5bf0;
+    --green: #17663a; --green-bg: #e9f7ef; --amber: #92600a; --amber-bg: #fbf1dd;
+    --red: #b42318; --red-bg: #fdecec; --slate-bg: #eef0f4; --slate: #565d6d;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d0e12; --card: #15171d; --text: #eef0f4; --dim: #9aa0ac;
+      --border: #262933; --accent: #7c7cf7;
+      --green: #8fe6b0; --green-bg: #14271b; --amber: #f0cf8a; --amber-bg: #2c2413;
+      --red: #f7b4ab; --red-bg: #2a1616; --slate-bg: #1c1f27; --slate: #9aa0ac;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text); min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+  header { border-bottom: 1px solid var(--border); background: var(--card); }
+  header .wrap { display: flex; align-items: center; justify-content: space-between; padding: 16px 24px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; letter-spacing: -0.02em; }
+  .brand img { height: 26px; width: 26px; border-radius: 7px; }
+  .who { display: flex; align-items: center; gap: 16px; font-size: 0.9rem; color: var(--dim); }
+  .who button {
+    background: transparent; border: 1px solid var(--border); color: var(--text);
+    padding: 7px 14px; border-radius: 7px; cursor: pointer; font-size: 0.88rem;
+  }
+  .who button:hover { border-color: var(--accent); }
+
+  h1 { font-size: 1.6rem; letter-spacing: -0.02em; margin: 32px 0 4px; }
+  .lede { color: var(--dim); margin: 0 0 24px; }
+
+  .toggle { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 22px; }
+  .toggle button {
+    background: var(--card); border: none; color: var(--dim); padding: 8px 16px;
+    cursor: pointer; font-size: 0.9rem; font-weight: 500;
+  }
+  .toggle button.active { background: var(--accent); color: #fff; }
+
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 32px; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+  .stat .k { font-size: 0.85rem; color: var(--dim); margin-bottom: 8px; }
+  .stat .v { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
+  .stat .v.small { font-size: 1.4rem; }
+
+  .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .panel h2 { font-size: 1.05rem; margin: 0; padding: 18px 20px; border-bottom: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 12px 20px; border-bottom: 1px solid var(--border); }
+  th { color: var(--dim); font-weight: 500; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:last-child td { border-bottom: none; }
+  td.amt { font-variant-numeric: tabular-nums; }
+  .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.78rem; font-weight: 600; }
+  .pill.recovered { background: var(--green-bg); color: var(--green); }
+  .pill.active { background: var(--amber-bg); color: var(--amber); }
+  .pill.lost { background: var(--red-bg); color: var(--red); }
+  .pill.other { background: var(--slate-bg); color: var(--slate); }
+  .empty, .loading { padding: 40px 20px; text-align: center; color: var(--dim); }
+  .tablewrap { overflow-x: auto; }
+  footer { text-align: center; color: var(--dim); font-size: 0.82rem; padding: 40px 0; }
+</style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="brand"><img src="/assets/logo-mark.png" alt="">RecoverFlow</div>
+      <div class="who">
+        <span id="company"></span>
+        <button id="logout">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <h1>Recovery dashboard</h1>
+    <p class="lede" id="lede">Loading your recovery activity…</p>
+
+    <div class="toggle" id="toggle" hidden>
+      <button data-window="Last30Days" class="active">Last 30 days</button>
+      <button data-window="AllTime">All time</button>
+    </div>
+
+    <div class="stats" id="stats" hidden>
+      <div class="stat"><div class="k">Revenue recovered</div><div class="v" id="s-recovered">—</div></div>
+      <div class="stat"><div class="k">At risk (active)</div><div class="v" id="s-atrisk">—</div></div>
+      <div class="stat"><div class="k">Recovery rate</div><div class="v" id="s-rate">—</div></div>
+      <div class="stat"><div class="k">Active cases</div><div class="v small" id="s-active">—</div></div>
+    </div>
+
+    <div class="panel">
+      <h2>Recovery cases</h2>
+      <div class="tablewrap">
+        <table id="cases">
+          <thead>
+            <tr><th>Customer</th><th>Invoice</th><th>Amount</th><th>Status</th><th>Opened</th><th>Retries</th></tr>
+          </thead>
+          <tbody><tr><td colspan="6" class="loading">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer>RecoverFlow — subscription payment recovery for Stripe</footer>
+
+<script>
+  const money = (cents, currency) => new Intl.NumberFormat('en-US', {
+    style: 'currency', currency: (currency || 'usd').toUpperCase(),
+  }).format((cents || 0) / 100);
+
+  const usd = (cents) => new Intl.NumberFormat('en-US', {
+    style: 'currency', currency: 'USD', maximumFractionDigits: 0,
+  }).format((cents || 0) / 100);
+
+  const STATUS = {
+    Recovered: ['recovered', 'Recovered'],
+    ActiveRecovery: ['active', 'Active'],
+    Lost: ['lost', 'Lost'],
+  };
+  const pill = (s) => {
+    const [cls, label] = STATUS[s] || ['other', s];
+    return `<span class="pill ${cls}">${label}</span>`;
+  };
+  const date = (iso) => iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
+
+  async function api(path) {
+    const res = await fetch(path, { headers: { 'Accept': 'application/json' } });
+    if (res.status === 401) { location.href = '/app/login.html'; throw new Error('unauthorized'); }
+    if (!res.ok) throw new Error('request failed: ' + res.status);
+    return res.json();
+  }
+
+  let dashboard = null;
+  function renderStats(windowKey) {
+    if (!dashboard) return;
+    const s = dashboard[windowKey];
+    document.getElementById('s-recovered').textContent = usd(s.amountRecoveredCents);
+    document.getElementById('s-atrisk').textContent = usd(s.amountAtRiskCents);
+    document.getElementById('s-rate').textContent = Math.round((s.recoveryRate || 0) * 100) + '%';
+    document.getElementById('s-active').textContent = s.casesByStatus.ActiveRecovery ?? 0;
+  }
+
+  function renderCases(items) {
+    const body = document.querySelector('#cases tbody');
+    if (!items.length) {
+      body.innerHTML = '<tr><td colspan="6" class="empty">No recovery cases yet. They appear here the moment a subscription payment fails.</td></tr>';
+      return;
+    }
+    body.innerHTML = items.map(c => `
+      <tr>
+        <td>${c.customerEmail || '—'}</td>
+        <td>${c.stripeInvoiceId}</td>
+        <td class="amt">${money(c.amountCents, c.currency)}</td>
+        <td>${pill(c.status)}</td>
+        <td>${date(c.openedAt)}</td>
+        <td>${c.attemptCount}</td>
+      </tr>`).join('');
+  }
+
+  document.getElementById('logout').addEventListener('click', async () => {
+    await fetch('/auth/logout', { method: 'POST' });
+    location.href = '/app/login.html';
+  });
+
+  document.querySelectorAll('#toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#toggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderStats(btn.dataset.window);
+    });
+  });
+
+  (async function init() {
+    try {
+      const [me, dash, cases] = await Promise.all([
+        api('/auth/me'),
+        api('/v1/me/dashboard'),
+        api('/v1/me/recovery-cases?pageSize=50'),
+      ]);
+      document.getElementById('company').textContent = me.companyName || '';
+      document.getElementById('lede').textContent = 'Here’s what RecoverFlow has been doing for you.';
+      dashboard = dash;
+      document.getElementById('toggle').hidden = false;
+      document.getElementById('stats').hidden = false;
+      renderStats('Last30Days');
+      renderCases(cases.items);
+    } catch (e) {
+      if (e.message !== 'unauthorized') {
+        document.getElementById('lede').textContent = 'Couldn’t load your dashboard. Please refresh.';
+      }
+    }
+  })();
+</script>
+</body>
+</html>
