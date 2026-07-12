@@ -36,6 +36,21 @@ public sealed class EncryptionOptions
     public string Key { get; set; } = "";
 }
 
+public sealed class BillingOptions
+{
+    public const string Section = "Billing";
+
+    /// <summary>Ships dark; flip Billing__Enabled=true in the environment to start billing.</summary>
+    public bool Enabled { get; set; }
+    public int FeeBasisPoints { get; set; } = 2500;
+    public long MonthlyMinimumCents { get; set; } = 2900;
+    /// <summary>Days after signup during which the monthly minimum is waived (the % still applies).</summary>
+    public int TrialDays { get; set; } = 30;
+    public int InvoiceDueDays { get; set; } = 7;
+    /// <summary>Stripe won't collect payments under $0.50; totals below this roll into next month.</summary>
+    public long MinimumInvoiceableCents { get; set; } = 50;
+}
+
 public sealed class AppOptions
 {
     public const string Section = "App";

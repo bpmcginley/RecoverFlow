@@ -3,8 +3,10 @@ using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using RecoverFlow.Api.Auth;
 using RecoverFlow.Api.Middleware;
+using RecoverFlow.Application.Billing;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Infrastructure;
 using RecoverFlow.Infrastructure.Persistence;
@@ -48,6 +50,7 @@ try
     builder.Services.Configure<EncryptionOptions>(builder.Configuration.GetSection(EncryptionOptions.Section));
     builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.Section));
     builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Section));
+    builder.Services.Configure<BillingOptions>(builder.Configuration.GetSection(BillingOptions.Section));
 
     // Stripe.net calls (including the OAuth token exchange) authenticate using this
     // static platform key rather than per-request options.
@@ -99,6 +102,19 @@ try
     using (var scope = app.Services.CreateScope())
     {
         scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+
+        // Monthly billing (1st, 06:00 UTC). DI-resolved manager rather than the static
+        // RecurringJob API — JobStorage.Current isn't reliably set this early. The job
+        // registration persists in Postgres, so flipping Enabled off must actively remove it.
+        var recurring = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+        if (scope.ServiceProvider.GetRequiredService<IOptions<BillingOptions>>().Value.Enabled)
+            recurring.AddOrUpdate<MerchantBillingService>(
+                "monthly-billing",
+                s => s.RunMonthlyBillingAsync(CancellationToken.None),
+                "0 6 1 * *",
+                new RecurringJobOptions { TimeZone = TimeZoneInfo.Utc });
+        else
+            recurring.RemoveIfExists("monthly-billing");
     }
 
     app.UseForwardedHeaders();

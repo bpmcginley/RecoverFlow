@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RecoverFlow.Application.Billing;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Application.Connect;
 using RecoverFlow.Application.Dashboard;
@@ -34,6 +35,9 @@ public static class DependencyInjection
 
         services.AddScoped<IEmailSender, SendGridEmailSender>();
         services.AddScoped<DunningEmailService>();
+
+        services.AddScoped<MerchantBillingService>();
+        services.AddScoped<IPlatformFeeInvoicer, StripePlatformFeeInvoicer>();
 
         services.AddSingleton<ITokenEncryptor, TokenEncryptor>();
         services.AddScoped<IStripeOAuthClient, StripeOAuthClient>();

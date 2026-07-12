@@ -185,6 +185,20 @@
   }
   .flow .arrow { padding: 0 4px; }
 
+  .price-card {
+    max-width: 440px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 36px 32px;
+    text-align: center;
+  }
+  .price-card .big { font-size: 3.2rem; font-weight: 700; letter-spacing: -0.04em; line-height: 1.1; }
+  .price-card .big span { font-size: 1.15rem; color: var(--text-dim); font-weight: 500; }
+  .price-card ul { list-style: none; margin: 24px 0 0; padding: 0; color: var(--text-dim); font-size: 0.95rem; text-align: left; }
+  .price-card li { padding: 9px 0; border-top: 1px solid var(--border); }
+
   .hero-visual {
     max-width: 480px;
     width: 100%;
@@ -211,6 +225,7 @@
     <div class="logo"><img src="assets/logo-mark.png" alt="">Recover<span>Flow</span></div>
     <nav>
       <a href="#how-it-works">How it works</a>
+      <a href="#pricing">Pricing</a>
       <a href="#features">Features</a>
       <a href="mailto:admin@recoverflow.org">Contact</a>
     </nav>
@@ -230,7 +245,7 @@
       <button class="btn btn-primary" type="submit">Connect your Stripe account</button>
     </form>
     <p class="signup-alt">
-      You'll authorize on Stripe — no card, no commitment. <a href="#how-it-works">See how it works ↓</a>
+      You'll authorize on Stripe — no card up front, cancel anytime. <a href="#pricing">Simple pricing ↓</a>
     </p>
     <img class="hero-visual" src="assets/og-image.png" alt="RecoverFlow — Win back every dollar. Automatically.">
   </div>
@@ -254,7 +269,22 @@
   </div>
 </section>
 
-<section id="features">
+<section id="pricing">
+  <div class="wrap">
+    <h2 class="section-title">Pricing that only wins when you do</h2>
+    <p class="section-sub">No plans, no seats, nothing up front. We take a cut of the revenue we actually bring back — that's the whole model.</p>
+    <div class="price-card">
+      <div class="big">25%<span> of recovered revenue</span></div>
+      <ul>
+        <li>First 30 days: no minimum — if we recover nothing, you pay nothing</li>
+        <li>After that: $29/mo minimum keeps your account active</li>
+        <li>Attribution built in — never charged for payments that came back on their own</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="alt">
   <div class="wrap">
     <h2 class="section-title">Built for indie SaaS founders</h2>
     <p class="section-sub">No dashboards to babysit. RecoverFlow reacts to your Stripe webhooks in real time.</p>

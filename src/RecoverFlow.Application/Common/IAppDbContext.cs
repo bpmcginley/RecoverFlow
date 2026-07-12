@@ -11,5 +11,6 @@ public interface IAppDbContext
     DbSet<EmailSequenceEntry> EmailSequences { get; }
     DbSet<CardUpdateSession> CardUpdateSessions { get; }
     DbSet<ProcessedWebhookEvent> ProcessedWebhookEvents { get; }
+    DbSet<FeeInvoice> FeeInvoices { get; }
     Task<int> SaveChangesAsync(CancellationToken ct = default);
 }

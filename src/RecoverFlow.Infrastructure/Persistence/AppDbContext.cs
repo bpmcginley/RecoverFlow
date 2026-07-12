@@ -18,6 +18,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, ITenantContext
     public DbSet<EmailSequenceEntry> EmailSequences => Set<EmailSequenceEntry>();
     public DbSet<CardUpdateSession> CardUpdateSessions => Set<CardUpdateSession>();
     public DbSet<ProcessedWebhookEvent> ProcessedWebhookEvents => Set<ProcessedWebhookEvent>();
+    public DbSet<FeeInvoice> FeeInvoices => Set<FeeInvoice>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -26,6 +27,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, ITenantContext
             e.Property(m => m.Email).HasMaxLength(320);
             e.Property(m => m.CompanyName).HasMaxLength(200);
             e.Property(m => m.StripeAccountId).HasMaxLength(255);
+            e.Property(m => m.StripePlatformCustomerId).HasMaxLength(255);
             e.Property(m => m.Plan).HasMaxLength(50);
             e.Property(m => m.SettingsJson).HasColumnType("jsonb");
             e.HasIndex(m => m.StripeAccountId).IsUnique();
@@ -45,8 +47,24 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, ITenantContext
             e.Property(p => p.RecoveryMethod).HasConversion<string>().HasMaxLength(20);
             e.HasIndex(p => new { p.MerchantId, p.StripeInvoiceId }).IsUnique();
             e.HasIndex(p => p.Status);
+            e.HasIndex(p => p.FeeInvoiceId);
             e.HasOne(p => p.Merchant).WithMany(m => m.FailedPayments).HasForeignKey(p => p.MerchantId);
+            e.HasOne<FeeInvoice>().WithMany().HasForeignKey(p => p.FeeInvoiceId).OnDelete(DeleteBehavior.Restrict);
             e.HasQueryFilter(p => CurrentMerchantId == null || p.MerchantId == CurrentMerchantId);
+        });
+
+        b.Entity<FeeInvoice>(e =>
+        {
+            e.Property(f => f.PeriodLabel).HasMaxLength(7);
+            e.Property(f => f.Currency).HasMaxLength(3);
+            e.Property(f => f.Status).HasConversion<string>().HasMaxLength(20);
+            e.Property(f => f.StripeInvoiceId).HasMaxLength(255);
+            e.Property(f => f.HostedInvoiceUrl).HasMaxLength(2048);
+            e.Property(f => f.FailureReason).HasMaxLength(1000);
+            e.HasIndex(f => f.MerchantId);
+            e.HasIndex(f => f.Status);
+            e.HasOne(f => f.Merchant).WithMany().HasForeignKey(f => f.MerchantId);
+            e.HasQueryFilter(f => CurrentMerchantId == null || f.MerchantId == CurrentMerchantId);
         });
 
         b.Entity<RetryAttempt>(e =>
