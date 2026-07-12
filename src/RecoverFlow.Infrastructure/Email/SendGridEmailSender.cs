@@ -34,6 +34,11 @@ public sealed class SendGridEmailSender(
             plainTextContent: plainTextBody,
             htmlContent: htmlBody);
 
+        // Transactional dunning mail doesn't need SendGrid's tracking pixel/link-rewriting —
+        // it's a spam-score deduction and the rewritten links look worse to filters.
+        message.SetClickTracking(false, false);
+        message.SetOpenTracking(false);
+
         var response = await new SendGridClient(_email.ApiKey).SendEmailAsync(message, ct);
         if (!response.IsSuccessStatusCode)
             log.LogError("SendGrid returned {StatusCode} sending \"{Subject}\" to {To}",
