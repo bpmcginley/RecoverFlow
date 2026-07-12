@@ -1,7 +1,9 @@
 using Hangfire;
 using Hangfire.PostgreSql;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using RecoverFlow.Api.Auth;
 using RecoverFlow.Api.Middleware;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Infrastructure;
@@ -45,6 +47,7 @@ try
     builder.Services.Configure<RetryOptions>(builder.Configuration.GetSection(RetryOptions.Section));
     builder.Services.Configure<EncryptionOptions>(builder.Configuration.GetSection(EncryptionOptions.Section));
     builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.Section));
+    builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Section));
 
     // Stripe.net calls (including the OAuth token exchange) authenticate using this
     // static platform key rather than per-request options.
@@ -52,6 +55,30 @@ try
 
     builder.Services.AddDataProtection();
     builder.Services.AddInfrastructure(builder.Configuration);
+
+    // Passwordless dashboard auth: a signed magic-link token drops this cookie.
+    builder.Services.AddSingleton<MagicLinkTokenService>();
+    builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+        .AddCookie(o =>
+        {
+            o.Cookie.Name = "rf_session";
+            o.Cookie.HttpOnly = true;
+            o.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            o.Cookie.SameSite = SameSiteMode.Lax;
+            o.ExpireTimeSpan = TimeSpan.FromDays(14);
+            o.SlidingExpiration = true;
+            // The dashboard is fetch-driven: an unauthenticated API/auth call must get a
+            // 401 it can react to, not a 302 to an HTML login page the fetch can't follow.
+            o.Events.OnRedirectToLogin = ctx =>
+            {
+                if (ctx.Request.Path.StartsWithSegments("/v1") || ctx.Request.Path.StartsWithSegments("/auth"))
+                    ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                else
+                    ctx.Response.Redirect(ctx.RedirectUri);
+                return Task.CompletedTask;
+            };
+        });
+    builder.Services.AddAuthorization();
 
     builder.Services.AddHangfire(cfg => cfg
         .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
@@ -85,9 +112,26 @@ try
     }
 
     app.UseHttpsRedirection();
+
+    // On the app subdomain, send the bare root straight to the dashboard shell.
+    app.Use(async (ctx, next) =>
+    {
+        if (ctx.Request.Path == "/" &&
+            ctx.Request.Host.Host.StartsWith("app.", StringComparison.OrdinalIgnoreCase))
+        {
+            ctx.Response.Redirect("/app/");
+            return;
+        }
+        await next();
+    });
+
     app.UseDefaultFiles();
     app.UseStaticFiles();
-    app.UseMiddleware<TenantResolutionMiddleware>();
+
+    app.UseAuthentication();
+    app.UseMiddleware<TenantResolutionMiddleware>(); // reads the auth claim → tenant scope
+    app.UseAuthorization();
+
     app.MapControllers();
     app.MapHealthChecks("/health");
 

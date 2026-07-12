@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in — RecoverFlow</title>
+<link rel="icon" type="image/png" href="/assets/logo-mark.png">
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --text: #14171f; --dim: #565d6d;
+    --border: #e4e6eb; --accent: #5b5bf0; --accent-dark: #4444c9;
+    --err-bg: #fdecec; --err-text: #b42318; --ok-bg: #e9f7ef; --ok-text: #17663a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d0e12; --card: #15171d; --text: #eef0f4; --dim: #9aa0ac;
+      --border: #262933; --accent: #7c7cf7; --accent-dark: #9a9af9;
+      --err-bg: #2a1616; --err-text: #f7b4ab; --ok-bg: #14271b; --ok-text: #8fe6b0;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: var(--bg); color: var(--text); padding: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .card {
+    width: 100%; max-width: 400px; background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 36px 32px; text-align: center;
+  }
+  .logo { height: 44px; width: 44px; border-radius: 10px; margin-bottom: 18px; }
+  h1 { font-size: 1.5rem; margin: 0 0 8px; letter-spacing: -0.02em; }
+  p.sub { color: var(--dim); margin: 0 0 24px; line-height: 1.5; font-size: 0.98rem; }
+  form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
+  label { font-size: 0.82rem; color: var(--dim); margin-bottom: -6px; }
+  input {
+    padding: 13px 14px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--bg); color: var(--text); font-size: 1rem;
+  }
+  input:focus { outline: none; border-color: var(--accent); }
+  button {
+    padding: 13px; border-radius: 8px; border: none; background: var(--accent); color: #fff;
+    font-weight: 600; font-size: 1rem; cursor: pointer; margin-top: 4px;
+  }
+  button:hover { background: var(--accent-dark); }
+  button:disabled { opacity: 0.6; cursor: default; }
+  .msg { margin-top: 18px; padding: 12px 14px; border-radius: 8px; font-size: 0.92rem; line-height: 1.45; display: none; }
+  .msg.err { background: var(--err-bg); color: var(--err-text); display: block; }
+  .msg.ok { background: var(--ok-bg); color: var(--ok-text); display: block; }
+  .foot { margin-top: 22px; font-size: 0.85rem; color: var(--dim); }
+  .foot a { color: var(--accent); text-decoration: none; }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="/assets/logo-mark.png" alt="">
+    <h1>Sign in to RecoverFlow</h1>
+    <p class="sub">Enter your email and we'll send you a secure sign-in link — no password needed.</p>
+    <form id="form">
+      <label for="email">Work email</label>
+      <input id="email" name="email" type="email" placeholder="you@acme.com" required autofocus>
+      <button id="submit" type="submit">Send me a sign-in link</button>
+    </form>
+    <div id="msg" class="msg"></div>
+    <p class="foot">Not connected yet? <a href="https://recoverflow.org">Connect your Stripe account →</a></p>
+  </div>
+
+<script>
+  const form = document.getElementById('form');
+  const msg = document.getElementById('msg');
+  const submit = document.getElementById('submit');
+
+  if (new URLSearchParams(location.search).get('error') === 'expired') {
+    msg.className = 'msg err';
+    msg.textContent = 'That sign-in link has expired or already been used. Enter your email for a fresh one.';
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value.trim();
+    if (!email) return;
+    submit.disabled = true;
+    submit.textContent = 'Sending…';
+    try {
+      const res = await fetch('/auth/request-link', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json().catch(() => ({}));
+      msg.className = 'msg ok';
+      msg.textContent = data.message || 'Check your inbox for a sign-in link.';
+      form.style.display = 'none';
+    } catch {
+      msg.className = 'msg err';
+      msg.textContent = 'Something went wrong. Please try again.';
+      submit.disabled = false;
+      submit.textContent = 'Send me a sign-in link';
+    }
+  });
+</script>
+</body>
+</html>

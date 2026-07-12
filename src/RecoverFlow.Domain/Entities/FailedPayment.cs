@@ -18,6 +18,10 @@ public class FailedPayment
     public DateTime FirstFailedAt { get; set; }
     public DateTime? RecoveredAt { get; set; }
     public DateTime? LostAt { get; set; }
+    /// <summary>Reserved by a billing run; set atomically with the FeeInvoice row, before Stripe is called.</summary>
+    public Guid? FeeInvoiceId { get; set; }
+    /// <summary>Set only once the fee invoice was successfully sent.</summary>
+    public DateTime? BilledAtUtc { get; set; }
     public Merchant Merchant { get; set; } = null!;
     public ICollection<RetryAttempt> RetryAttempts { get; set; } = [];
     public ICollection<EmailSequenceEntry> EmailEntries { get; set; } = [];
