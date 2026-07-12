@@ -102,6 +102,28 @@
     border: 1px solid var(--border);
   }
 
+  .signup {
+    max-width: 400px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: left;
+  }
+  .signup label { font-size: 0.82rem; color: var(--text-dim); margin-bottom: -6px; }
+  .signup input {
+    padding: 13px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .signup input:focus { outline: none; border-color: var(--accent); }
+  .signup .btn-primary { border: none; cursor: pointer; margin-top: 4px; }
+  .signup-alt { margin-top: 18px; font-size: 0.92rem; color: var(--text-dim); }
+  .signup-alt a { color: var(--accent); text-decoration: none; }
+
   .badge {
     display: inline-block;
     padding: 6px 14px;
@@ -200,10 +222,16 @@
     <span class="badge">Now in early access for Stripe-based SaaS</span>
     <h1>Stop losing revenue<br>to failed payments</h1>
     <p>RecoverFlow watches your Stripe subscriptions, classifies every decline, and automatically retries and recovers failed invoices — so you don't have to chase down churned revenue by hand.</p>
-    <div class="cta">
-      <a class="btn btn-primary" href="mailto:admin@recoverflow.org">Get early access</a>
-      <a class="btn btn-secondary" href="#how-it-works">See how it works</a>
-    </div>
+    <form class="signup" method="get" action="https://api.recoverflow.org/connect/stripe/authorize">
+      <label for="companyName">Company name</label>
+      <input id="companyName" name="companyName" type="text" placeholder="Acme Inc." required>
+      <label for="email">Work email</label>
+      <input id="email" name="email" type="email" placeholder="you@acme.com" required>
+      <button class="btn btn-primary" type="submit">Connect your Stripe account</button>
+    </form>
+    <p class="signup-alt">
+      You'll authorize on Stripe — no card, no commitment. <a href="#how-it-works">See how it works ↓</a>
+    </p>
     <img class="hero-visual" src="assets/og-image.png" alt="RecoverFlow — Win back every dollar. Automatically.">
   </div>
 </div>
