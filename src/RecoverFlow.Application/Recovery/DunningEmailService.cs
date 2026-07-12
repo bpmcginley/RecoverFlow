@@ -35,7 +35,7 @@ public sealed class DunningEmailService(
 
         var content = DunningEmailTemplates.ForStep(
             sequenceStep, payment.Merchant.CompanyName, payment.AmountCents, payment.Currency);
-        await emailSender.SendAsync(payment.CustomerEmail, content.Subject, content.Html, ct);
+        await emailSender.SendAsync(payment.CustomerEmail, content.Subject, content.Html, content.PlainText, ct);
 
         db.EmailSequences.Add(new EmailSequenceEntry
         {
