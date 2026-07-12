@@ -46,11 +46,11 @@ public class DunningEmailServiceTests
 {
     private sealed class RecordingEmailSender : IEmailSender
     {
-        public List<(string To, string Subject, string Html)> Sent { get; } = [];
+        public List<(string To, string Subject, string Html, string PlainText)> Sent { get; } = [];
 
-        public Task SendAsync(string to, string subject, string htmlBody, CancellationToken ct = default)
+        public Task SendAsync(string to, string subject, string htmlBody, string plainTextBody, CancellationToken ct = default)
         {
-            Sent.Add((to, subject, htmlBody));
+            Sent.Add((to, subject, htmlBody, plainTextBody));
             return Task.CompletedTask;
         }
     }
@@ -98,10 +98,12 @@ public class DunningEmailServiceTests
 
         await CreateService(db, sender).SendStepAsync(payment.Id, 1);
 
-        var (to, subject, html) = Assert.Single(sender.Sent);
+        var (to, subject, html, plain) = Assert.Single(sender.Sent);
         Assert.Equal("customer@example.com", to);
         Assert.Contains("Acme Corp", subject);
         Assert.Contains("42.00 USD", html);
+        Assert.Contains("42.00 USD", plain);
+        Assert.DoesNotContain("<", plain); // genuine plain-text alternative, no markup
 
         var entry = Assert.Single(db.EmailSequences);
         Assert.Equal(payment.Id, entry.FailedPaymentId);

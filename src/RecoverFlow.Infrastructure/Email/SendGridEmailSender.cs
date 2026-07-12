@@ -12,11 +12,14 @@ public sealed class SendGridEmailSender(
 {
     private readonly EmailOptions _email = options.Value;
 
-    // Real SendGrid keys always start with "SG." — anything else (empty, placeholder)
-    // means this environment has no mail capability and should still boot.
-    private bool IsConfigured => _email.ApiKey.StartsWith("SG.", StringComparison.Ordinal);
+    // Real SendGrid keys look like "SG.<22 chars>.<43 chars>" (~69 chars). The "SG."
+    // prefix alone isn't enough to trust — the stock placeholder "SG.replace_me" clears
+    // it and then 401s on every send, so also require a real-length key. Anything shorter
+    // (empty, placeholder) means this environment has no mail capability and just skips.
+    private bool IsConfigured =>
+        _email.ApiKey.StartsWith("SG.", StringComparison.Ordinal) && _email.ApiKey.Length >= 50;
 
-    public async Task SendAsync(string to, string subject, string htmlBody, CancellationToken ct = default)
+    public async Task SendAsync(string to, string subject, string htmlBody, string plainTextBody, CancellationToken ct = default)
     {
         if (!IsConfigured)
         {
@@ -28,7 +31,7 @@ public sealed class SendGridEmailSender(
             new EmailAddress(_email.FromAddress, _email.FromName),
             new EmailAddress(to),
             subject,
-            plainTextContent: null,
+            plainTextContent: plainTextBody,
             htmlContent: htmlBody);
 
         var response = await new SendGridClient(_email.ApiKey).SendEmailAsync(message, ct);
