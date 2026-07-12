@@ -32,16 +32,31 @@
     margin: 0 0 28px;
     line-height: 1.5;
   }
+  form { display: flex; flex-direction: column; gap: 12px; text-align: left; }
+  label { font-size: 0.85rem; color: #9fb0c0; margin-bottom: -6px; }
+  input {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #253040;
+    background: #0f151c;
+    color: #e6edf3;
+    font-size: 1rem;
+  }
+  input:focus { outline: none; border-color: #3b82f6; }
   .cta {
-    display: inline-block;
     padding: 12px 28px;
     border-radius: 8px;
+    border: none;
     background: #3b82f6;
     color: #fff;
     text-decoration: none;
     font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 4px;
   }
   .cta:hover { background: #2563eb; }
+  .fineprint { font-size: 0.8rem; color: #6b7a8a; margin: 10px 0 0; text-align: center; }
 </style>
 </head>
 <body>
@@ -53,7 +68,16 @@
       smart retries and email dunning sequences that win back revenue
       you'd otherwise write off.
     </p>
-    <a class="cta" href="mailto:brucepmcginley@gmail.com">Get in touch</a>
+    <form method="get" action="/connect/stripe/authorize">
+      <label for="companyName">Company name</label>
+      <input id="companyName" name="companyName" type="text" placeholder="Acme Inc." required>
+      <label for="email">Work email</label>
+      <input id="email" name="email" type="email" placeholder="you@acme.com" required>
+      <button class="cta" type="submit">Connect with Stripe</button>
+    </form>
+    <p class="fineprint">
+      You'll be taken to Stripe to authorize read access — no card, no commitment.
+    </p>
   </div>
 </body>
 </html>

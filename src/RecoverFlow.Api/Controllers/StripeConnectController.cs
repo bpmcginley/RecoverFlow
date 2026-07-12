@@ -75,6 +75,9 @@ public sealed class StripeConnectController(
         log.LogInformation("Connected merchant {MerchantId} to Stripe account {StripeAccountId}",
             merchant.Id, merchant.StripeAccountId);
 
-        return Ok(new { merchantId = merchant.Id, stripeAccountId = merchant.StripeAccountId });
+        // Land the merchant on a friendly confirmation rather than raw JSON. The static
+        // page is generic on purpose — we don't expose the merchant's unguessable
+        // dashboard GUID until there's real auth in front of it.
+        return Redirect("/connected.html");
     }
 }
