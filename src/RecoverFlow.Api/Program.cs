@@ -1,6 +1,7 @@
 using Hangfire;
 using Hangfire.PostgreSql;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -56,7 +57,20 @@ try
     // static platform key rather than per-request options.
     Stripe.StripeConfiguration.ApiKey = builder.Configuration[$"{StripeOptions.Section}:SecretKey"];
 
-    builder.Services.AddDataProtection();
+    // DataProtection seals the OAuth `state` token, magic-link sign-in tokens, and
+    // session cookies. The default key ring lives on the container's ephemeral
+    // filesystem, so every redeploy rotates the keys — invalidating in-flight
+    // onboarding/sign-in links and logging everyone out. In production we point the
+    // key ring at a persistent disk (DataProtection:KeysPath) so keys survive
+    // redeploys; a stable application name keeps purpose strings consistent. When no
+    // path is configured (local dev) the default in-memory/profile behavior stands.
+    var dataProtection = builder.Services.AddDataProtection().SetApplicationName("RecoverFlow");
+    var keysPath = builder.Configuration["DataProtection:KeysPath"];
+    if (!string.IsNullOrWhiteSpace(keysPath))
+    {
+        Directory.CreateDirectory(keysPath);
+        dataProtection.PersistKeysToFileSystem(new DirectoryInfo(keysPath));
+    }
     builder.Services.AddInfrastructure(builder.Configuration);
 
     // Passwordless dashboard auth: a signed magic-link token drops this cookie.

@@ -15,9 +15,18 @@ services:
     dockerfilePath: ./Dockerfile
     plan: starter              # always-on; free spins down and would miss live webhooks
     healthCheckPath: /health
+    disk:
+      # Persists the DataProtection key ring across redeploys. Without it, every
+      # deploy rotates the keys and invalidates in-flight OAuth `state`, magic-link
+      # sign-in tokens, and session cookies. Small — it only holds a few key XML files.
+      name: recoverflow-keys
+      mountPath: /var/lib/recoverflow
+      sizeGB: 1
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
+      - key: DataProtection__KeysPath
+        value: /var/lib/recoverflow/dp-keys
       - key: Database__ConnectionString
         fromDatabase:
           name: recoverflow-db
