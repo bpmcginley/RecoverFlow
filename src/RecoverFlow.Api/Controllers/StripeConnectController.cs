@@ -2,7 +2,9 @@ using System.Security.Cryptography;
 using System.Text.Json;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using RecoverFlow.Application.Backtest;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Application.Connect;
 
@@ -18,10 +20,15 @@ public sealed class StripeConnectController(
     IOptions<StripeOptions> stripeOptions,
     IDataProtectionProvider dataProtection,
     StripeConnectService connectService,
+    AccountBacktestService backtests,
+    IBacktestJobScheduler backtestJobs,
+    IAppDbContext db,
     ILogger<StripeConnectController> log) : ControllerBase
 {
     private static readonly TimeSpan StateLifetime = TimeSpan.FromMinutes(15);
     private readonly IDataProtector protector = dataProtection.CreateProtector("StripeConnectOAuthState");
+    // Separate purpose string: a backtest-view token can never be replayed as OAuth state.
+    private readonly IDataProtector backtestProtector = dataProtection.CreateProtector("StripeConnectBacktestView");
 
     private sealed record OAuthState(string Nonce, string Email, string CompanyName, DateTime IssuedAtUtc);
 
@@ -75,9 +82,30 @@ public sealed class StripeConnectController(
         log.LogInformation("Connected merchant {MerchantId} to Stripe account {StripeAccountId}",
             merchant.Id, merchant.StripeAccountId);
 
-        // Land the merchant on a friendly confirmation rather than raw JSON. The static
-        // page is generic on purpose — we don't expose the merchant's unguessable
-        // dashboard GUID until there's real auth in front of it.
-        return Redirect("/connected.html");
+        // Kick off the "here's what you lost" scan out-of-band, and hand the confirmation page a
+        // signed token so it can poll for the result without us exposing the merchant's GUID.
+        var backtestId = await backtests.BeginAsync(merchant.Id, ct);
+        backtestJobs.Enqueue(backtestId);
+        var token = Uri.EscapeDataString(backtestProtector.Protect(backtestId.ToString()));
+
+        return Redirect($"/connected.html?b={token}");
+    }
+
+    /// <summary>Polled by connected.html to render the backtest as soon as the scan finishes.</summary>
+    [HttpGet("backtest")]
+    public async Task<IActionResult> Backtest([FromQuery] string token, CancellationToken ct)
+    {
+        Guid backtestId;
+        try
+        {
+            backtestId = Guid.Parse(backtestProtector.Unprotect(token));
+        }
+        catch (Exception e) when (e is CryptographicException or FormatException)
+        {
+            return BadRequest();
+        }
+
+        var backtest = await db.AccountBacktests.FirstOrDefaultAsync(b => b.Id == backtestId, ct);
+        return backtest is null ? NotFound() : Ok(AccountBacktestService.ToView(backtest));
     }
 }

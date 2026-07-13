@@ -28,7 +28,7 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     padding: 24px;
   }
-  .card { max-width: 560px; text-align: center; }
+  .card { max-width: 560px; width: 100%; text-align: center; }
   .check {
     width: 56px; height: 56px; border-radius: 50%;
     background: #16351f; color: #4ade80;
@@ -39,6 +39,26 @@
   p { font-size: 1.1rem; color: #9fb0c0; margin: 0 0 16px; line-height: 1.55; }
   .next { text-align: left; display: inline-block; margin: 8px auto 0; color: #9fb0c0; line-height: 1.7; }
   .next li { margin-bottom: 4px; }
+
+  /* Backtest panel */
+  .backtest {
+    margin-top: 28px;
+    border: 1px solid #1e2733;
+    border-radius: 14px;
+    background: #0f151c;
+    padding: 24px;
+    text-align: left;
+  }
+  .backtest .eyebrow { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: #6b7a8a; margin: 0 0 6px; }
+  .backtest .lost { font-size: 2.4rem; font-weight: 700; letter-spacing: -0.03em; color: #f87171; margin: 0; line-height: 1.1; }
+  .backtest .lost small { font-size: 0.95rem; font-weight: 500; color: #9fb0c0; }
+  .backtest .recover { font-size: 1.15rem; color: #4ade80; font-weight: 600; margin: 14px 0 0; }
+  .backtest .fee { font-size: 0.92rem; color: #9fb0c0; margin: 6px 0 0; }
+  .backtest .disclaimer { font-size: 0.78rem; color: #6b7a8a; margin: 16px 0 0; line-height: 1.5; }
+  .backtest .spinner { color: #9fb0c0; font-size: 0.95rem; }
+  .backtest.empty .lost { color: #4ade80; font-size: 1.4rem; }
+  .dots::after { content: '…'; animation: dots 1.4s steps(4, end) infinite; }
+  @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
 </style>
 </head>
 <body>
@@ -49,11 +69,63 @@
       RecoverFlow is now watching your Stripe account for failed subscription
       payments. From here it's fully automatic — nothing else to set up.
     </p>
+
+    <div class="backtest" id="backtest" hidden>
+      <p class="eyebrow">Your last 90 days on Stripe</p>
+      <div id="backtestBody">
+        <p class="spinner"><span class="dots">Scanning your recent invoices</span></p>
+      </div>
+    </div>
+
     <ul class="next">
       <li>We retry failed charges on a smart schedule.</li>
       <li>We send branded dunning emails to win back the payment.</li>
       <li>You keep the revenue you'd otherwise have written off.</li>
     </ul>
   </div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const token = params.get('b');
+  const panel = document.getElementById('backtest');
+  const body = document.getElementById('backtestBody');
+
+  const money = (cents, currency) =>
+    new Intl.NumberFormat(undefined, { style: 'currency', currency: (currency || 'usd').toUpperCase(), maximumFractionDigits: 0 })
+      .format((cents || 0) / 100);
+
+  function renderComplete(d) {
+    if (!d.failedInvoiceCount) {
+      panel.classList.add('empty');
+      body.innerHTML = '<p class="lost">No failed payments in the last 90 days 🎉</p>' +
+        '<p class="fee">We\'ll be here the moment one slips through.</p>';
+      return;
+    }
+    const lowFee = money(d.estimatedFeeLowCents, d.currency);
+    const highFee = money(d.estimatedFeeHighCents, d.currency);
+    body.innerHTML =
+      '<p class="lost">' + money(d.failedAmountCents, d.currency) +
+        ' <small>lost across ' + d.failedInvoiceCount + ' failed payment' + (d.failedInvoiceCount === 1 ? '' : 's') + '</small></p>' +
+      '<p class="recover">We estimate we\'d have recovered ' +
+        money(d.recoverableLowCents, d.currency) + '–' + money(d.recoverableHighCents, d.currency) + '.</p>' +
+      '<p class="fee">Your fee on that would have been ' + lowFee + '–' + highFee + ' (25% of recovered).</p>' +
+      '<p class="disclaimer">Estimate based on your real uncollected invoices and typical recovery rates by decline type. ' +
+        'Actual results vary — you\'re only ever charged on payments we truly bring back.</p>';
+  }
+
+  async function poll(attempt) {
+    try {
+      const res = await fetch('https://api.recoverflow.org/connect/stripe/backtest?token=' + encodeURIComponent(token));
+      if (!res.ok) { panel.hidden = true; return; }
+      const d = await res.json();
+      if (d.status === 'Complete') { renderComplete(d); return; }
+      if (d.status === 'Failed') { panel.hidden = true; return; }
+    } catch (_) { /* keep waiting */ }
+    if (attempt < 20) setTimeout(() => poll(attempt + 1), 1500);
+    else panel.hidden = true; // give up quietly after ~30s
+  }
+
+  if (token) { panel.hidden = false; poll(0); }
+</script>
 </body>
 </html>

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using RecoverFlow.Api.Auth;
 using RecoverFlow.Api.Middleware;
+using RecoverFlow.Application.Backtest;
 using RecoverFlow.Application.Billing;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Infrastructure;
@@ -52,6 +53,7 @@ try
     builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.Section));
     builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Section));
     builder.Services.Configure<BillingOptions>(builder.Configuration.GetSection(BillingOptions.Section));
+    builder.Services.Configure<BacktestOptions>(builder.Configuration.GetSection(BacktestOptions.Section));
 
     // Stripe.net calls (including the OAuth token exchange) authenticate using this
     // static platform key rather than per-request options.

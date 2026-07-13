@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RecoverFlow.Application.Backtest;
 using RecoverFlow.Application.Billing;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Application.Connect;
@@ -38,6 +39,10 @@ public static class DependencyInjection
 
         services.AddScoped<MerchantBillingService>();
         services.AddScoped<IPlatformFeeInvoicer, StripePlatformFeeInvoicer>();
+
+        services.AddScoped<AccountBacktestService>();
+        services.AddScoped<IHistoricalInvoiceReader, StripeHistoricalInvoiceReader>();
+        services.AddScoped<IBacktestJobScheduler, HangfireBacktestJobScheduler>();
 
         services.AddSingleton<ITokenEncryptor, TokenEncryptor>();
         services.AddScoped<IStripeOAuthClient, StripeOAuthClient>();
