@@ -51,6 +51,16 @@ public sealed class BillingOptions
     public long MinimumInvoiceableCents { get; set; } = 50;
 }
 
+public sealed class BacktestOptions
+{
+    public const string Section = "Backtest";
+
+    /// <summary>How far back the connect-time scan looks over the merchant's Stripe history.</summary>
+    public int WindowDays { get; set; } = 90;
+    /// <summary>Caps the scan so a huge account can't stall the job or burn Stripe rate limits.</summary>
+    public int MaxInvoices { get; set; } = 200;
+}
+
 public sealed class AppOptions
 {
     public const string Section = "App";

@@ -19,6 +19,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, ITenantContext
     public DbSet<CardUpdateSession> CardUpdateSessions => Set<CardUpdateSession>();
     public DbSet<ProcessedWebhookEvent> ProcessedWebhookEvents => Set<ProcessedWebhookEvent>();
     public DbSet<FeeInvoice> FeeInvoices => Set<FeeInvoice>();
+    public DbSet<AccountBacktest> AccountBacktests => Set<AccountBacktest>();
 
     protected override void OnModelCreating(ModelBuilder b)
     {
@@ -65,6 +66,17 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, ITenantContext
             e.HasIndex(f => f.Status);
             e.HasOne(f => f.Merchant).WithMany().HasForeignKey(f => f.MerchantId);
             e.HasQueryFilter(f => CurrentMerchantId == null || f.MerchantId == CurrentMerchantId);
+        });
+
+        b.Entity<AccountBacktest>(e =>
+        {
+            e.Property(a => a.Currency).HasMaxLength(3);
+            e.Property(a => a.Status).HasConversion<string>().HasMaxLength(20);
+            e.Property(a => a.BreakdownJson).HasColumnType("jsonb");
+            e.Property(a => a.FailureReason).HasMaxLength(1000);
+            e.HasIndex(a => a.MerchantId);
+            e.HasOne(a => a.Merchant).WithMany().HasForeignKey(a => a.MerchantId);
+            e.HasQueryFilter(a => CurrentMerchantId == null || a.MerchantId == CurrentMerchantId);
         });
 
         b.Entity<RetryAttempt>(e =>

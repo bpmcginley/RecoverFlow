@@ -1,7 +1,29 @@
+using RecoverFlow.Application.Backtest;
 using RecoverFlow.Application.Billing;
 using RecoverFlow.Application.Recovery;
 
 namespace RecoverFlow.Tests.Unit;
+
+internal sealed class FakeHistoricalInvoiceReader : IHistoricalInvoiceReader
+{
+    public List<HistoricalFailedInvoice> Invoices { get; } = [];
+    public Exception? Throw { get; set; }
+    public List<(string Account, DateTime Since, int Max)> Calls { get; } = [];
+
+    public Task<IReadOnlyList<HistoricalFailedInvoice>> ListUncollectedInvoicesAsync(
+        string stripeAccountId, DateTime sinceUtc, int maxInvoices, CancellationToken ct = default)
+    {
+        Calls.Add((stripeAccountId, sinceUtc, maxInvoices));
+        if (Throw is not null) throw Throw;
+        return Task.FromResult<IReadOnlyList<HistoricalFailedInvoice>>(Invoices);
+    }
+}
+
+internal sealed class FakeBacktestJobScheduler : IBacktestJobScheduler
+{
+    public List<Guid> Enqueued { get; } = [];
+    public void Enqueue(Guid backtestId) => Enqueued.Add(backtestId);
+}
 
 internal sealed class FakeInvoicePayer : IStripeInvoicePayer
 {
