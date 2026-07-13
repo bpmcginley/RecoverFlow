@@ -61,6 +61,14 @@
     font-size: 0.95rem;
   }
   nav a:hover { color: var(--text); }
+  nav a.nav-cta {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: var(--text);
+    font-weight: 600;
+  }
+  nav a.nav-cta:hover { border-color: var(--accent); color: var(--accent); }
 
   .hero {
     padding: 96px 0 72px;
@@ -228,6 +236,7 @@
       <a href="#pricing">Pricing</a>
       <a href="#features">Features</a>
       <a href="mailto:admin@recoverflow.org">Contact</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
