@@ -12,16 +12,58 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>RecoverFlow — Stop losing revenue to failed payments</title>
-<meta name="description" content="RecoverFlow automatically recovers failed Stripe subscription payments for indie SaaS founders with smart retries, decline classification, and dunning emails.">
+<title>RecoverFlow — Recover Failed Stripe Subscription Payments</title>
+<meta name="description" content="RecoverFlow recovers failed Stripe subscription payments with smart retries and dunning emails. Pay 25% of recovered revenue. No card required to start.">
+<link rel="canonical" href="https://recoverflow.org/">
 <link rel="icon" type="image/png" href="assets/logo-mark.png">
-<meta property="og:title" content="RecoverFlow — Win back every dollar. Automatically.">
-<meta property="og:description" content="RecoverFlow automatically recovers failed Stripe subscription payments with smart retries, decline classification, and dunning emails.">
-<meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
-<meta property="og:url" content="https://recoverflow.org">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="RecoverFlow">
+<meta property="og:title" content="RecoverFlow — Recover Failed Stripe Subscription Payments">
+<meta property="og:description" content="Smart retries + dunning emails for Stripe. Pay 25% of recovered revenue — no card up front.">
+<meta property="og:url" content="https://recoverflow.org/">
+<meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
+<meta property="og:image:width" content="1152">
+<meta property="og:image:height" content="768">
+<meta property="og:image:alt" content="RecoverFlow — recover failed Stripe subscription payments">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://recoverflow.org/assets/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://recoverflow.org/#org",
+      "name": "RecoverFlow",
+      "url": "https://recoverflow.org/",
+      "logo": "https://recoverflow.org/assets/logo-mark.png",
+      "email": "admin@recoverflow.org",
+      "description": "RecoverFlow recovers failed Stripe subscription payments with smart retries and dunning emails."
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://recoverflow.org/#website",
+      "name": "RecoverFlow",
+      "url": "https://recoverflow.org/",
+      "publisher": { "@id": "https://recoverflow.org/#org" }
+    },
+    {
+      "@type": ["SoftwareApplication", "WebApplication"],
+      "name": "RecoverFlow",
+      "url": "https://recoverflow.org/",
+      "description": "Recovers failed Stripe subscription payments with smart retries and dunning emails. Pricing: 25% of recovered revenue, $29/month minimum after the first 30 days.",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "publisher": { "@id": "https://recoverflow.org/#org" },
+      "offers": {
+        "@type": "Offer",
+        "price": "29",
+        "priceCurrency": "USD",
+        "description": "25% of recovered revenue; $29/month minimum after first 30 days; no card required to start"
+      }
+    }
+  ]
+}
+</script>
 <style>
   :root {
     --bg: #ffffff;
@@ -233,6 +275,45 @@
     font-size: 0.88rem;
   }
   footer a { color: var(--text-dim); }
+
+  .hero-proof {
+    font-size: 1rem;
+    color: var(--text-dim);
+    max-width: 560px;
+    margin: 14px auto 0;
+  }
+  .hero-proof strong { color: var(--text); }
+
+  .how-steps {
+    max-width: 720px;
+    margin: 36px auto 0;
+    padding-left: 22px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+  .how-steps li { margin-bottom: 10px; }
+  .how-steps strong { color: var(--text); }
+
+  .faq-list { max-width: 720px; margin: 0 auto; }
+  .faq-list details {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--card-bg);
+    margin-bottom: 10px;
+    padding: 0 18px;
+  }
+  .faq-list summary {
+    cursor: pointer;
+    font-weight: 600;
+    padding: 14px 0;
+    list-style-position: inside;
+  }
+  .faq-list details p { margin: 0 0 14px; color: var(--text-dim); }
+
+  .footer-trust {
+    margin-bottom: 10px;
+    font-size: 0.85rem;
+  }
 </style>
 </head>
 <body>
@@ -244,6 +325,7 @@
       <a href="#how-it-works">How it works</a>
       <a href="#pricing">Pricing</a>
       <a href="#features">Features</a>
+      <a href="#faq">FAQ</a>
       <a href="mailto:admin@recoverflow.org">Contact</a>
       <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
@@ -255,6 +337,7 @@
     <span class="badge">Now in early access for Stripe-based SaaS</span>
     <h1>Stop losing revenue<br>to failed payments</h1>
     <p>RecoverFlow watches your Stripe subscriptions, classifies every decline, and automatically retries and recovers failed invoices — so you don't have to chase down churned revenue by hand.</p>
+    <p class="hero-proof">Connect Stripe and we'll run a <strong>free backtest on your last 90 days</strong> of failed payments — you'll see exactly what RecoverFlow would have recovered, in dollars, before you commit to anything.</p>
     <form class="signup" method="get" action="https://api.recoverflow.org/connect/stripe/authorize">
       <label for="companyName">Company name</label>
       <input id="companyName" name="companyName" type="text" placeholder="Acme Inc." required>
@@ -283,6 +366,68 @@
       <div class="step">Dunning email sent</div>
       <div class="arrow">→</div>
       <div class="step">Revenue recovered</div>
+    </div>
+    <ol class="how-steps">
+      <li><strong>Connect Stripe</strong> — read access via Stripe Connect OAuth, about 60 seconds.</li>
+      <li><strong>See your backtest</strong> — we scan your last 90 days of failed payments and show what was recoverable, in dollars.</li>
+      <li><strong>We go to work</strong> — when a payment fails, we schedule smart retries around the times and decline reasons most likely to succeed, and send dunning emails under <em>your</em> brand, not ours.</li>
+      <li><strong>You keep the revenue</strong> — every recovered payment shows up in your dashboard, and we bill 25% of only those.</li>
+    </ol>
+  </div>
+</section>
+
+<section id="security">
+  <div class="wrap">
+    <h2 class="section-title">What we can — and can't — see</h2>
+    <p class="section-sub">You're connecting your revenue system. Here's exactly what that means.</p>
+    <div class="grid trust-grid">
+      <div class="card">
+        <div class="icon">🔑</div>
+        <h3>Access you control</h3>
+        <p>RecoverFlow connects via Stripe Connect OAuth with access you grant — and can revoke — from your own Stripe dashboard at any time.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🚫</div>
+        <h3>We never see card numbers</h3>
+        <p>Stripe holds every card and processes every retry. Card data never touches RecoverFlow's servers.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🔓</div>
+        <h3>No lock-in</h3>
+        <p>Disconnecting takes one click in Stripe and your billing keeps working exactly as before. No contracts, no exports held hostage.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="alt">
+  <div class="wrap">
+    <h2 class="section-title">Questions founders actually ask</h2>
+    <div class="faq-list">
+      <details>
+        <summary>Will my customers know I'm using a third party?</summary>
+        <p>No. Dunning emails are sent under your brand, and retries look like any other charge attempt from your Stripe account. Your customers never see the name RecoverFlow.</p>
+      </details>
+      <details>
+        <summary>What access do you have to my Stripe account?</summary>
+        <p>Read access to subscriptions and invoices via Stripe Connect OAuth, plus the ability to retry failed invoices. You can revoke it from your Stripe dashboard at any time, and we never see or store card numbers — Stripe holds those.</p>
+      </details>
+      <details>
+        <summary>Doesn't Stripe already retry failed payments?</summary>
+        <p>Stripe's Smart Retries help, but they're generic. RecoverFlow classifies each decline code and reacts differently — payday-aware retries for insufficient funds, immediate card-update emails for expired cards, backoff for processing errors — and layers branded dunning sequences on top. The two coexist fine; we simply recover what slips through.</p>
+      </details>
+      <details>
+        <summary>How is the 25% calculated and billed?</summary>
+        <p>We attribute every recovery to the retry, card update, or email that caused it — payments that came back on their own are never counted. At the end of each month you get an invoice for 25% of attributed recoveries ($29 minimum after your first 30 days).</p>
+      </details>
+      <details>
+        <summary>Could retries annoy my customers or trigger disputes?</summary>
+        <p>Retries are spaced deliberately and capped — never blind, back-to-back attempts. Hard declines (stolen card, closed account) are never retried at all, which is exactly the behavior that avoids disputes.</p>
+      </details>
+      <details>
+        <summary>What happens if I cancel?</summary>
+        <p>Disconnect RecoverFlow from your Stripe dashboard in one click. Nothing breaks, nothing changes in your billing, and you owe nothing beyond fees on payments already recovered.</p>
+      </details>
     </div>
   </div>
 </section>
@@ -343,6 +488,7 @@
 
 <footer>
   <div class="wrap">
+    <div class="footer-trust">Built on Stripe Connect · Access you control, revoke anytime from your Stripe dashboard · No contracts, no lock-in</div>
     RecoverFlow — Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>
 </footer>
