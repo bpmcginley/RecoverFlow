@@ -314,6 +314,18 @@
     margin-bottom: 10px;
     font-size: 0.85rem;
   }
+
+  .visual-caption {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    margin: 12px auto 0;
+    max-width: 560px;
+  }
+
+  .founder-note { max-width: 640px; text-align: center; }
+  .founder-note p { color: var(--text-dim); line-height: 1.7; }
+  .founder-sig { font-weight: 600; color: var(--text); }
 </style>
 </head>
 <body>
@@ -348,7 +360,8 @@
     <p class="signup-alt">
       You'll authorize on Stripe — no card up front, cancel anytime. <a href="#pricing">Simple pricing ↓</a>
     </p>
-    <img class="hero-visual" src="assets/og-image.png" alt="RecoverFlow — Win back every dollar. Automatically.">
+    <img class="hero-visual" src="assets/dashboard-demo.png" alt="RecoverFlow recovery dashboard showing recovered revenue, at-risk amounts, recovery rate, and individual recovery cases (demo data)">
+    <p class="visual-caption">The recovery dashboard: every failed payment, its retry status, and the dollars brought back. (Demo data.)</p>
   </div>
 </div>
 
@@ -483,6 +496,19 @@
         <p>Connect your Stripe account and RecoverFlow starts protecting your subscription revenue immediately.</p>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="founder">
+  <div class="wrap founder-note">
+    <h2 class="section-title">A note from the founder</h2>
+    <p>
+      I'm Bruce McGinley, and I built RecoverFlow because failed payments are the most fixable
+      revenue leak in SaaS. It's early — you won't find a wall of customer logos here yet.
+      What you will find: a free backtest on your own data, pricing where I only win when you do,
+      and my direct email at the bottom of this page.
+    </p>
+    <p class="founder-sig">— Bruce, founder</p>
   </div>
 </section>
 
