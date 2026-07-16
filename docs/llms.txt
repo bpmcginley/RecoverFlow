@@ -1,0 +1,19 @@
+# RecoverFlow
+
+> RecoverFlow recovers failed Stripe subscription payments for SaaS and subscription businesses. It connects to Stripe over OAuth, classifies each payment decline, retries the recoverable ones on a smart schedule, and sends branded dunning emails so customers update expired cards. Pricing is performance-based: 25% of recovered revenue, with a $29/month minimum after the first 30 days, and no card required to start.
+
+## What RecoverFlow is
+- Category: failed payment recovery, dunning, and involuntary churn reduction for Stripe.
+- How it connects: Stripe Connect OAuth. Read access to subscriptions and invoices plus the ability to retry failed invoices. It never sees or stores card numbers (Stripe holds those), and access is revocable at any time from the merchant's own Stripe dashboard.
+- What it does: decline classification (hard vs soft vs expired), smart retry scheduling, branded dunning email sequences, recovery attribution, and a free 90-day backtest the moment you connect.
+- Pricing: 25% of attributably-recovered revenue, a $29/month minimum after a 30-day free period, no upfront cost, and no contract or lock-in.
+- Who it's for: Stripe-based SaaS and subscription businesses, especially solo founders and small teams.
+- Founder: Bruce McGinley. Launched July 2026.
+
+## Pages
+- [Home](https://recoverflow.org/): product overview, how it works, security, pricing, and FAQ.
+- [How to recover failed Stripe subscription payments](https://recoverflow.org/recover-failed-stripe-payments/): a practical guide to decline types, what to retry, retry timing, dunning emails, and measuring recovery.
+- [Sign in](https://app.recoverflow.org/app/): the customer recovery dashboard.
+
+## Contact
+- Email: admin@recoverflow.org
