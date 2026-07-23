@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build-test:
+    name: Build & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # The projects target net8.0; restore/build them directly rather than the
+      # .slnx so CI does not depend on a newer SDK's solution-format support.
+      # Building the API transitively builds Domain, Application, Infrastructure.
+      - name: Restore
+        run: |
+          dotnet restore src/RecoverFlow.Api/RecoverFlow.Api.csproj
+          dotnet restore tests/RecoverFlow.Tests.Unit/RecoverFlow.Tests.Unit.csproj
+          dotnet restore tests/RecoverFlow.Tests.Integration/RecoverFlow.Tests.Integration.csproj
+
+      - name: Build
+        run: dotnet build src/RecoverFlow.Api/RecoverFlow.Api.csproj --configuration Release --no-restore
+
+      - name: Test (Unit)
+        run: dotnet test tests/RecoverFlow.Tests.Unit/RecoverFlow.Tests.Unit.csproj --configuration Release --logger "trx;LogFileName=unit.trx"
+
+      - name: Test (Integration)
+        run: dotnet test tests/RecoverFlow.Tests.Integration/RecoverFlow.Tests.Integration.csproj --configuration Release --logger "trx;LogFileName=integration.trx"
