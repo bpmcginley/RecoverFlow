@@ -774,7 +774,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
       <p class="promise">You don't pay unless we recover — <strong>25% of what we bring back</strong>, nothing up front.</p>
 
-      <form class="signup" method="get" action="https://api.recoverflow.org/connect/stripe/authorize">
+      <form id="signupForm" class="signup" method="get" action="https://api.recoverflow.org/connect/stripe/authorize">
         <label for="companyName">Company name</label>
         <input id="companyName" name="companyName" type="text" placeholder="Acme Inc." required>
         <label for="email">Work email</label>
@@ -987,6 +987,16 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
 
   for (var k = 0; k < reveals.length; k++) io.observe(reveals[k]);
+})();
+
+// LinkedIn mid-funnel conversion: they filled the form and are heading to Stripe.
+// Separate from the block above, which returns early on reduced-motion/old browsers.
+(function () {
+  var form = document.getElementById('signupForm');
+  if (!form) return;
+  form.addEventListener('submit', function () {
+    if (window.lintrk) window.lintrk('track', { conversion_id: 27372436 });
+  });
 })();
 </script>
 
