@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XNWPM9VELB');
+</script>
+<!-- LinkedIn Insight Tag -->
+<script type="text/javascript">
+_linkedin_partner_id = "9673204";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script><script type="text/javascript">
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
+</noscript>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Retry Schedule Builder for Stripe</title>
+<meta name="description" content="Build a retry schedule for failed Stripe payments based on the decline reason. Shows what Stripe's default already does, where retrying cannot help, and when to email instead.">
+<link rel="canonical" href="https://recoverflow.org/tools/retry-schedule-builder/">
+<link rel="icon" type="image/png" href="/assets/logo-mark.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="RecoverFlow">
+<meta property="og:title" content="Payment Retry Schedule Builder for Stripe">
+<meta property="og:description" content="Pick a decline reason and get a retry schedule, plus an honest answer on whether retrying helps at all.">
+<meta property="og:url" content="https://recoverflow.org/tools/retry-schedule-builder/">
+<meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Payment Retry Schedule Builder",
+      "url": "https://recoverflow.org/tools/retry-schedule-builder/",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "description": "Builds a failed payment retry schedule for Stripe based on the decline reason.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@type": "Organization", "name": "RecoverFlow", "url": "https://recoverflow.org/" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is Stripe's default retry schedule?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Stripe's Smart Retries recommended default is 8 attempts within 2 weeks, and the window is configurable to 1 week, 2 weeks, 3 weeks, 1 month or 2 months. Stripe uses a machine learning model to choose the specific retry times rather than fixed intervals, so you set the window and the number of attempts, not the exact timing." }
+        },
+        {
+          "@type": "Question",
+          "name": "How long should you keep retrying a failed payment?",
+          "acceptedAnswer": { "@type": "Answer", "text": "About two weeks is a common window and matches Stripe's own default. Beyond that, additional attempts rarely convert and repeated attempts against the same card raise dispute risk. If nothing has recovered inside the window, the problem is almost always that the card needs replacing rather than that the timing was wrong." }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I set my own retry schedule in Stripe?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. You can disable Smart Retries in the Stripe dashboard under revenue recovery settings and define custom retry rules instead. Whether that beats Stripe's model is an open question, since the model uses signals you do not have access to." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does retrying more often recover more money?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No, and it can make things worse. Card networks treat rapid repeat attempts against a declining card as abusive, and it raises the risk of fees and disputes. Spacing matters more than frequency, and for the nine hard decline codes Stripe documents, no number of retries will execute until a new payment method is attached." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --bg: #ffffff; --bg-alt: #f5f6fc; --bg-elevated: #ffffff;
+    --text: #0f1222; --text-dim: #4b5266; --text-mute: #8a92a6;
+    --border: #e6e8f0; --border-strong: #d3d7e3;
+    --accent: #6366f1; --accent-2: #8b5cf6; --accent-3: #a855f7; --accent-ink: #ffffff;
+    --accent-grad: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #a855f7 100%);
+    --positive: #0e9f6e; --positive-bg: #e7f7f0; --warn: #b7791f; --danger: #d64545; --danger-bg: #fdecec;
+    --card-bg: #ffffff; --radius: 14px;
+    --shadow-sm: 0 1px 3px rgba(17,20,45,.06), 0 1px 2px rgba(17,20,45,.04);
+    --shadow-lg: 0 24px 60px -24px rgba(60,50,160,.35);
+    --ring: rgba(99,102,241,.35);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0b11; --bg-alt: #111320; --bg-elevated: #151827;
+      --text: #eef0f7; --text-dim: #a3abbf; --text-mute: #6f778c;
+      --border: #232637; --border-strong: #2f3346;
+      --accent: #818cf8; --accent-2: #a78bfa; --accent-3: #c084fc; --accent-ink: #ffffff;
+      --accent-grad: linear-gradient(135deg, #818cf8 0%, #a78bfa 55%, #c084fc 100%);
+      --positive: #34d399; --positive-bg: #0f2a20; --warn: #f0c070; --danger: #f87171; --danger-bg: #2a1414;
+      --card-bg: #131623;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
+      --shadow-lg: 0 24px 60px -24px rgba(0,0,0,.6);
+      --ring: rgba(129,140,248,.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  img { max-width: 100%; height: auto; }
+  a { color: var(--accent); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  header {
+    padding: 18px 0; border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(12px); backdrop-filter: saturate(180%) blur(12px);
+    position: sticky; top: 0; z-index: 50;
+  }
+  header .wrap { max-width: 1080px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+  .logo span { background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .logo img { height: 30px; width: 30px; border-radius: 8px; box-shadow: var(--shadow-sm); }
+  nav a { color: var(--text-dim); text-decoration: none; margin-left: 22px; font-size: 0.95rem; font-weight: 500; }
+  nav a:hover { color: var(--text); }
+  nav a.nav-cta { border: 1px solid var(--border-strong); border-radius: 10px; padding: 8px 16px; color: var(--text); font-weight: 600; }
+  nav a.nav-cta:hover { border-color: var(--accent); color: var(--accent); }
+
+  main { padding: 52px 0 40px; }
+  .eyebrow { color: var(--accent); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; margin: 0 0 12px; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.9rem, 4.4vw, 2.7rem); line-height: 1.12; letter-spacing: -0.03em; margin: 0 0 14px; }
+  .lede { color: var(--text-dim); font-size: 1.06rem; margin: 0 0 12px; }
+  .byline { color: var(--text-mute); font-size: 0.9rem; margin: 0 0 30px; }
+  h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; letter-spacing: -0.02em; margin: 46px 0 14px; }
+  h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; margin: 26px 0 8px; }
+  p { margin: 0 0 18px; }
+  ul, ol { margin: 0 0 18px; padding-left: 24px; }
+  li { margin-bottom: 9px; }
+  code { font-family: var(--font-mono); font-size: 0.9em; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+
+  .builder { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 28px; box-shadow: var(--shadow-lg); margin: 0 0 26px; }
+  .field { margin-bottom: 22px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-weight: 600; font-size: 0.96rem; margin-bottom: 4px; }
+  .field .hint { display: block; color: var(--text-mute); font-size: 0.86rem; margin-bottom: 10px; line-height: 1.5; }
+  select, input[type="number"] {
+    width: 100%; padding: 12px 14px; font-family: var(--font-body); font-size: 1rem;
+    color: var(--text); background: var(--bg); border: 1px solid var(--border-strong); border-radius: 10px;
+  }
+  select:focus, input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+
+  .verdict { border-radius: 14px; padding: 20px 22px; margin: 0 0 22px; }
+  .verdict.ok { background: var(--positive-bg); border: 1px solid color-mix(in srgb, var(--positive) 30%, transparent); }
+  .verdict.stop { background: var(--danger-bg); border: 1px solid color-mix(in srgb, var(--danger) 30%, transparent); }
+  .verdict.warn { background: var(--bg-alt); border: 1px solid var(--border); border-left: 3px solid var(--warn); }
+  .verdict h3 { margin: 0 0 8px; font-size: 1.12rem; }
+  .verdict p { margin: 0; font-size: 0.96rem; }
+  .verdict p + p { margin-top: 10px; }
+
+  .timeline { list-style: none; padding: 0; margin: 0 0 22px; }
+  .timeline li {
+    position: relative; padding: 0 0 18px 30px; margin: 0;
+    border-left: 2px solid var(--border);
+  }
+  .timeline li:last-child { border-left-color: transparent; padding-bottom: 0; }
+  .timeline li::before {
+    content: ''; position: absolute; left: -7px; top: 4px; width: 12px; height: 12px;
+    border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px var(--bg);
+  }
+  .timeline li.email::before { background: var(--warn); }
+  .timeline .when { font-family: var(--font-display); font-weight: 600; font-size: 0.98rem; }
+  .timeline .what { color: var(--text-dim); font-size: 0.92rem; margin-top: 2px; }
+
+  .callout { background: var(--positive-bg); border: 1px solid color-mix(in srgb, var(--positive) 30%, transparent); border-radius: 12px; padding: 18px 20px; margin: 0 0 24px; }
+  .callout p { margin: 0; } .callout p + p { margin-top: 10px; }
+  .warn-box { background: var(--bg-alt); border: 1px solid var(--border); border-left: 3px solid var(--warn); border-radius: 12px; padding: 18px 20px; margin: 0 0 24px; }
+  .warn-box p { margin: 0; } .warn-box p + p { margin-top: 10px; }
+
+  .faq h3 { margin-bottom: 6px; }
+  .cta-box { margin: 44px 0 8px; padding: 28px; border-radius: 16px; background: var(--bg-alt); border: 1px solid var(--border); text-align: center; }
+  .cta-box h2 { margin: 0 0 8px; }
+  .cta-box p { color: var(--text-dim); margin: 0 0 18px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 13px 26px; border-radius: 11px; font-family: var(--font-body);
+    font-weight: 600; font-size: 0.98rem; text-decoration: none;
+    background: var(--accent-grad); color: var(--accent-ink);
+    box-shadow: 0 8px 22px -8px var(--ring), var(--shadow-sm);
+    transition: transform .16s ease, filter .16s ease;
+  }
+  .btn:hover { transform: translateY(-2px); filter: saturate(1.05) brightness(1.03); }
+
+  footer { border-top: 1px solid var(--border); padding: 36px 0; text-align: center; color: var(--text-mute); font-size: 0.88rem; }
+  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+  .footer-trust { margin-bottom: 10px; font-size: 0.85rem; color: var(--text-dim); }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 18px; }
+    nav a:not(.nav-cta) { display: none; }
+    .builder { padding: 22px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
+    <nav>
+      <a href="/pricing/">Pricing</a>
+      <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <p class="eyebrow">Free tool</p>
+    <h1>Payment retry schedule builder</h1>
+    <p class="lede">Pick the decline reason and get a retry schedule that suits it, including an honest answer when retrying will not help at all.</p>
+    <p class="byline">Built against Stripe's published retry behaviour, 27 July 2026.</p>
+
+    <div class="builder">
+      <div class="field">
+        <label for="reason">Why did the payment fail?</label>
+        <span class="hint">Read this off the decline code on the failed payment. Not sure which is which? Use the <a href="/tools/decline-code-lookup/">decline code reference</a>.</span>
+        <select id="reason">
+          <option value="insufficient">Insufficient funds</option>
+          <option value="processing">Processing or network error</option>
+          <option value="issuer">Issuer unreachable</option>
+          <option value="generic">Generic decline or do not honor</option>
+          <option value="expired">Expired card</option>
+          <option value="data">Wrong CVC, postcode or expiry entered</option>
+          <option value="hard">Hard decline (lost, stolen, revoked, blocked)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="model">What kind of customer is this?</label>
+        <span class="hint">Changes tone and pacing, not the underlying logic.</span>
+        <select id="model">
+          <option value="b2c">Consumer subscription</option>
+          <option value="b2b">Business or B2B SaaS</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="amount">Invoice amount in US dollars</label>
+        <span class="hint">Larger invoices justify more patience and a more personal follow-up.</span>
+        <input type="number" id="amount" value="49" min="1" step="1" inputmode="numeric">
+      </div>
+    </div>
+
+    <div id="out" aria-live="polite"></div>
+
+    <h2>What Stripe already does</h2>
+    <p>Before building anything custom, know the baseline. Stripe's Smart Retries use a machine learning model to choose retry times. The recommended default is <strong>8 attempts within 2 weeks</strong>, and you can set the window to 1 week, 2 weeks, 3 weeks, 1 month or 2 months. You can also switch Smart Retries off entirely and define your own rules.</p>
+    <div class="callout">
+      <p><strong>You are setting a window, not a timetable.</strong> With Smart Retries on, Stripe picks the exact moments using signals you do not have, such as how many devices have recently presented that card. A hand-built schedule is not automatically better than the model. It is better when you pair it with something Stripe does not do, which is varying your <em>customer communication</em> by decline reason.</p>
+    </div>
+
+    <h2>The nine codes where no schedule helps</h2>
+    <p>Stripe documents nine hard decline codes. When one comes back, retries stay scheduled and <code>attempt_count</code> keeps climbing, but nothing actually executes until a new payment method is attached: <code>incorrect_number</code>, <code>lost_card</code>, <code>pickup_card</code>, <code>stolen_card</code>, <code>revocation_of_authorization</code>, <code>revocation_of_all_authorizations</code>, <code>authentication_required</code>, <code>highest_risk_level</code>, <code>transaction_not_allowed</code>.</p>
+    <p>If a meaningful share of your failures are these, tuning retry timing is wasted effort and your attention belongs on getting new cards.</p>
+
+    <h2>Principles behind the schedules above</h2>
+    <ul>
+      <li><strong>Space attempts, do not stack them.</strong> Rapid repeat attempts against a declining card look abusive to card networks and raise dispute risk. Spacing matters more than count.</li>
+      <li><strong>Match timing to cause.</strong> A funds problem resolves on a payday. A network error resolves in an hour. Treating both the same wastes attempts on one and gives up too early on the other.</li>
+      <li><strong>Cap the window.</strong> Around two weeks is standard and matches Stripe's default. Past that, attempts convert rarely and annoy reliably.</li>
+      <li><strong>Retry and email are different tools.</strong> Retrying fixes money-not-there. Emailing fixes card-is-wrong. Neither substitutes for the other.</li>
+      <li><strong>Stop on a revocation.</strong> <code>revocation_of_authorization</code> means the customer told their bank to stop this specific recurring charge. Treat it as a cancellation, not a retry candidate.</li>
+    </ul>
+
+    <div class="warn-box">
+      <p><strong>On numbers this page does not give you.</strong> You will find retry-schedule guides quoting precise recovery percentages per decline type. We do not have data to support figures like that, so we are not going to invent them. The schedules here are reasoned from what each decline code actually means and from Stripe's documented behaviour, not from a measured sample.</p>
+      <p>The one number worth having is your own decline distribution, which is in your Stripe dashboard under Payments filtered to Failed.</p>
+    </div>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <div class="faq">
+      <h3>What is Stripe's default retry schedule?</h3>
+      <p>The recommended default is 8 attempts within 2 weeks, with the window configurable from 1 week to 2 months. Stripe's model picks the specific times rather than using fixed intervals.</p>
+
+      <h3>How long should you keep retrying a failed payment?</h3>
+      <p>About two weeks, which matches Stripe's own default. Beyond that, extra attempts rarely convert and raise dispute risk. If nothing recovered inside the window, the card usually needs replacing rather than the timing needing tweaking.</p>
+
+      <h3>Can I set my own retry schedule in Stripe?</h3>
+      <p>Yes. Disable Smart Retries in the revenue recovery settings and define custom rules. Whether that beats Stripe's model is genuinely open, since the model uses signals you cannot see.</p>
+
+      <h3>Does retrying more often recover more money?</h3>
+      <p>No, and it can make things worse. Spacing matters more than frequency, and for the nine hard decline codes no number of attempts will execute until a new payment method exists.</p>
+    </div>
+
+    <div class="cta-box">
+      <h2>See which of these actually applies to you</h2>
+      <p>RecoverFlow scans your last 90 days of Stripe invoices and breaks failures down by decline reason, so you know whether your problem is timing or cards. Free, no card required.</p>
+      <a class="btn" href="/">Run the free 90 day scan</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/tools/">All tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/recover-failed-stripe-payments/">Recovery guide</a></div>
+    RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var reasonEl = $('reason'), modelEl = $('model'), amountEl = $('amount'), out = $('out');
+
+  // Schedules are reasoned from what each decline code means and from Stripe's
+  // documented retry behaviour. No recovery-rate figures are claimed anywhere,
+  // because there is no measured data behind them.
+  var PLANS = {
+    insufficient: {
+      cls: 'ok',
+      title: 'Worth retrying, and timing is the whole game',
+      body: 'The card works. The money was not there at that moment. This is the most recoverable kind of failure, and when you retry matters far more than how often.',
+      steps: [
+        ['Immediately', 'Send a gentle heads-up email. No alarm, just a note that the payment did not go through and will be tried again.'],
+        ['Day 3', 'First retry. Enough time for a balance to move without feeling instant.'],
+        ['Next payday window', 'Second retry, aimed near the 1st or the 15th, whichever comes first. This is the attempt most likely to land.'],
+        ['Day 10', 'Third retry, plus a more direct email offering a different card.'],
+        ['Day 14', 'Final retry, then stop and treat as churned.']
+      ]
+    },
+    processing: {
+      cls: 'ok',
+      title: 'Transient. Retry soon and it usually clears',
+      body: 'A processing error is a fault somewhere in the chain rather than a decision about the card. These often resolve within hours.',
+      steps: [
+        ['1 hour', 'First retry. Most of these clear on their own quickly.'],
+        ['6 hours', 'Second retry if it is still failing.'],
+        ['Day 2', 'Third retry. If it fails here it is probably not transient after all.'],
+        ['Day 5', 'Fourth retry, plus an email asking them to check with their bank.'],
+        ['Day 10', 'Final retry, then stop.']
+      ]
+    },
+    issuer: {
+      cls: 'ok',
+      title: 'The bank was unreachable. Back off and try again',
+      body: 'Nothing is wrong with the card. Stripe could not reach the issuer. Short backoff is the right response.',
+      steps: [
+        ['2 hours', 'First retry.'],
+        ['12 hours', 'Second retry.'],
+        ['Day 2', 'Third retry.'],
+        ['Day 6', 'Fourth retry, with an email if it is still failing by now.'],
+        ['Day 12', 'Final retry, then stop.']
+      ]
+    },
+    generic: {
+      cls: 'warn',
+      title: 'Vague, so hedge your bets',
+      body: 'A generic decline or do-not-honor tells you almost nothing. It could be transient, it could be the issuer quietly blocking recurring charges. Spread attempts out and lean on the email side sooner than you would otherwise.',
+      steps: [
+        ['Day 1', 'First retry, plus an email since you cannot tell whether the card is usable.'],
+        ['Day 4', 'Second retry.'],
+        ['Day 8', 'Third retry, with a more direct email suggesting a different card.'],
+        ['Day 14', 'Final retry, then stop.']
+      ]
+    },
+    expired: {
+      cls: 'stop',
+      title: 'Do not build a retry schedule for this',
+      body: 'An expired card needs a new number. No retry can succeed. Note that expired_card is not on Stripe’s hard decline list, so Stripe will keep firing scheduled retries at it regardless, achieving nothing.',
+      steps: [
+        ['Immediately', 'Email with a direct link to update the card. This is the entire recovery mechanism.'],
+        ['Day 3', 'Second email. Different subject line, same clear link.'],
+        ['Day 7', 'Third email, now stating plainly what happens if it lapses.'],
+        ['Ongoing', 'Let Stripe’s Card Account Updater catch it if the issuer participates. That is the only automated path.'],
+        ['Day 14', 'Stop and treat as churned.']
+      ]
+    },
+    data: {
+      cls: 'warn',
+      title: 'Retrying identical details will fail identically',
+      body: 'A wrong CVC, postcode or expiry date is a data problem. The same submission will decline the same way every time. Something has to change before a retry means anything.',
+      steps: [
+        ['Immediately', 'Email asking them to re-enter their card details. Say specifically what was wrong, since this is a benign code and being clear helps.'],
+        ['Day 3', 'Second email if nothing has changed.'],
+        ['On update only', 'Retry the moment new details arrive, not on a timer.'],
+        ['Day 10', 'Final reminder, then stop.']
+      ]
+    },
+    hard: {
+      cls: 'stop',
+      title: 'Stripe will not execute these retries at all',
+      body: 'Lost, stolen, revoked, blocked or highest-risk declines are on Stripe’s hard decline list. Retries stay scheduled and attempt_count keeps rising, but nothing executes until a new payment method is attached. A revocation specifically means the customer told their bank to stop this charge.',
+      steps: [
+        ['Immediately', 'Email asking for a new payment method. Keep it generic. Do not tell them the card was reported stolen.'],
+        ['Day 4', 'Second email if there is no new card.'],
+        ['Day 9', 'Final email.'],
+        ['Do not', 'Keep retrying. It cannot work and it invites disputes.']
+      ]
+    }
+  };
+
+  function render() {
+    var plan = PLANS[reasonEl.value];
+    var b2b = modelEl.value === 'b2b';
+    var amt = Math.max(0, parseFloat(amountEl.value) || 0);
+
+    var extras = [];
+    if (b2b) {
+      extras.push('Because this is a business customer, send from a real person rather than a no-reply address, and expect the card holder and the person who reads your email to be different people. Copying an accounts or billing address if you have one materially improves your odds.');
+    } else {
+      extras.push('Because this is a consumer subscription, keep the emails short and mobile-first. The update link should work in one tap without a login wall.');
+    }
+    if (amt >= 500) {
+      extras.push('At $' + amt.toLocaleString('en-US') + ' this invoice is large enough to justify a personal email from a human before the window closes. Automated sequences under-recover on high-value invoices.');
+    }
+    if (plan.cls === 'stop') {
+      extras.push('Nothing on this schedule is a retry, deliberately. Every step is a communication step, because that is the only thing that can change the outcome here.');
+    }
+
+    out.innerHTML =
+      '<div class="verdict ' + plan.cls + '">' +
+        '<h3>' + plan.title + '</h3>' +
+        '<p>' + plan.body + '</p>' +
+        extras.map(function (e) { return '<p>' + e + '</p>'; }).join('') +
+      '</div>' +
+      '<ul class="timeline">' +
+        plan.steps.map(function (s) {
+          var isEmail = /email|reminder|do not/i.test(s[1]) && !/retry\./i.test(s[0]);
+          return '<li' + (isEmail ? ' class="email"' : '') + '>' +
+            '<div class="when">' + s[0] + '</div>' +
+            '<div class="what">' + s[1] + '</div></li>';
+        }).join('') +
+      '</ul>';
+  }
+
+  [reasonEl, modelEl, amountEl].forEach(function (el) {
+    el.addEventListener('input', render);
+    el.addEventListener('change', render);
+  });
+  render();
+})();
+</script>
+
+</body>
+</html>
