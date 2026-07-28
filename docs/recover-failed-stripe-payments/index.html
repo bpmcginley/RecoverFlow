@@ -29,7 +29,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </noscript>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Recover Failed Stripe Subscription Payments — RecoverFlow</title>
+<title>How to Recover Failed Stripe Subscription Payments | RecoverFlow</title>
 <meta name="description" content="A practical guide to recovering failed Stripe subscription payments: why payments fail, which declines to retry, retry timing, dunning emails, and how to measure recovery.">
 <link rel="canonical" href="https://recoverflow.org/recover-failed-stripe-payments/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
@@ -226,6 +226,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
       <a href="/tools/">Tools</a>
+      <a href="/blog/">Guides</a>
       <a href="/#faq">FAQ</a>
       <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
@@ -316,6 +317,17 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <p>No. An expired card needs a new card number. Prompt the customer to update it (Stripe's Card Account Updater also refreshes some automatically), then the next charge can succeed.</p>
     </div>
 
+    <h2 id="go-deeper">Go deeper on any of this</h2>
+    <p>Each of these takes one section of this guide and does it properly, with the Stripe documentation it came from linked at the bottom.</p>
+    <ul>
+      <li><a href="/blog/stripe-decline-codes-that-stop-retries/">The nine decline codes that stop retries dead</a>: the exact list, rather than the rough "stolen or lost card" shorthand used above.</li>
+      <li><a href="/blog/how-stripe-smart-retries-work/">How Stripe Smart Retries actually work</a>: the real defaults, what you can configure, and when to turn it off.</li>
+      <li><a href="/blog/is-insufficient-funds-a-hard-decline/">Is insufficient_funds a hard decline?</a>: no, and a lot of published guidance says otherwise.</li>
+      <li><a href="/blog/expired-card-stripe-retries/">Why retrying an expired card rarely works</a>: and the preventative version that does.</li>
+      <li><a href="/blog/stripe-dunning-emails-what-you-control/">Stripe's own dunning emails</a>: what you control, what you do not, and the 60 day log limit.</li>
+      <li><a href="/blog/how-to-measure-involuntary-churn/">Measuring involuntary churn</a>: the formulas, from your own Stripe data.</li>
+    </ul>
+
     <div class="cta-box">
       <h2>See what you're losing</h2>
       <p>Connect Stripe and get a free 90-day backtest of your failed payments, before you commit to anything.</p>
@@ -326,8 +338,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe Connect · Access you control, revoke anytime from your Stripe dashboard · No contracts, no lock-in &middot; <a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
-    RecoverFlow — Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
+    <div class="footer-trust">Built on Stripe Connect · Access you control, revoke anytime from your Stripe dashboard · No contracts, no lock-in &middot; <a href="/blog/">Guides</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a> &middot; <a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
+    RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>
 </footer>
 
