@@ -256,6 +256,14 @@ SRC_SMART = ("Stripe: Smart Retries", "https://docs.stripe.com/billing/revenue-r
 SRC_DECLINES = ("Stripe: Declines", "https://docs.stripe.com/declines", "")
 SRC_CODES = ("Stripe: Decline codes reference", "https://docs.stripe.com/declines/codes", "")
 SRC_EMAILS = ("Stripe: Customer emails", "https://docs.stripe.com/billing/revenue-recovery/customer-emails", "")
+SRC_SUBS = ("Stripe: Subscription lifecycle and statuses", "https://docs.stripe.com/billing/subscriptions/overview",
+            " &mdash; the source for every status definition quoted on this page.")
+SRC_WEBHOOKS = ("Stripe: Subscription webhooks", "https://docs.stripe.com/billing/subscriptions/webhooks", "")
+SRC_INVOICE = ("Stripe: Invoice object, API reference", "https://docs.stripe.com/api/invoices/object",
+               " &mdash; the field definitions for attempt_count, next_payment_attempt, attempted and billing_reason.")
+SRC_TESTING = ("Stripe: Testing", "https://docs.stripe.com/testing", " &mdash; where every test card number here comes from.")
+SRC_CARDUPDATE = ("Stripe: Card payments overview", "https://docs.stripe.com/payments/cards/overview",
+                  " &mdash; covers automatic card updates and network participation.")
 
 
 # ---------------------------------------------------------------------------
@@ -623,6 +631,376 @@ ARTICLES.append(dict(
         ("The nine codes in full", "/blog/stripe-decline-codes-that-stop-retries/", "What each one means and what to do instead of retrying."),
         ("Free decline code lookup", "/tools/decline-code-lookup/", "48 codes, searchable, filterable by whether Stripe will retry."),
         ("How Smart Retries work", "/blog/how-stripe-smart-retries-work/", "Choosing the retry window that suits your failure mix."),
+    ],
+))
+
+
+# 7 ------------------------------------------------------------------------
+ARTICLES.append(dict(
+    slug="stripe-subscription-past-due-vs-unpaid",
+    title="Stripe past_due vs unpaid vs canceled explained | RecoverFlow",
+    h1="<code>past_due</code>, <code>unpaid</code>, <code>canceled</code>: what each Stripe subscription status means",
+    desc="past_due means Stripe is still trying. unpaid means it stopped but kept the subscription. canceled is terminal. Which one you get is a setting you choose.",
+    answer="""      <p><strong><code>past_due</code></strong> means the latest finalised invoice failed or was not attempted, and Stripe is still working on it. <strong><code>unpaid</code></strong> means Stripe has finished retrying, kept the subscription alive, and stopped attempting payment. <strong><code>canceled</code></strong> is terminal and cannot be updated.</p>
+      <p>Which of the three you end up in when the retry window closes is not fixed behaviour. It is a choice in your Stripe subscription settings, and most people have never looked at it.</p>""",
+    sections=[
+        ("all", "Every status, and what Stripe means by it", """
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Status</th><th scope="col">What it means</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><code>trialing</code></th><td>In a trial period. Safe to provision the product. Moves to <code>active</code> automatically on the first successful payment.</td></tr>
+          <tr><th scope="row"><code>active</code></th><td>In good standing. Worth knowing: this does <em>not</em> mean every outstanding invoice has been paid. Paying the latest invoice on a <code>past_due</code> subscription, or marking it uncollectible, flips it back to <code>active</code>.</td></tr>
+          <tr><th scope="row"><code>incomplete</code></th><td>The first payment has not succeeded yet. The customer has 23 hours to complete it, including any authentication step.</td></tr>
+          <tr><th scope="row"><code>incomplete_expired</code></th><td>The 23 hours ran out. These subscriptions never bill. The status exists purely so you can count customers who failed to get started.</td></tr>
+          <tr><th scope="row"><code>past_due</code></th><td>Payment on the latest finalised invoice failed or was not attempted. Invoices keep being created. Retries are still happening.</td></tr>
+          <tr><th scope="row"><code>unpaid</code></th><td>The latest invoice is unpaid but the subscription is still there. Invoices keep generating. <strong>Payments are no longer attempted.</strong></td></tr>
+          <tr><th scope="row"><code>canceled</code></th><td>Terminal. Automatic collection on unpaid invoices is switched off (<code>auto_advance=false</code>). This state cannot be changed.</td></tr>
+          <tr><th scope="row"><code>paused</code></th><td>A trial ended with no payment method on file and your trial settings said pause rather than cancel. No further invoices are created.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The distinction that costs people money is <code>past_due</code> against <code>unpaid</code>. Both look like "they owe us". Only one of them still has Stripe working on your behalf.</p>"""),
+        ("first-vs-renewal", "Why a first payment fails differently from a renewal", """
+    <p>A failed <em>first</em> payment does not produce <code>past_due</code>. It produces <code>incomplete</code>, and the customer gets 23 hours before it becomes <code>incomplete_expired</code> and stops mattering forever.</p>
+    <p>That short clock is the argument for treating signup failures as a completely separate problem from renewal failures. A renewal failure has weeks of retries and dunning emails ahead of it. A signup failure has less than a day, and after that the record just sits there as evidence that someone tried to buy from you and could not.</p>
+    <div class="callout">
+      <p><strong>Worth checking:</strong> count your <code>incomplete_expired</code> subscriptions. Every one is a customer who chose you, entered a card, and did not get through. That is a different and usually more fixable problem than churn.</p>
+    </div>"""),
+        ("after-retries", "The three things that can happen when retries run out", """
+    <p>When the retry window closes on a <code>past_due</code> subscription, Stripe does one of three things, and you choose which in your Dashboard subscription settings:</p>
+    <ul>
+      <li><strong>Cancel the subscription.</strong> It moves to <code>canceled</code> after the maximum number of days in the retry schedule. Clean, terminal, and unrecoverable without creating something new.</li>
+      <li><strong>Mark it unpaid.</strong> It moves to <code>unpaid</code>. Invoices continue to be generated and sit in draft. The relationship stays on the books.</li>
+      <li><strong>Leave it past due.</strong> It stays <code>past_due</code>, invoices keep being generated, and charging continues according to your retry settings.</li>
+    </ul>
+    <p>None of these is obviously right. Cancelling keeps your subscriber count honest and your Stripe data clean. Marking unpaid keeps the door open for a customer who reappears in three weeks with a new card. Leaving it past due keeps charging, which is either persistence or harassment depending on how long you leave it.</p>"""),
+        ("access", "When to actually cut off access", """
+    <p>Stripe's own guidance is unusually direct here: revoke access to your product when the subscription is <code>unpaid</code>, because by that point payments have already been attempted and retried while it was <code>past_due</code>.</p>
+    <p>That is a sensible default and it is worth understanding why. Cutting access the moment a payment fails punishes a customer whose bank happened to decline on a Tuesday and who will pay fine on Thursday. Never cutting access means an expired card buys somebody a free year. The <code>unpaid</code> boundary sits where Stripe has genuinely exhausted the automated options, which is the natural point for a human decision.</p>
+    <p>If you leave subscriptions <code>past_due</code> forever, you have no such boundary and you will have to invent one in your own code.</p>"""),
+        ("reading", "How to read this from the API", """
+    <p>The subscription's <code>status</code> field carries all of this. For the invoice side, <code>next_payment_attempt</code> tells you when Stripe will try again, and it is <code>null</code> when the invoice is set to <code>collection_method=send_invoice</code> rather than automatic charging.</p>
+    <p>If you want the fuller picture of which fields to watch and which webhooks announce these transitions, that is covered in <a href="/blog/stripe-failed-payment-webhooks/">the webhooks guide</a>.</p>"""),
+    ],
+    faqs=[
+        ("What is the difference between past_due and unpaid in Stripe?",
+         "past_due means the latest finalised invoice failed and Stripe is still retrying it on schedule. unpaid means retrying has finished, the subscription is still in place, invoices keep generating, but no further payment attempts are made. past_due is an active process; unpaid is a resting state."),
+        ("Does a Stripe subscription cancel automatically when payment fails?",
+         "Only if you have configured it to. When the retry window ends, Stripe can cancel the subscription, mark it unpaid, or leave it past_due, and which one happens is a setting in your Dashboard subscription settings. There is no universal default behaviour you can assume from outside the account."),
+        ("How long does a Stripe subscription stay incomplete?",
+         "23 hours. If the first payment on the subscription has not succeeded within 23 hours of creation, the subscription becomes incomplete_expired, which is terminal and never bills the customer."),
+        ("Can I reactivate a canceled Stripe subscription?",
+         "No. canceled is described by Stripe as a terminal state that cannot be updated. You would create a new subscription instead. This is the main practical argument for choosing unpaid rather than cancel as your end-of-retry behaviour if you expect customers to come back."),
+        ("Does active mean all invoices are paid?",
+         "No, and this catches people out. Stripe states explicitly that active does not indicate that all outstanding invoices associated with the subscription have been paid. If you are using status alone as a proxy for 'this customer is square with us', you will be wrong sometimes."),
+    ],
+    sources=[SRC_SUBS, SRC_SMART, SRC_INVOICE],
+    related=[
+        ("How Stripe Smart Retries actually work", "/blog/how-stripe-smart-retries-work/", "What sets the length of the window these statuses depend on."),
+        ("Which Stripe webhooks tell you a payment failed", "/blog/stripe-failed-payment-webhooks/", "The events that fire on every transition above."),
+        ("Retry schedule builder", "/tools/retry-schedule-builder/", "Free tool that builds a schedule and says when one will not help."),
+    ],
+))
+
+# 8 ------------------------------------------------------------------------
+ARTICLES.append(dict(
+    slug="stripe-failed-payment-webhooks",
+    title="Which Stripe webhooks tell you a payment failed | RecoverFlow",
+    h1="Which Stripe webhooks tell you a payment failed",
+    desc="invoice.payment_failed is the event that matters, plus payment_action_required for authentication. Which fields to read, and the one-hour delay to know about.",
+    answer="""      <p><code>invoice.payment_failed</code> is the event to build on. It fires when a payment for an invoice fails, and it carries everything you need: the decline code, the attempt count, and when Stripe will try again.</p>
+      <p>Pair it with <code>invoice.payment_action_required</code> for payments that need customer authentication, and <code>customer.subscription.updated</code> to catch the status change from <code>active</code> to <code>past_due</code>.</p>""",
+    sections=[
+        ("events", "The events worth handling", """
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Event</th><th scope="col">When Stripe sends it</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><code>invoice.payment_failed</code></th><td>A payment for an invoice failed. This is your primary trigger for everything dunning related.</td></tr>
+          <tr><th scope="row"><code>invoice.payment_action_required</code></th><td>The invoice requires customer authentication. Somebody has to complete a 3D Secure step and only the cardholder can do it.</td></tr>
+          <tr><th scope="row"><code>invoice.paid</code></th><td>The invoice was successfully paid. Provision access here, checking that the subscription status is <code>active</code>.</td></tr>
+          <tr><th scope="row"><code>invoice.upcoming</code></th><td>Sent a few days before renewal. How many days is set by "Upcoming renewal events" in the Dashboard.</td></tr>
+          <tr><th scope="row"><code>customer.subscription.updated</code></th><td>A subscription started or changed. Renewals, coupons, discounts, invoice items and plan changes all fire this.</td></tr>
+          <tr><th scope="row"><code>customer.subscription.deleted</code></th><td>A customer's subscription ended.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Stripe's own recommended actions on <code>invoice.payment_failed</code> are worth repeating because they are in the right order: notify the customer, collect new payment information, update the default payment method on the subscription, and consider enabling Smart Retries.</p>
+    <p>Notice that "retry it yourself immediately" is not on that list.</p>"""),
+        ("fields", "The fields to read once you have the event", """
+    <p>The invoice object carries the state of the retry process. Four fields do most of the work.</p>
+    <ul>
+      <li><strong><code>attempt_count</code></strong> is the number of payment attempts from the perspective of the retry schedule. The first attempt counts, then only automatic retries increment it. Manual payment attempts after the first do not affect the schedule.</li>
+      <li><strong><code>next_payment_attempt</code></strong> is when Stripe will next try. It is <code>null</code> for invoices where <code>collection_method=send_invoice</code>, because nothing is being charged automatically.</li>
+      <li><strong><code>attempted</code></strong> is whether any attempt has been made at all.</li>
+      <li><strong><code>billing_reason</code></strong> tells you why the invoice exists: <code>subscription_create</code>, <code>subscription_cycle</code>, <code>subscription_update</code>, <code>subscription_threshold</code>, <code>subscription</code>, <code>manual</code>, <code>quote_accept</code>, <code>upcoming</code>, or <code>automatic_pending_invoice_item_invoice</code>.</li>
+    </ul>
+    <p><code>billing_reason</code> is the field most people ignore and it is the one that lets you write good emails. A failure on <code>subscription_create</code> is a person who never got started. A failure on <code>subscription_cycle</code> is an existing customer whose card broke. Those deserve completely different messages, and the same generic "your payment failed" for both is why dunning email performance is usually mediocre.</p>"""),
+        ("attempt-count-trap", "The attempt_count trap", """
+    <p>Stripe's API reference spells out something that catches people building their own recovery logic. If a failure returns a non-retryable code, the invoice cannot be retried unless a new payment method is obtained. But, in Stripe's words, retries continue to be scheduled and <code>attempt_count</code> continues to increment, and retries are only executed if a new payment method is obtained.</p>
+    <div class="callout">
+      <p><strong>What this means in practice:</strong> a rising <code>attempt_count</code> is not evidence that anything is being attempted. On a stolen card you can watch the counter climb to eight without a single charge ever reaching the issuer.</p>
+    </div>
+    <p>If your escalation logic is "after four attempts, send the stronger email", it will behave sensibly for soft declines and nonsensically for the nine codes that block execution. Branch on the decline code first, then on the count. The <a href="/blog/stripe-decline-codes-that-stop-retries/">list of those nine codes</a> is short and worth memorising.</p>"""),
+        ("one-hour", "The one hour delay nobody expects", """
+    <p>Stripe notes that an invoice is not attempted until one hour after the <code>invoice.created</code> webhook. Their own suggestion is that you might not want to show that invoice as unpaid to your users during that window.</p>
+    <p>This is a small thing that produces silly bugs. If you build a dashboard that flags every unpaid invoice the moment it appears, you will show customers a scary "payment failed" banner for an hour before anyone has tried to charge them. Check <code>attempted</code> before you tell anybody anything.</p>"""),
+        ("first-payment", "First payments behave differently", """
+    <p>When the failure is on a subscription's <em>first</em> invoice, the subscription goes to <code>incomplete</code>, not <code>past_due</code>, and the customer has 23 hours before it expires permanently. Renewal failures go to <code>past_due</code> and get the full retry window.</p>
+    <p>So the same <code>invoice.payment_failed</code> event can mean "you have 23 hours" or "you have two weeks" depending on <code>billing_reason</code>. Handling both with one code path is the single most common mistake in home built dunning. The <a href="/blog/stripe-subscription-past-due-vs-unpaid/">status guide</a> covers what each state means.</p>"""),
+    ],
+    faqs=[
+        ("Which Stripe webhook fires when a subscription payment fails?",
+         "invoice.payment_failed. It fires when a payment for an invoice fails, and it is the correct trigger for notifying the customer and starting a dunning sequence. For failures that need customer authentication rather than a new card, invoice.payment_action_required fires instead."),
+        ("Does attempt_count tell me how many times the card was actually charged?",
+         "No. Stripe increments attempt_count according to the retry schedule even when it is not executing the retry, which happens on the nine decline codes that require a new payment method. It also does not increment for manual payment attempts after the first. Treat it as a position in the schedule, not a count of network requests."),
+        ("What does next_payment_attempt being null mean?",
+         "For invoices with collection_method=send_invoice it is always null, because Stripe is not charging a card automatically. On an automatically charged invoice, null generally means there is no further attempt scheduled."),
+        ("How do I tell a signup failure from a renewal failure?",
+         "Read billing_reason on the invoice. subscription_create is the first payment, and the subscription will be incomplete with a 23 hour window. subscription_cycle is a renewal, and the subscription will be past_due with the full retry window. They need different emails and different urgency."),
+        ("Should I retry the payment myself when I get invoice.payment_failed?",
+         "Usually not. Stripe's own recommended actions are to notify the customer, collect new payment information, update the default payment method, and consider enabling Smart Retries. If Smart Retries is on, Stripe is already retrying on a schedule chosen by a model trained on far more data than you have. Manual attempts after the first also do not affect that schedule."),
+    ],
+    sources=[SRC_WEBHOOKS, SRC_INVOICE, SRC_SUBS],
+    related=[
+        ("The nine decline codes that stop retries dead", "/blog/stripe-decline-codes-that-stop-retries/", "Branch on these before you branch on attempt_count."),
+        ("past_due vs unpaid vs canceled", "/blog/stripe-subscription-past-due-vs-unpaid/", "What the status transitions in these events actually mean."),
+        ("Stripe test cards for failed payments", "/blog/stripe-test-cards-for-failed-payments/", "How to fire every one of these events on demand."),
+    ],
+))
+
+# 9 ------------------------------------------------------------------------
+ARTICLES.append(dict(
+    slug="stripe-test-cards-for-failed-payments",
+    title="Stripe test cards for every decline scenario | RecoverFlow",
+    h1="Stripe test cards for every failed payment scenario",
+    desc="The exact test card numbers for generic decline, insufficient funds, lost card, stolen card, expired card and 3D Secure, and which decline_code each one produces.",
+    answer="""      <p>Stripe publishes a test card for each decline reason. <code>4000000000000002</code> gives a generic decline, <code>4000000000009995</code> gives <code>insufficient_funds</code>, <code>4000000000009987</code> gives <code>lost_card</code> and <code>4000000000009979</code> gives <code>stolen_card</code>.</p>
+      <p>The most useful one is <code>4000000000000341</code>, which attaches to a customer successfully and only fails when you try to charge it. That is the one that exercises your recovery code rather than your signup form.</p>""",
+    sections=[
+        ("cards", "The decline cards", """
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Card number</th><th scope="col">Scenario</th><th scope="col">What you get back</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><code>4000000000000002</code></th><td>Generic decline</td><td>error code <code>card_declined</code>, decline code <code>generic_decline</code></td></tr>
+          <tr><th scope="row"><code>4000000000009995</code></th><td>Insufficient funds</td><td>error code <code>card_declined</code>, decline code <code>insufficient_funds</code></td></tr>
+          <tr><th scope="row"><code>4000000000009987</code></th><td>Lost card</td><td>error code <code>card_declined</code>, decline code <code>lost_card</code></td></tr>
+          <tr><th scope="row"><code>4000000000009979</code></th><td>Stolen card</td><td>error code <code>card_declined</code>, decline code <code>stolen_card</code></td></tr>
+          <tr><th scope="row"><code>4000000000000069</code></th><td>Expired card</td><td>error code <code>expired_card</code></td></tr>
+          <tr><th scope="row"><code>4000000000000127</code></th><td>Incorrect CVC</td><td>error code <code>incorrect_cvc</code></td></tr>
+          <tr><th scope="row"><code>4000000000000119</code></th><td>Processing error</td><td>error code <code>processing_error</code></td></tr>
+          <tr><th scope="row"><code>4242424242424241</code></th><td>Incorrect number</td><td>error code <code>incorrect_number</code></td></tr>
+          <tr><th scope="row"><code>4000000000000341</code></th><td>Attaches fine, fails on charge</td><td>error code <code>card_declined</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Note that the last four in that list return an error code without a separate decline code. <code>expired_card</code>, <code>incorrect_cvc</code>, <code>processing_error</code> and <code>incorrect_number</code> are the error code. If your handler only reads <code>decline_code</code> and ignores <code>code</code>, it will see nothing for these and fall through to a generic branch.</p>"""),
+        ("the-good-one", "Why 4000000000000341 is the one you want", """
+    <p>Most test cards fail immediately at the point of entry, which tests your checkout form. Card <code>4000000000000341</code> succeeds when attached to a Customer object and fails when you attempt to charge it.</p>
+    <p>That is the shape of a real recovery scenario. The customer signed up months ago, the card worked then, and it is failing now on a renewal with nobody watching. If you want to test a dunning sequence, a retry schedule, or a webhook handler end to end, this is the card that gets you there.</p>
+    <div class="callout">
+      <p><strong>A test worth running:</strong> attach <code>4000000000000341</code>, create a subscription, let the renewal fail, and confirm your system sends exactly one email and not four. Duplicate dunning emails from overlapping webhook handlers are the most common bug in this area and they are invisible until a real customer complains.</p>
+    </div>"""),
+        ("3ds", "Testing authentication and 3D Secure", """
+    <p>Authentication has its own set of cards, because the interesting cases are about whether a payment can complete without the customer being present.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Card number</th><th scope="col">Behaviour</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><code>4000002500003155</code></th><td>Requires authentication for off-session payments unless the card was previously set up. On-session payments always require authentication.</td></tr>
+          <tr><th scope="row"><code>4000002760003184</code></th><td>Requires authentication on every transaction, whatever the setup status.</td></tr>
+          <tr><th scope="row"><code>4000003800000446</code></th><td>Already set up for off-session use. One-time and on-session payments need authentication; off-session payments succeed.</td></tr>
+          <tr><th scope="row"><code>4000000000003220</code></th><td>3D Secure must be completed. Issued in Ireland.</td></tr>
+          <tr><th scope="row"><code>4000008400000027</code></th><td>3D Secure must be completed. Issued in the US.</td></tr>
+          <tr><th scope="row"><code>4000000032200000</code></th><td>3D Secure required on all transactions, goes through the frictionless flow and succeeds.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The first and third of those are the pair that matters for subscriptions. Between them they show you the difference between a card that will quietly renew for years and one that will demand the customer's attention every cycle. More on that in <a href="/blog/stripe-authentication-required-recovery/">the authentication_required guide</a>.</p>"""),
+        ("hard-codes", "Testing the codes that block retries", """
+    <p>Three of the nine codes that stop Stripe executing retries have test cards: <code>lost_card</code>, <code>stolen_card</code> and <code>incorrect_number</code>. That is enough to verify the behaviour that surprises people, which is that the retry schedule keeps running and <code>attempt_count</code> keeps rising while nothing is actually being charged.</p>
+    <p>Run <code>4000000000009979</code> through a subscription renewal and watch the invoice. If your internal reporting claims eight retry attempts on that invoice, your reporting is describing a schedule, not a set of charges. That distinction is worth catching in test mode rather than in a board meeting.</p>"""),
+        ("limits", "What test mode will not tell you", """
+    <p>Test cards return a fixed, documented result every time. Real cards do not. A real <code>do_not_honor</code> might approve on Thursday for reasons nobody outside the issuing bank will ever explain, and no amount of test mode work will teach you how often that happens for your customers.</p>
+    <p>So use test mode to prove your logic is correct: right branch for the right code, one email not four, access revoked at the right status. Do not use it to estimate recovery rates. Those come from your own production data and from nowhere else, which is also why this site does not publish a recovery rate benchmark for you to borrow.</p>"""),
+    ],
+    faqs=[
+        ("What is the Stripe test card for a declined payment?",
+         "4000000000000002 gives a generic decline with error code card_declined and decline code generic_decline. For a specific reason use a specific card: 4000000000009995 for insufficient funds, 4000000000009987 for a lost card, 4000000000009979 for a stolen card."),
+        ("Which Stripe test card fails only when charged?",
+         "4000000000000341. It succeeds when attached to a Customer object and fails when you attempt the charge. This is the right card for testing renewal failures, dunning sequences and webhook handlers, because it reproduces the situation where a card worked at signup and broke later."),
+        ("What is the Stripe test card for an expired card?",
+         "4000000000000069. It returns the error code expired_card. Note that this comes back as an error code rather than a decline_code, so handlers that only inspect decline_code will miss it."),
+        ("How do I test 3D Secure in Stripe?",
+         "4000002760003184 requires authentication on every transaction. 4000002500003155 requires it for off-session payments unless the card was previously set up, which is the more realistic subscription case. 4000000032200000 requires 3D Secure but passes through the frictionless flow and succeeds."),
+        ("Can I test Smart Retries with test cards?",
+         "You can exercise the retry and webhook behaviour, including watching attempt_count increment on codes that block execution. What you cannot learn is real recovery rates, because test cards return a deterministic result and real issuers do not."),
+    ],
+    sources=[SRC_TESTING, SRC_CODES, SRC_INVOICE],
+    related=[
+        ("Which Stripe webhooks tell you a payment failed", "/blog/stripe-failed-payment-webhooks/", "What to handle once your test card fails."),
+        ("The nine decline codes that stop retries dead", "/blog/stripe-decline-codes-that-stop-retries/", "Three of them have test cards. Use them."),
+        ("Decline code lookup", "/tools/decline-code-lookup/", "All 48 codes with guidance, free and searchable."),
+    ],
+))
+
+# 10 -----------------------------------------------------------------------
+ARTICLES.append(dict(
+    slug="stripe-automatic-card-updates",
+    title="Stripe automatic card updates, and their limits | RecoverFlow",
+    h1="Stripe updates expired cards for you, sometimes",
+    desc="Stripe works with the card networks to refresh saved cards automatically. No setup needed, no guarantee, and no way to tell in advance which cards it covers.",
+    answer="""      <p>Stripe works with the card networks to automatically update saved card details when a customer gets a new card, whether through expiry, reissue, or a lost and stolen replacement. It is on by default and needs no configuration.</p>
+      <p>It is also not guaranteed. It requires the issuing bank to participate, and Stripe states plainly that it is not possible to identify in advance which cards support it. That gap is why you still see <code>expired_card</code> declines.</p>""",
+    sections=[
+        ("what", "What it does", """
+    <p>When a customer's card is replaced, the networks can push the new details to merchants who have the old card on file. Stripe participates in this on your behalf and updates the saved payment method without you doing anything.</p>
+    <p>Coverage in the United States is wide, spanning American Express, Visa, Mastercard and Discover. Internationally it varies by country. The binding constraint everywhere is the issuer: automatic card updates require card issuers to participate with the network and provide the information.</p>
+    <p>This is genuinely valuable and it is free, which makes it one of the better arguments for keeping cards on file in Stripe rather than anywhere else.</p>"""),
+        ("gap", "Why you still get expired card declines", """
+    <p>If this worked every time, <code>expired_card</code> would not appear in anyone's dashboard. It appears in everyone's.</p>
+    <p>Three reasons. The issuer may not participate. The update may not arrive before your renewal does. And the customer may have been reissued a card by a bank that treats the replacement as a new account rather than an update.</p>
+    <div class="callout">
+      <p><strong>The planning consequence:</strong> treat automatic updates as something that reduces your expired card volume, not something that eliminates it. Any recovery process that assumes cards fix themselves will be wrong for the remainder, and the remainder is where the churn is.</p>
+    </div>
+    <p>This also explains an oddity covered elsewhere on this site: <code>expired_card</code> is not one of the nine codes Stripe refuses to retry. Stripe will genuinely retry it, and occasionally that retry succeeds precisely because an update landed in between. <a href="/blog/expired-card-stripe-retries/">The expired card guide</a> goes into when that is worth waiting for.</p>"""),
+        ("webhooks", "Knowing when it happens", """
+    <p>Two events tell you a saved card changed:</p>
+    <ul>
+      <li><strong><code>payment_method.automatically_updated</code></strong> fires when the network pushed an update. This is the one that matters here.</li>
+      <li><strong><code>payment_method.updated</code></strong> fires when the change came from your own API call.</li>
+    </ul>
+    <p>Both include the card's new expiration date and last four digits so you can keep your own records straight. That last point is more useful than it sounds. If you show customers "your card ending 4242" in billing emails and you cached that value at signup, an automatic update will silently make your emails wrong, and a customer who cannot find the card you are describing is a customer who does not update it.</p>"""),
+        ("what-you-can-do", "What to do about the part it does not cover", """
+    <p>The lever you control is time. A card's expiry date is not a secret: it is on the payment method as <code>exp_month</code> and <code>exp_year</code>, and you can see a failure coming weeks out.</p>
+    <p>Stripe will send a card expiry email roughly a month ahead if you enable it, and that costs nothing. Beyond that, the useful move is to query for cards expiring in the next cycle and reach the customers whose renewal date falls after their expiry date. That is a small population and a high value one, because you are asking before anything has broken rather than after.</p>
+    <p>Note the limits of the API here: an update call can change the name, billing address, expiration date or metadata on a card. Anything else means the customer supplies a new card. You cannot patch your way out of a genuinely dead payment method.</p>"""),
+    ],
+    faqs=[
+        ("Does Stripe automatically update expired cards?",
+         "Often, yes. Stripe works with the card networks to automatically attempt to update saved card details when a customer receives a new card. It requires no configuration. It is not guaranteed, because the issuing bank has to participate with the network and provide the information."),
+        ("Which card networks support automatic updates in Stripe?",
+         "In the United States, support is wide across American Express, Visa, Mastercard and Discover. International support varies by country. In all cases the individual issuer must participate."),
+        ("Can I tell which of my customers' cards will update automatically?",
+         "No. Stripe states that it is not possible to identify cards that support automatic updates. You find out when it happens, or when it does not and you get a decline."),
+        ("How do I know when Stripe updates a card?",
+         "Listen for payment_method.automatically_updated, which fires on network-driven updates. payment_method.updated covers changes you made through the API. Both include the new expiration date and last four digits."),
+        ("Does automatic card updating cost extra?",
+         "Stripe's documentation does not list a cost for it. It works as part of keeping cards on file, with no separate setup step."),
+    ],
+    sources=[SRC_CARDUPDATE, SRC_EMAILS, SRC_CODES],
+    related=[
+        ("Why retrying an expired card rarely works", "/blog/expired-card-stripe-retries/", "The other half of the expired card problem."),
+        ("Stripe's dunning emails: what you control", "/blog/stripe-dunning-emails-what-you-control/", "Including the free card expiry notice."),
+        ("Dunning email generator", "/tools/dunning-email-generator/", "Copy for the cards that did not update themselves."),
+    ],
+))
+
+# 11 -----------------------------------------------------------------------
+ARTICLES.append(dict(
+    slug="do-not-honor-stripe-decline",
+    title="What do_not_honor means on a Stripe payment | RecoverFlow",
+    h1="What <code>do_not_honor</code> actually means",
+    desc="do_not_honor means the issuer declined without saying why. Stripe will retry it, the bank will not explain it, and the only real fix runs through the customer.",
+    answer="""      <p><code>do_not_honor</code> means the card was declined for an unknown reason. That is not a summary, it is the whole content of the message. The issuing bank refused and chose not to say why.</p>
+      <p>Stripe's recommended next step is that the customer contacts their card issuer. It is not one of the nine codes that block retries, so Stripe will keep attempting it, and sometimes those attempts work.</p>""",
+    sections=[
+        ("meaning", "Why the bank will not tell you", """
+    <p><code>do_not_honor</code> is a catch-all. Issuers use it when they have declined for a reason they do not want to publish to a merchant: a fraud model fired, an internal limit was hit, the account has a flag on it, the transaction looked wrong in a way their system will not itemise.</p>
+    <p>They are not being obstructive. Telling merchants precisely why a card was refused is a good way to teach card fraudsters what to avoid. The opacity is deliberate and it is not going to change, so the useful question is not what it means but what to do.</p>"""),
+        ("cousins", "It has two close relatives, and they need different handling", """
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Code</th><th scope="col">Stripe's description</th><th scope="col">Stripe's recommended next step</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><code>do_not_honor</code></th><td>The card was declined for an unknown reason.</td><td>The customer needs to contact their card issuer.</td></tr>
+          <tr><th scope="row"><code>generic_decline</code></th><td>Declined for an unknown reason, or Stripe Radar or Adaptive Acceptance blocked the payment.</td><td>The customer needs to contact their card issuer.</td></tr>
+          <tr><th scope="row"><code>try_again_later</code></th><td>The card was declined for an unknown reason.</td><td>Ask the customer to attempt the payment again. If subsequent payments are declined, they need to contact their issuer.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The one to separate out is <code>generic_decline</code>, because it has a second meaning the others do not: it can be Stripe's own Radar blocking the payment rather than the bank. If you are seeing a lot of <code>generic_decline</code> on renewals for customers who have paid you happily for a year, look at your Radar rules before you write a single dunning email. That is not a customer problem.</p>
+    <p><code>try_again_later</code> is the only one of the three where Stripe explicitly suggests simply trying again, which makes it the mildest of the group.</p>"""),
+        ("retry", "Is it worth retrying?", """
+    <p>Yes, and you do not have to do anything to make that happen. <code>do_not_honor</code> is not on the list of nine codes that stop Stripe executing retries, so Smart Retries will work through its schedule normally.</p>
+    <p>Whether those retries succeed is genuinely unpredictable. The underlying cause might be a temporary hold that clears in a day, or a permanent block that will never clear. From outside the bank these look identical, which is the central frustration of this code.</p>
+    <div class="callout">
+      <p><strong>The one signal you have:</strong> a customer whose payments have succeeded for months and now returns <code>do_not_honor</code> is a different case from a brand new customer whose first payment returns it. The first is worth patient retries. The second is often a card that was never going to work, and the 23 hour window on <code>incomplete</code> subscriptions means you do not have long to find out.</p>
+    </div>"""),
+        ("email", "What to write to the customer", """
+    <p>Do not paste the code into the email. "Your payment was declined with do_not_honor" tells the customer nothing they can act on and makes you sound like a log file.</p>
+    <p>The message that works says three things: the payment did not go through, you do not know why because the bank did not say, and the two things that usually fix it are trying a different card or calling the number on the back of the current one. That last part is Stripe's own recommended next step and it is the only genuinely useful instruction available.</p>
+    <p>Unlike the lost and stolen codes, there is no security reason to be vague here. You can be completely straight about not knowing, and being straight tends to read better than a vague apology. The <a href="/tools/dunning-email-generator/">dunning email generator</a> on this site produces reason-aware copy including this case.</p>"""),
+    ],
+    faqs=[
+        ("What does do_not_honor mean on Stripe?",
+         "It means the card was declined for an unknown reason. The issuing bank refused the charge and did not provide a reason. Stripe's recommended next step is for the customer to contact their card issuer."),
+        ("Is do_not_honor a hard decline?",
+         "Not in the sense that matters on Stripe. It is not one of the nine decline codes that stop Stripe executing retries, so retries proceed normally on the usual schedule. Whether they succeed depends on a cause the bank will not disclose."),
+        ("What is the difference between do_not_honor and generic_decline?",
+         "Both mean an unknown decline, but generic_decline can also indicate that Stripe Radar or Adaptive Acceptance blocked the payment rather than the bank. A cluster of generic_decline on long-standing customers is a reason to review your Radar rules."),
+        ("How do I fix a do_not_honor decline?",
+         "You cannot fix it from your side. The customer either uses a different payment method or contacts their card issuer. Both are worth offering in the same email, because some customers will do one and not the other."),
+        ("Should I keep retrying do_not_honor?",
+         "Stripe will, by default, and that is reasonable. Some causes are temporary holds that clear. The judgement call is when to stop treating it as a retry problem and start treating it as a conversation, which for an established customer is usually after the schedule has had a fair run."),
+    ],
+    sources=[SRC_CODES, SRC_SMART, SRC_DECLINES],
+    related=[
+        ("The nine decline codes that stop retries dead", "/blog/stripe-decline-codes-that-stop-retries/", "do_not_honor is not one of them, and that matters."),
+        ("Decline code lookup", "/tools/decline-code-lookup/", "All 48 codes, searchable, free."),
+        ("Is insufficient_funds a hard decline?", "/blog/is-insufficient-funds-a-hard-decline/", "Another code widely mislabelled in published guidance."),
+    ],
+))
+
+# 12 -----------------------------------------------------------------------
+ARTICLES.append(dict(
+    slug="stripe-authentication-required-recovery",
+    title="Recovering authentication_required declines on Stripe | RecoverFlow",
+    h1="Recovering <code>authentication_required</code> declines",
+    desc="authentication_required means the payment needs the cardholder to authenticate. Retries cannot fix it. The webhook and the hosted invoice page can.",
+    answer="""      <p><code>authentication_required</code> means the payment needs Strong Customer Authentication and only the cardholder can complete it. It is one of the nine codes where Stripe will not execute a retry, because no retry can supply what is missing.</p>
+      <p>The recovery path is <code>invoice.payment_action_required</code>, which fires when the invoice requires customer authentication, and a link that gets the customer to the authentication step.</p>""",
+    sections=[
+        ("why", "Why this one is different from the other eight", """
+    <p>The other codes that block retries describe a card that will not work: lost, stolen, revoked, blocked, mistyped. <code>authentication_required</code> describes a card that works fine and a customer who has not confirmed it is them.</p>
+    <p>That makes it the most recoverable of the nine by a distance. Nothing is broken, nobody has cancelled anything, and no new card is needed. The customer has to tap a button in their banking app. If you can get them to that button, the payment goes through.</p>
+    <p>It also makes it the most wasteful one to mishandle. Sending a "please update your payment method" email to someone whose payment method is perfectly good is a good way to make them think about whether they still want the subscription.</p>"""),
+        ("flow", "The events to handle", """
+    <p><code>invoice.payment_action_required</code> is sent when the invoice requires customer authentication. That is your trigger, and it is separate from <code>invoice.payment_failed</code> for good reason: the required action is different.</p>
+    <p>Handle it by getting the customer to the hosted invoice page, where Stripe will run the authentication flow. The email should say what is actually happening. Something like "your bank needs you to confirm this payment" is accurate, short, and does not imply the customer did anything wrong.</p>
+    <div class="callout">
+      <p><strong>The mistake to avoid:</strong> routing this into the same dunning sequence as expired cards. The ask is different, the urgency is different, and the customer's mental state on receiving it is completely different. One is "your card broke", the other is "your bank wants a thumbs up".</p>
+    </div>"""),
+        ("off-session", "Off-session is the whole game", """
+    <p>Subscription renewals happen when the customer is not there. That is what off-session means, and it is why authentication is a problem for subscriptions in a way it is not for checkout.</p>
+    <p>Stripe's test cards make the distinction visible. <code>4000002500003155</code> requires authentication for off-session payments <em>unless the card was previously set up</em>, while on-session payments always require it. <code>4000003800000446</code> is already set up for off-session use, so off-session payments succeed while one-time and on-session payments still need authentication.</p>
+    <p>The practical reading: a card properly set up for off-session use at signup is far less likely to demand authentication at renewal than one that was not. If you are seeing <code>authentication_required</code> regularly on renewals, the fix is upstream in how payment methods are saved, not downstream in your dunning copy.</p>"""),
+        ("testing", "Testing it", """
+    <p>Use <code>4000002760003184</code> to force authentication on every transaction, which is the fastest way to see the event fire and confirm your handler works. Then use <code>4000002500003155</code> for the more realistic case, where behaviour depends on whether the card was set up for off-session use.</p>
+    <p><code>4000000032200000</code> is the useful control: it requires 3D Secure on all transactions but proceeds through the frictionless flow and succeeds. If your code treats that as a failure, you are about to send dunning emails to customers who paid you. There is a fuller list in <a href="/blog/stripe-test-cards-for-failed-payments/">the test cards guide</a>.</p>"""),
+        ("counting", "Finding yours", """
+    <p>On a failed PaymentIntent the code sits at <code>last_payment_error.decline_code</code>. Count how many of your unpaid invoices carry <code>authentication_required</code> against how many carry a genuinely dead card.</p>
+    <p>If the authentication share is meaningful, you have a recoverable population that a card-update email will not reach, because those customers do not need to update anything. Splitting that group out is usually the single highest value change to a home built dunning sequence, and it costs nothing but a branch in your code.</p>"""),
+    ],
+    faqs=[
+        ("What does authentication_required mean on Stripe?",
+         "The payment needs Strong Customer Authentication, and only the cardholder can complete it. The card itself is fine. It is one of the nine decline codes where Stripe will not execute a retry, because a retry cannot provide the authentication."),
+        ("Can Stripe retry an authentication_required decline?",
+         "Not usefully. It is on Stripe's list of codes that require a new payment method before retries execute. Stripe keeps the schedule running and keeps incrementing attempt_count, but the charge is not sent. The recovery path is getting the customer to authenticate, not waiting."),
+        ("Which webhook fires for authentication_required?",
+         "invoice.payment_action_required, which Stripe sends when the invoice requires customer authentication. Handle it separately from invoice.payment_failed, because the customer action needed is completely different."),
+        ("How do I stop authentication_required happening at renewal?",
+         "Make sure payment methods are set up for off-session use when the customer signs up. Stripe's test cards show the difference directly: a card previously set up for off-session use can renew without authentication, while one that was not may require it every time."),
+        ("Should authentication_required customers get the same email as expired card customers?",
+         "No. Their card is not broken and there is nothing to update. Asking them to add a new payment method is confusing and invites them to reconsider the subscription. Tell them their bank needs them to confirm the payment, and link them to the hosted invoice page."),
+    ],
+    sources=[SRC_SMART, SRC_WEBHOOKS, SRC_TESTING],
+    related=[
+        ("The nine decline codes that stop retries dead", "/blog/stripe-decline-codes-that-stop-retries/", "Where authentication_required sits among the others."),
+        ("Stripe test cards for failed payments", "/blog/stripe-test-cards-for-failed-payments/", "Every 3D Secure test card and what it does."),
+        ("Which Stripe webhooks tell you a payment failed", "/blog/stripe-failed-payment-webhooks/", "Handling payment_action_required alongside payment_failed."),
     ],
 ))
 

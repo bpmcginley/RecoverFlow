@@ -26,7 +26,7 @@ COMPETITORS = [
         "slug": "churnkey",
         "name": "Churnkey",
         "title": "RecoverFlow vs Churnkey",
-        "meta": "A verified comparison of Churnkey and RecoverFlow for Stripe failed payment recovery. Churnkey's published pricing, what it does beyond recovery, and which one costs less at your volume.",
+        "meta": "Churnkey versus RecoverFlow for Stripe failed payment recovery: Churnkey's published pricing, what it does beyond recovery, and which costs less at your volume.",
         "source_label": "churnkey.co/pricing",
         "source_url": "https://churnkey.co/pricing",
         "flat_monthly": 250,
@@ -60,7 +60,7 @@ COMPETITORS = [
         "slug": "baremetrics",
         "name": "Baremetrics Recover",
         "title": "RecoverFlow vs Baremetrics Recover",
-        "meta": "A verified comparison of Baremetrics Recover and RecoverFlow. Recover is a $129/month add-on that requires a Baremetrics base plan. Here is what that actually costs and which is cheaper at your volume.",
+        "meta": "Baremetrics Recover is a $129/month add-on that also needs a Baremetrics base plan. What that really costs, and which is cheaper at your recovery volume.",
         "source_label": "baremetrics.com/pricing",
         "source_url": "https://baremetrics.com/pricing",
         "flat_monthly": 204,
@@ -93,7 +93,7 @@ COMPETITORS = [
         "slug": "stunning",
         "name": "Stunning",
         "title": "RecoverFlow vs Stunning",
-        "meta": "A verified comparison of Stunning and RecoverFlow for Stripe dunning and failed payment recovery. Stunning's MRR-based pricing versus a percentage of what is actually recovered.",
+        "meta": "Stunning versus RecoverFlow for Stripe dunning and failed payment recovery: MRR-banded pricing against a percentage of what is actually recovered.",
         "source_label": "stunning.co",
         "source_url": "https://stunning.co",
         "flat_monthly": 120,
@@ -127,7 +127,7 @@ COMPETITORS = [
         "slug": "paddle-retain",
         "name": "Paddle Retain",
         "title": "RecoverFlow vs Paddle Retain (formerly ProfitWell Retain)",
-        "meta": "A verified comparison of Paddle Retain and RecoverFlow. Retain is free if you bill on Paddle, integrates with Stripe standalone, and does not publish standalone pricing. Here is what that means for you.",
+        "meta": "Paddle Retain is free if you bill on Paddle and works standalone with Stripe, but its standalone price is unpublished. What that means when you compare.",
         "source_label": "paddle.com/retain-standalone",
         "source_url": "https://www.paddle.com/retain-standalone",
         "flat_monthly": None,
@@ -641,7 +641,7 @@ def build_index():
     with open(os.path.join(out, "index.html"), "w", encoding="utf-8", newline="\n") as f:
         f.write(shell(
             "Failed Payment Recovery Tools Compared (Verified Pricing)",
-            "Verified pricing comparison of RecoverFlow against Churnkey, Baremetrics Recover, Stunning, Paddle Retain, and Stripe's built-in recovery. Every figure read from the vendor's own pricing page.",
+            "RecoverFlow compared against Churnkey, Baremetrics Recover, Stunning, Paddle Retain and Stripe's free built-in recovery. Every price read from the vendor's own page.",
             "https://recoverflow.org/compare/",
             "website", schema, body))
     return "https://recoverflow.org/compare/"
