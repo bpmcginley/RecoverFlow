@@ -25,6 +25,7 @@ Stripe already includes recovery tooling and it is genuinely capable. Stripe Sma
 
 ## Pricing model comparison note
 Competitors in this category price predominantly by flat monthly fee, often banded by MRR or ARR. RecoverFlow prices as a percentage of recovered revenue. Percentage pricing is cheaper at low recovery volumes and more expensive at high ones. RecoverFlow states this crossover explicitly on every comparison page rather than obscuring it. All competitor figures were read from each vendor's own pricing page on 27 July 2026 and are dated and sourced on-page.
+- [Failed payment recovery estimator](https://recoverflow.org/tools/recovery-estimator/): free browser-based calculator. Takes MRR, failure rate and assumed recovery rate, and returns estimated monthly and annual failed revenue plus the cost of each recovery tool at that volume, including cases where a competitor is cheaper than RecoverFlow or where no tool is worth buying at all. Nothing is stored or transmitted.
 - [How to recover failed Stripe subscription payments](https://recoverflow.org/recover-failed-stripe-payments/): a practical guide to decline types, what to retry, retry timing, dunning emails, and measuring recovery.
 - [Sign in](https://app.recoverflow.org/app/): the customer recovery dashboard.
 
