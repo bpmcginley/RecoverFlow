@@ -117,11 +117,11 @@ def shell(title, desc, canonical, body, schema=None):
 """
 
 
-def article_schema(slug, title, desc):
+def article_schema(slug, h1, desc):
     return {
         "@context": "https://schema.org",
         "@type": "Article",
-        "headline": title,
+        "headline": plain(h1),
         "description": desc,
         "url": f"{SITE}/blog/{slug}/",
         "datePublished": "2026-07-28",
@@ -226,7 +226,7 @@ def build_article(slug, title, h1, desc, answer, sections, faqs, sources, relate
     {related_html(related)}
   </article>
 </main>"""
-    schema = [article_schema(slug, title, desc)]
+    schema = [article_schema(slug, h1, desc)]
     if faqs:
         schema.append(faq_schema(faqs))
     return shell(title, desc, f"{SITE}/blog/{slug}/", body, schema)
