@@ -41,6 +41,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://recoverflow.org/tools/recovery-estimator/</loc>
+    <lastmod>2026-07-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://recoverflow.org/recover-failed-stripe-payments/</loc>
     <lastmod>2026-07-15</lastmod>
     <priority>0.8</priority>
