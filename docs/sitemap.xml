@@ -11,9 +11,34 @@
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://recoverflow.org/compare/</loc>
+    <lastmod>2026-07-27</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://recoverflow.org/compare/stripe-native/</loc>
     <lastmod>2026-07-27</lastmod>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/compare/churnkey/</loc>
+    <lastmod>2026-07-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/compare/baremetrics/</loc>
+    <lastmod>2026-07-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/compare/stunning/</loc>
+    <lastmod>2026-07-27</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/compare/paddle-retain/</loc>
+    <lastmod>2026-07-27</lastmod>
+    <priority>0.8</priority>
   </url>
   <url>
     <loc>https://recoverflow.org/recover-failed-stripe-payments/</loc>
