@@ -29,15 +29,15 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </noscript>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guides to failed payments on Stripe | RecoverFlow</title>
-<meta name="description" content="Verified, dated guides to Stripe decline codes, Smart Retries, dunning emails and involuntary churn. No invented benchmarks.">
-<link rel="canonical" href="https://recoverflow.org/blog/">
+<title>How RecoverFlow classifies declines | Docs</title>
+<meta name="description" content="The exact codes RecoverFlow retries and refuses to retry, including the nine Stripe will not execute without a new card.">
+<link rel="canonical" href="https://recoverflow.org/docs/decline-classification/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="RecoverFlow">
-<meta property="og:title" content="Guides to failed payments on Stripe | RecoverFlow">
-<meta property="og:description" content="Verified, dated guides to Stripe decline codes, Smart Retries, dunning emails and involuntary churn. No invented benchmarks.">
-<meta property="og:url" content="https://recoverflow.org/blog/">
+<meta property="og:title" content="How RecoverFlow classifies declines | Docs">
+<meta property="og:description" content="The exact codes RecoverFlow retries and refuses to retry, including the nine Stripe will not execute without a new card.">
+<meta property="og:url" content="https://recoverflow.org/docs/decline-classification/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -160,82 +160,56 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "Guides to failed payments on Stripe",
-  "url": "https://recoverflow.org/blog/",
-  "description": "Verified guides to Stripe payment failures, decline codes, retries and dunning.",
-  "hasPart": [
+  "@type": "TechArticle",
+  "headline": "Decline classification",
+  "description": "The exact codes RecoverFlow retries and refuses to retry, including the nine Stripe will not execute without a new card.",
+  "url": "https://recoverflow.org/docs/decline-classification/",
+  "dateModified": "2026-07-28",
+  "author": {
+    "@type": "Person",
+    "name": "Bruce McGinley"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "RecoverFlow",
+    "url": "https://recoverflow.org"
+  }
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
     {
-      "@type": "Article",
-      "headline": "The nine Stripe decline codes that stop retries dead",
-      "url": "https://recoverflow.org/blog/stripe-decline-codes-that-stop-retries/",
-      "description": "Stripe will not retry nine specific decline codes until a new card is added. The exact list, what each one means, and what to do instead of retrying."
+      "@type": "Question",
+      "name": "Which decline codes does RecoverFlow refuse to retry?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The nine Stripe will not execute without a new payment method (incorrect_number, lost_card, pickup_card, stolen_card, revocation_of_authorization, revocation_of_all_authorizations, authentication_required, highest_risk_level, transaction_not_allowed), plus fraudulent, merchant_blacklist, restricted_card and security_violation, which we choose not to retry."
+      }
     },
     {
-      "@type": "Article",
-      "headline": "How Stripe Smart Retries actually work",
-      "url": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
-      "description": "Stripe Smart Retries defaults to 8 attempts over 2 weeks, timed by a model. What you can configure, what you cannot, and when to turn it off."
+      "@type": "Question",
+      "name": "Does RecoverFlow retry insufficient_funds?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. It is a temporary condition and one of the better codes to retry, so it gets its own schedule aimed at the 1st and 15th of the month."
+      }
     },
     {
-      "@type": "Article",
-      "headline": "Why retrying an expired card rarely works",
-      "url": "https://recoverflow.org/blog/expired-card-stripe-retries/",
-      "description": "expired_card is not on Stripe's hard decline list, so Stripe retries it. An expired card does not become unexpired. Here is what actually recovers these payments."
+      "@type": "Question",
+      "name": "What happens with a decline code RecoverFlow does not recognise?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It is treated as recoverable and retried on the default schedule. Abandoning revenue because Stripe added a code we had not seen would be the worse mistake."
+      }
     },
     {
-      "@type": "Article",
-      "headline": "Stripe's dunning emails: what you control and what you do not",
-      "url": "https://recoverflow.org/blog/stripe-dunning-emails-what-you-control/",
-      "description": "Stripe emails your customers about failed payments for free. You control branding and whether they send, but not the copy, the schedule or the sender."
-    },
-    {
-      "@type": "Article",
-      "headline": "How to measure involuntary churn without guessing",
-      "url": "https://recoverflow.org/blog/how-to-measure-involuntary-churn/",
-      "description": "Involuntary churn is revenue lost to a failed payment, not a decision. How to calculate it from your own Stripe data, and why benchmarks are not worth much."
-    },
-    {
-      "@type": "Article",
-      "headline": "Is insufficient_funds a hard decline?",
-      "url": "https://recoverflow.org/blog/is-insufficient-funds-a-hard-decline/",
-      "description": "No. insufficient_funds is not on Stripe's list of codes that block retries, and retrying it is correct. A lot of published guidance gets this backwards."
-    },
-    {
-      "@type": "Article",
-      "headline": "past_due, unpaid, canceled: what each Stripe subscription status means",
-      "url": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
-      "description": "past_due means Stripe is still trying. unpaid means it stopped but kept the subscription. canceled is terminal. Which one you get is a setting you choose."
-    },
-    {
-      "@type": "Article",
-      "headline": "Which Stripe webhooks tell you a payment failed",
-      "url": "https://recoverflow.org/blog/stripe-failed-payment-webhooks/",
-      "description": "invoice.payment_failed is the event that matters, plus payment_action_required for authentication. Which fields to read, and the one-hour delay to know about."
-    },
-    {
-      "@type": "Article",
-      "headline": "Stripe test cards for every failed payment scenario",
-      "url": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
-      "description": "The exact test card numbers for generic decline, insufficient funds, lost card, stolen card, expired card and 3D Secure, and which decline_code each one produces."
-    },
-    {
-      "@type": "Article",
-      "headline": "Stripe updates expired cards for you, sometimes",
-      "url": "https://recoverflow.org/blog/stripe-automatic-card-updates/",
-      "description": "Stripe works with the card networks to refresh saved cards automatically. No setup needed, no guarantee, and no way to tell in advance which cards it covers."
-    },
-    {
-      "@type": "Article",
-      "headline": "What do_not_honor actually means",
-      "url": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
-      "description": "do_not_honor means the issuer declined without saying why. Stripe will retry it, the bank will not explain it, and the only real fix runs through the customer."
-    },
-    {
-      "@type": "Article",
-      "headline": "Recovering authentication_required declines",
-      "url": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
-      "description": "authentication_required means the payment needs the cardholder to authenticate. Retries cannot fix it. The webhook and the hosted invoice page can."
+      "@type": "Question",
+      "name": "Is expired_card retried?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No retry is scheduled for it, even though it is classified as a soft decline. An expired card needs new details, not another attempt, so it goes to the card-update path instead."
+      }
     }
   ]
 }</script>
@@ -257,88 +231,57 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </header>
 
 <main>
-  <div class="wrap">
-    <p class="eyebrow">Writing</p>
-    <h1>Guides to failed payments on Stripe</h1>
-    <p>Everything here is checked against Stripe's own documentation before it goes up, and dated so you can tell how stale it is. There are no invented case studies and no recovery rate percentages we cannot stand behind, which means some of these articles end by telling you that Stripe's free features are enough.</p>
+  <article class="wrap">
+    <p class="eyebrow"><a href="/docs/">Docs</a></p>
+    <h1>Decline classification</h1>
+    <p class="updated">Reflects the code as of 28 July 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
 
-    <div class="card-grid">
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/stripe-decline-codes-that-stop-retries/">The nine Stripe decline codes that stop retries dead</a></h3>
-      <p>Stripe will not retry nine specific decline codes until a new card is added. The exact list, what each one means, and what to do instead of retrying.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/how-stripe-smart-retries-work/">How Stripe Smart Retries actually work</a></h3>
-      <p>Stripe Smart Retries defaults to 8 attempts over 2 weeks, timed by a model. What you can configure, what you cannot, and when to turn it off.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/expired-card-stripe-retries/">Why retrying an expired card rarely works</a></h3>
-      <p>expired_card is not on Stripe's hard decline list, so Stripe retries it. An expired card does not become unexpired. Here is what actually recovers these payments.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/stripe-dunning-emails-what-you-control/">Stripe's dunning emails: what you control and what you do not</a></h3>
-      <p>Stripe emails your customers about failed payments for free. You control branding and whether they send, but not the copy, the schedule or the sender.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/how-to-measure-involuntary-churn/">How to measure involuntary churn without guessing</a></h3>
-      <p>Involuntary churn is revenue lost to a failed payment, not a decision. How to calculate it from your own Stripe data, and why benchmarks are not worth much.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/is-insufficient-funds-a-hard-decline/">Is <code>insufficient_funds</code> a hard decline?</a></h3>
-      <p>No. insufficient_funds is not on Stripe's list of codes that block retries, and retrying it is correct. A lot of published guidance gets this backwards.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/stripe-subscription-past-due-vs-unpaid/"><code>past_due</code>, <code>unpaid</code>, <code>canceled</code>: what each Stripe subscription status means</a></h3>
-      <p>past_due means Stripe is still trying. unpaid means it stopped but kept the subscription. canceled is terminal. Which one you get is a setting you choose.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/stripe-failed-payment-webhooks/">Which Stripe webhooks tell you a payment failed</a></h3>
-      <p>invoice.payment_failed is the event that matters, plus payment_action_required for authentication. Which fields to read, and the one-hour delay to know about.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/stripe-test-cards-for-failed-payments/">Stripe test cards for every failed payment scenario</a></h3>
-      <p>The exact test card numbers for generic decline, insufficient funds, lost card, stolen card, expired card and 3D Secure, and which decline_code each one produces.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/stripe-automatic-card-updates/">Stripe updates expired cards for you, sometimes</a></h3>
-      <p>Stripe works with the card networks to refresh saved cards automatically. No setup needed, no guarantee, and no way to tell in advance which cards it covers.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/do-not-honor-stripe-decline/">What <code>do_not_honor</code> actually means</a></h3>
-      <p>do_not_honor means the issuer declined without saying why. Stripe will retry it, the bank will not explain it, and the only real fix runs through the customer.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/stripe-authentication-required-recovery/">Recovering <code>authentication_required</code> declines</a></h3>
-      <p>authentication_required means the payment needs the cardholder to authenticate. Retries cannot fix it. The webhook and the hosted invoice page can.</p>
-    </div>
-    <div class="card">
-      <p class="meta">Pillar</p>
-      <h3><a href="/recover-failed-stripe-payments/">How to recover failed Stripe payments</a></h3>
-      <p>The overview: what fails, what can be retried, what needs an email, and where the free options run out.</p>
-    </div>
+    <p>Every failed payment is sorted into one of three buckets, and that decision drives everything downstream: whether a retry is scheduled, which email goes out, and what the backtest estimates you could recover.</p>
+
+    <h2 id="blocked">Never retried: the nine Stripe will not execute</h2>
+    <p>For these, Stripe keeps the retry schedule running and keeps incrementing <code>attempt_count</code>, but never sends the charge to the card network until a new payment method is attached. Scheduling our own retry against them would add delay and nothing else.</p>
+<div class="table-scroll">
+  <table>
+    <thead><tr><th scope="col">Decline code</th><th scope="col">Why we do not retry it</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><code>incorrect_number</code></th><td>The card number itself is wrong. No amount of waiting fixes a typo.</td></tr>
+      <tr><th scope="row"><code>lost_card</code></th><td>The cardholder reported the card lost. The issuer will keep saying no.</td></tr>
+      <tr><th scope="row"><code>pickup_card</code></th><td>The issuer wants the physical card retained. Treat it as permanently dead.</td></tr>
+      <tr><th scope="row"><code>stolen_card</code></th><td>Reported stolen. Never tell the customer this is the reason.</td></tr>
+      <tr><th scope="row"><code>revocation_of_authorization</code></th><td>The customer told their bank to stop this specific merchant.</td></tr>
+      <tr><th scope="row"><code>revocation_of_all_authorizations</code></th><td>The customer told their bank to stop all recurring charges.</td></tr>
+      <tr><th scope="row"><code>authentication_required</code></th><td>The charge needs SCA. Only the cardholder can complete it.</td></tr>
+      <tr><th scope="row"><code>highest_risk_level</code></th><td>Stripe Radar blocked it. Retrying does not lower the risk score.</td></tr>
+      <tr><th scope="row"><code>transaction_not_allowed</code></th><td>The issuer does not permit this type of transaction on this card.</td></tr>
+    </tbody>
+  </table>
+</div>
+    <p>This list is held in one place in the source and is checked against <a href="https://docs.stripe.com/billing/revenue-recovery/smart-retries" rel="nofollow noopener" target="_blank">Stripe's Smart Retries documentation</a>. It was last verified on 28 July 2026.</p>
+
+    <h2 id="choice">Not retried by choice</h2>
+    <p>Four more codes are retryable as far as Stripe is concerned, but we do not retry them: <code>fraudulent</code>, <code>merchant_blacklist</code>, <code>restricted_card</code> and <code>security_violation</code>. The answer is settled, and repeatedly re-asking looks like card testing.</p>
+
+    <h2 id="soft">Retried</h2>
+    <p>Everything temporary: <code>insufficient_funds</code>, <code>processing_error</code>, <code>generic_decline</code>, <code>expired_card</code>, <code>incorrect_cvc</code>, <code>card_declined</code>, <code>try_again_later</code>, <code>do_not_honor</code>, <code>card_velocity_exceeded</code>, and the invalid expiry codes.</p>
+    <p>Two of those need a caveat. <code>expired_card</code> and <code>incorrect_cvc</code> are classified as soft, but the scheduler returns no retry date for them, because the fix is new card details rather than another attempt. They go straight to the card-update path.</p>
+
+    <h2 id="unknown">Unrecognised codes</h2>
+    <p>A code we do not know is treated as recoverable rather than ignored. Stripe adds codes, and the failure mode of guessing wrong in that direction is a wasted retry. The failure mode of guessing wrong in the other direction is silently abandoning revenue.</p>
+
+    <h2 id="card-update">Which declines trigger a card update</h2>
+    <p>Bad card data (<code>expired_card</code>, <code>incorrect_cvc</code>, <code>incorrect_number</code>, the invalid expiry codes) and reissues (<code>lost_card</code>, <code>stolen_card</code>, <code>pickup_card</code>). Reissues matter more than they look: the customer usually already has the replacement card, so the fix costs them under a minute.</p>
+    <div class="callout">
+      <p><strong>What we never put in an email:</strong> for lost, stolen and blocked cards, the reason is not named. Stripe's guidance is that a precise message is useful to whoever is holding a card they should not have. The email says the payment did not go through and asks for updated details.</p>
     </div>
 
-    <h2 style="margin-top:48px;">Free tools</h2>
-    <p>Four calculators and lookups that need no signup and no email address.</p>
-    <div class="card-grid">
-      <div class="card"><h3><a href="/tools/decline-code-lookup/">Decline code lookup</a></h3><p>48 Stripe decline codes, searchable, with the nine that block retries flagged.</p></div>
-      <div class="card"><h3><a href="/tools/recovery-estimator/">Recovery estimator</a></h3><p>What failed payments cost you, against real competitor pricing at your scale.</p></div>
-      <div class="card"><h3><a href="/tools/retry-schedule-builder/">Retry schedule builder</a></h3><p>Builds a schedule, and tells you when a schedule is the wrong answer.</p></div>
-      <div class="card"><h3><a href="/tools/dunning-email-generator/">Dunning email generator</a></h3><p>Reason aware copy, including the reasons you should never name.</p></div>
-    </div>
-  </div>
+    <h2 id="faq">Common questions</h2>
+<div class="faq">
+  <details><summary>Which decline codes does RecoverFlow refuse to retry?</summary><p>The nine Stripe will not execute without a new payment method (incorrect_number, lost_card, pickup_card, stolen_card, revocation_of_authorization, revocation_of_all_authorizations, authentication_required, highest_risk_level, transaction_not_allowed), plus fraudulent, merchant_blacklist, restricted_card and security_violation, which we choose not to retry.</p></details>
+  <details><summary>Does RecoverFlow retry insufficient_funds?</summary><p>Yes. It is a temporary condition and one of the better codes to retry, so it gets its own schedule aimed at the 1st and 15th of the month.</p></details>
+  <details><summary>What happens with a decline code RecoverFlow does not recognise?</summary><p>It is treated as recoverable and retried on the default schedule. Abandoning revenue because Stripe added a code we had not seen would be the worse mistake.</p></details>
+  <details><summary>Is expired_card retried?</summary><p>No retry is scheduled for it, even though it is classified as a soft decline. An expired card needs new details, not another attempt, so it goes to the card-update path instead.</p></details>
+</div>
+  </article>
 </main>
 
 <footer>

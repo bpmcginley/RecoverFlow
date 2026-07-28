@@ -7,7 +7,7 @@ public sealed record DunningEmailContent(string EmailType, string Subject, strin
 /// <summary>
 /// Inline dunning templates. Step 1 goes out when the recovery case opens;
 /// each later retry-schedule step sends the next escalation. Every email ships
-/// both HTML and a plain-text alternative — a text part is expected on legitimate
+/// both HTML and a plain-text alternative. A text part is expected on legitimate
 /// mail and its absence is a spam-filter signal.
 /// </summary>
 public static class DunningEmailTemplates
@@ -19,16 +19,18 @@ public static class DunningEmailTemplates
         {
             1 => ("friendly_reminder",
                 $"Your payment to {merchantName} didn't go through",
-                "We weren't able to process your latest payment — this usually just means a card has expired or needs updating.",
+                "We weren't able to process your latest payment. This usually just means a card has expired or needs updating.",
                 "Please update your card details to keep your subscription active. If you've already done so, no further action is needed."),
             2 => ("urgent",
                 $"Reminder: your {amount} payment to {merchantName} is still due",
                 "A quick follow-up: we still haven't been able to collect your recent payment.",
                 "Please update your card soon so your subscription isn't interrupted."),
+            // Says only what we know. Whether the subscription actually cancels is the
+            // merchant's own Stripe end-of-retry setting, which we neither see nor control.
             _ => ("final_notice",
                 $"Final notice: your {merchantName} subscription is at risk",
                 "We've tried several times to collect your payment without success.",
-                "Please update your card now — this is our last reminder before your subscription is cancelled."),
+                "Please update your card now. This is the last reminder we'll send."),
         };
 
         return new DunningEmailContent(type, subject,
@@ -45,7 +47,7 @@ public static class DunningEmailTemplates
               <p>{lead}</p>
               <p>Your payment of <strong>{amount}</strong> to <strong>{merchant}</strong> is currently outstanding.</p>
               <p>{closing}</p>
-              <p>— The {merchant} team</p>
+              <p>The {merchant} team</p>
             </div>
             """;
     }
@@ -60,6 +62,6 @@ public static class DunningEmailTemplates
 
         {closing}
 
-        — The {merchantName} team
+        The {merchantName} team
         """;
 }
