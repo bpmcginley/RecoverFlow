@@ -30,7 +30,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </noscript>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>You're connected — RecoverFlow</title>
+<title>You're connected | RecoverFlow</title>
 <link rel="icon" type="image/png" href="assets/logo-mark.png">
 <style>
   :root { color-scheme: dark; }
@@ -85,7 +85,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h1>You're connected</h1>
     <p>
       RecoverFlow is now watching your Stripe account for failed subscription
-      payments. From here it's fully automatic — nothing else to set up.
+      payments. From here it's fully automatic, with nothing else to set up.
     </p>
 
     <div class="backtest" id="backtest" hidden>
@@ -127,8 +127,10 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       '<p class="recover">We estimate we\'d have recovered ' +
         money(d.recoverableLowCents, d.currency) + '–' + money(d.recoverableHighCents, d.currency) + '.</p>' +
       '<p class="fee">Your fee on that would have been ' + lowFee + '–' + highFee + ' (25% of recovered).</p>' +
-      '<p class="disclaimer">Estimate based on your real uncollected invoices and typical recovery rates by decline type. ' +
-        'Actual results vary — you\'re only ever charged on payments we truly bring back.</p>';
+      '<p class="disclaimer">The invoices and amounts above are your real Stripe data. The recovery range ' +
+        'applies deliberately conservative assumptions by decline type, not measured results, because we ' +
+        'have no customer results to quote yet. <a href="https://recoverflow.org/docs/backtest/" ' +
+        'style="color:#9fb0c0">How this is calculated</a>. You are only ever charged on payments we truly bring back.</p>';
   }
 
   async function poll(attempt) {
@@ -145,8 +147,25 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
   if (token) { panel.hidden = false; poll(0); }
 
-  // LinkedIn conversion: fires once, only on a real successful Stripe connect.
-  if (window.lintrk) window.lintrk('track', { conversion_id: 27372428 });
+  // Signup completed. Two guards, because this fired on every page load before and
+  // that overcounts: a merchant who refreshes, or opens this from history, was
+  // counted again each time, and LinkedIn optimises ad delivery against this number.
+  //   1. No token means they did not arrive from the Stripe callback, so nothing happened.
+  //   2. sessionStorage keyed on the token makes a reload of the same connect a no-op.
+  (function () {
+    if (!token) return;
+    var seen = 'rf_conv_' + token;
+    try {
+      if (sessionStorage.getItem(seen)) return;
+      sessionStorage.setItem(seen, '1');
+    } catch (_) { /* private mode: fall through and fire once */ }
+
+    if (window.lintrk) window.lintrk('track', { conversion_id: 27372428 });
+    if (window.gtag) gtag('event', 'signup_completed', {
+      event_category: 'funnel',
+      event_label: 'stripe_connected'
+    });
+  })();
 </script>
 </body>
 </html>
