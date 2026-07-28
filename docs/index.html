@@ -1004,11 +1004,38 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 // LinkedIn mid-funnel conversion: they filled the form and are heading to Stripe.
 // Separate from the block above, which returns early on reduced-motion/old browsers.
+//
+// This form does a real GET navigation to api.recoverflow.org, so firing the
+// pixel and letting the browser leave immediately loses the hit: if the LinkedIn
+// script has not loaded yet, lintrk() only pushes onto an in-memory queue that
+// dies with the page. Hold the navigation for a beat so the beacon can leave,
+// with a hard timeout so an ad blocker can never trap someone on the form.
 (function () {
   var form = document.getElementById('signupForm');
   if (!form) return;
-  form.addEventListener('submit', function () {
-    if (window.lintrk) window.lintrk('track', { conversion_id: 27372436 });
+  var leaving = false;
+
+  form.addEventListener('submit', function (e) {
+    if (leaving) return;            // our own re-submit below, let it through
+    e.preventDefault();
+    leaving = true;
+
+    var go = function () {
+      if (!go.done) { go.done = true; form.submit(); }
+    };
+    setTimeout(go, 400);            // upper bound on the wait, always fires
+
+    try {
+      if (window.lintrk) window.lintrk('track', { conversion_id: 27372436 });
+      if (window.gtag) gtag('event', 'signup_started', {
+        event_category: 'funnel',
+        event_label: 'stripe_connect_redirect',
+        transport_type: 'beacon',
+        event_callback: go            // leave early once GA has flushed
+      });
+    } catch (err) {
+      go();                           // never let a tracking failure block signup
+    }
   });
 })();
 </script>
