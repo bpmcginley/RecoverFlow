@@ -30,13 +30,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Free Tools for Stripe Failed Payment Recovery</title>
-<meta name="description" content="Free browser-based tools for Stripe subscription recovery: a decline code reference, a retry schedule builder, and a recovery cost estimator. No signup, nothing stored.">
+<meta name="description" content="Free browser-based tools for Stripe subscription recovery: a decline code reference, a retry schedule builder, a dunning email generator, and a recovery cost estimator. No signup, nothing stored.">
 <link rel="canonical" href="https://recoverflow.org/tools/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RecoverFlow">
 <meta property="og:title" content="Free Tools for Stripe Failed Payment Recovery">
-<meta property="og:description" content="Decline code reference, retry schedule builder, and recovery cost estimator. Free, no signup.">
+<meta property="og:description" content="Decline code reference, retry schedule builder, dunning email generator, and recovery cost estimator. Free, no signup.">
 <meta property="og:url" content="https://recoverflow.org/tools/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -56,7 +56,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "itemListElement": [
         { "@type": "ListItem", "position": 1, "name": "Stripe decline codes explained", "url": "https://recoverflow.org/tools/decline-code-lookup/" },
         { "@type": "ListItem", "position": 2, "name": "Payment retry schedule builder", "url": "https://recoverflow.org/tools/retry-schedule-builder/" },
-        { "@type": "ListItem", "position": 3, "name": "Failed payment recovery estimator", "url": "https://recoverflow.org/tools/recovery-estimator/" }
+        { "@type": "ListItem", "position": 3, "name": "Dunning email generator", "url": "https://recoverflow.org/tools/dunning-email-generator/" },
+        { "@type": "ListItem", "position": 4, "name": "Failed payment recovery estimator", "url": "https://recoverflow.org/tools/recovery-estimator/" }
       ]
     }
   ]
@@ -188,7 +189,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <div class="wrap">
     <p class="eyebrow">Free tools</p>
     <h1>Tools for failed Stripe payments</h1>
-    <p class="lede">Three free tools for working out what your failed subscription payments are costing you and what to do about them. No signup, no email wall, and nothing you type is stored or sent anywhere.</p>
+    <p class="lede">Four free tools for working out what your failed subscription payments are costing you and what to do about them. No signup, no email wall, and nothing you type is stored or sent anywhere.</p>
 
     <div class="tool-grid">
       <a class="tool-card" href="/tools/decline-code-lookup/">
@@ -203,6 +204,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         <h3>Retry schedule builder</h3>
         <p>Pick a decline reason and get a retry and email schedule suited to it, plus a straight answer when retrying will not help at all. Shows what Stripe's own default already does first.</p>
         <span class="go">Build a schedule &rarr;</span>
+      </a>
+
+      <a class="tool-card" href="/tools/dunning-email-generator/">
+        <span class="ico" aria-hidden="true">&#9993;</span>
+        <h3>Dunning email generator</h3>
+        <p>Write the failed payment email that matches what actually went wrong. Pick the decline reason and sequence position, get subject lines and body copy you can paste straight into Stripe or your ESP.</p>
+        <span class="go">Generate an email &rarr;</span>
       </a>
 
       <a class="tool-card" href="/tools/recovery-estimator/">
@@ -222,7 +230,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>That is deliberate. RecoverFlow launched in July 2026 and has no customers to point at yet, so the only thing worth trading on is being accurate about a topic most content in this category gets wrong. If the tools are useful and the numbers are honest, that is a better argument than a testimonial we do not have.</p>
 
     <h2>What is not here yet</h2>
-    <p>A dunning email generator and a churn calculator are on the list. The churn calculator overlaps heavily with the recovery estimator, so it may end up folded into it rather than published as a near-duplicate page.</p>
+    <p>A churn calculator is the last item on the masterplan list. It overlaps heavily with the recovery estimator, which already computes annual loss, so it will most likely be folded into that page rather than published as a near-duplicate that competes with it in search.</p>
     <p>If there is something you would actually use, email <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a> and it will probably get built.</p>
 
     <div class="cta-box">

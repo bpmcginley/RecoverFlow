@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XNWPM9VELB');
+</script>
+<!-- LinkedIn Insight Tag -->
+<script type="text/javascript">
+_linkedin_partner_id = "9673204";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script><script type="text/javascript">
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
+</noscript>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dunning Email Generator and Templates (Free)</title>
+<meta name="description" content="Generate a failed payment email for your customers. Pick the decline reason and where you are in the sequence, and get subject lines and body copy you can paste straight into Stripe or your ESP.">
+<link rel="canonical" href="https://recoverflow.org/tools/dunning-email-generator/">
+<link rel="icon" type="image/png" href="/assets/logo-mark.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="RecoverFlow">
+<meta property="og:title" content="Dunning Email Generator and Templates (Free)">
+<meta property="og:description" content="Generate failed payment emails matched to the decline reason and sequence position. Free, no signup.">
+<meta property="og:url" content="https://recoverflow.org/tools/dunning-email-generator/">
+<meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "Dunning Email Generator",
+      "url": "https://recoverflow.org/tools/dunning-email-generator/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "Generates failed payment emails matched to the decline reason and position in the dunning sequence.",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "publisher": { "@type": "Organization", "name": "RecoverFlow", "url": "https://recoverflow.org/" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is a dunning email?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A dunning email is a message telling a customer that their payment failed and asking them to fix it, usually by updating their card. It is the communication half of failed payment recovery. Retries handle the case where money was temporarily unavailable, and dunning emails handle the case where the card itself needs replacing." }
+        },
+        {
+          "@type": "Question",
+          "name": "How many dunning emails should you send?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Three to four across a two week window is a common shape, roughly day 0, day 3, day 7 and a final notice around day 14. Fewer than three tends to under-recover simply because people miss email. More than four inside two weeks starts reading as harassment and rarely adds recovery." }
+        },
+        {
+          "@type": "Question",
+          "name": "Should a dunning email say why the card failed?",
+          "acceptedAnswer": { "@type": "Answer", "text": "For benign reasons such as an expired card or a wrong postcode, yes. Being specific tells the customer exactly what to fix. For fraud-related declines such as a card reported lost or stolen, Stripe advises presenting a generic decline instead, because a precise message is useful to a card thief." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Stripe send dunning emails already?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Stripe can send failed payment notifications, unpaid invoice reminders and card expiry notices using your branding settings. What Stripe does not let you control is the sequence, the timing between messages, the sender or the copy, which is the reason to write your own." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --bg: #ffffff; --bg-alt: #f5f6fc; --bg-elevated: #ffffff;
+    --text: #0f1222; --text-dim: #4b5266; --text-mute: #8a92a6;
+    --border: #e6e8f0; --border-strong: #d3d7e3;
+    --accent: #6366f1; --accent-2: #8b5cf6; --accent-3: #a855f7; --accent-ink: #ffffff;
+    --accent-grad: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #a855f7 100%);
+    --positive: #0e9f6e; --positive-bg: #e7f7f0; --warn: #b7791f;
+    --card-bg: #ffffff; --radius: 14px;
+    --shadow-sm: 0 1px 3px rgba(17,20,45,.06), 0 1px 2px rgba(17,20,45,.04);
+    --shadow-lg: 0 24px 60px -24px rgba(60,50,160,.35);
+    --ring: rgba(99,102,241,.35);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0b11; --bg-alt: #111320; --bg-elevated: #151827;
+      --text: #eef0f7; --text-dim: #a3abbf; --text-mute: #6f778c;
+      --border: #232637; --border-strong: #2f3346;
+      --accent: #818cf8; --accent-2: #a78bfa; --accent-3: #c084fc; --accent-ink: #ffffff;
+      --accent-grad: linear-gradient(135deg, #818cf8 0%, #a78bfa 55%, #c084fc 100%);
+      --positive: #34d399; --positive-bg: #0f2a20; --warn: #f0c070;
+      --card-bg: #131623;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
+      --shadow-lg: 0 24px 60px -24px rgba(0,0,0,.6);
+      --ring: rgba(129,140,248,.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  img { max-width: 100%; height: auto; }
+  a { color: var(--accent); }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  header {
+    padding: 18px 0; border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(12px); backdrop-filter: saturate(180%) blur(12px);
+    position: sticky; top: 0; z-index: 50;
+  }
+  header .wrap { max-width: 1080px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+  .logo span { background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .logo img { height: 30px; width: 30px; border-radius: 8px; box-shadow: var(--shadow-sm); }
+  nav a { color: var(--text-dim); text-decoration: none; margin-left: 22px; font-size: 0.95rem; font-weight: 500; }
+  nav a:hover { color: var(--text); }
+  nav a.nav-cta { border: 1px solid var(--border-strong); border-radius: 10px; padding: 8px 16px; color: var(--text); font-weight: 600; }
+  nav a.nav-cta:hover { border-color: var(--accent); color: var(--accent); }
+
+  main { padding: 52px 0 40px; }
+  .eyebrow { color: var(--accent); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; margin: 0 0 12px; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.9rem, 4.4vw, 2.7rem); line-height: 1.12; letter-spacing: -0.03em; margin: 0 0 14px; }
+  .lede { color: var(--text-dim); font-size: 1.06rem; margin: 0 0 30px; }
+  h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.45rem; letter-spacing: -0.02em; margin: 46px 0 14px; }
+  h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; margin: 26px 0 8px; }
+  p { margin: 0 0 18px; }
+  ul, ol { margin: 0 0 18px; padding-left: 24px; }
+  li { margin-bottom: 9px; }
+  code { font-family: var(--font-mono); font-size: 0.9em; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+
+  .gen { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 28px; box-shadow: var(--shadow-lg); margin: 0 0 26px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .field { margin-bottom: 18px; }
+  .field label { display: block; font-weight: 600; font-size: 0.94rem; margin-bottom: 6px; }
+  input[type="text"], select {
+    width: 100%; padding: 11px 13px; font-family: var(--font-body); font-size: 0.98rem;
+    color: var(--text); background: var(--bg); border: 1px solid var(--border-strong); border-radius: 10px;
+  }
+  input:focus, select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+  .checkline { display: flex; align-items: center; gap: 9px; font-size: 0.94rem; }
+  .checkline input { width: auto; accent-color: var(--accent); }
+
+  .output { background: var(--bg-alt); border: 1px solid var(--border); border-radius: 16px; padding: 24px 26px; margin: 0 0 22px; }
+  .output h3 { margin-top: 0; }
+  .subjects { list-style: none; padding: 0; margin: 0 0 20px; }
+  .subjects li {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 8px; font-size: 0.95rem; display: flex; gap: 10px; align-items: baseline;
+  }
+  .subjects .n { color: var(--text-mute); font-size: 0.8rem; font-weight: 600; min-width: 14px; }
+  .body-box {
+    background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px 20px; white-space: pre-wrap; font-size: 0.95rem; line-height: 1.7; margin: 0 0 14px;
+  }
+  .meta { font-size: 0.88rem; color: var(--text-dim); margin: 0; }
+  .copy-btn {
+    display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border-radius: 9px;
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text);
+    font-family: var(--font-body); font-size: 0.9rem; font-weight: 600; cursor: pointer;
+  }
+  .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .callout { background: var(--positive-bg); border: 1px solid color-mix(in srgb, var(--positive) 30%, transparent); border-radius: 12px; padding: 18px 20px; margin: 0 0 24px; }
+  .callout p { margin: 0; } .callout p + p { margin-top: 10px; }
+  .warn-box { background: var(--bg-alt); border: 1px solid var(--border); border-left: 3px solid var(--warn); border-radius: 12px; padding: 18px 20px; margin: 0 0 24px; }
+  .warn-box p { margin: 0; } .warn-box p + p { margin-top: 10px; }
+
+  .faq h3 { margin-bottom: 6px; }
+  .cta-box { margin: 44px 0 8px; padding: 28px; border-radius: 16px; background: var(--bg-alt); border: 1px solid var(--border); text-align: center; }
+  .cta-box h2 { margin: 0 0 8px; }
+  .cta-box p { color: var(--text-dim); margin: 0 0 18px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 13px 26px; border-radius: 11px; font-family: var(--font-body);
+    font-weight: 600; font-size: 0.98rem; text-decoration: none;
+    background: var(--accent-grad); color: var(--accent-ink);
+    box-shadow: 0 8px 22px -8px var(--ring), var(--shadow-sm);
+    transition: transform .16s ease, filter .16s ease;
+  }
+  .btn:hover { transform: translateY(-2px); filter: saturate(1.05) brightness(1.03); }
+
+  footer { border-top: 1px solid var(--border); padding: 36px 0; text-align: center; color: var(--text-mute); font-size: 0.88rem; }
+  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+  .footer-trust { margin-bottom: 10px; font-size: 0.85rem; color: var(--text-dim); }
+
+  @media (max-width: 700px) { .row { grid-template-columns: 1fr; } }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 18px; }
+    nav a:not(.nav-cta) { display: none; }
+    .gen { padding: 22px 18px; }
+    .output { padding: 20px 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
+    <nav>
+      <a href="/pricing/">Pricing</a>
+      <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <p class="eyebrow">Free tool</p>
+    <h1>Dunning email generator</h1>
+    <p class="lede">Write the failed payment email that actually matches what went wrong. Pick the decline reason and where you are in the sequence, and paste the result into Stripe, your ESP, or wherever you send from.</p>
+
+    <div class="gen">
+      <div class="row">
+        <div class="field">
+          <label for="company">Your company name</label>
+          <input type="text" id="company" value="Acme" autocomplete="off">
+        </div>
+        <div class="field">
+          <label for="product">What they are subscribed to</label>
+          <input type="text" id="product" value="your Acme subscription" autocomplete="off">
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="reason">Why the payment failed</label>
+          <select id="reason">
+            <option value="expired">Expired card</option>
+            <option value="funds">Insufficient funds</option>
+            <option value="data">Wrong card details entered</option>
+            <option value="generic">Generic decline, reason unclear</option>
+            <option value="hard">Lost, stolen or blocked card</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="step">Where in the sequence</label>
+          <select id="step">
+            <option value="1">First email, day 0</option>
+            <option value="2">Second email, around day 3</option>
+            <option value="3">Third email, around day 7</option>
+            <option value="4">Final notice, around day 14</option>
+          </select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field">
+          <label for="tone">Tone</label>
+          <select id="tone">
+            <option value="warm">Warm and casual</option>
+            <option value="neutral">Neutral and professional</option>
+            <option value="direct">Short and direct</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="link">Update link text or URL</label>
+          <input type="text" id="link" value="https://billing.acme.com/update" autocomplete="off">
+        </div>
+      </div>
+      <div class="field checkline">
+        <input type="checkbox" id="signoff" checked>
+        <label for="signoff" style="margin:0;font-weight:500;">Sign off from a named person rather than the company</label>
+      </div>
+    </div>
+
+    <div id="out" aria-live="polite"></div>
+
+    <div class="warn-box" id="reasonWarn"></div>
+
+    <h2>What makes these work</h2>
+    <ul>
+      <li><strong>Say what actually happened.</strong> "Your card ending 4242 has expired" beats "there was a problem with your payment". Vagueness makes people assume it is spam.</li>
+      <li><strong>One link, one action.</strong> Every extra choice costs you conversions. The update link should work without a login wall if you can manage it.</li>
+      <li><strong>Do not lead with threat.</strong> Access loss belongs in the third or fourth email, not the first. Opening with a deadline on day zero reads as aggressive for something that is usually an honest mistake.</li>
+      <li><strong>Plain text beats a designed template.</strong> A message that looks like a person wrote it gets opened and clicked more than a banner-and-button layout, and it lands in the inbox more reliably.</li>
+      <li><strong>Send from a real address.</strong> A no-reply sender tells the customer you do not want to hear from them, which is the wrong message when you are asking for a favour.</li>
+    </ul>
+
+    <div class="callout">
+      <p><strong>Match the email to the decline code.</strong> An expired card and an insufficient funds decline need completely different messages. One needs a new card, the other needs you to wait until payday and try again. Sending the same email for both wastes the one you send too early and misses the one that needed urgency. The <a href="/tools/decline-code-lookup/">decline code reference</a> covers which is which.</p>
+    </div>
+
+    <h2>A sequence that holds together</h2>
+    <ol>
+      <li><strong>Day 0, heads-up.</strong> Friendly, specific, no pressure. Most recoveries happen here.</li>
+      <li><strong>Day 3, reminder.</strong> Same facts, different subject line, slightly more direct.</li>
+      <li><strong>Day 7, consequence stated plainly.</strong> Say what happens and when, without drama.</li>
+      <li><strong>Day 14, final notice.</strong> Last chance, then stop. Continuing past this converts rarely and annoys reliably.</li>
+    </ol>
+    <p>Three to four emails across two weeks is a sane default. It also matches the two week window Stripe's own retry schedule defaults to, so your emails and your retries finish together rather than one running long.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <div class="faq">
+      <h3>What is a dunning email?</h3>
+      <p>A message telling a customer their payment failed and asking them to fix it. It is the communication half of recovery. Retries handle money that was temporarily unavailable. Emails handle cards that need replacing.</p>
+
+      <h3>How many dunning emails should you send?</h3>
+      <p>Three to four across two weeks. Fewer under-recovers simply because people miss email. More starts reading as harassment and rarely adds anything.</p>
+
+      <h3>Should a dunning email say why the card failed?</h3>
+      <p>For benign reasons such as an expired card, yes, because it tells them exactly what to fix. For fraud-related declines Stripe advises a generic message instead, since a precise one is useful to a card thief.</p>
+
+      <h3>Does Stripe send dunning emails already?</h3>
+      <p>Yes, using your branding settings. What you cannot control there is the sequence, the timing, the sender or the copy, which is the reason to write your own. See the <a href="/compare/stripe-native/">Stripe comparison</a>.</p>
+    </div>
+
+    <div class="cta-box">
+      <h2>Or have them sent for you</h2>
+      <p>RecoverFlow sends sequences like these automatically, matched to the decline reason, and tracks which ones actually recovered money. Start with a free 90 day scan of what you have been losing.</p>
+      <a class="btn" href="/">Run the free 90 day scan</a>
+    </div>
+
+    <p style="margin-top:26px;font-size:0.88rem;color:var(--text-mute);">These are starting points, not tested winners. RecoverFlow launched in July 2026 and does not have open or click benchmarks of its own to publish, so nothing here claims a conversion rate. Edit them to sound like you, then test.</p>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/tools/">All tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/recover-failed-stripe-payments/">Recovery guide</a></div>
+    RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  var els = ['company','product','reason','step','tone','link','signoff'].map($);
+  var out = $('out'), warn = $('reasonWarn');
+
+  var REASON = {
+    expired: {
+      what: 'your card on file has expired',
+      fix: 'add a new card',
+      warn: 'An expired card cannot be recovered by retrying. It needs a new card number, so this email is doing all the work. Send it immediately rather than waiting for retries to fail first.'
+    },
+    funds: {
+      what: 'the payment was declined for insufficient funds',
+      fix: 'make sure the card has funds available, or use a different one',
+      warn: 'Insufficient funds is often recovered by retrying at a better time, so the email is a backstop rather than the main mechanism. Keep the first one soft. Many of these resolve on their own by the next payday.'
+    },
+    data: {
+      what: 'the card details did not go through',
+      fix: 're-enter your card details',
+      warn: 'Wrong card data will fail identically on every retry, so nothing changes until the customer re-enters it. Be specific about what was wrong if you know, since this is a benign decline and clarity helps.'
+    },
+    generic: {
+      what: 'the payment was declined by the bank',
+      fix: 'try again or use a different card',
+      warn: 'A generic decline tells you very little. Keep the message vague to match, suggest a different card early, and lean on the email since you cannot tell whether retrying will ever work.'
+    },
+    hard: {
+      what: 'the payment could not be completed',
+      fix: 'add a different payment method',
+      warn: 'This covers lost, stolen and blocked cards. Stripe advises presenting these as a generic decline, so the copy here deliberately does NOT say the card was reported stolen. Telling a card thief that is useful to them, not to you. Retries will not execute on these at all, so email is the only path.'
+    }
+  };
+
+  var OPENERS = {
+    warm:    { hi: 'Hi {first},', close: 'Thanks,', tone: 'whenever suits you' },
+    neutral: { hi: 'Hello {first},', close: 'Best regards,', tone: 'at your convenience' },
+    direct:  { hi: '{first},', close: 'Thanks,', tone: 'when you get a minute' }
+  };
+
+  function subjects(step, reason, company) {
+    var s = {
+      1: ['Your ' + company + ' payment did not go through',
+          'Quick heads-up about your ' + company + ' payment',
+          'Small problem with your card'],
+      2: ['Still not able to take payment for ' + company,
+          'Reminder: your ' + company + ' payment needs attention',
+          'Your card is still declining'],
+      3: ['Your ' + company + ' subscription is at risk',
+          'Action needed to keep your ' + company + ' account',
+          'We have not been able to take payment'],
+      4: ['Final notice about your ' + company + ' subscription',
+          'Last chance to keep your ' + company + ' account active',
+          'Your subscription will be cancelled shortly']
+    };
+    if (reason === 'expired' && step === 1) {
+      s[1] = ['Your card on file has expired',
+              'Time to update your card for ' + company,
+              'Your ' + company + ' payment needs a new card'];
+    }
+    return s[step];
+  }
+
+  function body(v) {
+    var r = REASON[v.reason], t = OPENERS[v.tone];
+    var hi = t.hi.replace('{first}', '{{first_name}}');
+    var sign = v.signoff ? (t.close + '\n{{your_name}}\n' + v.company) : (t.close + '\nThe ' + v.company + ' team');
+    var p = [];
+
+    p.push(hi);
+
+    if (v.step === 1) {
+      p.push('We tried to charge for ' + v.product + ' and it did not go through, because ' + r.what + '.');
+      p.push('Nothing has changed on your account and you have not lost access. If you can ' + r.fix + ' ' + t.tone + ', that will sort it:');
+      p.push(v.link);
+      p.push('If you think this is a mistake, just reply to this email and I will look into it.');
+    } else if (v.step === 2) {
+      p.push('Following up on the payment for ' + v.product + '. It is still not going through, because ' + r.what + '.');
+      p.push('You can ' + r.fix + ' here:');
+      p.push(v.link);
+      p.push('Your account is still active for now. Reply if anything looks wrong on your end.');
+    } else if (v.step === 3) {
+      p.push('We still have not been able to take payment for ' + v.product + '. The reason is that ' + r.what + '.');
+      p.push('To be upfront about what happens next: if the payment has not gone through in the next week, the subscription will be cancelled and access will stop.');
+      p.push('You can fix it in under a minute here:');
+      p.push(v.link);
+      p.push('If you would rather cancel, that is completely fine, just reply and let me know so I can stop emailing you.');
+    } else {
+      p.push('This is the last email about the payment for ' + v.product + '.');
+      p.push('We have tried several times and it has not gone through, because ' + r.what + '. The subscription will be cancelled shortly.');
+      p.push('If you want to keep it, this link still works:');
+      p.push(v.link);
+      p.push('If not, no hard feelings and thanks for using ' + v.company + '. Your data will be kept for a while in case you come back.');
+    }
+
+    p.push(sign);
+    return p.join('\n\n');
+  }
+
+  function render() {
+    var v = {
+      company: ($('company').value || 'our service').trim(),
+      product: ($('product').value || 'your subscription').trim(),
+      reason: $('reason').value,
+      step: parseInt($('step').value, 10),
+      tone: $('tone').value,
+      link: ($('link').value || '[your update link]').trim(),
+      signoff: $('signoff').checked
+    };
+
+    var subs = subjects(v.step, v.reason, v.company);
+    var text = body(v);
+    var preview = v.step === 1
+      ? 'A quick note about the card on your account'
+      : (v.step === 4 ? 'Last chance before we close the subscription' : 'Your payment is still not going through');
+
+    out.innerHTML =
+      '<div class="output">' +
+        '<h3>Subject line options</h3>' +
+        '<ul class="subjects">' + subs.map(function (s, i) {
+          return '<li><span class="n">' + (i + 1) + '</span><span>' + s.replace(/</g,'&lt;') + '</span></li>';
+        }).join('') + '</ul>' +
+        '<h3>Preview text</h3>' +
+        '<div class="body-box">' + preview + '</div>' +
+        '<h3>Email body</h3>' +
+        '<div class="body-box" id="bodyText">' + text.replace(/</g,'&lt;') + '</div>' +
+        '<button class="copy-btn" id="copyBtn">Copy email body</button>' +
+        '<p class="meta" style="margin-top:14px;">Merge fields <code>{{first_name}}</code> and <code>{{your_name}}</code> are left in place. Swap them for whatever your sending tool uses.</p>' +
+      '</div>';
+
+    warn.innerHTML = '<p><strong>About this decline reason.</strong> ' + REASON[v.reason].warn + '</p>';
+
+    $('copyBtn').addEventListener('click', function () {
+      var btn = this;
+      navigator.clipboard.writeText(text).then(function () {
+        btn.textContent = 'Copied';
+        setTimeout(function () { btn.textContent = 'Copy email body'; }, 1600);
+      }).catch(function () {
+        btn.textContent = 'Press Ctrl C to copy';
+      });
+    });
+  }
+
+  els.forEach(function (el) {
+    el.addEventListener('input', render);
+    el.addEventListener('change', render);
+  });
+  render();
+})();
+</script>
+
+</body>
+</html>
