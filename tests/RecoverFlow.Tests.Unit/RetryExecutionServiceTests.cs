@@ -111,11 +111,29 @@ public class RetryExecutionServiceTests
     public async Task Hard_decline_on_retry_stops_and_marks_the_case_lost()
     {
         var (payment, attempt) = Seed();
-        _payer.NextResult = InvoicePayResult.Declined("stolen_card", "declined");
+        _payer.NextResult = InvoicePayResult.Declined("fraudulent", "declined");
 
         await Service().ExecuteAsync(attempt.Id);
 
         Assert.Equal(RecoveryStatus.Lost, payment.Status);
+        Assert.Empty(_scheduler.Scheduled);
+    }
+
+    // A reissue is the most recoverable failure there is: the customer already has
+    // the new card. Stop retrying, but keep the case open for the card-update flow
+    // rather than writing it off.
+    [Theory]
+    [InlineData("stolen_card")]
+    [InlineData("lost_card")]
+    [InlineData("pickup_card")]
+    public async Task Reissued_card_declines_stop_retries_but_keep_the_case_open(string code)
+    {
+        var (payment, attempt) = Seed();
+        _payer.NextResult = InvoicePayResult.Declined(code, "declined");
+
+        await Service().ExecuteAsync(attempt.Id);
+
+        Assert.Equal(RecoveryStatus.ActiveRecovery, payment.Status);
         Assert.Empty(_scheduler.Scheduled);
     }
 

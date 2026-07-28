@@ -92,7 +92,7 @@ public sealed class RetryExecutionService(
             // anything else with no retry left is lost.
             payment.Status = RecoveryStatus.Lost;
             payment.LostAt = DateTime.UtcNow;
-            log.LogInformation("Retries exhausted for invoice {InvoiceId} — marked lost", payment.StripeInvoiceId);
+            log.LogInformation("Retries exhausted for invoice {InvoiceId}, marked lost", payment.StripeInvoiceId);
         }
         return next;
     }

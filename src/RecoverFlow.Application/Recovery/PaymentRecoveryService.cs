@@ -100,7 +100,7 @@ public sealed class PaymentRecoveryService(
     {
         if (!DeclineCodeClassifier.ShouldRetry(payment.DeclineCode))
         {
-            log.LogInformation("Hard decline {DeclineCode} on invoice {InvoiceId} — no retry", payment.DeclineCode, payment.StripeInvoiceId);
+            log.LogInformation("Hard decline {DeclineCode} on invoice {InvoiceId}, no retry scheduled", payment.DeclineCode, payment.StripeInvoiceId);
             return null;
         }
 
