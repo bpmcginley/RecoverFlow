@@ -510,11 +510,16 @@ AUDIT_BODY = """<main>
 
     <h2 id="back">What you get back</h2>
     <ul>
-      <li>What that failure volume is likely costing you a year, with the arithmetic shown so you can check it.</li>
-      <li>Roughly how much of it sits on decline codes where <strong>no retry can ever work</strong>, because the card is gone rather than temporarily short. That share decides whether this is a retry problem or an email problem, and they need completely different fixes.</li>
+      <li>What that failure volume is costing you a month and a year, with the arithmetic written out so you can check every step.</li>
       <li>What Stripe already does for you for free, which is more than most people realise.</li>
-      <li>Whether anything else is worth paying for. Sometimes it is not.</li>
+      <li>A second question that turns the estimate into something precise. More on that below.</li>
     </ul>
+
+    <h2 id="two-step">Why it takes two replies, not one</h2>
+    <p>Three numbers tell me your <em>volume</em>. They cannot tell me your <em>decline mix</em>, and the mix is what actually matters, because it decides whether you have a retry problem or an email problem. Those need completely different fixes and one of them is free.</p>
+    <p>I could put an industry-average percentage in the first reply. I am not going to, because I would be making it up, and a number I cannot source is worth less than no number at all.</p>
+    <p>So the first reply gives you the cost, and asks you to do one five-minute thing: open Stripe, filter invoices to unpaid, look at the last twenty or so, and tell me which decline codes come up. The <a href="/tools/decline-code-lookup/">free lookup on this site</a> explains what each one means if any are unfamiliar.</p>
+    <p>With that, the second reply tells you how much of your failed revenue is reachable at all, how much needs a new card rather than another attempt, and whether Stripe's free retries already cover the reachable part. Every figure traces back to your data rather than to a benchmark somebody invented.</p>
 
     <h2 id="catch">The catch, stated plainly</h2>
     <p>I built RecoverFlow, so I am obviously not a neutral party. Two things make this worth your fifteen minutes anyway.</p>
