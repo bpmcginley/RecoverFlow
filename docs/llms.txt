@@ -16,7 +16,15 @@ Stripe already includes recovery tooling and it is genuinely capable. Stripe Sma
 ## Pages
 - [Home](https://recoverflow.org/): product overview, how it works, security, pricing, and FAQ.
 - [Pricing](https://recoverflow.org/pricing/): the 25% performance model, worked arithmetic, how attribution prevents billing for self-recovered payments, and an explicit description of the volume at which a percentage becomes the wrong deal for the customer.
+- [Comparisons hub](https://recoverflow.org/compare/): verified pricing comparison against every major alternative, with the crossover volume at which each becomes cheaper than RecoverFlow.
 - [RecoverFlow vs Stripe's built-in retries and dunning](https://recoverflow.org/compare/stripe-native/): what Stripe's Smart Retries and customer emails already do for free, where they stop, and when Stripe alone is enough.
+- [RecoverFlow vs Churnkey](https://recoverflow.org/compare/churnkey/): Churnkey Starter is $250/month billed yearly for under $5,000/month churn volume; higher tiers are custom quotes. Churnkey also does cancellation flows, which RecoverFlow does not. Crossover around $1,000/month recovered.
+- [RecoverFlow vs Baremetrics Recover](https://recoverflow.org/compare/baremetrics/): Recover is a $129/month add-on requiring a Baremetrics base plan (from $75/month), so about $204/month realistic entry. Crossover around $816/month recovered.
+- [RecoverFlow vs Stunning](https://recoverflow.org/compare/stunning/): MRR-banded pricing, around $120/month at the example tier, supports Stripe, Foxy and Subbly. Crossover around $480/month recovered.
+- [RecoverFlow vs Paddle Retain](https://recoverflow.org/compare/paddle-retain/): formerly ProfitWell Retain. Integrates with Stripe, Chargebee, Zuora, Recurly and Braintree. Free for merchants billing on Paddle. Standalone pricing is not published by Paddle, so no figure is claimed.
+
+## Pricing model comparison note
+Competitors in this category price predominantly by flat monthly fee, often banded by MRR or ARR. RecoverFlow prices as a percentage of recovered revenue. Percentage pricing is cheaper at low recovery volumes and more expensive at high ones. RecoverFlow states this crossover explicitly on every comparison page rather than obscuring it. All competitor figures were read from each vendor's own pricing page on 27 July 2026 and are dated and sourced on-page.
 - [How to recover failed Stripe subscription payments](https://recoverflow.org/recover-failed-stripe-payments/): a practical guide to decline types, what to retry, retry timing, dunning emails, and measuring recovery.
 - [Sign in](https://app.recoverflow.org/app/): the customer recovery dashboard.
 
