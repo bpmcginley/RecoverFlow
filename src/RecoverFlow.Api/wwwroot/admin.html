@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>RecoverFlow internal</title>
+<style>
+  :root {
+    --bg:#0a0b11; --panel:#131623; --line:#232637; --text:#eef0f7;
+    --dim:#a3abbf; --mute:#6f778c; --accent:#818cf8; --pos:#34d399; --warn:#f0c070;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg:#f5f6fc; --panel:#fff; --line:#e6e8f0; --text:#0f1222;
+            --dim:#4b5266; --mute:#8a92a6; --accent:#6366f1; --pos:#0e9f6e; --warn:#b7791f; }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 64px}
+  h1{font-size:1.5rem;margin:0 0 4px}
+  .sub{color:var(--mute);font-size:.9rem;margin:0 0 24px}
+  .bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
+  input,button,select{font:inherit;padding:9px 12px;border-radius:9px;border:1px solid var(--line);
+    background:var(--panel);color:var(--text)}
+  button{background:var(--accent);color:#fff;border:0;cursor:pointer;font-weight:600}
+  button:disabled{opacity:.5;cursor:default}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:28px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+  .card .n{font-size:1.7rem;font-weight:700;letter-spacing:-.02em}
+  .card .l{color:var(--mute);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
+  h2{font-size:1rem;margin:28px 0 10px;color:var(--dim)}
+  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
+  table{border-collapse:collapse;width:100%;font-size:.88rem}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+  th{color:var(--mute);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.04em}
+  tr:last-child td{border-bottom:0}
+  .pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:.75rem;border:1px solid var(--line)}
+  .yes{color:var(--pos);border-color:var(--pos)}
+  .no{color:var(--mute)}
+  .spark{display:flex;align-items:flex-end;gap:3px;height:56px;margin-bottom:6px}
+  .spark div{flex:1;background:var(--accent);border-radius:2px 2px 0 0;min-height:2px}
+  .empty{padding:28px;text-align:center;color:var(--mute)}
+  .err{color:var(--warn);margin-top:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>RecoverFlow internal</h1>
+  <p class="sub">Signups and connect-time backtests, read straight from the database. Traffic and
+     click data are not here, they live in GA4.</p>
+
+  <div class="bar">
+    <input id="key" type="password" placeholder="Admin key" style="flex:1;min-width:220px">
+    <select id="days">
+      <option value="7">7 days</option>
+      <option value="30" selected>30 days</option>
+      <option value="90">90 days</option>
+    </select>
+    <button id="go">Load</button>
+  </div>
+  <div id="err" class="err"></div>
+  <div id="out" hidden>
+    <div class="cards" id="cards"></div>
+    <h2 id="sparkLabel">Signups per day</h2>
+    <div class="spark" id="spark"></div>
+    <h2>Merchants</h2>
+    <div class="scroll" id="merchants"></div>
+    <h2>Backtests</h2>
+    <div class="scroll" id="backtests"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var $ = function (id) { return document.getElementById(id); };
+  // sessionStorage, not localStorage: the key dies with the tab rather than
+  // sitting on disk on whatever machine this was last opened on.
+  $('key').value = sessionStorage.getItem('rf_admin_key') || '';
+
+  function money(cents, cur) {
+    return (cents / 100).toLocaleString(undefined,
+      { style: 'currency', currency: (cur || 'usd').toUpperCase(), maximumFractionDigits: 0 });
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  function table(el, cols, rows, render) {
+    if (!rows.length) { el.innerHTML = '<div class="empty">Nothing yet.</div>'; return; }
+    el.innerHTML = '<table><thead><tr>' + cols.map(function (c) {
+      return '<th>' + esc(c) + '</th>';
+    }).join('') + '</tr></thead><tbody>' + rows.map(render).join('') + '</tbody></table>';
+  }
+
+  function load() {
+    var key = $('key').value.trim();
+    if (!key) { $('err').textContent = 'Enter the admin key.'; return; }
+    sessionStorage.setItem('rf_admin_key', key);
+    $('err').textContent = '';
+    $('go').disabled = true;
+
+    fetch('/v1/admin/stats?days=' + $('days').value, { headers: { 'X-Admin-Key': key } })
+      .then(function (r) {
+        if (r.status === 401) throw new Error('Key rejected.');
+        if (r.status === 404) throw new Error('Admin endpoint is off. Set Admin__ApiKey in Render and redeploy.');
+        if (!r.ok) throw new Error('Request failed: ' + r.status);
+        return r.json();
+      })
+      .then(render)
+      .catch(function (e) { $('err').textContent = e.message; })
+      .finally(function () { $('go').disabled = false; });
+  }
+
+  function render(d) {
+    $('out').hidden = false;
+    var t = d.totals;
+    var recovered = (d.recoveryCases || []).filter(function (c) { return c.status === 'Recovered'; });
+    var recoveredCents = recovered.reduce(function (s, c) { return s + c.cents; }, 0);
+
+    $('cards').innerHTML = [
+      ['Merchants', t.merchants],
+      ['Stripe connected', t.connected],
+      ['New in window', t.signupsInWindow],
+      ['Backtests run', t.backtests],
+      ['Failed revenue scanned', money(t.failedAmountCentsScanned)],
+      ['Recovered to date', money(recoveredCents)]
+    ].map(function (c) {
+      return '<div class="card"><div class="l">' + esc(c[0]) + '</div><div class="n">' + esc(c[1]) + '</div></div>';
+    }).join('');
+
+    var days = d.signupsByDay || [];
+    $('sparkLabel').textContent = 'Signups per day (' + d.windowDays + ' days)';
+    if (!days.length) {
+      $('spark').innerHTML = '<div style="flex:1;background:none;color:var(--mute);font-size:.85rem">No signups in this window.</div>';
+    } else {
+      var max = Math.max.apply(null, days.map(function (x) { return x.count; }));
+      $('spark').innerHTML = days.map(function (x) {
+        return '<div title="' + esc(x.date + ': ' + x.count) + '" style="height:' +
+          Math.round(x.count / max * 100) + '%"></div>';
+      }).join('');
+    }
+
+    table($('merchants'), ['Company', 'Email', 'Plan', 'Connected', 'Signed up'],
+      d.merchants || [], function (m) {
+        return '<tr><td>' + esc(m.companyName) + '</td><td>' + esc(m.email) + '</td><td>' +
+          esc(m.plan) + '</td><td><span class="pill ' + (m.connected ? 'yes">yes' : 'no">no') +
+          '</span></td><td>' + esc(new Date(m.createdAt).toLocaleString()) + '</td></tr>';
+      });
+
+    table($('backtests'), ['Status', 'Failed invoices', 'Failed amount', 'Recoverable est.', 'Run'],
+      d.backtests || [], function (b) {
+        return '<tr><td>' + esc(b.status) + '</td><td>' + esc(b.failedInvoiceCount) + '</td><td>' +
+          money(b.failedAmountCents, b.currency) + '</td><td>' +
+          money(b.recoverableLowCents, b.currency) + ' to ' + money(b.recoverableHighCents, b.currency) +
+          '</td><td>' + esc(new Date(b.createdAtUtc).toLocaleString()) + '</td></tr>';
+      });
+  }
+
+  $('go').addEventListener('click', load);
+  $('key').addEventListener('keydown', function (e) { if (e.key === 'Enter') load(); });
+})();
+</script>
+</body>
+</html>

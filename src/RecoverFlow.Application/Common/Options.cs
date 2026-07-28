@@ -61,6 +61,19 @@ public sealed class BacktestOptions
     public int MaxInvoices { get; set; } = 200;
 }
 
+public sealed class AdminOptions
+{
+    public const string Section = "Admin";
+
+    /// <summary>
+    /// Guards the internal signup dashboard. Ships EMPTY, which makes the whole admin
+    /// surface return 404 rather than 401, so an unconfigured deployment does not even
+    /// advertise that it exists. Set Admin__ApiKey in the environment to switch it on,
+    /// and treat it like any other secret: these endpoints expose merchant email addresses.
+    /// </summary>
+    public string ApiKey { get; set; } = "";
+}
+
 public sealed class AppOptions
 {
     public const string Section = "App";
