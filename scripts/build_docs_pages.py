@@ -490,6 +490,61 @@ def build_changelog():
                  f"{SITE}/changelog/", body, schema)
 
 
+AUDIT_BODY = """<main>
+  <div class="wrap">
+    <p class="eyebrow">Free</p>
+    <h1>I will tell you what failed payments are costing you</h1>
+
+    <div class="answer">
+      <span class="label">The offer</span>
+      <p>Answer three questions in a reply. I send back a written breakdown of what you are probably losing to failed subscription payments, how much of it is genuinely recoverable, and whether Stripe's own free features already handle it.</p>
+      <p>No Stripe connection. No account. No card. No call unless you want one.</p>
+    </div>
+
+    <h2 id="questions">The three questions</h2>
+    <ol>
+      <li><strong>Roughly what is your monthly recurring revenue?</strong> A range is fine. "Somewhere around $40k" is enough.</li>
+      <li><strong>Roughly how many subscription payments fail in a month?</strong> If you do not know, say so. That is a useful answer too, and it is more common than you would think.</li>
+      <li><strong>What happens today when one fails?</strong> Stripe's default retries, a tool you already pay for, something you built, or nothing in particular.</li>
+    </ol>
+
+    <h2 id="back">What you get back</h2>
+    <ul>
+      <li>What that failure volume is likely costing you a year, with the arithmetic shown so you can check it.</li>
+      <li>Roughly how much of it sits on decline codes where <strong>no retry can ever work</strong>, because the card is gone rather than temporarily short. That share decides whether this is a retry problem or an email problem, and they need completely different fixes.</li>
+      <li>What Stripe already does for you for free, which is more than most people realise.</li>
+      <li>Whether anything else is worth paying for. Sometimes it is not.</li>
+    </ul>
+
+    <h2 id="catch">The catch, stated plainly</h2>
+    <p>I built RecoverFlow, so I am obviously not a neutral party. Two things make this worth your fifteen minutes anyway.</p>
+    <p>The first is that the numbers are yours and the arithmetic is shown, so you can check every step and ignore my conclusion if you disagree with it.</p>
+    <p>The second is that a real fraction of these end with me saying you do not need this. Stripe's built-in Smart Retries are genuinely capable, they cost nothing, and if your failures are mostly the kind Stripe already recovers then buying anything is a waste of your money. There is <a href="/compare/stripe-native/">a whole page here</a> about when that is the right call, written before I had any customers to lose by saying so.</p>
+
+    <h2 id="who">Who is on the other end</h2>
+    <p>Me. Bruce McGinley, one person in Massachusetts. Not a sales team, not a sequence, not a chatbot. If you reply, I read it and write back. More on the <a href="/about/">about page</a>, including what this product does not have yet.</p>
+
+    <div class="cta-band">
+      <h2>Send me the three answers</h2>
+      <p>Email <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a> with your MRR, roughly how many payments fail a month, and what you currently do about it. I will reply with the breakdown.</p>
+      <p style="color:var(--text-dim);">If you would rather work it out yourself, the <a href="/tools/recovery-estimator/">recovery estimator</a> does the same arithmetic in your browser and stores nothing.</p>
+      <a class="btn" href="mailto:admin@recoverflow.org?subject=Failed%20payment%20audit">Email me the three answers</a>
+    </div>
+  </div>
+</main>"""
+
+AUDIT_FAQS = [
+    ("Does the free audit require connecting my Stripe account?",
+     "No. It runs entirely off three numbers you send in a reply: your rough MRR, roughly how many subscription payments fail per month, and what you currently do when one fails. No Stripe access, no account and no card."),
+    ("What does the audit actually tell me?",
+     "What your failure volume is likely costing per year with the arithmetic shown, roughly how much of it sits on decline codes no retry can fix, what Stripe already does for free, and whether any paid tool is worth it for you."),
+    ("What if I do not know how many payments fail?",
+     "Say so. It is a common answer and still useful, because not knowing is itself the finding. Stripe's dashboard can show you, and the audit explains where to look."),
+    ("Is this just a sales pitch?",
+     "Partly, obviously, since I built the product. But the numbers are yours and the arithmetic is shown so you can check it, and a real share of these end with me saying Stripe's free features are enough and you should not buy anything."),
+]
+
+
 def write(path_slug, html):
     out = os.path.join(DOCS, *path_slug.split("/")) if path_slug else DOCS
     os.makedirs(out, exist_ok=True)
@@ -503,4 +558,27 @@ if __name__ == "__main__":
         slug = f"docs/{p['slug']}" if p["slug"] else "docs"
         write(slug, build_doc(p["slug"], p["title"], p["h1"], p["desc"], p["body"], p.get("faqs")))
     write("changelog", build_changelog())
-    print(f"\n{len(PAGES)} doc pages + changelog")
+
+    audit_schema = [{
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": "Free failed payment audit",
+        "provider": {"@type": "Person", "name": "Bruce McGinley"},
+        "description": "A written analysis of what failed Stripe subscription payments are costing you, from three numbers you send by email. No Stripe connection required.",
+        "url": f"{SITE}/audit/",
+        "areaServed": "US",
+    }, {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{"@type": "Question", "name": q,
+                        "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in AUDIT_FAQS],
+    }]
+    faq = "\n".join(['<h2 id="faq">Common questions</h2>', '<div class="faq">']
+                    + [f"  <details><summary>{q}</summary><p>{a}</p></details>" for q, a in AUDIT_FAQS]
+                    + ["</div>"])
+    write("audit", shell(
+        "Free failed payment audit | RecoverFlow",
+        "Send three numbers, get a written breakdown of what failed Stripe payments cost you and whether Stripe's free features already cover it. No connection needed.",
+        f"{SITE}/audit/", AUDIT_BODY.replace("</div>\n</main>", f"{faq}\n  </div>\n</main>"), audit_schema))
+
+    print(f"\n{len(PAGES)} doc pages + changelog + audit")
