@@ -29,15 +29,15 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </noscript>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Security | RecoverFlow</title>
-<meta name="description" content="How RecoverFlow connects to Stripe, what it can and cannot see, how merchant data is isolated, and an honest list of the certifications it does not yet hold.">
-<link rel="canonical" href="https://recoverflow.org/security/">
+<title>About RecoverFlow | Who builds it and how it makes money</title>
+<meta name="description" content="RecoverFlow is built by one person in Massachusetts. What stage it is at, how the 25% pricing works, and the rules this site is written under.">
+<link rel="canonical" href="https://recoverflow.org/about/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
-<meta property="og:type" content="website">
+<meta property="og:type" content="article">
 <meta property="og:site_name" content="RecoverFlow">
-<meta property="og:title" content="Security | RecoverFlow">
-<meta property="og:description" content="How RecoverFlow connects to Stripe, what it can and cannot see, how merchant data is isolated, and an honest list of the certifications it does not yet hold.">
-<meta property="og:url" content="https://recoverflow.org/security/">
+<meta property="og:title" content="About RecoverFlow | Who builds it and how it makes money">
+<meta property="og:description" content="RecoverFlow is built by one person in Massachusetts. What stage it is at, how the 25% pricing works, and the rules this site is written under.">
+<meta property="og:url" content="https://recoverflow.org/about/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -133,6 +133,30 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     .wrap { padding: 0 18px; }
     nav a:not(.nav-cta) { display: none; }
   }
+
+  .answer { border-left: 4px solid var(--accent); background: var(--bg-alt); padding: 20px 24px; border-radius: 0 var(--radius) var(--radius) 0; margin: 28px 0 34px; }
+  .answer .label { font-family: var(--font-display); font-size: .72rem; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); font-weight: 700; display: block; margin-bottom: 8px; }
+  .answer p { margin: 0 0 10px; font-size: 1.06rem; }
+  .answer p:last-child { margin-bottom: 0; }
+  .faq { margin-top: 12px; }
+  .faq details { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 10px; background: var(--card-bg); }
+  .faq summary { font-family: var(--font-display); font-weight: 600; cursor: pointer; }
+  .faq details p { margin: 12px 0 2px; color: var(--text-dim); }
+  .sources { border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; margin-top: 40px; background: var(--bg-alt); }
+  .sources h2 { margin-top: 0; font-size: 1.05rem; }
+  .sources ul { margin: 0; padding-left: 20px; }
+  .sources li { margin-bottom: 7px; color: var(--text-dim); font-size: .93rem; }
+  .related { margin-top: 40px; }
+  .card-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 18px; }
+  .card { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: var(--card-bg); }
+  .card h3 { margin: 0 0 8px; font-size: 1.02rem; }
+  .card h3 a { text-decoration: none; }
+  .card p { margin: 0; color: var(--text-dim); font-size: .93rem; }
+  .meta { color: var(--text-mute); font-size: .88rem; margin-bottom: 4px; }
+  .cta-band { border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 24px; margin-top: 44px; background: var(--bg-alt); }
+  .cta-band h2 { margin-top: 0; }
+  .cta-band .btn { display: inline-block; background: var(--accent-grad); color: var(--accent-ink); padding: 11px 22px; border-radius: 10px; text-decoration: none; font-weight: 600; font-family: var(--font-display); margin-top: 6px; }
+  code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt); padding: 2px 6px; border-radius: 5px; }
 </style>
 </head>
 <body>
@@ -152,64 +176,34 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <main>
   <div class="wrap">
-    <p class="eyebrow">Trust</p>
-    <h1>Security</h1>
-    <p class="updated">Last updated 28 July 2026</p>
+    <p class="eyebrow">About</p>
+    <h1>Who builds this</h1>
 
-    <p>You are being asked to connect the system that takes your money. That deserves a straight account of how the connection works, what we can and cannot reach, and what protections we do <em>not</em> yet have. This page includes the last part, which most security pages leave out.</p>
+    <p>RecoverFlow is built and run by one person, Bruce McGinley, from Massachusetts. There is no team, no investors and no support rota. When you email, I answer.</p>
 
-    <h2>How the connection works</h2>
+    <h2>Why it exists</h2>
+    <p>Subscription businesses lose money to payments that fail for reasons nobody chose: a card expired, a card was reissued, a bank balance was short on the wrong day. Stripe already does a good deal about this for free, and most of the advice online is written by companies with a strong interest in you not knowing that.</p>
+    <p>The gap that is actually worth filling is narrower than the marketing suggests. It is the failures where no retry can help, where the customer has to do something, and where what you say to them and when you say it decides whether you keep the subscription. That is what RecoverFlow works on.</p>
+
+    <h2>What stage it is at</h2>
+    <p>Early. Genuinely early. The product connects to Stripe, watches for failed subscription payments, decides which are worth retrying, emails the customers whose card needs replacing, and reports what it recovered and why.</p>
+    <p>What it does not have is a long list of logos to show you. I am not going to invent one. Everything on this site that looks like a statistic is either arithmetic you can check or a figure from Stripe's own documentation with a link to it.</p>
+
+    <h2>How it makes money</h2>
+    <p>25% of what it actually recovers, with a $29 monthly floor. If it recovers nothing beyond the floor, that is the whole bill. There is no contract and access is revoked from your own Stripe dashboard in two clicks, without asking me.</p>
+    <p>The <a href="/pricing/">pricing page</a> includes a section explaining when 25% is a bad deal for you and what to do instead, because at high recovery volumes it genuinely is.</p>
+
+    <h2>The rules this site is written under</h2>
     <ul>
-      <li>RecoverFlow connects through <strong>Stripe Connect OAuth</strong>. You authorise it from Stripe's own screen, not from a form we wrote.</li>
-      <li>We never ask for, and never receive, your Stripe API keys.</li>
-      <li>The access token we do receive is <strong>encrypted at rest</strong> in our database.</li>
-      <li><strong>You can revoke it in one click</strong> from your Stripe dashboard, at any time, without contacting us. That immediately ends our ability to read or act on your account.</li>
+      <li>No invented customers, quotes, testimonials or case studies.</li>
+      <li>No recovery rate percentages that cannot be traced to a source, and no "industry average" churn benchmarks, because the published ones are not trustworthy.</li>
+      <li>Competitor pricing is taken from their own public pages, dated, and marked "quote required" when it is not published rather than guessed at.</li>
+      <li>The free tools will sometimes tell you not to buy this. That is deliberate and they are not going to be changed.</li>
+      <li>Where Stripe's own free features are enough, the site says so. There is <a href="/compare/stripe-native/">a whole page</a> about it.</li>
     </ul>
 
-    <h2>What we never see</h2>
-    <div class="callout">
-      <p><strong>Card numbers, CVCs, expiry dates and bank details never reach our servers.</strong> Stripe holds all of it and performs every charge.</p>
-      <p>When a customer updates their card through a link in a recovery email, the form is built on Stripe's own hosted card elements. The card details go from the customer straight to Stripe. We receive only a reference to the new payment method, never the card itself.</p>
-      <p>This is why RecoverFlow falls under the lightest PCI scope, SAQ A. Not because we built clever infrastructure, but because we deliberately never touch the data in the first place.</p>
-    </div>
-    <p>We also never store passwords. Signing in uses a one-time link to your email address, so there is no password database to breach.</p>
-
-    <h2>How your data is separated from everyone else's</h2>
-    <ul>
-      <li>Every query against merchant data is <strong>scoped to a single merchant at the database layer</strong>, using query filters applied globally rather than remembered case by case. This is the protection that stops one merchant's data ever appearing in another's dashboard, and it is enforced in one place rather than trusted to every individual query.</li>
-      <li>Background jobs that legitimately run across all merchants, such as monthly billing, filter explicitly by merchant and are written to be safe to re-run.</li>
-    </ul>
-
-    <h2>Infrastructure</h2>
-    <ul>
-      <li>Hosted on <strong>Render</strong>, in a United States region, with a managed PostgreSQL database.</li>
-      <li>All traffic is over <strong>HTTPS</strong>. The marketing site, the API and the application all redirect plain HTTP to HTTPS.</li>
-      <li>Database encryption at rest is provided by the managed database.</li>
-      <li>Secrets are held as environment variables, not in the source code. The repository is public and contains no credentials.</li>
-      <li>Session and token-signing keys are persisted on a mounted disk so that a redeploy does not silently invalidate your session or your sign-in links.</li>
-    </ul>
-
-    <h2>Billing safety</h2>
-    <p>The billing path is the place where a bug costs you real money, so it is written defensively. Before any charge is created, the invoice record and the specific recovery cases it covers are written in a single atomic database transaction. If the process crashes at any point after that, the next run resumes that exact invoice rather than billing the same recoveries twice.</p>
-    <p>Fees are calculated in integer cents and rounded down, so rounding always favours you.</p>
-
-    <h2>What we do not have</h2>
-    <div class="lawyer">
-      <p>Being straight about the gaps, because you will find them out eventually anyway and it is better you hear it here.</p>
-      <p><strong>No SOC 2.</strong> Not Type I, not Type II. It is a months-long process and RecoverFlow launched in July 2026. If your procurement requires SOC 2, we do not meet your bar today and you should not buy.</p>
-      <p><strong>No third-party penetration test</strong> has been carried out yet.</p>
-      <p><strong>No ISO 27001</strong>, and no other formal certification.</p>
-      <p><strong>No SSO or SCIM</strong>, and no bug bounty programme.</p>
-      <p><strong>No 24/7 on-call.</strong> There is one person. Serious problems get attention quickly, but not instantly at 4am.</p>
-    </div>
-    <p>These are all on the roadmap. None of them are done. When any of them changes, this page changes with it and the date at the top will move.</p>
-
-    <h2>Reporting a vulnerability</h2>
-    <p>If you find a security problem, email <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a> with enough detail to reproduce it. It goes straight to Bruce.</p>
-    <p>There is no cash bounty, because there is no revenue to fund one yet. What you will get is a fast, non-defensive response, a fix, and public credit if you want it. Please give a reasonable window before disclosing publicly.</p>
-
-    <h2>Related</h2>
-    <p>The full list of sub-processors and exactly what data each one touches is in the <a href="/privacy/#subprocessors">privacy policy</a>. What we store, down to the field, is in <a href="/privacy/#collect">section 2</a> of the same document.</p>
+    <h2>Getting in touch</h2>
+    <p>Email <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>. If you are evaluating this for a company and need something formal, including a Data Processing Agreement, say so and it will be sorted out properly. More on the <a href="/contact/">contact page</a>.</p>
   </div>
 </main>
 

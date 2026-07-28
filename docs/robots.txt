@@ -2,3 +2,17 @@ User-agent: *
 Allow: /
 
 Sitemap: https://recoverflow.org/sitemap.xml
+
+# AI and answer-engine crawlers are welcome. A structured summary of this
+# site, including the claims it does and does not make, is at /llms.txt
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
