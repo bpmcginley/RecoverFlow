@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XNWPM9VELB');
+</script>
+<!-- LinkedIn Insight Tag -->
+<script type="text/javascript">
+_linkedin_partner_id = "9673204";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script><script type="text/javascript">
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
+</noscript>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pricing: 25% of What We Recover | RecoverFlow</title>
+<meta name="description" content="RecoverFlow costs 25% of the failed Stripe payments it actually recovers, with a $29/month minimum after the first 30 days. Nothing up front, and you are never billed for recoveries we did not cause.">
+<link rel="canonical" href="https://recoverflow.org/pricing/">
+<link rel="icon" type="image/png" href="/assets/logo-mark.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="RecoverFlow">
+<meta property="og:title" content="Pricing: 25% of What We Recover | RecoverFlow">
+<meta property="og:description" content="25% of what RecoverFlow actually recovers. $29/month minimum after the first 30 days. Nothing up front.">
+<meta property="og:url" content="https://recoverflow.org/pricing/">
+<meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "RecoverFlow",
+      "url": "https://recoverflow.org/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "Recovers failed Stripe subscription payments. Billed at 25% of recovered revenue with a $29/month minimum after the first 30 days.",
+      "offers": {
+        "@type": "Offer",
+        "price": "29",
+        "priceCurrency": "USD",
+        "description": "25% of recovered revenue; $29/month minimum after the first 30 days; nothing up front"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does RecoverFlow cost?",
+          "acceptedAnswer": { "@type": "Answer", "text": "25% of the failed payments RecoverFlow actually recovers, plus a $29 per month minimum that starts after your first 30 days. There is nothing to pay up front and no card is required to connect." }
+        },
+        {
+          "@type": "Question",
+          "name": "Am I charged for payments that would have recovered anyway?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Every recovery is attributed to the specific action that caused it, either a retry RecoverFlow scheduled or a card update email it sent. Payments that came back on their own, or that Stripe's own retries recovered, are not attributed and are not billed." }
+        },
+        {
+          "@type": "Question",
+          "name": "What happens if RecoverFlow recovers nothing?",
+          "acceptedAnswer": { "@type": "Answer", "text": "In your first 30 days you pay nothing at all. After that the $29 monthly minimum applies whether or not there was anything to recover, which keeps the account and the monitoring running." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is 25% expensive?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It depends entirely on your volume. At small and mid volumes it usually costs less than a flat monthly subscription because you only pay when money comes back. At high recovery volumes a percentage becomes the more expensive structure, and a flat rate would suit you better. That crossover is real and worth doing the arithmetic on before signing up." }
+        },
+        {
+          "@type": "Question",
+          "name": "Is there a contract or lock-in?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. RecoverFlow connects through Stripe Connect and you can revoke that access from your own Stripe dashboard at any time. Your billing keeps working exactly as before." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --bg: #ffffff; --bg-alt: #f5f6fc; --bg-elevated: #ffffff;
+    --text: #0f1222; --text-dim: #4b5266; --text-mute: #8a92a6;
+    --border: #e6e8f0; --border-strong: #d3d7e3;
+    --accent: #6366f1; --accent-2: #8b5cf6; --accent-3: #a855f7; --accent-ink: #ffffff;
+    --accent-grad: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #a855f7 100%);
+    --positive: #0e9f6e; --positive-bg: #e7f7f0; --warn: #b7791f;
+    --card-bg: #ffffff; --radius: 14px;
+    --shadow-sm: 0 1px 3px rgba(17,20,45,.06), 0 1px 2px rgba(17,20,45,.04);
+    --shadow-lg: 0 24px 60px -24px rgba(60,50,160,.35);
+    --ring: rgba(99,102,241,.35);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0b11; --bg-alt: #111320; --bg-elevated: #151827;
+      --text: #eef0f7; --text-dim: #a3abbf; --text-mute: #6f778c;
+      --border: #232637; --border-strong: #2f3346;
+      --accent: #818cf8; --accent-2: #a78bfa; --accent-3: #c084fc; --accent-ink: #ffffff;
+      --accent-grad: linear-gradient(135deg, #818cf8 0%, #a78bfa 55%, #c084fc 100%);
+      --positive: #34d399; --positive-bg: #0f2a20; --warn: #f0c070;
+      --card-bg: #131623;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
+      --shadow-lg: 0 24px 60px -24px rgba(0,0,0,.6);
+      --ring: rgba(129,140,248,.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  img { max-width: 100%; height: auto; }
+  a { color: var(--accent); }
+  .wrap { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  header {
+    padding: 18px 0; border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(12px); backdrop-filter: saturate(180%) blur(12px);
+    position: sticky; top: 0; z-index: 50;
+  }
+  header .wrap { max-width: 1080px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+  .logo span { background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .logo img { height: 30px; width: 30px; border-radius: 8px; box-shadow: var(--shadow-sm); }
+  nav a { color: var(--text-dim); text-decoration: none; margin-left: 22px; font-size: 0.95rem; font-weight: 500; }
+  nav a:hover { color: var(--text); }
+  nav a.nav-cta { border: 1px solid var(--border-strong); border-radius: 10px; padding: 8px 16px; color: var(--text); font-weight: 600; }
+  nav a.nav-cta:hover { border-color: var(--accent); color: var(--accent); }
+
+  article { padding: 56px 0 40px; }
+  .eyebrow { color: var(--accent); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; margin: 0 0 12px; }
+  article h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2rem, 4.5vw, 2.9rem); line-height: 1.12; letter-spacing: -0.03em; margin: 0 0 16px;
+  }
+  .lede { color: var(--text-dim); font-size: 1.08rem; margin: 0 0 34px; }
+  article h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 1.5rem; letter-spacing: -0.02em; margin: 44px 0 14px;
+  }
+  article h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.12rem; margin: 28px 0 8px; }
+  article p { margin: 0 0 18px; color: var(--text); }
+  article ul, article ol { margin: 0 0 18px; padding-left: 24px; color: var(--text); }
+  article li { margin-bottom: 9px; }
+  article strong { font-weight: 600; }
+  article em { color: var(--text-dim); }
+
+  .price-card {
+    position: relative; border-radius: 18px; padding: 34px 30px; margin: 0 0 34px;
+    background: var(--card-bg); border: 1px solid var(--border); box-shadow: var(--shadow-lg);
+    text-align: center;
+  }
+  .price-card .big {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2.6rem, 8vw, 3.6rem); line-height: 1; letter-spacing: -0.03em;
+    background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
+    margin: 0 0 6px;
+  }
+  .price-card .of { color: var(--text-dim); font-size: 1.02rem; margin: 0 0 22px; }
+  .price-card ul { list-style: none; padding: 0; margin: 0 0 26px; text-align: left; display: inline-block; }
+  .price-card li { position: relative; padding-left: 30px; margin-bottom: 11px; color: var(--text); }
+  .price-card li::before { content: "✓"; position: absolute; left: 0; top: 0; color: var(--positive); font-weight: 700; }
+
+  .callout {
+    background: var(--positive-bg); border: 1px solid color-mix(in srgb, var(--positive) 30%, transparent);
+    border-radius: 12px; padding: 18px 20px; margin: 0 0 24px;
+  }
+  .callout p { margin: 0; color: var(--text); }
+  .callout p + p { margin-top: 12px; }
+
+  .warn-box {
+    background: var(--bg-alt); border: 1px solid var(--border);
+    border-left: 3px solid var(--warn); border-radius: 12px;
+    padding: 18px 20px; margin: 0 0 24px;
+  }
+  .warn-box p { margin: 0; color: var(--text); }
+  .warn-box p + p { margin-top: 12px; }
+
+  .table-scroll { overflow-x: auto; margin: 0 0 22px; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.94rem; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  thead th {
+    font-family: var(--font-display); font-weight: 600; font-size: 0.9rem;
+    color: var(--text-dim); border-bottom: 1px solid var(--border-strong);
+  }
+  tbody th { font-weight: 600; color: var(--text); }
+  td.num { font-variant-numeric: tabular-nums; }
+
+  .faq { margin-top: 12px; }
+  .faq h3 { margin-bottom: 6px; }
+
+  .cta-box {
+    margin: 48px 0 8px; padding: 28px; border-radius: 16px;
+    background: var(--bg-alt); border: 1px solid var(--border); text-align: center;
+  }
+  .cta-box h2 { margin: 0 0 8px; }
+  .cta-box p { color: var(--text-dim); margin: 0 0 18px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 13px 26px; border-radius: 11px; font-family: var(--font-body);
+    font-weight: 600; font-size: 0.98rem; text-decoration: none;
+    background: var(--accent-grad); color: var(--accent-ink);
+    box-shadow: 0 8px 22px -8px var(--ring), var(--shadow-sm);
+    transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+  }
+  .btn:hover { transform: translateY(-2px); filter: saturate(1.05) brightness(1.03); }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 36px 0; text-align: center;
+    color: var(--text-mute); font-size: 0.88rem;
+  }
+  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+  .footer-trust { margin-bottom: 10px; font-size: 0.85rem; color: var(--text-dim); }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 18px; }
+    nav a:not(.nav-cta) { display: none; }
+    .price-card { padding: 28px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
+    <nav>
+      <a href="/#how-it-works">How it works</a>
+      <a href="/compare/stripe-native/">vs Stripe</a>
+      <a href="/#faq">FAQ</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+    </nav>
+  </div>
+</header>
+
+<article>
+  <div class="wrap">
+    <p class="eyebrow">Pricing</p>
+    <h1>You don't pay unless we recover</h1>
+    <p class="lede">One number, no plans, no seats, nothing up front. If RecoverFlow brings nothing back, there is nothing to bill for.</p>
+
+    <div class="price-card">
+      <p class="big">25%</p>
+      <p class="of">of the failed payments we actually recover</p>
+      <ul>
+        <li><strong>First 30 days:</strong> no minimum at all. Recover nothing, pay nothing.</li>
+        <li><strong>After that:</strong> a $29/month minimum keeps the account active.</li>
+        <li><strong>Never billed</strong> for payments that came back on their own.</li>
+        <li><strong>No card required</strong> to connect and run the 90 day scan.</li>
+      </ul>
+      <br>
+      <a class="btn" href="/">Run the free 90 day scan</a>
+    </div>
+
+    <h2>The part that matters most: attribution</h2>
+    <p>Any tool that bills on results has an obvious temptation, which is to take credit for money that was coming back anyway. Some failed payments recover on their own. A customer's balance refreshes, or Stripe's own retries succeed, and the invoice gets paid with nobody doing anything.</p>
+
+    <div class="callout">
+      <p><strong>RecoverFlow only bills on recoveries it can attribute to a specific action it took</strong>, meaning a retry it scheduled or a card update email it sent that the customer acted on.</p>
+      <p>If a payment comes back and RecoverFlow cannot point to the thing that caused it, that recovery is recorded as unattributed and it is not billed. The system is deliberately built to round in your favor rather than ours.</p>
+    </div>
+
+    <p>This is also the honest answer to a fair question, which is why you would pay for this when <a href="/compare/stripe-native/">Stripe already retries failed payments for free</a>. You should have Stripe's own recovery switched on. Anything it recovers is not something you get billed for here.</p>
+
+    <h2>How the arithmetic works</h2>
+    <p>The examples below are illustrations of the pricing formula, not results from customers. RecoverFlow launched in July 2026 and does not have recovery figures to publish yet. When it does, they will be on this page with the methodology attached.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Attributed recovery in a month</th>
+            <th scope="col">25% fee</th>
+            <th scope="col">Minimum top-up</th>
+            <th scope="col">What you pay</th>
+            <th scope="col">What you keep</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" class="num">$0</th>
+            <td class="num">$0</td>
+            <td class="num">$29</td>
+            <td class="num">$29</td>
+            <td class="num">$0</td>
+          </tr>
+          <tr>
+            <th scope="row" class="num">$400</th>
+            <td class="num">$100</td>
+            <td class="num">$0</td>
+            <td class="num">$100</td>
+            <td class="num">$300</td>
+          </tr>
+          <tr>
+            <th scope="row" class="num">$2,000</th>
+            <td class="num">$500</td>
+            <td class="num">$0</td>
+            <td class="num">$500</td>
+            <td class="num">$1,500</td>
+          </tr>
+          <tr>
+            <th scope="row" class="num">$10,000</th>
+            <td class="num">$2,500</td>
+            <td class="num">$0</td>
+            <td class="num">$2,500</td>
+            <td class="num">$7,500</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Below about $116 of attributed recovery in a month, the $29 minimum is the larger number and that is what you pay. Above it, you are purely on the percentage.</p>
+
+    <h2>When 25% is the wrong deal for you</h2>
+    <p>A percentage is not always the cheaper structure, and pretending otherwise would be a bad way to start a working relationship.</p>
+
+    <div class="warn-box">
+      <p><strong>At high recovery volume, a flat fee wins.</strong> If RecoverFlow were attributing something like $10,000 a month back to you, 25% is $2,500 a month, which is more than a flat-rate tool in this category would charge. The percentage model suits small and mid volumes, where you would otherwise be paying a subscription in months when nothing failed.</p>
+      <p>If your scan comes back showing numbers at that scale, email me at <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a> before you sign up and we will work out something that is not silly. I would rather have a customer on sensible terms than lose one to arithmetic I could have fixed.</p>
+    </div>
+
+    <h2>What the $29 minimum is for</h2>
+    <p>It covers running your account in months when there was little or nothing to recover: watching your subscriptions, processing Stripe events, keeping your history and reporting available. It is waived entirely for your first 30 days so you can see real behaviour on your own data before any money changes hands.</p>
+    <p>If you would rather not carry a minimum in quiet months, disconnecting takes one click in your Stripe dashboard and nothing in your billing changes.</p>
+
+    <h2>What you are not charged for</h2>
+    <ul>
+      <li>Setup or onboarding. There is none to speak of, it is a Stripe Connect authorization.</li>
+      <li>The 90 day backward-looking scan. That is free and does not require a card.</li>
+      <li>Seats. Pricing does not change with team size.</li>
+      <li>Failed payments that recovered on their own.</li>
+      <li>Cancellation. There is no contract and no exit fee.</li>
+    </ul>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <div class="faq">
+      <h3>What does RecoverFlow cost?</h3>
+      <p>25% of the failed payments RecoverFlow actually recovers, plus a $29 per month minimum that starts after your first 30 days. Nothing up front, and no card is required to connect.</p>
+
+      <h3>Am I charged for payments that would have recovered anyway?</h3>
+      <p>No. Every recovery is attributed to the specific action that caused it. Payments that came back on their own, or that Stripe's own retries recovered, are not attributed and are not billed.</p>
+
+      <h3>What happens if RecoverFlow recovers nothing?</h3>
+      <p>In your first 30 days you pay nothing at all. After that the $29 monthly minimum applies whether or not there was anything to recover.</p>
+
+      <h3>Is 25% expensive?</h3>
+      <p>It depends entirely on your volume. At small and mid volumes it usually costs less than a flat monthly subscription, because you only pay in months when money actually comes back. At high recovery volumes a percentage becomes the more expensive structure and a flat rate would suit you better. The crossover is real, and the section above spells out where it sits.</p>
+
+      <h3>Is there a contract or lock-in?</h3>
+      <p>No. RecoverFlow connects through Stripe Connect and you can revoke that access from your own Stripe dashboard at any time. Your billing keeps working exactly as before.</p>
+
+      <h3>Do you see my customers' card numbers?</h3>
+      <p>No. Stripe holds every card and processes every charge. Card data never reaches RecoverFlow's servers.</p>
+    </div>
+
+    <div class="cta-box">
+      <h2>Find out if there is anything worth recovering</h2>
+      <p>The 90 day scan reads your recent Stripe invoices and shows you what failed. It takes a couple of minutes, costs nothing, and needs no card.</p>
+      <a class="btn" href="/">Connect Stripe and see the number</a>
+    </div>
+  </div>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-trust">Built on Stripe Connect · Access you control, revoke anytime from your Stripe dashboard · No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/recover-failed-stripe-payments/">Guide: How to recover failed Stripe subscription payments</a> · <a href="/compare/stripe-native/">RecoverFlow vs Stripe built-in</a></div>
+    RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
+  </div>
+</footer>
+
+</body>
+</html>

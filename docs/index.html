@@ -484,6 +484,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     padding: 12px 0 12px 28px;
     border-top: 1px solid var(--border);
   }
+  .price-more {
+    margin: 22px 0 0;
+    font-size: 0.94rem;
+    text-align: left;
+  }
+  .price-more a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .price-more a:hover { text-decoration: underline; }
   .price-card li::before {
     content: "✓";
     position: absolute;
@@ -750,7 +757,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <div class="logo"><img src="assets/logo-mark.png" alt="">Recover<span>Flow</span></div>
     <nav>
       <a href="#how-it-works">How it works</a>
-      <a href="#pricing">Pricing</a>
+      <a href="/pricing/">Pricing</a>
+      <a href="/compare/stripe-native/">vs Stripe</a>
       <a href="#features">Features</a>
       <a href="#faq">FAQ</a>
       <a href="mailto:admin@recoverflow.org">Contact</a>
@@ -884,6 +892,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         <li>After that: $29/mo minimum keeps your account active</li>
         <li>Attribution built in — never charged for payments that came back on their own</li>
       </ul>
+      <p class="price-more"><a href="/pricing/">Full pricing, worked examples, and when 25% is the wrong deal for you →</a></p>
     </div>
   </div>
 </section>
@@ -944,6 +953,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <div class="wrap">
     <div class="footer-trust">Built on Stripe Connect · Access you control, revoke anytime from your Stripe dashboard · No contracts, no lock-in</div>
     <div class="footer-trust"><a href="/recover-failed-stripe-payments/">Guide: How to recover failed Stripe subscription payments</a></div>
+    <div class="footer-trust"><a href="/compare/stripe-native/">RecoverFlow vs Stripe's built-in retries</a> · <a href="/pricing/">Pricing</a></div>
     RecoverFlow — Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>
 </footer>
