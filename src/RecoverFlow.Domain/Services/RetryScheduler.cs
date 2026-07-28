@@ -2,9 +2,14 @@ namespace RecoverFlow.Domain.Services;
 
 public static class RetryScheduler
 {
-    // Strategy: retry at different times to maximize success.
-    // Industry data: payday retries (1st and 15th) win for insufficient_funds,
-    // morning retries outperform evening, weekdays outperform weekends.
+    // Strategy: spread attempts across different times of day and week rather than
+    // hammering the same slot, and aim insufficient_funds at the 1st and 15th, when
+    // balances are most likely to have been topped up.
+    //
+    // These are reasoned starting points, not measured results. We have no recovery
+    // data of our own yet, and the published "best time to retry" figures are vendor
+    // sourced, so nothing here is tuned against a benchmark we would be willing to
+    // print. Revisit once there is enough real outcome data to test it.
 
     /// <summary>Returns DateTime.MaxValue when no further retry should be scheduled.</summary>
     public static DateTime CalculateNextRetry(string? declineCode, int attemptNumber, DateTime failedAt) =>
