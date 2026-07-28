@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XNWPM9VELB');
+</script>
+<!-- LinkedIn Insight Tag -->
+<script type="text/javascript">
+_linkedin_partner_id = "9673204";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script><script type="text/javascript">
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
+</noscript>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RecoverFlow vs Stripe's Built-In Retries and Dunning</title>
+<meta name="description" content="An honest comparison of Stripe's built-in Smart Retries and failed payment emails against RecoverFlow. What Stripe already does for free, where it stops, and when you need more.">
+<link rel="canonical" href="https://recoverflow.org/compare/stripe-native/">
+<link rel="icon" type="image/png" href="/assets/logo-mark.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="RecoverFlow">
+<meta property="og:title" content="RecoverFlow vs Stripe's Built-In Retries and Dunning">
+<meta property="og:description" content="What Stripe's Smart Retries and dunning emails already do for free, where they stop, and whether you actually need anything else.">
+<meta property="og:url" content="https://recoverflow.org/compare/stripe-native/">
+<meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "headline": "RecoverFlow vs Stripe's built-in retries and dunning",
+      "description": "An honest comparison of Stripe's built-in Smart Retries and failed payment emails against RecoverFlow.",
+      "author": { "@type": "Person", "name": "Bruce McGinley" },
+      "publisher": {
+        "@type": "Organization",
+        "name": "RecoverFlow",
+        "logo": { "@type": "ImageObject", "url": "https://recoverflow.org/assets/logo-mark.png" }
+      },
+      "datePublished": "2026-07-27",
+      "dateModified": "2026-07-27",
+      "mainEntityOfPage": "https://recoverflow.org/compare/stripe-native/"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Does Stripe already retry failed subscription payments?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Stripe's Smart Retries use a machine learning model to choose retry times, with a recommended default of 8 attempts within 2 weeks, and the window is configurable between 1 week and 2 months. Stripe also stops retrying hard declines such as lost or stolen cards until a new payment method is added. It is a genuinely capable free feature and you should have it switched on." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does Stripe send dunning emails?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Stripe can send failed payment notifications, unpaid invoice reminders, and card expiration notices about one month before a card expires. They use your Stripe branding settings. What you cannot do is control the sequence, the timing between messages, the sender, or the copy." }
+        },
+        {
+          "@type": "Question",
+          "name": "So why would I need anything besides Stripe?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Often you would not, and if Stripe's defaults are working for you it is reasonable to stop there. The gaps that matter are control over the dunning sequence and sender, attribution showing which recovery came from which action, and history that outlives Stripe's 60 day email log retention." }
+        },
+        {
+          "@type": "Question",
+          "name": "Does RecoverFlow replace Stripe's retries?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. RecoverFlow runs alongside Stripe rather than replacing it. Stripe still processes every charge and still holds every card. RecoverFlow adds the communication sequence, the reporting, and the attribution on top." }
+        },
+        {
+          "@type": "Question",
+          "name": "How do I find out whether I have a problem worth solving?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Connect RecoverFlow and it scans your last 90 days of Stripe invoices and shows what actually failed and what was recoverable. That takes a couple of minutes and costs nothing. If the number is small, you have your answer and you can disconnect." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --bg: #ffffff; --bg-alt: #f5f6fc; --bg-elevated: #ffffff;
+    --text: #0f1222; --text-dim: #4b5266; --text-mute: #8a92a6;
+    --border: #e6e8f0; --border-strong: #d3d7e3;
+    --accent: #6366f1; --accent-2: #8b5cf6; --accent-3: #a855f7; --accent-ink: #ffffff;
+    --accent-grad: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #a855f7 100%);
+    --positive: #0e9f6e; --positive-bg: #e7f7f0; --warn: #b7791f;
+    --card-bg: #ffffff; --radius: 14px;
+    --shadow-sm: 0 1px 3px rgba(17,20,45,.06), 0 1px 2px rgba(17,20,45,.04);
+    --shadow-lg: 0 24px 60px -24px rgba(60,50,160,.35);
+    --ring: rgba(99,102,241,.35);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0b11; --bg-alt: #111320; --bg-elevated: #151827;
+      --text: #eef0f7; --text-dim: #a3abbf; --text-mute: #6f778c;
+      --border: #232637; --border-strong: #2f3346;
+      --accent: #818cf8; --accent-2: #a78bfa; --accent-3: #c084fc; --accent-ink: #ffffff;
+      --accent-grad: linear-gradient(135deg, #818cf8 0%, #a78bfa 55%, #c084fc 100%);
+      --positive: #34d399; --positive-bg: #0f2a20; --warn: #f0c070;
+      --card-bg: #131623;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
+      --shadow-lg: 0 24px 60px -24px rgba(0,0,0,.6);
+      --ring: rgba(129,140,248,.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.65;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  img { max-width: 100%; height: auto; }
+  a { color: var(--accent); }
+  .wrap { max-width: 800px; margin: 0 auto; padding: 0 24px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+
+  header {
+    padding: 18px 0; border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(12px); backdrop-filter: saturate(180%) blur(12px);
+    position: sticky; top: 0; z-index: 50;
+  }
+  header .wrap { max-width: 1080px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+  .logo span { background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .logo img { height: 30px; width: 30px; border-radius: 8px; box-shadow: var(--shadow-sm); }
+  nav a { color: var(--text-dim); text-decoration: none; margin-left: 22px; font-size: 0.95rem; font-weight: 500; }
+  nav a:hover { color: var(--text); }
+  nav a.nav-cta { border: 1px solid var(--border-strong); border-radius: 10px; padding: 8px 16px; color: var(--text); font-weight: 600; }
+  nav a.nav-cta:hover { border-color: var(--accent); color: var(--accent); }
+
+  article { padding: 56px 0 40px; }
+  .eyebrow { color: var(--accent); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; margin: 0 0 12px; }
+  article h1 {
+    font-family: var(--font-display); font-weight: 700;
+    font-size: clamp(2rem, 4.5vw, 2.9rem); line-height: 1.12; letter-spacing: -0.03em; margin: 0 0 16px;
+  }
+  .byline { color: var(--text-mute); font-size: 0.92rem; margin: 0 0 32px; }
+  article h2 {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: 1.5rem; letter-spacing: -0.02em; margin: 44px 0 14px;
+  }
+  article h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.12rem; margin: 28px 0 8px; }
+  article p { margin: 0 0 18px; color: var(--text); }
+  article ul, article ol { margin: 0 0 18px; padding-left: 24px; color: var(--text); }
+  article li { margin-bottom: 9px; }
+  article strong { font-weight: 600; }
+  article em { color: var(--text-dim); }
+
+  .tldr {
+    background: var(--bg-alt); border: 1px solid var(--border);
+    border-left: 3px solid var(--accent); border-radius: 12px;
+    padding: 20px 22px; margin: 0 0 36px;
+  }
+  .tldr p { margin: 0; color: var(--text-dim); }
+  .tldr strong { color: var(--text); }
+
+  .table-scroll { overflow-x: auto; margin: 0 0 22px; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; width: 100%; min-width: 560px; font-size: 0.94rem; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  thead th {
+    font-family: var(--font-display); font-weight: 600; font-size: 0.9rem;
+    color: var(--text-dim); border-bottom: 1px solid var(--border-strong);
+  }
+  tbody th { font-weight: 600; color: var(--text); }
+  td .yes { color: var(--positive); font-weight: 600; }
+  td .no { color: var(--text-mute); }
+
+  .callout {
+    background: var(--positive-bg); border: 1px solid color-mix(in srgb, var(--positive) 30%, transparent);
+    border-radius: 12px; padding: 18px 20px; margin: 0 0 24px;
+  }
+  .callout p { margin: 0; color: var(--text); }
+
+  .checklist { list-style: none; padding: 0; }
+  .checklist li { position: relative; padding-left: 30px; margin-bottom: 11px; }
+  .checklist li::before {
+    content: "✓"; position: absolute; left: 0; top: 0;
+    color: var(--positive); font-weight: 700;
+  }
+
+  .faq { margin-top: 12px; }
+  .faq h3 { margin-bottom: 6px; }
+
+  .cta-box {
+    margin: 48px 0 8px; padding: 28px; border-radius: 16px;
+    background: var(--bg-alt); border: 1px solid var(--border); text-align: center;
+  }
+  .cta-box h2 { margin: 0 0 8px; }
+  .cta-box p { color: var(--text-dim); margin: 0 0 18px; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: 13px 26px; border-radius: 11px; font-family: var(--font-body);
+    font-weight: 600; font-size: 0.98rem; text-decoration: none;
+    background: var(--accent-grad); color: var(--accent-ink);
+    box-shadow: 0 8px 22px -8px var(--ring), var(--shadow-sm);
+    transition: transform .16s ease, box-shadow .16s ease, filter .16s ease;
+  }
+  .btn:hover { transform: translateY(-2px); filter: saturate(1.05) brightness(1.03); }
+
+  footer {
+    border-top: 1px solid var(--border); padding: 36px 0; text-align: center;
+    color: var(--text-mute); font-size: 0.88rem;
+  }
+  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+  .footer-trust { margin-bottom: 10px; font-size: 0.85rem; color: var(--text-dim); }
+
+  @media (max-width: 640px) {
+    .wrap { padding: 0 18px; }
+    nav a:not(.nav-cta) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
+    <nav>
+      <a href="/#how-it-works">How it works</a>
+      <a href="/pricing/">Pricing</a>
+      <a href="/#faq">FAQ</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+    </nav>
+  </div>
+</header>
+
+<article>
+  <div class="wrap">
+    <p class="eyebrow">Comparison</p>
+    <h1>RecoverFlow vs Stripe's built-in retries and dunning</h1>
+    <p class="byline">By Bruce McGinley, founder of RecoverFlow · Updated July 2026</p>
+
+    <div class="tldr">
+      <p><strong>Short version:</strong> Stripe's built-in recovery is better than most people give it credit for. Smart Retries pick retry times with a machine learning model, Stripe already refuses to retry hard declines, and Stripe can email your customers about failed payments and expiring cards using your branding. Turn all of that on first. It is free. RecoverFlow is a layer on top for the parts Stripe deliberately keeps simple: control over the dunning sequence and sender, attribution showing which recovery came from which action, and history that outlives Stripe's 60 day email logs.</p>
+    </div>
+
+    <h2>What Stripe already does for free</h2>
+    <p>If you are comparing tools in this category, start by being clear about the baseline, because a lot of writing on this topic understates it.</p>
+
+    <h3>Smart Retries</h3>
+    <ul>
+      <li>Stripe uses a machine learning model to choose <strong>when</strong> to retry a failed invoice payment, rather than a fixed interval.</li>
+      <li>The recommended default is <strong>8 attempts within 2 weeks</strong>. You can set the window to 1 week, 2 weeks, 3 weeks, 1 month, or 2 months.</li>
+      <li>Stripe does <strong>not</strong> keep charging hard declines. On codes like <em>lost_card</em>, <em>stolen_card</em>, or <em>revocation_of_authorization</em>, retries wait until a new payment method appears.</li>
+      <li>You can switch Smart Retries off entirely and write your own retry rules.</li>
+    </ul>
+
+    <h3>Customer emails</h3>
+    <ul>
+      <li>Stripe can send a failed payment notification after a payment fails.</li>
+      <li>Stripe can send unpaid invoice reminders on a schedule.</li>
+      <li>Stripe can send a card expiration notice roughly a month before a card expires.</li>
+      <li>These use your Stripe branding settings, so they carry your logo and colors.</li>
+    </ul>
+
+    <div class="callout">
+      <p><strong>Do this first.</strong> If Smart Retries and failed payment emails are switched off in your Stripe dashboard, switch them on before you evaluate any paid tool. You may find that closes most of the gap, and that is a completely fine outcome.</p>
+    </div>
+
+    <h2>Where Stripe's built-in tools stop</h2>
+    <p>Stripe's recovery features are designed to be sensible defaults that work without configuration. That is the right call for Stripe, and it also means there are things they intentionally do not let you do.</p>
+    <ul>
+      <li><strong>You cannot design the sequence.</strong> There is no way to say "day 0 gentle, day 3 direct, day 7 final" with your own copy at each step.</li>
+      <li><strong>You cannot control the sender.</strong> The emails come from Stripe's system, not from your domain, so they do not land in an existing thread with your customer or match the rest of your lifecycle email.</li>
+      <li><strong>Attribution is thin.</strong> When an invoice eventually gets paid, it is hard to tell whether a retry did it, an email did it, or the customer's balance simply refreshed on its own.</li>
+      <li><strong>Email logs are retained for 60 days.</strong> That makes any longer term analysis of what is working difficult.</li>
+      <li><strong>There is no backward look.</strong> Stripe will not tell you what you lost over the last quarter and what of it was realistically recoverable.</li>
+    </ul>
+
+    <h2>Side by side</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Capability</th>
+            <th scope="col">Stripe built-in</th>
+            <th scope="col">RecoverFlow</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Retries failed payments</th>
+            <td><span class="yes">Yes</span>, ML-timed, 8 tries / 2 weeks by default</td>
+            <td>Runs on top of Stripe, does not replace it</td>
+          </tr>
+          <tr>
+            <th scope="row">Avoids retrying hard declines</th>
+            <td><span class="yes">Yes</span></td>
+            <td><span class="yes">Yes</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Emails customers on failure</th>
+            <td><span class="yes">Yes</span>, with your Stripe branding</td>
+            <td><span class="yes">Yes</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Custom dunning sequence and copy</th>
+            <td><span class="no">No</span></td>
+            <td><span class="yes">Yes</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Sends from your own sender</th>
+            <td><span class="no">No</span></td>
+            <td><span class="yes">Yes</span></td>
+          </tr>
+          <tr>
+            <th scope="row">Per-recovery attribution</th>
+            <td><span class="no">Limited</span></td>
+            <td><span class="yes">Yes</span>, and it is what billing is based on</td>
+          </tr>
+          <tr>
+            <th scope="row">History beyond 60 days</th>
+            <td><span class="no">Email logs expire</span></td>
+            <td><span class="yes">Retained</span></td>
+          </tr>
+          <tr>
+            <th scope="row">90 day backward-looking scan</th>
+            <td><span class="no">No</span></td>
+            <td><span class="yes">Yes</span>, free, before you commit</td>
+          </tr>
+          <tr>
+            <th scope="row">Cost</th>
+            <td>Free, included with Stripe</td>
+            <td>25% of what it recovers, $29/mo minimum after the first 30 days</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>When Stripe alone is genuinely enough</h2>
+    <p>I would rather you not pay me than pay me for nothing, so here is the honest version.</p>
+    <ul>
+      <li><strong>Your failed payment volume is small.</strong> If you are losing a handful of dollars a month, no tool in this category is worth the overhead. Stripe's defaults are fine.</li>
+      <li><strong>You are happy with Stripe's emails.</strong> If your customers respond to them and your recovery rate feels reasonable, there is nothing to fix.</li>
+      <li><strong>You want zero extra vendors.</strong> Adding a third party to your billing path is a real decision. If the answer is no on principle, that is a legitimate answer.</li>
+      <li><strong>You have engineering time and want to own it.</strong> All of this is buildable on Stripe webhooks. It is ongoing maintenance rather than a weekend, but it is not mysterious.</li>
+    </ul>
+
+    <h2>When the extra layer earns its place</h2>
+    <ul class="checklist">
+      <li>Failed payments are large enough that a few percentage points of recovery is real money</li>
+      <li>You want your dunning to sound like you, from your address, on your schedule</li>
+      <li>You need to report what was recovered and why, past a 60 day window</li>
+      <li>You want to know the size of the problem before you spend anything on it</li>
+    </ul>
+
+    <h2>How the two fit together</h2>
+    <p>RecoverFlow is not a replacement for Stripe and does not turn Stripe's features off. Stripe still processes every charge and still holds every card. RecoverFlow connects through Stripe Connect with access you grant and can revoke from your own Stripe dashboard, and never sees card numbers.</p>
+    <p>The attribution point is the one that matters most for cost. Because Stripe recovers some payments on its own, and some customers pay on their own, a recovery tool that bills on results has to be careful about what it takes credit for. RecoverFlow only bills on recoveries it can attribute to a specific action it took. Anything that came back on its own is not billed. That is deliberately the conservative direction, and you can read the full detail on the <a href="/pricing/">pricing page</a>.</p>
+
+    <h2 id="faq">Frequently asked questions</h2>
+    <div class="faq">
+      <h3>Does Stripe already retry failed subscription payments?</h3>
+      <p>Yes. Smart Retries use a machine learning model to choose retry times, with a recommended default of 8 attempts within 2 weeks, and the window is configurable between 1 week and 2 months. Stripe also stops retrying hard declines until a new payment method is added. It is a genuinely capable free feature and you should have it switched on.</p>
+
+      <h3>Does Stripe send dunning emails?</h3>
+      <p>Yes. Stripe can send failed payment notifications, unpaid invoice reminders, and card expiration notices about a month before a card expires, using your Stripe branding settings. What you cannot do is control the sequence, the timing between messages, the sender, or the copy.</p>
+
+      <h3>So why would I need anything besides Stripe?</h3>
+      <p>Often you would not, and if Stripe's defaults are working for you it is reasonable to stop there. The gaps that matter are control over the dunning sequence and sender, attribution showing which recovery came from which action, and history that outlives Stripe's 60 day email log retention.</p>
+
+      <h3>Does RecoverFlow replace Stripe's retries?</h3>
+      <p>No. It runs alongside Stripe rather than replacing it. Stripe still processes every charge and still holds every card.</p>
+
+      <h3>How do I find out whether I have a problem worth solving?</h3>
+      <p>Connect RecoverFlow and it scans your last 90 days of Stripe invoices and shows what actually failed and what was recoverable. That takes a couple of minutes and costs nothing. If the number is small, you have your answer and you can disconnect.</p>
+    </div>
+
+    <div class="cta-box">
+      <h2>See your own number first</h2>
+      <p>Connect your Stripe account and RecoverFlow scans the last 90 days and shows you what failed. No cost, and you can disconnect in one click.</p>
+      <a class="btn" href="/">Run the free 90 day scan</a>
+    </div>
+
+    <p style="margin-top:28px;font-size:0.9rem;color:var(--text-mute);">Stripe's behavior described on this page reflects Stripe's published documentation on revenue recovery as of July 2026. Stripe may change defaults, so check your own dashboard settings for what is actually running on your account.</p>
+  </div>
+</article>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-trust">Built on Stripe Connect · Access you control, revoke anytime from your Stripe dashboard · No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/recover-failed-stripe-payments/">Guide: How to recover failed Stripe subscription payments</a> · <a href="/pricing/">Pricing</a></div>
+    RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
+  </div>
+</footer>
+
+</body>
+</html>

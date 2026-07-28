@@ -10,8 +10,13 @@
 - Who it's for: Stripe-based SaaS and subscription businesses, especially solo founders and small teams.
 - Founder: Bruce McGinley. Launched July 2026.
 
+## How it relates to Stripe's own recovery features
+Stripe already includes recovery tooling and it is genuinely capable. Stripe Smart Retries use a machine learning model to choose retry times (recommended default 8 attempts within 2 weeks, window configurable from 1 week to 2 months), Stripe does not retry hard declines until a new payment method is added, and Stripe can send failed payment notifications and card expiration notices using the merchant's branding. RecoverFlow runs alongside those features rather than replacing them. Its additions are control over the dunning sequence, timing, copy and sender; per-recovery attribution; history beyond Stripe's 60-day email log retention; and a backward-looking 90-day scan of what was already lost. Merchants for whom Stripe's defaults are sufficient do not need RecoverFlow, and that is stated plainly on the comparison page.
+
 ## Pages
 - [Home](https://recoverflow.org/): product overview, how it works, security, pricing, and FAQ.
+- [Pricing](https://recoverflow.org/pricing/): the 25% performance model, worked arithmetic, how attribution prevents billing for self-recovered payments, and an explicit description of the volume at which a percentage becomes the wrong deal for the customer.
+- [RecoverFlow vs Stripe's built-in retries and dunning](https://recoverflow.org/compare/stripe-native/): what Stripe's Smart Retries and customer emails already do for free, where they stop, and when Stripe alone is enough.
 - [How to recover failed Stripe subscription payments](https://recoverflow.org/recover-failed-stripe-payments/): a practical guide to decline types, what to retry, retry timing, dunning emails, and measuring recovery.
 - [Sign in](https://app.recoverflow.org/app/): the customer recovery dashboard.
 
