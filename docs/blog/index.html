@@ -200,6 +200,42 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "headline": "Is insufficient_funds a hard decline?",
       "url": "https://recoverflow.org/blog/is-insufficient-funds-a-hard-decline/",
       "description": "No. insufficient_funds is not on Stripe's list of codes that block retries, and retrying it is correct. A lot of published guidance gets this backwards."
+    },
+    {
+      "@type": "Article",
+      "headline": "past_due, unpaid, canceled: what each Stripe subscription status means",
+      "url": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "description": "past_due means Stripe is still trying. unpaid means it stopped but kept the subscription. canceled is terminal. Which one you get is a setting you choose."
+    },
+    {
+      "@type": "Article",
+      "headline": "Which Stripe webhooks tell you a payment failed",
+      "url": "https://recoverflow.org/blog/stripe-failed-payment-webhooks/",
+      "description": "invoice.payment_failed is the event that matters, plus payment_action_required for authentication. Which fields to read, and the one-hour delay to know about."
+    },
+    {
+      "@type": "Article",
+      "headline": "Stripe test cards for every failed payment scenario",
+      "url": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
+      "description": "The exact test card numbers for generic decline, insufficient funds, lost card, stolen card, expired card and 3D Secure, and which decline_code each one produces."
+    },
+    {
+      "@type": "Article",
+      "headline": "Stripe updates expired cards for you, sometimes",
+      "url": "https://recoverflow.org/blog/stripe-automatic-card-updates/",
+      "description": "Stripe works with the card networks to refresh saved cards automatically. No setup needed, no guarantee, and no way to tell in advance which cards it covers."
+    },
+    {
+      "@type": "Article",
+      "headline": "What do_not_honor actually means",
+      "url": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "description": "do_not_honor means the issuer declined without saying why. Stripe will retry it, the bank will not explain it, and the only real fix runs through the customer."
+    },
+    {
+      "@type": "Article",
+      "headline": "Recovering authentication_required declines",
+      "url": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
+      "description": "authentication_required means the payment needs the cardholder to authenticate. Retries cannot fix it. The webhook and the hosted invoice page can."
     }
   ]
 }</script>
@@ -255,6 +291,36 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <p class="meta">Guide</p>
       <h3><a href="/blog/is-insufficient-funds-a-hard-decline/">Is <code>insufficient_funds</code> a hard decline?</a></h3>
       <p>No. insufficient_funds is not on Stripe's list of codes that block retries, and retrying it is correct. A lot of published guidance gets this backwards.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-subscription-past-due-vs-unpaid/"><code>past_due</code>, <code>unpaid</code>, <code>canceled</code>: what each Stripe subscription status means</a></h3>
+      <p>past_due means Stripe is still trying. unpaid means it stopped but kept the subscription. canceled is terminal. Which one you get is a setting you choose.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-failed-payment-webhooks/">Which Stripe webhooks tell you a payment failed</a></h3>
+      <p>invoice.payment_failed is the event that matters, plus payment_action_required for authentication. Which fields to read, and the one-hour delay to know about.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-test-cards-for-failed-payments/">Stripe test cards for every failed payment scenario</a></h3>
+      <p>The exact test card numbers for generic decline, insufficient funds, lost card, stolen card, expired card and 3D Secure, and which decline_code each one produces.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-automatic-card-updates/">Stripe updates expired cards for you, sometimes</a></h3>
+      <p>Stripe works with the card networks to refresh saved cards automatically. No setup needed, no guarantee, and no way to tell in advance which cards it covers.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/do-not-honor-stripe-decline/">What <code>do_not_honor</code> actually means</a></h3>
+      <p>do_not_honor means the issuer declined without saying why. Stripe will retry it, the bank will not explain it, and the only real fix runs through the customer.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-authentication-required-recovery/">Recovering <code>authentication_required</code> declines</a></h3>
+      <p>authentication_required means the payment needs the cardholder to authenticate. Retries cannot fix it. The webhook and the hosted invoice page can.</p>
     </div>
     <div class="card">
       <p class="meta">Pillar</p>
