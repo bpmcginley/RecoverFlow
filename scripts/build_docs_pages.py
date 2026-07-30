@@ -521,6 +521,10 @@ AUDIT_BODY = """<main>
     <p>So the first reply gives you the cost, and asks you to do one five-minute thing: open Stripe, filter invoices to unpaid, look at the last twenty or so, and tell me which decline codes come up. The <a href="/tools/decline-code-lookup/">free lookup on this site</a> explains what each one means if any are unfamiliar.</p>
     <p>With that, the second reply tells you how much of your failed revenue is reachable at all, how much needs a new card rather than another attempt, and whether Stripe's free retries already cover the reachable part. Every figure traces back to your data rather than to a benchmark somebody invented.</p>
 
+    <h2 id="faster">If you would rather not wait for me</h2>
+    <p>The single most useful number here is what share of your failures are on cards that are <em>gone</em> rather than cards that are <em>short</em>. Stripe will not send nine decline codes to the bank at all, so retries against them never actually happen, whatever your settings say. Nearly every tool in this category answers that with more retries.</p>
+    <p>The <a href="/tools/retry-waste-calculator/">retry waste calculator</a> works that out from your decline counts in about two minutes, in your browser, with nothing uploaded. If it tells you most of your failures are the ordinary retryable kind, Stripe's own free settings already cover you and you can stop reading.</p>
+
     <h2 id="catch">The catch, stated plainly</h2>
     <p>I built RecoverFlow, so I am obviously not a neutral party. Two things make this worth your fifteen minutes anyway.</p>
     <p>The first is that the numbers are yours and the arithmetic is shown, so you can check every step and ignore my conclusion if you disagree with it.</p>
