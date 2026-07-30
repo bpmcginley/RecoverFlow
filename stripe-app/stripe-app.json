@@ -1,0 +1,40 @@
+{
+  "id": "com.recoverflow.retry-waste-audit",
+  "version": "0.0.1",
+  "name": "Retry Waste Audit",
+  "icon": "./icon.png",
+  "permissions": [
+    {
+      "permission": "invoice_read",
+      "purpose": "Reads your unpaid and past-due invoices from the last 90 days so the audit can count how many failed and what they were worth. Nothing is created, changed or voided."
+    },
+    {
+      "permission": "charge_read",
+      "purpose": "Reads the decline code on each failed charge. This is the whole point of the audit: nine of Stripe's decline codes can never be recovered by retrying, and this is the only way to tell how many of yours are in that group."
+    },
+    {
+      "permission": "subscription_read",
+      "purpose": "Reads subscription status and billing interval so failed renewals can be told apart from one-off invoices, which behave differently and need different handling."
+    }
+  ],
+  "stripe_api_access_type": "oauth",
+  "distribution_type": "public",
+  "allowed_redirect_uris": [
+    "https://api.recoverflow.org/connect/stripe/audit/callback"
+  ],
+  "post_install_action": {
+    "type": "external",
+    "url": "https://recoverflow.org/audit/"
+  },
+  "constants": {
+    "AUDIT_WINDOW_DAYS": "90"
+  },
+  "ui_extension": {
+    "views": [],
+    "content_security_policy": {
+      "connect-src": ["https://api.recoverflow.org"],
+      "image-src": null,
+      "purpose": null
+    }
+  }
+}
