@@ -283,12 +283,60 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       you already have.</p>
     </div>
 
-    <h2>Ones we have not written up</h2>
-    <p><strong>Gravy</strong> is a human powered recovery service rather than pure software, and its own site describes
-    a customised flat fee arranged through a sales conversation. Third party sites quote percentage figures that
-    contradict that. Since we cannot verify a number from Gravy directly, we have not published a comparison page
-    rather than publish something we would have to guess at. If you are evaluating them, ask for the quote and compare
-    it against the tables here.</p>
+    <h2>The rest of the market, as of 30 July 2026</h2>
+    <p>The five pages above are the tools most people shortlist. They are not the whole market. There are around
+    twenty-five live failed-payment recovery apps on the Stripe App Marketplace alone. Every price below was read from
+    the vendor's own pricing page or their marketplace listing on 30 July 2026. Where a vendor does not publish a
+    number, this says so rather than estimating one.</p>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Tool</th><th scope="col">Published price</th><th scope="col">Worth knowing</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Churn Buster</th><td>From $149/mo, banded by MRR. Advisory from $1,000 one-off.</td>
+              <td>Calls itself the gold standard. Flat fee rather than revenue share. Free 20 minute call with a co-founder, credited back if you buy within 90 days.</td></tr>
+          <tr><th scope="row">FlyCode</th><td>Outcome based. Rate not published.</td>
+              <td>Charges only on revenue recovered above your existing baseline, which is a fairer basis than most. Free payment audit, 45 day money back.</td></tr>
+          <tr><th scope="row">Butter Payments</th><td>Revenue share. Not published.</td>
+              <td>Targets above roughly $10M ARR, so effectively unavailable to smaller businesses. Email, SMS and AI voice.</td></tr>
+          <tr><th scope="row">Slicker</th><td>Performance based. Rate not published.</td>
+              <td>The only one we found selling measured incremental lift over your existing setup, with A/B testing and statistical significance. SOC 2 Type II.</td></tr>
+          <tr><th scope="row">RecoverStack</th><td>$49 / $99 / $149 a month by MRR band. Founding discount to $29.40. First 90 days free.</td>
+              <td>Free read-only audit app as the front door. Aimed explicitly at bootstrapped SaaS founders.</td></tr>
+          <tr><th scope="row">Reecova</th><td>$49.99/mo plus 10% of recovered.</td>
+              <td>Free 90 day scan first. The only tool we found that automatically stops retrying non-retryable declines.</td></tr>
+          <tr><th scope="row">Rebounce</th><td>From $3.50/mo up to $10k MRR.</td>
+              <td>The cheapest we found anywhere. 14 day sequence with SMS and WhatsApp.</td></tr>
+          <tr><th scope="row">Airdun</th><td>$199/mo up to 150 recovery cases.</td>
+              <td>Email, SMS and WhatsApp, with per-case review.</td></tr>
+          <tr><th scope="row">RecoverPing</th><td>From $19/mo.</td>
+              <td>Multi step SMS and email sequences with configurable delays.</td></tr>
+          <tr><th scope="row">Gravy</th><td>Not published.</td>
+              <td>A human service rather than software. US based specialists phone your customers. Its own site arranges a fee by sales conversation, and third party sites quote percentages that contradict that, so we publish neither.</td></tr>
+          <tr><th scope="row">Vindicia Retain</th><td>Not published.</td>
+              <td>You submit transactions you have already written off. Deliberately no customer contact at all.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="callout">
+      <p><strong>Something worth knowing before you shortlist any of them, including us.</strong> Every tool in this
+      category claims a recovery uplift and none of them can prove it, because Stripe's own free retries would have
+      collected a share of those payments anyway. One vendor's documentation states plainly that a payment counts as
+      recovered whether their retry landed it, the platform's own retry landed it, or the customer updated their card
+      unprompted. Another publishes a methodology based on comparing against a three month average from before you
+      switched it on, with no control group.</p>
+      <p>The only way to know what a tool actually added is to hold back a random slice of failed payments, leave them
+      to your existing setup, and compare. When you talk to any vendor here, ask how their recovery number is
+      calculated and whether a holdout was used. The answer is informative either way.</p>
+    </div>
+
+    <h2>Before you buy any of them</h2>
+    <p>A share of your failed payments cannot be recovered by any tool on this page, because the card is gone rather
+    than temporarily short. Stripe will not even send nine of its decline codes to the card network. Working out how
+    big that share is for you changes which of these tools is worth paying for, and sometimes whether any of them is.
+    The <a href="/tools/retry-waste-calculator/">retry waste calculator</a> does that in your browser in a couple of
+    minutes.</p>
 
     <h2 id="faq">Frequently asked questions</h2>
     <div class="faq">
