@@ -54,10 +54,11 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     {
       "@type": "ItemList",
       "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Stripe decline codes explained", "url": "https://recoverflow.org/tools/decline-code-lookup/" },
-        { "@type": "ListItem", "position": 2, "name": "Payment retry schedule builder", "url": "https://recoverflow.org/tools/retry-schedule-builder/" },
-        { "@type": "ListItem", "position": 3, "name": "Dunning email generator", "url": "https://recoverflow.org/tools/dunning-email-generator/" },
-        { "@type": "ListItem", "position": 4, "name": "Failed payment recovery estimator", "url": "https://recoverflow.org/tools/recovery-estimator/" }
+        { "@type": "ListItem", "position": 1, "name": "Stripe retry waste calculator", "url": "https://recoverflow.org/tools/retry-waste-calculator/" },
+        { "@type": "ListItem", "position": 2, "name": "Stripe decline codes explained", "url": "https://recoverflow.org/tools/decline-code-lookup/" },
+        { "@type": "ListItem", "position": 3, "name": "Payment retry schedule builder", "url": "https://recoverflow.org/tools/retry-schedule-builder/" },
+        { "@type": "ListItem", "position": 4, "name": "Dunning email generator", "url": "https://recoverflow.org/tools/dunning-email-generator/" },
+        { "@type": "ListItem", "position": 5, "name": "Failed payment recovery estimator", "url": "https://recoverflow.org/tools/recovery-estimator/" }
       ]
     }
   ]
@@ -191,9 +192,16 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <div class="wrap">
     <p class="eyebrow">Free tools</p>
     <h1>Tools for failed Stripe payments</h1>
-    <p class="lede">Four free tools for working out what your failed subscription payments are costing you and what to do about them. No signup, no email wall, and nothing you type is stored or sent anywhere.</p>
+    <p class="lede">Five free tools for working out what your failed subscription payments are costing you and what to do about them. No signup, no email wall, and nothing you type is stored or sent anywhere.</p>
 
     <div class="tool-grid">
+      <a class="tool-card" href="/tools/retry-waste-calculator/">
+        <span class="ico" aria-hidden="true">&#128683;</span>
+        <h3>Retry waste calculator</h3>
+        <p>Every recovery tool sells you more retries. This counts the ones that were never going to work. Enter your decline codes and see how much of your failed revenue sits on cards that needed replacing, not retrying.</p>
+        <span class="go">Work out your waste &rarr;</span>
+      </a>
+
       <a class="tool-card" href="/tools/decline-code-lookup/">
         <span class="ico" aria-hidden="true">&#128269;</span>
         <h3>Stripe decline codes explained</h3>
