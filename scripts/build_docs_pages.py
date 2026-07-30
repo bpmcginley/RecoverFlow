@@ -550,6 +550,151 @@ AUDIT_FAQS = [
 ]
 
 
+# ---------------------------------------------------------------------------
+# /tools/retry-waste-calculator
+# ---------------------------------------------------------------------------
+
+WASTE_FAQS = [
+    ("What counts as a wasted retry?",
+     "An attempt against a decline code that cannot succeed no matter how many times you try. Nine codes block execution at Stripe entirely until a new card is attached, and four more (expired card, incorrect CVC, invalid expiry) do get retried but cannot succeed until the customer replaces the card. Attempts against those are spent, not invested."),
+    ("Where do I find my decline codes?",
+     "In the Stripe Dashboard, filter Payments to failed, or filter Invoices to unpaid and open the latest payment attempt on each. The decline code sits on the failed PaymentIntent as last_payment_error.decline_code. Twenty invoices is enough for a useful picture."),
+    ("Is there really a cap on retries?",
+     "Yes. Visa's Excessive Reattempts Rule limits reattempts to 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you pass it. Mastercard raised its excessive-authorisation fees in January 2026. Most recovery tools do not show you where you stand against that budget."),
+    ("Does this send my data anywhere?",
+     "No. The calculation runs in your browser. Nothing is uploaded, stored or logged, and there is no form to submit."),
+]
+
+WASTE_BODY = """<main>
+  <div class="wrap">
+    <p class="eyebrow">Free tool</p>
+    <h1>How many of your Stripe retries were never going to work?</h1>
+
+    <div class="answer">
+      <span class="label">The short version</span>
+      <p>Every failed payment tool on the market sells you more retries. Some of your declines cannot succeed on any attempt, ever, because the card is gone rather than temporarily short.</p>
+      <p>Put in the counts from your last twenty or so failed invoices and this tells you how much of your failed revenue is in that group. Nothing is uploaded.</p>
+    </div>
+
+    <h2 id="calc">Enter your decline codes</h2>
+    <p>Counts from your Stripe Dashboard. Leave anything at zero if you did not see it.</p>
+
+    <div class="calc" id="calc">
+      <div class="grid" id="codeGrid"></div>
+      <label for="avg">Average failed invoice amount</label>
+      <input id="avg" type="number" min="0" step="1" value="79" inputmode="decimal">
+      <button id="run" class="btn" type="button">Work it out</button>
+    </div>
+
+    <div id="out" hidden></div>
+
+    <h2 id="why">Why this is the number that matters</h2>
+    <p>Failed payments split into two groups that need opposite fixes, and almost every tool in this category treats them the same.</p>
+    <p>One group is temporary. The bank balance was short, the processor glitched, the issuer was cautious. Waiting and trying again genuinely works, and Stripe's own free Smart Retries already do this well.</p>
+    <p>The other group is a card that is gone. Reported lost or stolen, reissued, expired, revoked, or blocked for this merchant. <strong>No retry schedule can collect from a card that no longer exists.</strong> Stripe will not even send nine of those codes to the network. It keeps incrementing the attempt counter while nothing is attempted.</p>
+    <p>If most of your failed revenue is in the second group, buying a tool that retries harder is buying a solution to the wrong half of your problem. That is worth knowing before you spend anything, including with us.</p>
+
+    <h2 id="cap">There is also a ceiling you may be hitting</h2>
+    <p>Visa's Excessive Reattempts Rule caps reattempts at 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you cross it. Mastercard increased its excessive-authorisation fees in January 2026.</p>
+    <p>A third-party recovery tool retrying on top of Stripe's own retries draws down the same budget, and neither system can see the other's count. More attempts is not a free action.</p>
+
+    <div class="cta-band">
+      <h2>Want this run against your real data?</h2>
+      <p>Send your rough MRR, roughly how many payments fail a month, and what happens today when one does. I will send back a written breakdown with the arithmetic shown. No Stripe access, no signup, no call.</p>
+      <p style="color:var(--text-dim);">Sometimes the answer is that Stripe's free settings already cover you, and I will say so.</p>
+      <a class="btn" href="/audit/">See what the free audit covers</a>
+    </div>
+  </div>
+</main>"""
+
+WASTE_JS = """
+<script>
+(function () {
+  var BLOCKED = [
+    ['lost_card','Lost card'],['stolen_card','Stolen card'],['pickup_card','Pickup card'],
+    ['incorrect_number','Incorrect number'],['transaction_not_allowed','Transaction not allowed'],
+    ['authentication_required','Authentication required'],['highest_risk_level','Highest risk level'],
+    ['revocation_of_authorization','Revocation of authorization'],
+    ['revocation_of_all_authorizations','Revocation of all authorizations']
+  ];
+  var NEWCARD = [
+    ['expired_card','Expired card'],['incorrect_cvc','Incorrect CVC'],
+    ['invalid_expiry_month','Invalid expiry month'],['invalid_expiry_year','Invalid expiry year']
+  ];
+  var SOFT = [
+    ['insufficient_funds','Insufficient funds'],['do_not_honor','Do not honor'],
+    ['generic_decline','Generic decline'],['processing_error','Processing error'],
+    ['try_again_later','Try again later'],['card_velocity_exceeded','Card velocity exceeded'],
+    ['card_declined','Card declined']
+  ];
+  var ALL = BLOCKED.concat(NEWCARD, SOFT);
+  var grid = document.getElementById('codeGrid');
+  ALL.forEach(function (c) {
+    var w = document.createElement('div');
+    w.className = 'field';
+    w.innerHTML = '<label for="c_' + c[0] + '">' + c[1] + '</label>' +
+      '<input id="c_' + c[0] + '" type="number" min="0" step="1" value="0" inputmode="numeric">';
+    grid.appendChild(w);
+  });
+
+  function n(id) { var v = parseInt((document.getElementById(id) || {}).value, 10); return isNaN(v) || v < 0 ? 0 : v; }
+  function money(x) { return '$' + Math.round(x).toLocaleString(); }
+  function sum(list) { var t = 0; list.forEach(function (c) { t += n('c_' + c[0]); }); return t; }
+
+  document.getElementById('run').addEventListener('click', function () {
+    var b = sum(BLOCKED), nc = sum(NEWCARD), s = sum(SOFT), total = b + nc + s;
+    var avg = parseFloat(document.getElementById('avg').value) || 0;
+    var out = document.getElementById('out');
+    out.hidden = false;
+    if (!total) {
+      out.innerHTML = '<div class="callout"><p>Enter at least one decline count above.</p></div>';
+      return;
+    }
+    var wasted = b + nc, pct = wasted / total * 100;
+    var verdict;
+    if (pct >= 50) {
+      verdict = '<p><strong>More than half of your failed revenue cannot be retried into existence.</strong> ' +
+        'This is an email problem wearing a retry problem\\'s clothes. A tool that retries harder will not move this number. ' +
+        'What moves it is what you say to these customers, and when.</p>';
+    } else if (pct >= 25) {
+      verdict = '<p><strong>A meaningful minority is unreachable by retrying.</strong> Stripe\\'s free Smart Retries should ' +
+        'handle most of the rest, so check your retry window is on the recommended 8 attempts over 2 weeks before ' +
+        'paying anyone for retry logic. The ' + Math.round(pct) + '% above is where a tool could actually help.</p>';
+    } else {
+      verdict = '<p><strong>Most of your failures are genuinely retryable</strong>, which is exactly what Stripe\\'s free ' +
+        'Smart Retries are built for. Check your settings are on 8 attempts over 2 weeks. If they are, you may not ' +
+        'need to buy anything at all, and we would rather tell you that than sell you something.</p>';
+    }
+    out.innerHTML =
+      '<div class="result">' +
+      '<h2>Your ' + total + ' failed payments</h2>' +
+      '<div class="rows">' +
+      '<div class="row"><span>Could never succeed on any retry</span><strong>' + b + ' (' + Math.round(b / total * 100) + '%)</strong></div>' +
+      '<div class="row"><span>Retried by Stripe, but need a new card first</span><strong>' + nc + ' (' + Math.round(nc / total * 100) + '%)</strong></div>' +
+      '<div class="row"><span>Genuinely reachable by retrying</span><strong>' + s + ' (' + Math.round(s / total * 100) + '%)</strong></div>' +
+      '</div>' +
+      (avg ? '<p class="big">' + money(wasted * avg) + ' of every ' + money(total * avg) +
+        ' needed a new card, not another attempt.</p>' : '') +
+      verdict +
+      '<p style="color:var(--text-dim);font-size:.9rem;">Arithmetic on the numbers you entered. No assumed recovery rates ' +
+      'are used anywhere on this page, because we have none we could substantiate.</p>' +
+      '</div>';
+  });
+})();
+</script>
+<style>
+  .calc { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin: 18px 0; }
+  .calc .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .calc label { display: block; font-size: .82rem; color: var(--text-dim); margin-bottom: 4px; }
+  .calc input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--border-strong); background: var(--bg); color: var(--text); font: inherit; }
+  .result { background: var(--card-bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; margin: 18px 0; }
+  .result .rows { margin: 12px 0; }
+  .result .row { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .result .row:last-child { border-bottom: 0; }
+  .result .big { font-size: 1.25rem; font-weight: 700; letter-spacing: -.02em; margin: 14px 0; }
+</style>"""
+
+
 def write(path_slug, html):
     out = os.path.join(DOCS, *path_slug.split("/")) if path_slug else DOCS
     os.makedirs(out, exist_ok=True)
@@ -586,4 +731,29 @@ if __name__ == "__main__":
         "Send three numbers, get a written breakdown of what failed Stripe payments cost you and whether Stripe's free features already cover it. No connection needed.",
         f"{SITE}/audit/", AUDIT_BODY.replace("</div>\n</main>", f"{faq}\n  </div>\n</main>"), audit_schema))
 
-    print(f"\n{len(PAGES)} doc pages + changelog + audit")
+    waste_schema = [{
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Stripe retry waste calculator",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Any",
+        "url": f"{SITE}/tools/retry-waste-calculator/",
+        "description": "Work out how much of your failed Stripe revenue sits on decline codes that no retry can ever collect. Runs in your browser, nothing uploaded.",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+    }, {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{"@type": "Question", "name": q,
+                        "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in WASTE_FAQS],
+    }]
+    wfaq = "\n".join(['<h2 id="faq">Common questions</h2>', '<div class="faq">']
+                     + [f"  <details><summary>{q}</summary><p>{a}</p></details>" for q, a in WASTE_FAQS]
+                     + ["</div>"])
+    write("tools/retry-waste-calculator", shell(
+        "How many of your Stripe retries are wasted? | Free calculator",
+        "Free browser calculator. Enter your decline codes and see how much failed revenue sits on cards no retry can ever collect. Nothing uploaded.",
+        f"{SITE}/tools/retry-waste-calculator/",
+        WASTE_BODY.replace("</div>\n</main>", f"{wfaq}\n  </div>\n</main>") + WASTE_JS,
+        waste_schema))
+
+    print(f"\n{len(PAGES)} doc pages + changelog + audit + retry waste calculator")
