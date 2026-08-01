@@ -54,6 +54,7 @@ try
     builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Section));
     builder.Services.Configure<BillingOptions>(builder.Configuration.GetSection(BillingOptions.Section));
     builder.Services.Configure<BacktestOptions>(builder.Configuration.GetSection(BacktestOptions.Section));
+    builder.Services.Configure<AuditOptions>(builder.Configuration.GetSection(AuditOptions.Section));
     builder.Services.Configure<AdminOptions>(builder.Configuration.GetSection(AdminOptions.Section));
 
     // Stripe.net calls (including the OAuth token exchange) authenticate using this

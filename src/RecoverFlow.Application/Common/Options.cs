@@ -74,6 +74,27 @@ public sealed class AdminOptions
     public string ApiKey { get; set; } = "";
 }
 
+public sealed class AuditOptions
+{
+    public const string Section = "Audit";
+
+    /// <summary>How far back the read-only marketplace audit scans a merchant's failed charges.</summary>
+    public int WindowDays { get; set; } = 90;
+
+    /// <summary>Caps the scan so a large account can't stall the callback or burn Stripe rate limits.</summary>
+    public int MaxCharges { get; set; } = 500;
+
+    /// <summary>
+    /// Optional address that receives a one-line notice when an audit runs (company + waste %,
+    /// never card data). Ships EMPTY, so by default no third party sees merchant data — only the
+    /// merchant themselves receives their report.
+    /// </summary>
+    public string LeadNotificationAddress { get; set; } = "";
+
+    /// <summary>Where the merchant's browser lands after the audit callback completes.</summary>
+    public string ResultRedirectUrl { get; set; } = "https://recoverflow.org/audit/";
+}
+
 public sealed class AppOptions
 {
     public const string Section = "App";

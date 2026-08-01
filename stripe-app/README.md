@@ -35,21 +35,44 @@ wasted puts us first at something.
 
 ## Status
 
-**Manifest only. Not submitted.** Remaining work before it can go to review:
+**Backend built. Not submitted.** The callback, scan, waste split and report email are
+implemented and unit-tested; what remains is the icon and the Stripe listing form itself.
 
-- [ ] `icon.png`, 300x300 minimum, 1:1, under 10MB
-- [ ] Implement `GET /connect/stripe/audit/callback` in RecoverFlow.Api as a read-only
-      variant of the existing Connect callback. Must NOT reuse the write-scoped token path.
-- [ ] Reuse `AccountBacktestService` for the scan, but add the waste split from
-      `scripts/retry_waste_audit.py`: blocked codes, needs-new-card codes, genuinely
-      retryable, plus Visa reattempt exposure per card.
-- [ ] Email the one-page report. Reuse the SendGrid sender.
-- [ ] Expire the stored token as soon as the audit completes. Do not retain it. This is both
-      the right thing and the thing RecoverStack advertises.
+- [x] Implement `GET /connect/stripe/audit/callback` in RecoverFlow.Api as a read-only
+      variant of the existing Connect callback. Done — `RetryWasteAuditController`. It does
+      NOT reuse the write-scoped token path and issues no `state` (Stripe originates the
+      install, so the code exchange is the authentication).
+- [x] The waste split from `scripts/retry_waste_audit.py`: blocked codes, needs-new-card
+      codes, genuinely retryable, plus Visa reattempt exposure per card. Done —
+      `RetryWasteAuditService` (a C# port kept in lockstep with the script) with unit tests.
+      NOTE: it does **not** reuse `AccountBacktestService`. That path reads invoices with the
+      decline code deliberately left null (the invoice→charge expand chain is too brittle over
+      90 days), and the whole audit turns on the decline code. So a dedicated read-only charge
+      reader (`StripeAuditReader`, `charge_read`) fetches `failure_code` + card fingerprint.
+- [x] Email the one-page report. Done — reuses `IEmailSender` (SendGrid). HTML + plaintext.
+- [x] Expire the stored token as soon as the audit completes. Done, and stronger than asked:
+      the token is never stored at all. The OAuth exchange is used only to confirm the account
+      id; every read goes through the platform key + Stripe-Account header, so there is no
+      token to retain or expire.
+- [ ] `icon.png`, 300x300 minimum, 1:1, under 10MB. (Referenced by the manifest; still to add.)
 - [ ] Listing copy: name (35 chars max, cannot contain "Stripe", "app", "free" or "paid"),
       80-char subtitle, 1000-char about, category, up to 3 key features with images,
       privacy policy URL, support channel with response time, pricing statement,
-      test credentials with 2FA disabled, testing guidance.
+      test credentials with 2FA disabled, testing guidance. (Draft below.)
+
+### Configuration
+
+`Audit` options (appsettings / env, all optional — safe defaults ship):
+
+- `Audit__WindowDays` (default 90), `Audit__MaxCharges` (default 500)
+- `Audit__ResultRedirectUrl` — where the merchant lands after the audit
+  (default `https://recoverflow.org/audit/`); the callback appends `?audit=sent|no-email|error`.
+- `Audit__LeadNotificationAddress` — ships EMPTY. When set, the founder gets a one-line notice
+  (company + waste %, never card data) each time an audit runs. Off by default so no third
+  party ever sees merchant data.
+
+The read callback lives at `https://api.recoverflow.org/connect/stripe/audit/callback`, which
+is already the manifest's `allowed_redirect_uris`.
 
 Review takes 4 business days. No listing fee. No minimum customer count.
 
