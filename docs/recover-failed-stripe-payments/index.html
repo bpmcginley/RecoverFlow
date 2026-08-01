@@ -350,5 +350,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   </div>
 </footer>
 
+<!-- Track whether the guide drives clicks toward the homepage signup form. -->
+<script>
+(function () {
+  if (typeof gtag !== 'function') return;
+  var cta = document.querySelector('.cta-box a.btn');
+  if (cta) {
+    cta.addEventListener('click', function () {
+      gtag('event', 'cta_click', {
+        transport_type: 'beacon',
+        location: 'guide_backtest',
+        destination: '/'
+      });
+    });
+  }
+})();
+</script>
+
 </body>
 </html>

@@ -1040,5 +1040,34 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 })();
 </script>
 
+<!-- Conversion tracking: fire GA4 events for the key funnel actions. -->
+<script>
+(function () {
+  if (typeof gtag !== 'function') return;
+
+  // Primary conversion: user submits the "Connect your Stripe account" form.
+  // The form navigates away to Stripe OAuth, so use transport_type 'beacon'
+  // to make sure the event is sent before the page unloads.
+  var signup = document.querySelector('form.signup');
+  if (signup) {
+    signup.addEventListener('submit', function () {
+      gtag('event', 'connect_stripe_click', {
+        transport_type: 'beacon',
+        method: 'stripe_oauth',
+        location: 'hero_form'
+      });
+    });
+  }
+
+  // Secondary signal: existing merchant clicks "Sign in" (engagement, not a conversion).
+  var signin = document.querySelector('a.nav-cta');
+  if (signin) {
+    signin.addEventListener('click', function () {
+      gtag('event', 'login_click', { transport_type: 'beacon', location: 'header' });
+    });
+  }
+})();
+</script>
+
 </body>
 </html>
