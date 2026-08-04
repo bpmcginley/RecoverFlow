@@ -14,13 +14,25 @@ public sealed record FailedChargeAttempt(
     DateTime CreatedUtc);
 
 /// <summary>
+/// What the scan found, plus whether it saw the whole window. The scan is capped so a busy
+/// account cannot stall the request, and Stripe pages newest-first, so hitting the cap means
+/// the older end of the window was never read. The report has to say so: claiming to cover
+/// 90 days while actually covering nine is exactly the kind of number this product exists
+/// to argue against.
+/// </summary>
+public sealed record ChargeScanResult(
+    IReadOnlyList<FailedChargeAttempt> Charges,
+    bool Truncated,
+    DateTime EarliestCovered);
+
+/// <summary>
 /// Reads a merchant's recent failed charges. Deliberately separate from
 /// <see cref="Backtest.IHistoricalInvoiceReader"/>: that one skips decline codes on purpose,
 /// and decline codes are the entire point of this audit.
 /// </summary>
 public interface IRetryWasteReader
 {
-    Task<IReadOnlyList<FailedChargeAttempt>> ListFailedChargesAsync(
+    Task<ChargeScanResult> ListFailedChargesAsync(
         string stripeAccountId, DateTime sinceUtc, int maxCharges, CancellationToken ct = default);
 }
 
@@ -45,7 +57,9 @@ public sealed record RetryWasteReport(
     int ReachableCount,
     long ReachableCents,
     IReadOnlyList<VisaExposureRow> VisaExposure,
-    bool VisaExposureAvailable)
+    bool VisaExposureAvailable,
+    bool Truncated = false,
+    DateTime? EarliestCovered = null)
 {
     public int BlockedCount => BlockedByStripe.Sum(r => r.Count);
     public long BlockedCents => BlockedByStripe.Sum(r => r.AmountCents);
