@@ -137,10 +137,11 @@ def feature_2():
 
 
 def feature_3():
-    """The trust argument, which is the conversion problem this app exists to solve."""
+    """The trust argument. Leads with token retention, not read-only: 11 of 31 competitors
+    are already read-only, but none of them promise not to keep the token."""
     im, d = canvas()
-    header(d, "Read-only, and it says so",
-           "Three read permissions. No write permission of any kind is requested.")
+    header(d, "Read access only, and nothing is kept",
+           "Zero of 31 failed-payment apps in this category claim they do not retain your token.")
 
     panel(d, 80, 250, W - 160, 300)
     x, y = 130, 296
