@@ -69,8 +69,20 @@ public sealed record RetryWasteReport(
     /// <summary>Attempts that could not have succeeded without the customer supplying a new card.</summary>
     public long WastedCents => BlockedCents + NeedsNewCardCents;
 
+    public int WastedCount => BlockedCount + NeedsNewCardCount;
+
+    /// <summary>Share of failed <em>attempts</em> that were wasted.</summary>
     public double WastedPercent =>
-        TotalFailedCount == 0 ? 0 : (double)(BlockedCount + NeedsNewCardCount) / TotalFailedCount * 100;
+        TotalFailedCount == 0 ? 0 : (double)WastedCount / TotalFailedCount * 100;
+
+    /// <summary>
+    /// Share of failed <em>money</em> that was wasted. Deliberately separate from
+    /// <see cref="WastedPercent"/>: the two diverge whenever the blocked cards carry a different
+    /// average value, and quoting the attempt percentage next to a dollar figure would be exactly
+    /// the sort of number-that-does-not-mean-what-it-says this report exists to call out.
+    /// </summary>
+    public double WastedRevenuePercent =>
+        TotalFailedCents == 0 ? 0 : (double)WastedCents / TotalFailedCents * 100;
 
     /// <summary>
     /// Below this, the honest answer is that Stripe's own free Smart Retries already cover them

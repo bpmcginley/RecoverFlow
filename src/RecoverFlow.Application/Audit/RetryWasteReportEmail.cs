@@ -58,12 +58,17 @@ public static class RetryWasteReportEmail
         + $"activity to reach that cap before reaching {r.WindowDays} days)"
         : $"the last {r.WindowDays} days";
 
+    // Both figures are stated because they are genuinely different questions, and the attempt
+    // share is usually the smaller of the two. Quoting one and labelling it the other is the
+    // trick this whole report is an argument against.
     private static string Verdict(RetryWasteReport r) => r.RecommendsNoPurchase
         ? "Most of your failures are the ordinary retryable kind. Stripe's own free Smart Retries "
         + "already cover this, and you should not buy a recovery tool on the strength of this report."
-        : $"{r.WastedPercent:0}% of your failed revenue ({Money(r.WastedCents, r.Currency)}) sits on cards that "
-        + "needed replacing, not retrying. Any tool that answers this with more retry attempts is "
-        + "solving the wrong half of the problem.";
+        : $"{r.WastedCount:N0} of your {r.TotalFailedCount:N0} failed payments ({r.WastedPercent:0}%), "
+        + $"worth {Money(r.WastedCents, r.Currency)} of {Money(r.TotalFailedCents, r.Currency)} "
+        + $"({r.WastedRevenuePercent:0}% of the money), sat on cards that needed replacing rather than "
+        + "retrying. Any tool that answers this with more retry attempts is solving the wrong half "
+        + "of the problem.";
 
     private static string Html(RetryWasteReport r, string who)
     {
@@ -192,19 +197,40 @@ public static class RetryWasteReportEmail
         {
             s.AppendLine($"  {r.VisaExposure.Count:N0} card(s) reached 10 or more attempts in 30 days.");
             foreach (var v in r.VisaExposure.Take(8))
-                s.AppendLine($"     {v.CardRef,-38} {v.PeakAttemptsInWindow,3} attempts"
+                s.AppendLine($"     {Ref(v.CardRef),-24} {v.PeakAttemptsInWindow,3} attempts"
                            + (v.AtOrOverCap ? "  <-- at or over the cap" : ""));
         }
         s.AppendLine();
 
         s.AppendLine("THE ONE SENTENCE VERSION");
         s.AppendLine(new string('-', 62));
-        s.AppendLine("  " + Verdict(r));
+        foreach (var line in Wrap(Verdict(r), 60)) s.AppendLine("  " + line);
         s.AppendLine();
         s.AppendLine("This audit read your Stripe account in read-only mode. No write permissions");
         s.AppendLine("were requested and none were used. We did not keep your access token.");
         return s.ToString();
     }
+
+    /// <summary>Greedy wrap so the plain-text part keeps the same column as the rest of the report.</summary>
+    private static IEnumerable<string> Wrap(string text, int width)
+    {
+        var line = new StringBuilder();
+        foreach (var word in text.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+        {
+            if (line.Length > 0 && line.Length + 1 + word.Length > width)
+            {
+                yield return line.ToString();
+                line.Clear();
+            }
+            if (line.Length > 0) line.Append(' ');
+            line.Append(word);
+        }
+        if (line.Length > 0) yield return line.ToString();
+    }
+
+    /// <summary>Card fingerprints are short, but nothing guarantees it, and one long ref must not
+    /// push the plain-text report past its column.</summary>
+    private static string Ref(string cardRef) => cardRef.Length <= 24 ? cardRef : cardRef[..21] + "...";
 
     private static void AppendCodes(StringBuilder s, IReadOnlyList<WasteCodeRow> rows, string currency)
     {
