@@ -17,7 +17,7 @@ Run from the repo root:  python scripts/build_legal_pages.py
 import os
 
 DOCS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs")
-UPDATED = "28 July 2026"
+UPDATED = "4 August 2026"
 
 TRACKING = """<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
@@ -231,6 +231,7 @@ PRIVACY = f"""<main>
       <ol>
         <li><a href="#roles">The two different roles we play</a></li>
         <li><a href="#collect">What we actually store</a></li>
+        <li><a href="#audit">The Marketplace audit, which stores nothing</a></li>
         <li><a href="#never">What we never store</a></li>
         <li><a href="#emails">Email tracking, stated plainly</a></li>
         <li><a href="#subprocessors">Sub-processors</a></li>
@@ -249,7 +250,7 @@ PRIVACY = f"""<main>
     <p>If you are subject to the UK GDPR or the EU GDPR, that makes you the controller and RecoverFlow the processor for that data, and you are entitled to a Data Processing Agreement. Email us and you will get one.</p>
 
     <h2 id="collect">2. What we actually store</h2>
-    <p>This list is taken from the database schema rather than written from memory.</p>
+    <p>This list is taken from the database schema rather than written from memory. It describes a full RecoverFlow account. If you only ran the free Marketplace audit, almost none of it applies to you: see <a href="#audit">section 3</a>.</p>
     <h3>About you, the merchant</h3>
     <ul>
       <li>Your email address and company name</li>
@@ -274,22 +275,37 @@ PRIVACY = f"""<main>
       <li>The results of the 90 day backward-looking scan we run when you first connect, which is a summary of what failed and what was estimated recoverable</li>
     </ul>
 
-    <h2 id="never">3. What we never store</h2>
+    <h2 id="audit">3. The Marketplace audit, which stores nothing</h2>
+    <p>The <strong>Retry Waste Audit</strong> on the Stripe Marketplace is a separate thing from the product described above, and it has a much shorter privacy story. Everything in section 2 describes what happens when you sign up for RecoverFlow. Almost none of it applies if you only ran the audit.</p>
+    <div class="callout">
+      <p><strong>The audit requests read access only, and we do not keep your Stripe access token.</strong> The authorisation code is exchanged solely to learn <em>which</em> Stripe account authorised the audit. Every read after that uses our own platform key with your account identifier in a request header, which means the access token is never written to our database at all.</p>
+      <p><strong>Running the audit does not create an account.</strong> No merchant record, no password, no login. An audit is not a signup.</p>
+    </div>
+    <h3>What the audit reads</h3>
+    <ul>
+      <li>Your failed charges in the scan window: amount, currency, the decline code returned by the card issuer, and when each one was attempted</li>
+      <li>Stripe's <strong>card fingerprint</strong>, an opaque identifier Stripe uses to recognise the same card across payments. It is not a card number and cannot be turned back into one. We use it only to count how many attempts hit the same card, which is the whole point of the Visa reattempt section of the report.</li>
+    </ul>
+    <h3>What the audit keeps</h3>
+    <p>Nothing. The figures are calculated in memory, written into an email, and sent to you. The report is not stored, and neither are the charges it was calculated from.</p>
+    <p>Your email address is used to deliver that one report, through the same email provider listed in the sub-processors section. It is not added to a mailing list and you will not receive anything else because of it. If you would like a copy of the report re-sent, we cannot do it from our records, because we do not have any: you would need to run the audit again.</p>
+
+    <h2 id="never">4. What we never store</h2>
     <div class="callout">
       <p><strong>We never see or store card numbers, CVCs, expiry dates or bank details.</strong> Stripe holds all of that and processes every charge. Card data does not reach our servers at any point, which is why our card update page is built on Stripe's own hosted elements rather than a form we wrote.</p>
       <p>We also do not store passwords. Signing in uses a one-time link sent to your email address, so there is no password for us to lose.</p>
     </div>
 
-    <h2 id="emails">4. Email tracking, stated plainly</h2>
+    <h2 id="emails">5. Email tracking, stated plainly</h2>
     <p>The recovery emails we send to your customers record whether the message was <strong>opened</strong> and whether the link was <strong>clicked</strong>. We do this so you can see which messages actually recover money, and so we can attribute a recovery to a specific action rather than guessing.</p>
     <p>We are telling you this because it is a tracking pixel and you should know it exists, particularly if you have your own commitments to your customers about tracking. If you would rather it was switched off for your account, email us and we will turn it off. Attribution gets less precise as a result, which in practice means we charge you for fewer recoveries rather than more.</p>
 
-    <h2 id="subprocessors">5. Sub-processors</h2>
+    <h2 id="subprocessors">6. Sub-processors</h2>
     <p>These are the third parties that touch data in order for the service to work.</p>
     {SUBPROCESSORS}
     <p>Google Analytics and the LinkedIn tag run on the public marketing site only. They are not present in the application you log into, and they never see your account data or your customers' data.</p>
 
-    <h2 id="retention">6. How long we keep things</h2>
+    <h2 id="retention">7. How long we keep things</h2>
     <ul>
       <li><strong>While your account is open:</strong> we keep your account data and your recovery history so the dashboard and reporting work.</li>
       <li><strong>After you disconnect:</strong> your Stripe access token is the thing that matters most, and revoking access in your Stripe dashboard makes it useless immediately regardless of what we hold.</li>
@@ -298,20 +314,20 @@ PRIVACY = f"""<main>
     </ul>
     <p>We are being deliberately non-specific about exact retention windows rather than inventing a policy we do not yet operate. If you need a committed retention schedule in writing for a vendor review, ask and we will agree one with you.</p>
 
-    <h2 id="rights">7. Your rights, and your customers' rights</h2>
+    <h2 id="rights">8. Your rights, and your customers' rights</h2>
     <p>Depending on where you are, you may have the right to access the data we hold about you, correct it, delete it, get a copy of it in a portable form, or object to how it is used. Email <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a> and we will action it.</p>
     <p>If one of <em>your</em> customers contacts us directly about their data, we will not act unilaterally. We will point them to you, because you are the controller of that relationship, and then we will do whatever you instruct.</p>
     <p>We do not sell personal information, and we do not share it for cross-context behavioural advertising. If you are a California resident, that means there is nothing for you to opt out of on that front.</p>
 
-    <h2 id="transfers">8. Where data lives</h2>
+    <h2 id="transfers">9. Where data lives</h2>
     <p>The application and its database are hosted in the <strong>United States</strong>. If you or your customers are in the UK, the EU or elsewhere, using RecoverFlow means data is transferred to and processed in the US. If that is a problem for your compliance position, say so before you connect rather than after.</p>
 
-    <h2 id="site">9. The marketing site</h2>
+    <h2 id="site">10. The marketing site</h2>
     <p>The pages at recoverflow.org that you can read without logging in use Google Analytics and the LinkedIn Insight Tag to measure traffic and advertising. These set cookies.</p>
     <p>We do not currently show a cookie consent banner. That is a gap rather than a position, and it is on the list to fix. In the meantime, blocking third-party cookies or using an ad blocker prevents both, and nothing on the marketing site breaks if you do.</p>
     <p>The free tools run entirely in your browser. Nothing you type into the estimator, the retry builder or the email generator is transmitted to us or stored anywhere.</p>
 
-    <h2 id="changes">10. Changes and contact</h2>
+    <h2 id="changes">11. Changes and contact</h2>
     <p>If this policy changes in a way that materially affects you, we will email you rather than quietly editing the page. The date at the top always reflects the last change.</p>
     <p>Questions, requests, or complaints: <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>. It goes to Bruce, who is the whole company, so you will get a real answer rather than a ticket number.</p>
   </div>
@@ -424,12 +440,21 @@ SECURITY = f"""<main>
     <p>You are being asked to connect the system that takes your money. That deserves a straight account of how the connection works, what we can and cannot reach, and what protections we do <em>not</em> yet have. This page includes the last part, which most security pages leave out.</p>
 
     <h2>How the connection works</h2>
+    <p>There are two, and they are not equally powerful. Which one you used decides what we can reach.</p>
     <ul>
       <li>RecoverFlow connects through <strong>Stripe Connect OAuth</strong>. You authorise it from Stripe's own screen, not from a form we wrote.</li>
       <li>We never ask for, and never receive, your Stripe API keys.</li>
-      <li>The access token we do receive is <strong>encrypted at rest</strong> in our database.</li>
-      <li><strong>You can revoke it in one click</strong> from your Stripe dashboard, at any time, without contacting us. That immediately ends our ability to read or act on your account.</li>
+      <li><strong>The full product</strong> requests read and write access, because retrying an invoice is a write. The access token we receive for it is <strong>encrypted at rest</strong> in our database.</li>
+      <li><strong>The free Retry Waste Audit</strong> requests <strong>read access only</strong>, and we keep no token for it at all. See below.</li>
+      <li><strong>You can revoke either in one click</strong> from your Stripe dashboard, at any time, without contacting us. That immediately ends our ability to read or act on your account.</li>
     </ul>
+
+    <h2>The audit is read-only, and keeps nothing</h2>
+    <div class="callout">
+      <p>The <strong>Retry Waste Audit</strong> requests three read permissions and no write permission of any kind. Stripe enforces that on its own side, so it is not a promise you have to take on trust: the permissions screen shows you exactly what was granted.</p>
+      <p><strong>We do not store the access token.</strong> The authorisation code is exchanged only to learn which account authorised the audit; the reads themselves go through our platform key with your account identifier in a request header. The token is never written to our database.</p>
+      <p><strong>Running the audit does not create an account.</strong> It reads, it calculates, it emails you the report, and it keeps nothing.</p>
+    </div>
 
     <h2>What we never see</h2>
     <div class="callout">
