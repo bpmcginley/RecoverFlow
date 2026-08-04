@@ -22,19 +22,7 @@
   "allowed_redirect_uris": [
     "https://api.recoverflow.org/connect/stripe/audit/callback"
   ],
-  "post_install_action": {
-    "type": "external",
-    "url": "https://recoverflow.org/audit/"
-  },
   "constants": {
     "AUDIT_WINDOW_DAYS": "90"
-  },
-  "ui_extension": {
-    "views": [],
-    "content_security_policy": {
-      "connect-src": ["https://api.recoverflow.org"],
-      "image-src": null,
-      "purpose": null
-    }
   }
 }
