@@ -13,11 +13,17 @@ Sources:
 
 ## Blockers before this can be submitted
 
-1. **`icon.png`** — 300x300 minimum, 1:1, PNG or JPG, under 10MB. Must match the manifest path.
-2. **Three key-feature images** — 1600px+ wide, under 10MB. See the warning in §Key features.
-3. **Test account credentials** — see §Testing guidance for why this is unusually simple for us.
+Assets are **done**. What is left needs a Stripe login, not a build step.
 
-Everything else below is written and ready.
+| Item | Status |
+|---|---|
+| `icon.png` | **Done.** 512x512, 1:1, PNG, 234 KB. Cropped from the RecoverFlow logo mark. |
+| Three key-feature images | **Done.** 1600x1000 each, all under 80 KB. Regenerate with `python scripts/build_listing_images.py`. |
+| Test account credentials | **Not applicable.** The app has no login. See §Testing guidance. |
+| `stripe apps upload` | Needs Bruce's Stripe CLI session |
+| Submit for review | Needs Bruce |
+
+Everything below is written and ready to paste.
 
 ---
 
@@ -113,18 +119,22 @@ detailed use cases. Title, description and image must align.
 > the authorization code is exchanged only to identify the account. Running the audit does
 > not create an account with us, and the report is not retained.
 
-### Warning about the images
+### The images, and the one risk in them
 
-Stripe's guidance asks for images showing the app **in the Stripe Dashboard context**, and
-explicitly forbids real customer data. This app has **no Dashboard UI** by design, so there is
-no in-context screenshot to take. Plan:
+Built by `scripts/build_listing_images.py`, committed, so they are reproducible and reviewable.
 
-- Use clean screenshots of the **emailed report** rendered against synthetic data, which is
-  what the user actually receives.
-- Generate the sample from `scripts/retry_waste_audit.py` or the test dump so no real merchant
-  data can possibly appear.
-- If review pushes back on the absence of Dashboard screenshots, that is the moment to decide
-  whether a minimal Dashboard view is worth building. Do not build it speculatively.
+Generating them from a script rather than screenshotting a real account makes the
+no-real-customer-data rule **structural** rather than a thing to remember: the numbers are
+synthetic and in version control, so no merchant's data can reach a listing image even by
+accident on a future re-render. Feature 1 uses the exact figures the report renders for the
+test fixture, so the headline image cannot drift from real output. Feature 2's card list is
+illustrative, and both images say "synthetic data" on their face.
+
+**The risk:** Stripe's guidance asks for images showing the app **in the Stripe Dashboard
+context**, and this app deliberately has no Dashboard UI. These images show the emailed report,
+which is what the user actually receives and is the entire product. If review pushes back on
+the absence of Dashboard screenshots, that is the moment to decide whether a minimal Dashboard
+view is worth building. Do not build one speculatively.
 
 ---
 
@@ -174,7 +184,7 @@ Text to submit:
 | Reason | Our status |
 |---|---|
 | Localhost or broken links in the manifest | One production HTTPS redirect URI |
-| Poor image quality or branding | **Open.** Icon and feature images not made yet. |
+| Poor image quality or branding | Icon and three feature images built, on-brand, generated from a committed script |
 | Incorrect test credentials, working 2FA | No login exists; documented above |
 | Hard-coded API keys | None. Secrets are environment variables. |
 | Misaligned feature title/description/image | Titles and descriptions written to match the planned images |
