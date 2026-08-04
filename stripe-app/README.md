@@ -35,7 +35,7 @@ wasted puts us first at something.
 
 ## Status
 
-**Backend built and tested. Not submitted.**
+**Backend built and tested. Cannot be submitted from this account — see BLOCKED.md.**
 
 Done:
 
@@ -52,12 +52,11 @@ Done:
 - [x] 29 unit tests covering the split, the currency scoping and the Visa window
 - [x] Token never persisted (see below)
 
-Left, and all of it needs Bruce:
+Assets are done too: `icon.png` (512x512) and `feature-1/2/3.png`, built by
+`scripts/build_listing_images.py`.
 
-- [ ] `icon.png`, exactly 300x300, PNG, relative path from this directory
-- [ ] Test credentials for Stripe's reviewers, 2FA disabled
-- [ ] Decide whether to bump `version` to `1.0.0` before submitting
-- [ ] Submit for review
+**What is left is not a build step.** Stripe refuses public distribution to Connect platform
+accounts, which is what this account is. Read BLOCKED.md before touching anything here.
 
 Review takes 4 business days. No listing fee. No minimum customer count.
 

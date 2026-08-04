@@ -140,4 +140,28 @@ public class RetryWasteReportEmailTests
         var lines = c.PlainText.Split('\n');
         Assert.All(lines, l => Assert.True(l.TrimEnd().Length <= 78, $"too wide: {l}"));
     }
+
+    [Fact]
+    public void A_high_waste_report_closes_with_one_honest_offer()
+    {
+        var c = RetryWasteReportEmail.Render(Report(Typical()), "Acme");
+
+        Assert.Contains("recoverflow.org/pricing", c.Html);
+        Assert.Contains("25%", c.PlainText);
+        Assert.Contains("will not email you again", c.PlainText);
+    }
+
+    [Fact]
+    public void A_buy_nothing_report_carries_no_offer_at_all()
+    {
+        var charges = Enumerable.Range(0, 30).Select(_ => Charge("insufficient_funds", 4900)).ToList();
+
+        var c = RetryWasteReportEmail.Render(Report(charges), "Quiet Co");
+
+        // Following "you should not buy a recovery tool" with a price would be the exact
+        // bait-and-switch this report exists to be the opposite of.
+        Assert.Contains("should not buy", c.PlainText);
+        Assert.DoesNotContain("recoverflow.org/pricing", c.Html);
+        Assert.DoesNotContain("25%", c.PlainText);
+    }
 }

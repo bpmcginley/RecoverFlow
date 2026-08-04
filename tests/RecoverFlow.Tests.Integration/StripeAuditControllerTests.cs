@@ -87,28 +87,31 @@ public class StripeAuditControllerTests
     // --- authorize -------------------------------------------------------------------
 
     [Fact]
-    public void Authorize_sends_the_user_to_the_marketplace_install_url()
+    public void Authorize_uses_connect_oauth_because_the_marketplace_is_closed_to_us()
     {
         var (c, _, _, _, _) = Build();
 
         var url = Assert.IsType<RedirectResult>(c.Authorize("a@b.com", "Acme")).Url;
 
-        // Regression guard. This previously pointed at connect.stripe.com/oauth/authorize,
-        // which is the Connect flow, not an app install, and is a documented rejection reason.
-        Assert.StartsWith("https://marketplace.stripe.com/oauth/v2/authorize", url);
-        Assert.DoesNotContain("connect.stripe.com", url);
+        // This pointed at marketplace.stripe.com until 4 Aug 2026, which is correct for a
+        // LISTED Stripe App. Stripe refused the upload: a Connect platform account cannot take
+        // public distribution, and private distribution reaches only our own team, so there is
+        // no listing to install from. Do not "fix" this back without reading stripe-app/BLOCKED.md.
+        Assert.StartsWith("https://connect.stripe.com/oauth/authorize", url);
+        Assert.DoesNotContain("marketplace.stripe.com", url);
     }
 
     [Fact]
-    public void Authorize_does_not_send_a_scope_parameter()
+    public void Authorize_asks_for_read_only_and_nothing_else()
     {
         var (c, _, _, _, _) = Build();
 
         var url = Assert.IsType<RedirectResult>(c.Authorize("a@b.com", null)).Url;
 
-        // Read-only comes from the manifest permissions and is enforced by Stripe. If a scope
-        // ever appears here, someone has started widening access from application code.
-        Assert.DoesNotContain("scope=", url);
+        // On the Connect flow the scope is requested explicitly rather than declared in a
+        // manifest, so this string is what keeps the read-only promise the whole audit rests on.
+        Assert.Contains("scope=read_only", url);
+        Assert.DoesNotContain("read_write", url);
     }
 
     [Fact]
