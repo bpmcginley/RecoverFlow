@@ -19,6 +19,7 @@
   ],
   "stripe_api_access_type": "oauth",
   "distribution_type": "public",
+  "sandbox_install_compatible": true,
   "allowed_redirect_uris": [
     "https://api.recoverflow.org/connect/stripe/audit/callback"
   ],

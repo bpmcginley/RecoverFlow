@@ -53,16 +53,20 @@ public sealed class StripeAuditController(
         var state = protector.Protect(JsonSerializer.Serialize(
             new AuditState(nonce, email, companyName, DateTime.UtcNow)));
 
-        // read_only is the entire product promise. Stripe enforces it server-side, so even a
-        // bug on our end cannot turn this into a write-capable grant.
-        var authorizeUrl = "https://connect.stripe.com/oauth/authorize" +
-            "?response_type=code" +
-            $"&client_id={Uri.EscapeDataString(stripeOptions.Value.ClientId)}" +
-            "&scope=read_only" +
+        // A Stripe App installs through the Marketplace install URL, NOT the Connect OAuth
+        // endpoint the main product uses. Stripe's publishing guide lists "missing public OAuth
+        // link" as a common rejection reason, and an install started at connect.stripe.com would
+        // not be an app install at all.
+        //
+        // Note what is absent: no scope parameter. Read-only is declared by the three _read
+        // permissions in stripe-app.json and enforced by Stripe from the manifest, so it cannot
+        // be widened by anything this method does.
+        var installUrl = "https://marketplace.stripe.com/oauth/v2/authorize" +
+            $"?client_id={Uri.EscapeDataString(stripeOptions.Value.ClientId)}" +
             $"&redirect_uri={Uri.EscapeDataString(AuditRedirectUri())}" +
             $"&state={Uri.EscapeDataString(state)}";
 
-        return Redirect(authorizeUrl);
+        return Redirect(installUrl);
     }
 
     /// <summary>
