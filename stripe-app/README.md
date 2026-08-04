@@ -54,11 +54,9 @@ Done:
 
 Left, and all of it needs Bruce:
 
-- [ ] `icon.png`, 300x300 minimum, 1:1, under 10MB
+- [ ] `icon.png`, exactly 300x300, PNG, relative path from this directory
 - [ ] Test credentials for Stripe's reviewers, 2FA disabled
-- [ ] Verify in a sandbox how `post_install_action` interacts with the OAuth redirect —
-      both are set, and which one governs the post-install landing is **not confirmed**.
-      Worth checking before submitting rather than spending a review cycle on it.
+- [ ] Decide whether to bump `version` to `1.0.0` before submitting
 - [ ] Submit for review
 
 Review takes 4 business days. No listing fee. No minimum customer count.
@@ -112,8 +110,21 @@ No `Merchant` row is created either. An audit is not a signup.
 
 ## Manifest notes
 
-`extensions` / `ui_extension.views` is intentionally empty. Stripe documents backend-only apps
-as a supported type and the manifest permits an empty views array, so no Dashboard UI is built.
+Checked against https://docs.stripe.com/stripe-apps/reference/app-manifest on 4 August 2026.
+Only `id`, `name` and `version` are required; everything else here is deliberate.
 
-Verify against the current schema before submitting:
-https://docs.stripe.com/stripe-apps/reference/app-manifest
+**`ui_extension` is omitted entirely.** An app with no Dashboard UI may leave it out, which is
+cleaner than an empty `views` array plus a content security policy for an interface that does
+not exist. The earlier version carried a CSP block with `null` values that served no purpose.
+
+**`post_install_action` was removed.** It does not conflict with `allowed_redirect_uris`, but
+that is the problem: the docs describe them as *independent* post-install flows, so setting
+both means two landings. The OAuth callback has to own this flow because it is what receives
+the authorization code, and it already lands the installer on the page that asks where to send
+the report. The removed action pointed at `/audit/`, which describes the **manual** email-based
+audit and would have contradicted what had just happened.
+
+**Name:** 17 characters, and contains none of "Stripe", "app", "free" or "paid".
+
+**Permissions:** three, all `_read`, each with a purpose string. No write permission of any
+kind is requested, which is the claim the whole listing rests on.
