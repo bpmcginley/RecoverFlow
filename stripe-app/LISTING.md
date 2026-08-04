@@ -113,11 +113,17 @@ detailed use cases. Title, description and image must align.
 > it. The report counts the peak attempts against each card in any rolling 30-day window and
 > flags the ones at or over the ceiling.
 
-**3. Title** (80 max): `Read-only, and it says so`
-**Description** (300 max), 240 characters, measured:
-> Three read permissions, no write permission of any kind. The access token is not stored:
-> the authorization code is exchanged only to identify the account. Running the audit does
-> not create an account with us, and the report is not retained.
+**3. Title** (80 max): `Read access only, and nothing is kept`
+**Description** (300 max), 273 characters, measured:
+> We do not store your Stripe access token. The authorization code is exchanged only to
+> identify the account, and the reads run on our platform key. Three read permissions, no
+> write permission of any kind. Running the audit creates no account, and the report is not
+> retained.
+
+> **Why this wording.** Measured 4 Aug 2026: 11 of the 31 failed-payment apps in
+> `revenue_optimization` already request no write access, so "read-only" is a third of the
+> field. **Zero of 31** claim they do not retain the token. Lead with the part that is
+> actually unoccupied. See COMPETITIVE.md addendum 2.
 
 ### The images, and the one risk in them
 
