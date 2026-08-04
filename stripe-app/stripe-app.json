@@ -1,8 +1,10 @@
 {
+  "$schema": "https://stripe.com/stripe-app.schema.json",
   "id": "com.recoverflow.retry-waste-audit",
-  "version": "0.0.1",
   "name": "Retry Waste Audit",
+  "version": "0.0.1",
   "icon": "./icon.png",
+  "extensions": null,
   "permissions": [
     {
       "permission": "invoice_read",
@@ -17,13 +19,13 @@
       "purpose": "Reads subscription status and billing interval so failed renewals can be told apart from one-off invoices, which behave differently and need different handling."
     }
   ],
-  "stripe_api_access_type": "oauth",
-  "distribution_type": "public",
-  "sandbox_install_compatible": true,
+  "constants": {
+    "AUDIT_WINDOW_DAYS": "90"
+  },
   "allowed_redirect_uris": [
     "https://api.recoverflow.org/connect/stripe/audit/callback"
   ],
-  "constants": {
-    "AUDIT_WINDOW_DAYS": "90"
-  }
+  "distribution_type": "public",
+  "stripe_api_access_type": "oauth",
+  "sandbox_install_compatible": true
 }
