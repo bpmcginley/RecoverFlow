@@ -1,5 +1,12 @@
 # Marketplace listing submission
 
+> **BLOCKED, 4 August 2026.** This cannot currently be submitted. `stripe apps upload` refuses
+> public distribution because the RecoverFlow account is a Connect platform, and private
+> distribution reaches only our own team. Everything below stays written and correct so it is
+> ready the moment that changes. See [BLOCKED.md](BLOCKED.md) and
+> [STRIPE_SUPPORT_EMAIL.md](STRIPE_SUPPORT_EMAIL.md).
+
+
 Every field Stripe asks for, filled in, with the character limits it enforces.
 Requirements checked against Stripe's publishing guide and quality requirements on
 **4 August 2026**. Copy these into the Dashboard listing form at submission time.

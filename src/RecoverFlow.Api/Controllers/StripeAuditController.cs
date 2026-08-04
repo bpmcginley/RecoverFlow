@@ -53,20 +53,26 @@ public sealed class StripeAuditController(
         var state = protector.Protect(JsonSerializer.Serialize(
             new AuditState(nonce, email, companyName, DateTime.UtcNow)));
 
-        // A Stripe App installs through the Marketplace install URL, NOT the Connect OAuth
-        // endpoint the main product uses. Stripe's publishing guide lists "missing public OAuth
-        // link" as a common rejection reason, and an install started at connect.stripe.com would
-        // not be an app install at all.
+        // Connect OAuth with scope=read_only, NOT the Marketplace install URL.
         //
-        // Note what is absent: no scope parameter. Read-only is declared by the three _read
-        // permissions in stripe-app.json and enforced by Stripe from the manifest, so it cannot
-        // be widened by anything this method does.
-        var installUrl = "https://marketplace.stripe.com/oauth/v2/authorize" +
-            $"?client_id={Uri.EscapeDataString(stripeOptions.Value.ClientId)}" +
+        // This briefly pointed at marketplace.stripe.com, which is correct for a listed Stripe
+        // App. On 4 August 2026 the upload was refused: "Because your account is a Connect
+        // platform, you cannot choose the public distribution at this time." Private
+        // distribution only reaches team members of our own account, so there is no listing to
+        // install from and that URL leads nowhere. See stripe-app/BLOCKED.md.
+        //
+        // read_only is the entire product promise, and here it has to be requested explicitly
+        // rather than declared in a manifest. Stripe still enforces it on its own side, so a
+        // bug in this file cannot turn the grant write-capable, but the string below is now the
+        // thing that keeps the promise. Do not add scopes to it.
+        var authorizeUrl = "https://connect.stripe.com/oauth/authorize" +
+            "?response_type=code" +
+            $"&client_id={Uri.EscapeDataString(stripeOptions.Value.ClientId)}" +
+            "&scope=read_only" +
             $"&redirect_uri={Uri.EscapeDataString(AuditRedirectUri())}" +
             $"&state={Uri.EscapeDataString(state)}";
 
-        return Redirect(installUrl);
+        return Redirect(authorizeUrl);
     }
 
     /// <summary>

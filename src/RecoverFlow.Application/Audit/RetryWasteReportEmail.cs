@@ -102,6 +102,8 @@ public static class RetryWasteReportEmail
         s.Append("<h3>The one sentence version</h3>");
         s.Append($"<p>{WebUtility.HtmlEncode(Verdict(r))}</p>");
 
+        s.Append(CloseHtml(r));
+
         s.Append("<hr style=\"border:none;border-top:1px solid #eee;margin:24px 0\">");
         s.Append("<p style=\"color:#666;font-size:13px\">This audit read your Stripe account in read-only mode. "
                + "No write permissions were requested and none were used. We did not keep your access token.<br>"
@@ -206,6 +208,7 @@ public static class RetryWasteReportEmail
         s.AppendLine(new string('-', 62));
         foreach (var line in Wrap(Verdict(r), 60)) s.AppendLine("  " + line);
         s.AppendLine();
+        foreach (var line in CloseText(r)) s.AppendLine(line);
         s.AppendLine("This audit read your Stripe account in read-only mode. No write permissions");
         s.AppendLine("were requested and none were used. We did not keep your access token.");
         return s.ToString();
@@ -231,6 +234,41 @@ public static class RetryWasteReportEmail
     /// <summary>Card fingerprints are short, but nothing guarantees it, and one long ref must not
     /// push the plain-text report past its column.</summary>
     private static string Ref(string cardRef) => cardRef.Length <= 24 ? cardRef : cardRef[..21] + "...";
+
+    /// <summary>
+    /// The one place the report mentions buying anything. Single sentence, no drip, and it is
+    /// omitted entirely when the report has just told them they do not need a tool: following
+    /// "you should not buy this" with a price is the exact bait-and-switch the audit exists to
+    /// be the opposite of. Their address is used for this one report and nothing else, which is
+    /// what /privacy section 3 promises, so there is no second email to put an offer in.
+    /// </summary>
+    private static string CloseHtml(RetryWasteReport r) => r.RecommendsNoPurchase
+        ? ""
+        : "<h3>If you want this watched rather than audited once</h3>"
+        + "<p>RecoverFlow retries what is worth retrying, asks for a new card where a retry cannot "
+        + "help, and bills 25% of what it actually recovers, with a $29 monthly minimum. If it "
+        + "recovers nothing you pay the minimum and nothing else. "
+        + "<a href=\"https://recoverflow.org/pricing/\">recoverflow.org/pricing</a></p>"
+        + "<p style=\"color:#666\">Not interested is a fine answer. This report is yours either way, "
+        + "and I will not email you again about it.</p>";
+
+    private static IEnumerable<string> CloseText(RetryWasteReport r)
+    {
+        if (r.RecommendsNoPurchase) yield break;
+
+        yield return "IF YOU WANT THIS WATCHED RATHER THAN AUDITED ONCE";
+        yield return new string('-', 62);
+        foreach (var line in Wrap(
+            "RecoverFlow retries what is worth retrying, asks for a new card where a retry "
+            + "cannot help, and bills 25% of what it actually recovers, with a $29 monthly "
+            + "minimum. If it recovers nothing you pay the minimum and nothing else.", 60))
+            yield return "  " + line;
+        yield return "  https://recoverflow.org/pricing/";
+        yield return "";
+        yield return "  Not interested is a fine answer. This report is yours either way,";
+        yield return "  and I will not email you again about it.";
+        yield return "";
+    }
 
     private static void AppendCodes(StringBuilder s, IReadOnlyList<WasteCodeRow> rows, string currency)
     {
