@@ -1,0 +1,7 @@
+{
+  "name": "retry-waste-audit",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Stripe Marketplace listing for the RecoverFlow retry waste audit. Backend-only: the app declares no UI extension, so there is no application code here and no runtime dependencies. This file exists because `stripe apps upload` packages through npm and refuses to run without a lockfile.",
+  "license": "UNLICENSED"
+}
