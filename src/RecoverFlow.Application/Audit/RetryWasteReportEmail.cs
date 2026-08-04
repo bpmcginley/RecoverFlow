@@ -20,7 +20,7 @@ public static class RetryWasteReportEmail
     {
         var who = string.IsNullOrWhiteSpace(companyName) ? "your account" : companyName;
 
-        if (r.TotalFailedCount == 0) return Empty(who, r.WindowDays);
+        if (r.TotalFailedCount == 0) return Empty(who, Coverage(r));
 
         var subject = r.RecommendsNoPurchase
             ? $"Your retry waste audit: mostly retryable, you're fine"
@@ -29,12 +29,12 @@ public static class RetryWasteReportEmail
         return new RetryWasteEmailContent(subject, Html(r, who), PlainText(r, who));
     }
 
-    private static RetryWasteEmailContent Empty(string who, int windowDays) => new(
+    private static RetryWasteEmailContent Empty(string who, string coverage) => new(
         "Your retry waste audit: no failed payments found",
-        $"<p>We scanned the last {windowDays} days of {WebUtility.HtmlEncode(who)} and found no failed charges at all.</p>"
+        $"<p>We scanned {WebUtility.HtmlEncode(coverage)} of {WebUtility.HtmlEncode(who)} and found no failed charges at all.</p>"
         + "<p>That is the best possible result and it means there is nothing here for us to sell you. "
         + "If you expected failures in this window, check that the audit was authorized on the right Stripe account.</p>",
-        $"We scanned the last {windowDays} days of {who} and found no failed charges at all.\n\n"
+        $"We scanned {coverage} of {who} and found no failed charges at all.\n\n"
         + "That is the best possible result and it means there is nothing here for us to sell you. "
         + "If you expected failures in this window, check that the audit was authorized on the right Stripe account.\n");
 
@@ -48,6 +48,16 @@ public static class RetryWasteReportEmail
 
     private static double Pct(int part, int whole) => whole == 0 ? 0 : (double)part / whole * 100;
 
+    /// <summary>
+    /// The scan is capped and Stripe pages newest-first, so a busy account's report covers less
+    /// than the full window. Saying "last 90 days" anyway would be the exact kind of unearned
+    /// number this product exists to argue against.
+    /// </summary>
+    private static string Coverage(RetryWasteReport r) => r.Truncated && r.EarliestCovered is { } from
+        ? $"the period since {from:d MMMM yyyy} (the scan is capped, and this account had enough "
+        + $"activity to reach that cap before reaching {r.WindowDays} days)"
+        : $"the last {r.WindowDays} days";
+
     private static string Verdict(RetryWasteReport r) => r.RecommendsNoPurchase
         ? "Most of your failures are the ordinary retryable kind. Stripe's own free Smart Retries "
         + "already cover this, and you should not buy a recovery tool on the strength of this report."
@@ -60,7 +70,7 @@ public static class RetryWasteReportEmail
         var s = new StringBuilder();
         s.Append("<div style=\"font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;max-width:640px;line-height:1.5\">");
         s.Append($"<h2 style=\"margin:0 0 4px\">Retry waste audit</h2>");
-        s.Append($"<p style=\"color:#666;margin:0 0 24px\">{WebUtility.HtmlEncode(who)} &middot; last {r.WindowDays} days</p>");
+        s.Append($"<p style=\"color:#666;margin:0 0 24px\">{WebUtility.HtmlEncode(who)} &middot; {WebUtility.HtmlEncode(Coverage(r))}</p>");
 
         s.Append($"<p><strong>{r.TotalFailedCount:N0} failed charges, {Money(r.TotalFailedCents, r.Currency)} at risk.</strong></p>");
 
@@ -147,7 +157,7 @@ public static class RetryWasteReportEmail
         s.AppendLine($"RETRY WASTE AUDIT: {who}");
         s.AppendLine(new string('=', 62));
         s.AppendLine();
-        s.AppendLine($"Last {r.WindowDays} days.");
+        s.AppendLine($"Covering {Coverage(r)}.");
         s.AppendLine($"{r.TotalFailedCount:N0} failed charges, {Money(r.TotalFailedCents, r.Currency)} at risk.");
         s.AppendLine();
 

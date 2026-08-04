@@ -26,10 +26,14 @@ public static class RetryWasteAuditService
     /// <summary>Cards below this never reach the report; only near-cap cards are actionable.</summary>
     private const int ReportingThreshold = 10;
 
-    public static RetryWasteReport Build(IReadOnlyList<FailedChargeAttempt> charges, int windowDays)
+    public static RetryWasteReport Build(ChargeScanResult scan, int windowDays)
     {
+        var charges = scan.Charges;
+
         if (charges.Count == 0)
-            return new RetryWasteReport(windowDays, "usd", 0, 0, [], [], 0, 0, [], VisaExposureAvailable: false);
+            return new RetryWasteReport(
+                windowDays, "usd", 0, 0, [], [], 0, 0, [], VisaExposureAvailable: false,
+                scan.Truncated, scan.EarliestCovered);
 
         // Mixing currencies into one total would be meaningless, so the report speaks about the
         // account's dominant currency and says nothing about the rest.
@@ -69,7 +73,9 @@ public static class RetryWasteAuditService
             reachable,
             reachableCents,
             exposure,
-            VisaExposureAvailable: scoped.Any(c => c.CardFingerprint is not null));
+            VisaExposureAvailable: scoped.Any(c => c.CardFingerprint is not null),
+            scan.Truncated,
+            scan.EarliestCovered);
     }
 
     private static List<WasteCodeRow> GroupByCode(List<FailedChargeAttempt> charges) => charges

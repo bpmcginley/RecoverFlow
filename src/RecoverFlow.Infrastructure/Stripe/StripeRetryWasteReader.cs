@@ -11,12 +11,11 @@ namespace RecoverFlow.Infrastructure.Stripe;
 ///
 /// Charges rather than invoices: the report needs the decline code, the card fingerprint and
 /// the attempt timestamp together, and only a charge carries all three. Stripe's charge list
-/// has no status filter, so successes are dropped here; the scan is capped on charges examined
-/// so a busy account cannot stall the request or burn through rate limits.
+/// has no status filter, so successes are dropped here.
 /// </summary>
 public sealed class StripeRetryWasteReader : IRetryWasteReader
 {
-    public async Task<IReadOnlyList<FailedChargeAttempt>> ListFailedChargesAsync(
+    public async Task<ChargeScanResult> ListFailedChargesAsync(
         string stripeAccountId, DateTime sinceUtc, int maxCharges, CancellationToken ct = default)
     {
         var service = new ChargeService();
@@ -26,16 +25,23 @@ public sealed class StripeRetryWasteReader : IRetryWasteReader
             Created = new DateRangeOptions { GreaterThanOrEqual = sinceUtc },
             Limit = 100,
         };
-        // The card fingerprint is what makes per-card Visa counting possible across reissued
-        // payment method ids, and it only arrives when payment_method_details is expanded.
-        options.AddExpand("data.payment_method_details");
+        // payment_method_details (and the card fingerprint on it) ships on the charge by
+        // default. It is NOT an expandable field — asking Stripe to expand it is an error.
 
         var results = new List<FailedChargeAttempt>();
         var examined = 0;
+        var truncated = false;
+        var oldestSeen = DateTime.MaxValue;
 
+        // Stripe returns newest-first. Hitting the cap therefore means we have a complete
+        // picture of the RECENT end of the window and nothing older, so the report must say
+        // which dates it actually covers rather than claiming the full window.
         await foreach (var charge in service.ListAutoPagingAsync(options, request, ct))
         {
-            if (++examined > maxCharges) break;
+            if (examined >= maxCharges) { truncated = true; break; }
+            examined++;
+
+            if (charge.Created < oldestSeen) oldestSeen = charge.Created;
             if (charge.Status != "failed") continue;
 
             results.Add(new FailedChargeAttempt(
@@ -47,6 +53,9 @@ public sealed class StripeRetryWasteReader : IRetryWasteReader
                 charge.Created));
         }
 
-        return results;
+        return new ChargeScanResult(
+            results,
+            truncated,
+            EarliestCovered: examined == 0 ? sinceUtc : oldestSeen);
     }
 }

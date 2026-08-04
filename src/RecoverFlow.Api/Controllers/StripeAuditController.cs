@@ -142,10 +142,10 @@ public sealed class StripeAuditController(
     private async Task RunAndSendAsync(string stripeAccountId, string to, string? companyName, CancellationToken ct)
     {
         var windowDays = backtestOptions.Value.WindowDays;
-        var charges = await reader.ListFailedChargesAsync(
+        var scan = await reader.ListFailedChargesAsync(
             stripeAccountId, DateTime.UtcNow.AddDays(-windowDays), MaxChargesScanned, ct);
 
-        var report = RetryWasteAuditService.Build(charges, windowDays);
+        var report = RetryWasteAuditService.Build(scan, windowDays);
         var content = RetryWasteReportEmail.Render(report, companyName);
         await email.SendAsync(to, content.Subject, content.Html, content.PlainText, ct);
 

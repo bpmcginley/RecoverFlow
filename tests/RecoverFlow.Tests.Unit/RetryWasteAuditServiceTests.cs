@@ -4,6 +4,10 @@ namespace RecoverFlow.Tests.Unit;
 
 public class RetryWasteAuditServiceTests
 {
+    private static RetryWasteReport Build(IReadOnlyList<FailedChargeAttempt> charges) =>
+        RetryWasteAuditService.Build(
+            new ChargeScanResult(charges, Truncated: false, EarliestCovered: new DateTime(2026, 1, 1)), 90);
+
     private static FailedChargeAttempt Charge(
         string? code, long cents = 1000, string currency = "usd", string? card = null, DateTime? at = null) =>
         new($"ch_{Guid.NewGuid():N}", cents, currency, code, card, at ?? new DateTime(2026, 1, 1));
@@ -11,7 +15,7 @@ public class RetryWasteAuditServiceTests
     [Fact]
     public void Empty_input_reports_nothing_rather_than_dividing_by_zero()
     {
-        var r = RetryWasteAuditService.Build([], 90);
+        var r = Build([]);
 
         Assert.Equal(0, r.TotalFailedCount);
         Assert.Equal(0, r.WastedPercent);
@@ -31,7 +35,7 @@ public class RetryWasteAuditServiceTests
     [InlineData("transaction_not_allowed")]
     public void Blocked_codes_land_in_the_blocked_bucket(string code)
     {
-        var r = RetryWasteAuditService.Build([Charge(code)], 90);
+        var r = Build([Charge(code)]);
 
         Assert.Equal(1, r.BlockedCount);
         Assert.Equal(0, r.NeedsNewCardCount);
@@ -47,7 +51,7 @@ public class RetryWasteAuditServiceTests
     [InlineData("invalid_expiry_year")]
     public void Needs_new_card_codes_are_separate_from_blocked(string code)
     {
-        var r = RetryWasteAuditService.Build([Charge(code)], 90);
+        var r = Build([Charge(code)]);
 
         Assert.Equal(0, r.BlockedCount);
         Assert.Equal(1, r.NeedsNewCardCount);
@@ -61,7 +65,7 @@ public class RetryWasteAuditServiceTests
     [InlineData("generic_decline")]
     public void Soft_declines_count_as_genuinely_reachable(string code)
     {
-        var r = RetryWasteAuditService.Build([Charge(code)], 90);
+        var r = Build([Charge(code)]);
 
         Assert.Equal(0, r.BlockedCount);
         Assert.Equal(0, r.NeedsNewCardCount);
@@ -78,7 +82,7 @@ public class RetryWasteAuditServiceTests
             Charge("insufficient_funds", 200), Charge(null, 100),   // reachable
         ];
 
-        var r = RetryWasteAuditService.Build(charges, 90);
+        var r = Build(charges);
 
         Assert.Equal(5, r.TotalFailedCount);
         Assert.Equal(2 + 1 + 2, r.BlockedCount + r.NeedsNewCardCount + r.ReachableCount);
@@ -95,7 +99,7 @@ public class RetryWasteAuditServiceTests
             Charge("insufficient_funds"), Charge("do_not_honor"), // 2 reachable
         ];
 
-        var r = RetryWasteAuditService.Build(charges, 90);
+        var r = Build(charges);
 
         Assert.Equal(50, r.WastedPercent);
         Assert.Equal(2000, r.WastedCents);
@@ -107,7 +111,7 @@ public class RetryWasteAuditServiceTests
         var charges = Enumerable.Range(0, 20).Select(_ => Charge("insufficient_funds")).ToList();
         charges.Add(Charge("lost_card")); // ~4.8% wasted
 
-        var r = RetryWasteAuditService.Build(charges, 90);
+        var r = Build(charges);
 
         Assert.True(r.RecommendsNoPurchase);
     }
@@ -121,7 +125,7 @@ public class RetryWasteAuditServiceTests
             Charge("insufficient_funds"),
         ];
 
-        var r = RetryWasteAuditService.Build(charges, 90);
+        var r = Build(charges);
 
         Assert.False(r.RecommendsNoPurchase);
     }
@@ -136,7 +140,7 @@ public class RetryWasteAuditServiceTests
             Charge("lost_card", 500, "eur"),
         ];
 
-        var r = RetryWasteAuditService.Build(charges, 90);
+        var r = Build(charges);
 
         Assert.Equal("usd", r.Currency);
         Assert.Equal(2, r.TotalFailedCount);
@@ -146,7 +150,7 @@ public class RetryWasteAuditServiceTests
     [Fact]
     public void Visa_exposure_is_skipped_when_no_charge_carries_a_card()
     {
-        var r = RetryWasteAuditService.Build([Charge("insufficient_funds"), Charge("lost_card")], 90);
+        var r = Build([Charge("insufficient_funds"), Charge("lost_card")]);
 
         Assert.False(r.VisaExposureAvailable);
         Assert.Empty(r.VisaExposure);
@@ -160,7 +164,7 @@ public class RetryWasteAuditServiceTests
             .Select(i => Charge("insufficient_funds", card: "fp_quiet", at: start.AddDays(i)))
             .ToList();
 
-        var r = RetryWasteAuditService.Build(charges, 90);
+        var r = Build(charges);
 
         Assert.True(r.VisaExposureAvailable);
         Assert.Empty(r.VisaExposure);
@@ -174,7 +178,7 @@ public class RetryWasteAuditServiceTests
             .Select(i => Charge("insufficient_funds", card: "fp_hot", at: start.AddDays(i)))
             .ToList();
 
-        var r = RetryWasteAuditService.Build(charges, 90);
+        var r = Build(charges);
 
         var row = Assert.Single(r.VisaExposure);
         Assert.Equal("fp_hot", row.CardRef);
@@ -192,7 +196,7 @@ public class RetryWasteAuditServiceTests
             .Select(i => Charge("insufficient_funds", card: "fp_spread", at: start.AddDays(i * 10)))
             .ToList();
 
-        var r = RetryWasteAuditService.Build(charges, 90);
+        var r = Build(charges);
 
         Assert.Empty(r.VisaExposure);
     }
@@ -206,7 +210,7 @@ public class RetryWasteAuditServiceTests
             charges.AddRange(Enumerable.Range(0, 9)
                 .Select(i => Charge("insufficient_funds", card: card, at: start.AddDays(i))));
 
-        var r = RetryWasteAuditService.Build(charges, 90);
+        var r = Build(charges);
 
         // 18 attempts in the window overall, but 9 each: neither card is reportable.
         Assert.Equal(18, r.TotalFailedCount);
@@ -223,10 +227,43 @@ public class RetryWasteAuditServiceTests
             Charge("lost_card", 100),
         ];
 
-        var r = RetryWasteAuditService.Build(charges, 90);
+        var r = Build(charges);
 
         Assert.Collection(r.BlockedByStripe,
             first => { Assert.Equal("stolen_card", first.DeclineCode); Assert.Equal(1, first.Count); },
             second => { Assert.Equal("lost_card", second.DeclineCode); Assert.Equal(200, second.AmountCents); });
+    }
+
+    [Fact]
+    public void A_truncated_scan_carries_its_real_coverage_into_the_report()
+    {
+        var earliest = new DateTime(2026, 6, 1);
+        var scan = new ChargeScanResult([Charge("lost_card")], Truncated: true, EarliestCovered: earliest);
+
+        var r = RetryWasteAuditService.Build(scan, 90);
+
+        Assert.True(r.Truncated);
+        Assert.Equal(earliest, r.EarliestCovered);
+    }
+
+    [Fact]
+    public void An_untruncated_scan_is_not_flagged()
+    {
+        var r = Build([Charge("lost_card")]);
+
+        Assert.False(r.Truncated);
+    }
+
+    [Fact]
+    public void Truncation_survives_the_empty_result_path()
+    {
+        var earliest = new DateTime(2026, 7, 15);
+        var scan = new ChargeScanResult([], Truncated: true, EarliestCovered: earliest);
+
+        var r = RetryWasteAuditService.Build(scan, 90);
+
+        Assert.Equal(0, r.TotalFailedCount);
+        Assert.True(r.Truncated);
+        Assert.Equal(earliest, r.EarliestCovered);
     }
 }
