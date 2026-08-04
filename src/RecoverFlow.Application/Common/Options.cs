@@ -8,6 +8,13 @@ public sealed class StripeOptions
     public string ClientId { get; set; } = "";
     public string WebhookSecret { get; set; } = "";
     public string OAuthRedirectUri { get; set; } = "";
+
+    /// <summary>
+    /// Redirect URI for the read-only Marketplace audit app. Separate from
+    /// <see cref="OAuthRedirectUri"/> on purpose: the audit grants read_only and keeps nothing,
+    /// and the two flows must never be able to land on each other's callback.
+    /// </summary>
+    public string AuditRedirectUri { get; set; } = "";
 }
 
 public sealed class RetryOptions

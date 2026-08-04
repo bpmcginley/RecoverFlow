@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RecoverFlow.Application.Audit;
 using RecoverFlow.Application.Backtest;
 using RecoverFlow.Application.Billing;
 using RecoverFlow.Application.Common;
@@ -43,6 +44,10 @@ public static class DependencyInjection
         services.AddScoped<AccountBacktestService>();
         services.AddScoped<IHistoricalInvoiceReader, StripeHistoricalInvoiceReader>();
         services.AddScoped<IBacktestJobScheduler, HangfireBacktestJobScheduler>();
+
+        // Marketplace audit app. Read-only and stateless: no service, no scheduler, no
+        // persistence — the controller reads, renders, emails, and forgets.
+        services.AddScoped<IRetryWasteReader, StripeRetryWasteReader>();
 
         services.AddSingleton<ITokenEncryptor, TokenEncryptor>();
         services.AddScoped<IStripeOAuthClient, StripeOAuthClient>();

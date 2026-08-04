@@ -35,23 +35,45 @@ wasted puts us first at something.
 
 ## Status
 
-**Manifest only. Not submitted.** Remaining work before it can go to review:
+**Backend built and tested. Not submitted.**
+
+Done:
+
+- [x] `stripe-app.json` manifest, 3 read permissions, each with a purpose string
+- [x] `GET /connect/stripe/audit/authorize` — `scope=read_only`, separate protector purpose
+- [x] `GET /connect/stripe/audit/callback` — handles both our own flow (signed state carries
+      the email) and a Marketplace install (no state, detours via `/audit-email.html`)
+- [x] `POST /connect/stripe/audit/run` — completes a Marketplace install from a signed,
+      30-minute ticket that names the account and carries no token
+- [x] `IRetryWasteReader` / `StripeRetryWasteReader` — charge-level read, capped at 2,000
+      charges examined, card fingerprint expanded for per-card attempt counting
+- [x] `RetryWasteAuditService` — the three-way split and the rolling 30-day Visa counter
+- [x] `RetryWasteReportEmail` — HTML + plain text, sent through the existing SendGrid sender
+- [x] 29 unit tests covering the split, the currency scoping and the Visa window
+- [x] Token never persisted (see below)
+
+Left, and all of it needs Bruce:
 
 - [ ] `icon.png`, 300x300 minimum, 1:1, under 10MB
-- [ ] Implement `GET /connect/stripe/audit/callback` in RecoverFlow.Api as a read-only
-      variant of the existing Connect callback. Must NOT reuse the write-scoped token path.
-- [ ] Reuse `AccountBacktestService` for the scan, but add the waste split from
-      `scripts/retry_waste_audit.py`: blocked codes, needs-new-card codes, genuinely
-      retryable, plus Visa reattempt exposure per card.
-- [ ] Email the one-page report. Reuse the SendGrid sender.
-- [ ] Expire the stored token as soon as the audit completes. Do not retain it. This is both
-      the right thing and the thing RecoverStack advertises.
-- [ ] Listing copy: name (35 chars max, cannot contain "Stripe", "app", "free" or "paid"),
-      80-char subtitle, 1000-char about, category, up to 3 key features with images,
-      privacy policy URL, support channel with response time, pricing statement,
-      test credentials with 2FA disabled, testing guidance.
+- [ ] Test credentials for Stripe's reviewers, 2FA disabled
+- [ ] Verify in a sandbox how `post_install_action` interacts with the OAuth redirect —
+      both are set, and which one governs the post-install landing is **not confirmed**.
+      Worth checking before submitting rather than spending a review cycle on it.
+- [ ] Submit for review
 
 Review takes 4 business days. No listing fee. No minimum customer count.
+
+## On "we do not keep your access token"
+
+Stronger than it sounds, and worth stating precisely because the listing depends on it.
+
+The reads do not use the merchant's token at all. The authorization code is exchanged solely
+to learn *which* account granted access; every subsequent read goes through the platform key
+plus the `Stripe-Account` header, exactly like the rest of the codebase. The access token is
+a local variable in the callback that is never written to the database, never encrypted into
+a `Merchant` row, and goes out of scope when the request ends.
+
+No `Merchant` row is created either. An audit is not a signup.
 
 ## Listing copy, draft
 
