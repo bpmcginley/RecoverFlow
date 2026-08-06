@@ -32,6 +32,14 @@ services:
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
+      # WebApplication.CreateBuilder adds appsettings*.json with reloadOnChange:true,
+      # which makes PhysicalFileProvider take an inotify watch per file. When the host
+      # has exhausted its inotify instances that throws inside
+      # JsonConfigurationSource.Build, before Program.cs gets a single line of its own
+      # code, and the container exits. Polling needs no inotify handle. Config never
+      # changes at runtime here, so the 4s poll costs us nothing.
+      - key: DOTNET_USE_POLLING_FILE_WATCHER
+        value: "true"
       - key: DataProtection__KeysPath
         value: /var/lib/recoverflow/dp-keys
       - key: Database__ConnectionString
