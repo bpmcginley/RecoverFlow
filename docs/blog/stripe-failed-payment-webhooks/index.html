@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -27,7 +28,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Which Stripe webhooks tell you a payment failed | RecoverFlow</title>
 <meta name="description" content="invoice.payment_failed is the event that matters, plus payment_action_required for authentication. Which fields to read, and the one-hour delay to know about.">
@@ -42,7 +42,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -226,19 +226,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     }
   ]
 }</script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/rf.css">
 </head>
 <body>
 
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav>
+    <nav aria-label="Primary">
+      <a href="/#how-it-works">How it works</a>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
-      <a href="/tools/">Tools</a>
-      <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a href="/blog/">Guides</a>
+      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a class="nav-cta" href="/#start">See your backtest</a>
     </nav>
   </div>
 </header>
@@ -270,7 +273,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="events">The events worth handling</h2>
 
     <div class="table-scroll">
-      <table>
+      <div class="tscroll"><table>
         <thead><tr><th scope="col">Event</th><th scope="col">When Stripe sends it</th></tr></thead>
         <tbody>
           <tr><th scope="row"><code>invoice.payment_failed</code></th><td>A payment for an invoice failed. This is your primary trigger for everything dunning related.</td></tr>
@@ -280,7 +283,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
           <tr><th scope="row"><code>customer.subscription.updated</code></th><td>A subscription started or changed. Renewals, coupons, discounts, invoice items and plan changes all fire this.</td></tr>
           <tr><th scope="row"><code>customer.subscription.deleted</code></th><td>A customer's subscription ended.</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
     <p>Stripe's own recommended actions on <code>invoice.payment_failed</code> are worth repeating because they are in the right order: notify the customer, collect new payment information, update the default payment method on the subscription, and consider enabling Smart Retries.</p>
     <p>Notice that "retry it yourself immediately" is not on that list.</p>

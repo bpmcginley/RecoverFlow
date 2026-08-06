@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -27,7 +28,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stripe dunning emails: what you control | RecoverFlow</title>
 <meta name="description" content="Stripe emails your customers about failed payments for free. You control branding and whether they send, but not the copy, the schedule or the sender.">
@@ -42,7 +42,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -226,19 +226,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     }
   ]
 }</script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/rf.css">
 </head>
 <body>
 
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav>
+    <nav aria-label="Primary">
+      <a href="/#how-it-works">How it works</a>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
-      <a href="/tools/">Tools</a>
-      <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a href="/blog/">Guides</a>
+      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a class="nav-cta" href="/#start">See your backtest</a>
     </nav>
   </div>
 </header>
@@ -281,7 +284,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="control">What you actually control</h2>
 
     <div class="table-scroll">
-      <table>
+      <div class="tscroll"><table>
         <thead><tr><th scope="col">Thing</th><th scope="col">Can you control it?</th></tr></thead>
         <tbody>
           <tr><th scope="row">Whether each email sends</th><td>Yes, per email type</td></tr>
@@ -292,7 +295,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
           <tr><th scope="row">Different copy per decline reason</th><td>No</td></tr>
           <tr><th scope="row">How long the send log is kept</th><td>No. Stripe retains email logs for 60 days</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
     <p>The row that catches people out is the last one. If someone asks in October what a customer was told in July, and you were relying entirely on Stripe's logs, you cannot answer. That matters more for disputes and compliance questions than for revenue, but it matters.</p>
 

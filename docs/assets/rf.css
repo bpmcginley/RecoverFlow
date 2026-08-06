@@ -1,0 +1,913 @@
+/* ==========================================================================
+   RecoverFlow Design System v2
+   --------------------------------------------------------------------------
+   Loaded AFTER each page's inline <style> so it wins on equal specificity.
+
+   Design intent — deliberately avoiding the "AI-generated site" signature:
+     - NO Tailwind indigo-500/violet-500/purple-500 ramp (#6366f1/#8b5cf6/#a855f7)
+     - NO 135deg purple gradient on buttons, backgrounds, or section fills.
+       The logo gradient is brand signature ONLY: wordmark + one hairline rule.
+     - NO Inter. NO Space Grotesk.
+     - NO uniform border-radius. Radius varies by component role.
+     - NO black shadows at .1 opacity. Shadows are violet-tinted and layered.
+     - NO emoji as icons.
+     - NO fade-in-on-scroll applied to every section.
+
+   Palette is anchored to the logo (violet -> blue) but grounded in a WARM
+   plum-black ink and warm paper, not the cool slate every generated site uses.
+   Amber carries semantic weight: it means recovered money. Nothing else.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. PRIMITIVES
+   -------------------------------------------------------------------------- */
+:root {
+  /* Brand — sampled from the logo mark, deepened off the Tailwind defaults */
+  --rf-violet:      #6E2CF2;
+  --rf-violet-deep: #5B21D6;
+  --rf-blue:        #2A2BD4;
+  --rf-signature:   linear-gradient(96deg, #8B3DFF 0%, #6E2CF2 42%, #2A2BD4 100%);
+
+  /* Money. Used only for recovered-revenue semantics. */
+  --rf-amber:       #E8A33D;
+  --rf-amber-ink:   #8A5008;
+  --rf-amber-wash:  #FBF1DF;
+
+  /* Warm neutrals — plum-black through warm paper */
+  --rf-ink:         #17121F;
+  --rf-ink-2:       #544B60;
+  --rf-ink-3:       #7A7186;
+  --rf-paper:       #FBFAF8;
+  --rf-paper-2:     #F3F0EC;
+  --rf-raised:      #FFFFFF;
+  --rf-line:        #E4DED7;
+  --rf-line-2:      #CFC7BE;
+
+  --rf-positive:    #0B7A55;
+  --rf-danger:      #B4231F;
+}
+
+/* --------------------------------------------------------------------------
+   2. SEMANTIC TOKENS  (override the old generated palette)
+   -------------------------------------------------------------------------- */
+:root {
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-body:    "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono:    "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --bg:           var(--rf-paper);
+  --bg-alt:       var(--rf-paper-2);
+  --bg-elevated:  var(--rf-raised);
+  --card-bg:      var(--rf-raised);
+
+  --text:         var(--rf-ink);
+  --text-dim:     var(--rf-ink-2);
+  --text-mute:    var(--rf-ink-3);
+
+  --border:       var(--rf-line);
+  --border-strong:var(--rf-line-2);
+
+  --accent:       var(--rf-violet-deep);
+  --accent-2:     var(--rf-violet);
+  --accent-3:     var(--rf-blue);
+  --accent-ink:   #FFFFFF;
+  --accent-wash:  #F1ECFE;
+  /* Retained for the wordmark only. Never fill a button or a section with it. */
+  --accent-grad:  var(--rf-signature);
+
+  --positive:     var(--rf-positive);
+  --positive-bg:  #E2F3EC;
+  --positive-ink: #FFFFFF;   /* on --rf-positive #0B7A55 */
+  --warn:         var(--rf-amber-ink);
+
+  /* Radius varies by role — uniform radius is the tell */
+  --r-xs: 3px;
+  --r-sm: 5px;
+  --r-md: 8px;
+  --r-lg: 14px;
+  --r-pill: 100px;
+  --radius: var(--r-md);
+
+  /* Violet-tinted, layered. Not rgba(0,0,0,.1). */
+  --shadow-sm: 0 1px 2px rgba(23,18,31,.05), 0 1px 1px rgba(23,18,31,.03);
+  --shadow-md: 0 2px 4px rgba(23,18,31,.04), 0 8px 16px -8px rgba(60,30,140,.14);
+  --shadow-lg: 0 1px 0 rgba(23,18,31,.04), 0 18px 44px -20px rgba(60,30,140,.30);
+  --ring: rgba(110,44,242,.38);
+
+  --measure: 68ch;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          #0B0912;
+    --bg-alt:      #131020;
+    --bg-elevated: #191428;
+    --card-bg:     #191428;
+
+    --text:        #F4F1F7;
+    --text-dim:    #B0A8BD;
+    --text-mute:   #948BA9;   /* lifted twice: #7F7691 4.18:1, #8B82A0 4.44:1 */
+
+    --border:      #262035;
+    --border-strong:#342C48;
+
+    --accent:      #9D6BFF;
+    --accent-2:    #B08CFF;
+    --accent-3:    #6E7BFF;
+    --accent-ink:  #0B0912;
+    --accent-wash: #1B1430;
+
+    --positive:    #3FCF98;
+    --positive-ink: #08211A;   /* white on #3FCF98 is 1.98:1 */
+    --positive-bg: #10251E;
+    --warn:        #F0B45C;
+
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.5);
+    --shadow-md: 0 2px 4px rgba(0,0,0,.4), 0 10px 20px -10px rgba(0,0,0,.6);
+    --shadow-lg: 0 1px 0 rgba(255,255,255,.04), 0 24px 50px -24px rgba(0,0,0,.8);
+    --ring: rgba(157,107,255,.5);
+  }
+  :root {
+    --rf-amber-wash: #241A0C;
+    --rf-amber-ink:  #E8A33D;   /* light amber; the light-mode #8A5008 was 2.76:1 here */
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. BASE
+   -------------------------------------------------------------------------- */
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;      /* 17px — reads better than 16 at this measure */
+  line-height: 1.65;
+  font-feature-settings: "kern" 1, "liga" 1, "cv05" 1;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Fraunces: WONK off, low softness — serious, not whimsical */
+h1, h2, h3, .logo, .section-title, .big, .price-card .big {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 40;
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  line-height: 1.08;
+  text-wrap: balance;
+  color: var(--text);
+}
+
+h1 {
+  font-size: clamp(2.6rem, 5.4vw, 4.15rem);
+  font-weight: 800;
+  letter-spacing: -0.028em;
+  margin: 0 0 20px;
+}
+h2 { font-size: clamp(1.85rem, 3.2vw, 2.6rem); margin: 0 0 16px; }
+h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; line-height: 1.25; margin: 0 0 8px; }
+
+p { text-wrap: pretty; }
+p, li { max-width: var(--measure); }
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--accent-2); }
+
+:where(a, button, summary, input, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: var(--r-xs);
+}
+
+::selection { background: var(--accent-wash); color: var(--text); }
+
+/* Tabular figures everywhere numbers matter — a money product should never
+   let digits wobble between rows. */
+.big, .price-card .big, table, .metric, time, .mono { font-variant-numeric: tabular-nums; }
+
+/* --------------------------------------------------------------------------
+   4. THE ONE GRADIENT — brand signature, nothing else
+   -------------------------------------------------------------------------- */
+.grad,
+.logo span {
+  background: var(--rf-signature);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Hairline under the header. The only other place the gradient appears. */
+header { border-bottom: 1px solid var(--border); position: relative; background: var(--bg); }
+header::after {
+  content: "";
+  position: absolute; left: 0; right: 0; bottom: -1px; height: 2px;
+  background: var(--rf-signature);
+  opacity: .9;
+}
+
+/* --------------------------------------------------------------------------
+   5. LAYOUT
+   -------------------------------------------------------------------------- */
+.wrap { padding-left: 24px; padding-right: 24px; }
+
+section { padding: clamp(64px, 8vw, 108px) 0; }
+/* Alternating bands get a rule, not just a fill — editorial structure */
+section.alt { background: var(--bg-alt); border-block: 1px solid var(--border); }
+
+/* --------------------------------------------------------------------------
+   6. TYPOGRAPHIC FURNITURE
+   -------------------------------------------------------------------------- */
+/* Mono eyebrow — the strongest single signal that a human set this type */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: .715rem;
+  font-weight: 500;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+  max-width: 120px;
+}
+
+/* Left-aligned, ranged-left headings. Centre-everything is a generated-site
+   habit; editorial pages hang off a consistent left axis. */
+.section-title,
+h2.section-title {
+  margin: 0 0 10px;
+  text-align: left;
+}
+.section-sub, .lede {
+  color: var(--text-dim);
+  font-size: 1.14rem;
+  line-height: 1.6;
+  max-width: 62ch;
+  text-align: left;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: .715rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-wash);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  padding: 7px 13px;
+  border-radius: var(--r-pill);
+  margin-bottom: 22px;
+}
+.badge::before {
+  content: "";
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent);
+  flex: none;
+}
+
+/* Chips read as spec-sheet facts. Square-ish, mono, no emoji. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: var(--font-mono);
+  font-size: .74rem;
+  letter-spacing: .02em;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--border-strong);
+  padding: 6px 11px;
+  border-radius: var(--r-xs);
+}
+.chip::before {
+  content: "";
+  width: 5px; height: 5px;
+  background: var(--accent);
+  transform: rotate(45deg);
+  flex: none;
+}
+
+/* --------------------------------------------------------------------------
+   7. BUTTONS — solid brand, never a gradient
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1.0rem;
+  letter-spacing: -.005em;
+  padding: 14px 24px;
+  min-height: 48px;             /* touch target */
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  text-decoration: none;
+  transition: transform .16s cubic-bezier(.2,.7,.3,1),
+              box-shadow .16s ease,
+              background-color .16s ease,
+              border-color .16s ease;
+
+  /* Solid brand fill is the default. Pages written before the design system
+     styled their own .btn with the brand gradient; the rule further down
+     strips that gradient, so .btn must carry a real background-COLOUR itself
+     or it renders as invisible ink on the dark theme. */
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  border: 1px solid var(--accent);
+  box-shadow: 0 1px 0 rgba(255,255,255,.14) inset,
+              0 8px 18px -10px rgba(91,33,214,.65);
+}
+
+.btn:hover,
+.btn-primary:hover {
+  background-color: color-mix(in srgb, var(--accent) 88%, #000);
+  color: var(--accent-ink);
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 rgba(255,255,255,.14) inset,
+              0 12px 24px -10px rgba(91,33,214,.7);
+}
+.btn:active, .btn-primary:active { transform: translateY(0); }
+
+/* .btn-primary is kept as an explicit alias for the same treatment */
+.btn-primary,
+button.btn-primary,
+a.btn-primary {
+  background-color: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+/* No button anywhere on the site wears the brand gradient. Some pages define
+   their own CTA classes, so this is enforced on the whole interactive surface
+   rather than on .btn alone. */
+.btn,
+a.btn,
+button.btn,
+.nav-cta,
+.cta-box .btn,
+.cta-band .btn,
+[class*="cta"] > a,
+input[type="submit"],
+button[type="submit"] {
+  background-image: none !important;
+}
+
+/* Several pages style their own `.cta-band .btn` / `.cta-box .btn` with the
+   brand gradient, at a specificity this file cannot outrank normally. The rule
+   above strips that gradient — but those pages set the fill via the `background`
+   SHORTHAND, so removing the image leaves background-color transparent and the
+   dark ink becomes invisible on the dark theme. These put a solid colour back.
+   Kept separate from the rule above so `[class*="cta"] > a`, which also matches
+   ordinary links, never picks up a button fill. */
+.btn,
+a.btn,
+button.btn,
+.cta-box .btn,
+.cta-band .btn,
+input[type="submit"],
+button[type="submit"] {
+  background-color: var(--accent) !important;
+  color: var(--accent-ink) !important;
+}
+
+/* the explicit quiet variants opt back out */
+.btn-secondary,
+.btn-ghost,
+a.btn.btn-secondary,
+a.btn.btn-ghost {
+  background-color: transparent !important;
+  color: var(--text) !important;
+}
+
+.btn-secondary, .btn-ghost {
+  background-color: transparent;
+  color: var(--text);
+  border-color: var(--border-strong);
+  box-shadow: none;
+}
+.btn-secondary:hover, .btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-wash);
+}
+
+/* --------------------------------------------------------------------------
+   8. HEADER / NAV
+   -------------------------------------------------------------------------- */
+header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  min-height: 68px;
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 20;
+  font-weight: 800;
+  font-size: 1.24rem;
+  letter-spacing: -.03em;
+  display: flex; align-items: center; gap: 9px;
+  color: var(--text);
+  text-decoration: none;
+}
+.logo img { width: 26px; height: 26px; }
+
+header nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+header nav a {
+  font-size: .935rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 8px 11px;
+  border-radius: var(--r-sm);
+  transition: color .15s ease, background-color .15s ease;
+}
+header nav a:hover { color: var(--text); background: var(--bg-alt); }
+
+header nav a.nav-cta {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  padding: 10px 17px;
+  margin-left: 8px;
+  box-shadow: 0 6px 14px -8px rgba(91,33,214,.7);
+}
+header nav a.nav-cta:hover {
+  background: color-mix(in srgb, var(--accent) 88%, #000);
+  color: var(--accent-ink);
+}
+
+/* --------------------------------------------------------------------------
+   9. CARDS — asymmetric padding, rule-led, no uniform blob radius
+   -------------------------------------------------------------------------- */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  padding: 28px 26px 26px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+/* Icon slot: stroked SVG in a brand-tinted tile. Never an emoji. */
+.card .icon {
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--accent-wash);
+  border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent);
+  border-radius: var(--r-sm);
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+.card .icon .ico { width: 20px; height: 20px; }
+
+/* Inline icons inside chips replace the ::before diamond */
+.chip .ico { width: 14px; height: 14px; color: var(--accent); flex: none; }
+.chip:has(.ico)::before { display: none; }
+
+.grid { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+/* --------------------------------------------------------------------------
+   10. MONEY BLOCKS — amber earns its meaning here
+   -------------------------------------------------------------------------- */
+.price-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+.price-card::before {
+  content: "";
+  position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: var(--rf-amber);
+}
+.price-card .big {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 0, "WONK" 0, "opsz" 60;
+  font-weight: 800;
+  font-size: clamp(3.1rem, 7vw, 4.6rem);
+  line-height: .95;
+  letter-spacing: -.04em;
+  color: var(--text);
+}
+.price-card .big span {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--rf-amber-ink);
+  margin-top: 12px;
+  letter-spacing: .14em;
+}
+
+.callout, .cta-box {
+  background: var(--accent-wash);
+  border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  padding: 22px 24px;
+}
+.warn-box {
+  background: var(--rf-amber-wash);
+  border: 1px solid color-mix(in srgb, var(--rf-amber) 40%, transparent);
+  border-left: 3px solid var(--rf-amber);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  padding: 22px 24px;
+}
+
+/* --------------------------------------------------------------------------
+   11. FORMS
+   -------------------------------------------------------------------------- */
+.signup label, form label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  margin-bottom: 6px;
+}
+input[type="text"], input[type="email"], input[type="number"], select, textarea {
+  width: 100%;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  padding: 13px 14px;
+  min-height: 48px;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--ring);
+}
+input::placeholder { color: var(--text-mute); }
+
+/* --------------------------------------------------------------------------
+   12. TABLES / FAQ / STEPS
+   -------------------------------------------------------------------------- */
+table { border-collapse: collapse; width: 100%; font-size: .96rem; }
+th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid var(--border); }
+th {
+  font-family: var(--font-mono);
+  font-size: .7rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+  border-bottom: 1px solid var(--border-strong);
+}
+
+details {
+  border-bottom: 1px solid var(--border);
+  padding: 4px 0;
+}
+details summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.06rem;
+  padding: 18px 36px 18px 0;
+  list-style: none;
+  position: relative;
+  color: var(--text);
+}
+details summary::-webkit-details-marker { display: none; }
+details summary::after {
+  content: "";
+  position: absolute; right: 6px; top: 50%;
+  width: 9px; height: 9px;
+  border-right: 1.5px solid var(--text-mute);
+  border-bottom: 1.5px solid var(--text-mute);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform .2s ease;
+}
+details[open] summary::after { transform: translateY(-30%) rotate(-135deg); }
+details[open] summary { color: var(--accent); }
+details p { padding-bottom: 20px; color: var(--text-dim); }
+
+/* Numbered steps — counters, not emoji bullets */
+ol.how-steps { list-style: none; padding: 0; counter-reset: step; }
+ol.how-steps li {
+  counter-increment: step;
+  position: relative;
+  padding: 0 0 22px 52px;
+  margin: 0;
+  border-left: 1px solid var(--border);
+  margin-left: 15px;
+}
+ol.how-steps li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: -15px; top: -2px;
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  color: var(--accent);
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-xs);
+}
+ol.how-steps li:last-child { border-left-color: transparent; padding-bottom: 0; }
+
+/* --------------------------------------------------------------------------
+   13. FOOTER
+   -------------------------------------------------------------------------- */
+footer {
+  background: var(--bg-alt);
+  border-top: 1px solid var(--border);
+  padding: 56px 0 44px;
+  font-size: .93rem;
+  color: var(--text-dim);
+}
+footer a { color: var(--text-dim); text-decoration: none; }
+footer a:hover { color: var(--accent); text-decoration: underline; }
+
+/* --------------------------------------------------------------------------
+   14. MOTION — purposeful only.
+   The old build faded in every section on scroll with staggered delays.
+   That is the single most recognisable generated-site behaviour, so the
+   reveal system is neutralised into a no-op and motion is reserved for
+   direct interaction feedback (hover/press/focus) above.
+   -------------------------------------------------------------------------- */
+.reveal,
+.reveal[data-delay] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   14b. HERO — asymmetric, editorial. No blurred purple orbs.
+   -------------------------------------------------------------------------- */
+.hero {
+  background: var(--bg);
+  padding: clamp(56px, 7vw, 92px) 0 clamp(56px, 7vw, 88px);
+  border-bottom: 1px solid var(--border);
+  position: relative;
+}
+
+/* Kill the decorative radial "orbs". Blurred purple blobs floating behind a
+   hero are the most literal generated-site signature there is. Structure comes
+   from rules and whitespace instead. */
+.hero::before,
+.hero::after,
+.hero-media::before,
+.hero-media::after,
+.hero-visual + ::before {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+  gap: clamp(32px, 5vw, 68px);
+  align-items: start;
+}
+
+.hero-copy > * { max-width: 34rem; }
+.hero h1 { margin-bottom: 18px; }
+
+.hero-sub {
+  font-size: 1.22rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+  margin: 0 0 26px;
+}
+
+/* The offer. Amber = money, and it is the only amber above the fold. */
+.promise {
+  font-size: 1.06rem;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--rf-amber-wash);
+  border: 1px solid color-mix(in srgb, var(--rf-amber) 42%, transparent);
+  border-left: 3px solid var(--rf-amber);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  padding: 16px 20px;
+  margin: 0 0 26px;
+}
+.promise strong { font-weight: 700; color: var(--text); }
+
+/* Form sits in a raised panel so the action reads as the primary affordance */
+.signup {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  padding: 24px 22px;
+  box-shadow: var(--shadow-md);
+  display: grid;
+  gap: 6px;
+  margin: 0 0 14px;
+}
+.signup label { margin-top: 8px; }
+.signup label:first-child { margin-top: 0; }
+.signup .btn { margin-top: 16px; width: 100%; }
+
+.signup-alt {
+  font-size: .9rem;
+  color: var(--text-mute);
+  margin: 0 0 22px;
+}
+
+.trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+
+.hero-media { position: sticky; top: 24px; }
+.hero-visual {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-lg);
+  display: block;
+}
+.visual-caption {
+  font-family: var(--font-mono);
+  font-size: .72rem;
+  letter-spacing: .04em;
+  color: var(--text-mute);
+  margin: 14px 0 0;
+  max-width: 44ch;
+}
+
+/* Process rail — rules and mono, not arrow emoji in boxes */
+.flow {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  background: var(--bg-elevated);
+  margin: 0 0 34px;
+}
+.flow .step,
+.flow .step:last-child,
+.flow .step:last-of-type {
+  flex: 1 1 150px;
+  padding: 18px 16px;
+  font-family: var(--font-mono);
+  font-size: .74rem;
+  font-weight: 500;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  /* the old build put the brand gradient on the final pill — gradients are
+     reserved for the wordmark, so it is flattened back to a flat cell */
+  background: transparent;
+  background-image: none;
+  border: 0;
+  border-right: 1px solid var(--border);
+  border-radius: 0;
+  box-shadow: none;
+  display: flex;
+  align-items: center;
+}
+.flow .step:last-of-type {
+  border-right: 0;
+  color: var(--accent);
+  background: var(--accent-wash);
+}
+.flow .arrow { display: none; }
+
+@media (max-width: 900px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-media { position: static; order: -1; }
+  .hero-copy > * { max-width: none; }
+  .flow .step { flex-basis: 100%; border-right: 0; border-bottom: 1px solid var(--border); }
+  .flow .step:last-of-type { border-bottom: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   15. RESPONSIVE
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  header .wrap { flex-wrap: wrap; min-height: 0; padding-top: 12px; padding-bottom: 12px; }
+  header nav { gap: 2px; }
+  header nav a { padding: 8px 9px; font-size: .9rem; }
+}
+
+@media (max-width: 640px) {
+  body { font-size: 1rem; }
+  .wrap { padding-left: 18px; padding-right: 18px; }
+  section { padding: 56px 0; }
+  h1 { font-size: clamp(2.15rem, 8.5vw, 2.9rem); }
+  .card { padding: 22px 20px; }
+  .btn { width: 100%; }
+  header nav a.nav-cta { margin-left: 0; }
+}
+
+/* --------------------------------------------------------------------------
+   16. OVERFLOW CONTAINMENT
+   Wide content scrolls inside its own box. The page itself never scrolls
+   sideways, and nothing gets clipped off the right edge on a phone.
+   -------------------------------------------------------------------------- */
+
+/* comparison tables are wider than a phone; give them their own scroll area
+   instead of letting the last columns fall off the screen */
+.tscroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 22px 0;
+  border-radius: var(--r-sm);
+}
+.tscroll > table {
+  margin: 0;
+  width: 100%;
+}
+
+/* decline codes, card numbers and long identifiers are single unbroken
+   tokens — let them wrap rather than widen the column that holds them.
+   Set on body so it inherits everywhere instead of chasing each element. */
+body {
+  overflow-wrap: break-word;
+}
+code, .mono, kbd, .name {
+  overflow-wrap: anywhere;
+}
+
+/* images and embeds stay inside their column */
+img, svg, iframe, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* --------------------------------------------------------------------------
+   17. COMPONENT CONTRAST
+   Small coloured badges on the tools pages hard-coded white text, which fails
+   against the lighter accent and positive surfaces of the dark theme.
+   -------------------------------------------------------------------------- */
+
+/* Only the SELECTED filter pill is filled with --accent; the unselected ones
+   and the homepage trust chips are transparent and must keep their inherited
+   colour, so this is scoped to the pressed state rather than to .chip. */
+.chip[aria-pressed="true"],
+button.chip[aria-pressed="true"] {
+  color: var(--accent-ink);
+}
+
+/* "Cheapest" style badges sit on --positive */
+.tag {
+  color: var(--positive-ink);
+}
+
+@media (max-width: 640px) {
+  /* comfortable thumb target for the chip filter row */
+  button.chip {
+    min-height: 40px;
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
