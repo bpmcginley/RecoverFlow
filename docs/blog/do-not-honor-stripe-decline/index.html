@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -27,7 +28,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>What do_not_honor means on a Stripe payment | RecoverFlow</title>
 <meta name="description" content="do_not_honor means the issuer declined without saying why. Stripe will retry it, the bank will not explain it, and the only real fix runs through the customer.">
@@ -42,7 +42,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -226,19 +226,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     }
   ]
 }</script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/rf.css">
 </head>
 <body>
 
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav>
+    <nav aria-label="Primary">
+      <a href="/#how-it-works">How it works</a>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
-      <a href="/tools/">Tools</a>
-      <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a href="/blog/">Guides</a>
+      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a class="nav-cta" href="/#start">See your backtest</a>
     </nav>
   </div>
 </header>
@@ -274,14 +277,14 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="cousins">It has two close relatives, and they need different handling</h2>
 
     <div class="table-scroll">
-      <table>
+      <div class="tscroll"><table>
         <thead><tr><th scope="col">Code</th><th scope="col">Stripe's description</th><th scope="col">Stripe's recommended next step</th></tr></thead>
         <tbody>
           <tr><th scope="row"><code>do_not_honor</code></th><td>The card was declined for an unknown reason.</td><td>The customer needs to contact their card issuer.</td></tr>
           <tr><th scope="row"><code>generic_decline</code></th><td>Declined for an unknown reason, or Stripe Radar or Adaptive Acceptance blocked the payment.</td><td>The customer needs to contact their card issuer.</td></tr>
           <tr><th scope="row"><code>try_again_later</code></th><td>The card was declined for an unknown reason.</td><td>Ask the customer to attempt the payment again. If subsequent payments are declined, they need to contact their issuer.</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
     <p>The one to separate out is <code>generic_decline</code>, because it has a second meaning the others do not: it can be Stripe's own Radar blocking the payment rather than the bank. If you are seeing a lot of <code>generic_decline</code> on renewals for customers who have paid you happily for a year, look at your Radar rules before you write a single dunning email. That is not a customer problem.</p>
     <p><code>try_again_later</code> is the only one of the three where Stripe explicitly suggests simply trying again, which makes it the mildest of the group.</p>

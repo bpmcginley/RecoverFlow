@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -27,7 +28,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Contact RecoverFlow</title>
 <meta name="description" content="One address, one person reading it. Sales, support, billing disputes, security reports and vendor review, all at admin@recoverflow.org.">
@@ -42,7 +42,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -158,19 +158,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   .cta-band .btn { display: inline-block; background: var(--accent-grad); color: var(--accent-ink); padding: 11px 22px; border-radius: 10px; text-decoration: none; font-weight: 600; font-family: var(--font-display); margin-top: 6px; }
   code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt); padding: 2px 6px; border-radius: 5px; }
 </style>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/rf.css">
 </head>
 <body>
 
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav>
+    <nav aria-label="Primary">
+      <a href="/#how-it-works">How it works</a>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
-      <a href="/tools/">Tools</a>
-      <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a href="/blog/">Guides</a>
+      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a class="nav-cta" href="/#start">See your backtest</a>
     </nav>
   </div>
 </header>
@@ -197,7 +200,12 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
     <h2>Cancelling</h2>
     <p>You do not need to email anyone to stop. Go to your Stripe dashboard, find RecoverFlow under connected applications, and revoke access. It takes effect immediately and nothing further is billed except recoveries already attributed before that point. If you want to tell me why you left I would genuinely like to know, but it is not a step in the process.</p>
-  </div>
+      <div class="cta-box">
+      <h2>See what you're losing</h2>
+      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
+      <a class="btn" href="/">Run the free 90 day scan</a>
+    </div>
+</div>
 </main>
 
 <footer>

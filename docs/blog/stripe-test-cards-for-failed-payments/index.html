@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -27,7 +28,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stripe test cards for every decline scenario | RecoverFlow</title>
 <meta name="description" content="The exact test card numbers for generic decline, insufficient funds, lost card, stolen card, expired card and 3D Secure, and which decline_code each one produces.">
@@ -42,7 +42,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -226,19 +226,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     }
   ]
 }</script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/rf.css">
 </head>
 <body>
 
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav>
+    <nav aria-label="Primary">
+      <a href="/#how-it-works">How it works</a>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
-      <a href="/tools/">Tools</a>
-      <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a href="/blog/">Guides</a>
+      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a class="nav-cta" href="/#start">See your backtest</a>
     </nav>
   </div>
 </header>
@@ -270,7 +273,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="cards">The decline cards</h2>
 
     <div class="table-scroll">
-      <table>
+      <div class="tscroll"><table>
         <thead><tr><th scope="col">Card number</th><th scope="col">Scenario</th><th scope="col">What you get back</th></tr></thead>
         <tbody>
           <tr><th scope="row"><code>4000000000000002</code></th><td>Generic decline</td><td>error code <code>card_declined</code>, decline code <code>generic_decline</code></td></tr>
@@ -283,7 +286,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
           <tr><th scope="row"><code>4242424242424241</code></th><td>Incorrect number</td><td>error code <code>incorrect_number</code></td></tr>
           <tr><th scope="row"><code>4000000000000341</code></th><td>Attaches fine, fails on charge</td><td>error code <code>card_declined</code></td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
     <p>Note that the last four in that list return an error code without a separate decline code. <code>expired_card</code>, <code>incorrect_cvc</code>, <code>processing_error</code> and <code>incorrect_number</code> are the error code. If your handler only reads <code>decline_code</code> and ignores <code>code</code>, it will see nothing for these and fall through to a generic branch.</p>
 
@@ -299,7 +302,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
     <p>Authentication has its own set of cards, because the interesting cases are about whether a payment can complete without the customer being present.</p>
     <div class="table-scroll">
-      <table>
+      <div class="tscroll"><table>
         <thead><tr><th scope="col">Card number</th><th scope="col">Behaviour</th></tr></thead>
         <tbody>
           <tr><th scope="row"><code>4000002500003155</code></th><td>Requires authentication for off-session payments unless the card was previously set up. On-session payments always require authentication.</td></tr>
@@ -309,7 +312,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
           <tr><th scope="row"><code>4000008400000027</code></th><td>3D Secure must be completed. Issued in the US.</td></tr>
           <tr><th scope="row"><code>4000000032200000</code></th><td>3D Secure required on all transactions, goes through the frictionless flow and succeeds.</td></tr>
         </tbody>
-      </table>
+      </table></div>
     </div>
     <p>The first and third of those are the pair that matters for subscriptions. Between them they show you the difference between a card that will quietly renew for years and one that will demand the customer's attention every cycle. More on that in <a href="/blog/stripe-authentication-required-recovery/">the authentication_required guide</a>.</p>
 

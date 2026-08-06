@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -27,7 +28,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Payment Retry Schedule Builder for Stripe</title>
 <meta name="description" content="Build a retry schedule for failed Stripe payments by decline reason. Shows what Stripe already does, where retrying cannot help, and when to email instead.">
@@ -84,7 +84,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -217,19 +217,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     .builder { padding: 22px 18px; }
   }
 </style>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/rf.css">
 </head>
 <body>
 
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav>
+    <nav aria-label="Primary">
+      <a href="/#how-it-works">How it works</a>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
-      <a href="/tools/">Tools</a>
-      <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a href="/blog/">Guides</a>
+      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a class="nav-cta" href="/#start">See your backtest</a>
     </nav>
   </div>
 </header>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,7 +29,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RecoverFlow | Recover Failed Stripe Subscription Payments</title>
 <meta name="description" content="RecoverFlow recovers failed Stripe subscription payments with smart retries and dunning emails. Pay 25% of recovered revenue. No card required to start.">
@@ -84,7 +84,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -749,23 +749,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   }
 </style>
 <noscript><style>.reveal { opacity: 1 !important; transform: none !important; }</style></noscript>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/rf.css">
 </head>
 <body>
 
 <header>
   <div class="wrap">
     <div class="logo"><img src="assets/logo-mark.png" alt="">Recover<span>Flow</span></div>
-    <nav>
+    <nav aria-label="Primary">
       <a href="#how-it-works">How it works</a>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
-      <a href="/tools/">Tools</a>
-      <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="#features">Features</a>
-      <a href="#faq">FAQ</a>
-      <a href="mailto:admin@recoverflow.org">Contact</a>
-      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a href="/blog/">Guides</a>
+      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a class="nav-cta" href="#start">See your backtest</a>
     </nav>
   </div>
 </header>
@@ -777,15 +776,9 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <h1>Win back the Stripe payments that <span class="grad">quietly fail</span></h1>
       <p class="hero-sub">RecoverFlow watches your subscriptions, classifies every decline, and retries the ones worth retrying, so failed invoices turn back into revenue without you chasing them.</p>
 
-      <div class="trust-row">
-        <span class="chip">🔑 Access you control, revoke anytime</span>
-        <span class="chip">🚫 We never see card numbers</span>
-        <span class="chip">🔓 No lock-in</span>
-      </div>
-
       <p class="promise">You don't pay unless we recover: <strong>25% of what we bring back</strong>, nothing up front.</p>
 
-      <form id="signupForm" class="signup" method="get" action="https://api.recoverflow.org/connect/stripe/authorize">
+      <form id="start" class="signup" method="get" action="https://api.recoverflow.org/connect/stripe/authorize">
         <label for="companyName">Company name</label>
         <input id="companyName" name="companyName" type="text" placeholder="Acme Inc." required>
         <label for="email">Work email</label>
@@ -795,6 +788,12 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <p class="signup-alt">
         Authorize on Stripe, no card up front, cancel anytime. <a href="#pricing">Simple pricing ↓</a>
       </p>
+
+      <div class="trust-row">
+        <span class="chip"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg> Access you control, revoke anytime</span>
+        <span class="chip"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg> We never see card numbers</span>
+        <span class="chip"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg> No lock-in</span>
+      </div>
     </div>
 
     <div class="hero-media">
@@ -806,6 +805,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <section id="how-it-works" class="alt">
   <div class="wrap">
+    <p class="eyebrow">01 &nbsp;/&nbsp; Process</p>
     <h2 class="section-title reveal">How it works</h2>
     <p class="section-sub reveal" data-delay="80">Connect your Stripe account once. RecoverFlow takes it from there.</p>
     <div class="flow reveal" data-delay="120">
@@ -828,23 +828,41 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   </div>
 </section>
 
-<section id="security">
+<section id="pricing">
   <div class="wrap">
+    <p class="eyebrow">02 &nbsp;/&nbsp; Pricing</p>
+    <h2 class="section-title reveal">Pricing that only wins when you do</h2>
+    <p class="section-sub reveal" data-delay="80">No plans, no seats, nothing up front. We take a cut of the revenue we actually bring back. That's the whole model.</p>
+    <div class="price-card reveal" data-delay="120">
+      <div class="big">25%<span> of recovered revenue</span></div>
+      <ul>
+        <li>First 30 days: no minimum, so if we recover nothing, you pay nothing</li>
+        <li>After that: $29/mo minimum keeps your account active</li>
+        <li>Attribution built in, so you're never charged for payments that came back on their own</li>
+      </ul>
+      <p class="price-more"><a href="/pricing/">Full pricing, worked examples, and when 25% is the wrong deal for you →</a></p>
+    </div>
+  </div>
+</section>
+
+<section id="security" class="alt">
+  <div class="wrap">
+    <p class="eyebrow">03 &nbsp;/&nbsp; Access & data</p>
     <h2 class="section-title reveal">What we can see, and what we can't</h2>
     <p class="section-sub reveal" data-delay="80">You're connecting your revenue system. Here's exactly what that means.</p>
     <div class="grid trust-grid">
       <div class="card reveal" data-delay="0">
-        <div class="icon">🔑</div>
+        <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg></div>
         <h3>Access you control</h3>
         <p>RecoverFlow connects via Stripe Connect OAuth with access you grant, and can revoke, from your own Stripe dashboard at any time.</p>
       </div>
       <div class="card reveal" data-delay="80">
-        <div class="icon">🚫</div>
+        <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
         <h3>We never see card numbers</h3>
         <p>Stripe holds every card and processes every retry. Card data never touches RecoverFlow's servers.</p>
       </div>
       <div class="card reveal" data-delay="160">
-        <div class="icon">🔓</div>
+        <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></div>
         <h3>No lock-in</h3>
         <p>Disconnecting takes one click in Stripe and your billing keeps working exactly as before. No contracts, no exports held hostage.</p>
       </div>
@@ -852,8 +870,49 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   </div>
 </section>
 
+<section id="features">
+  <div class="wrap">
+    <p class="eyebrow">04 &nbsp;/&nbsp; Capabilities</p>
+    <h2 class="section-title reveal">Built for indie SaaS founders</h2>
+    <p class="section-sub reveal" data-delay="80">No dashboards to babysit. RecoverFlow reacts to your Stripe webhooks in real time.</p>
+    <div class="grid">
+      <div class="card reveal" data-delay="0">
+        <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg></div>
+        <h3>Smart retry scheduling</h3>
+        <p>Payday-aware retries for insufficient funds, backoff schedules for processing errors, never a blind retry.</p>
+      </div>
+      <div class="card reveal" data-delay="80">
+        <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></div>
+        <h3>Decline classification</h3>
+        <p>Every decline code is sorted into hard, soft, or unknown, so you only retry the payments worth retrying.</p>
+      </div>
+      <div class="card reveal" data-delay="160">
+        <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></div>
+        <h3>Dunning email sequences</h3>
+        <p>Automatic, well-timed emails prompt customers to update an expired card before you even need to retry.</p>
+      </div>
+      <div class="card reveal" data-delay="240">
+        <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <h3>Secure Stripe Connect</h3>
+        <p>Standard OAuth linking with encrypted tokens at rest. RecoverFlow only reads what it needs to recover revenue.</p>
+      </div>
+      <div class="card reveal" data-delay="0">
+        <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg></div>
+        <h3>Recovery attribution</h3>
+        <p>Know exactly which retry, card update, or email sequence brought a customer back, and pay only for what worked.</p>
+      </div>
+      <div class="card reveal" data-delay="80">
+        <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div>
+        <h3>Set up in minutes</h3>
+        <p>Connect your Stripe account and RecoverFlow starts protecting your subscription revenue immediately.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="faq" class="alt">
   <div class="wrap">
+    <p class="eyebrow">05 &nbsp;/&nbsp; Questions</p>
     <h2 class="section-title reveal">Questions founders actually ask</h2>
     <div class="faq-list reveal" data-delay="80">
       <details>
@@ -884,63 +943,9 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   </div>
 </section>
 
-<section id="pricing">
-  <div class="wrap">
-    <h2 class="section-title reveal">Pricing that only wins when you do</h2>
-    <p class="section-sub reveal" data-delay="80">No plans, no seats, nothing up front. We take a cut of the revenue we actually bring back. That's the whole model.</p>
-    <div class="price-card reveal" data-delay="120">
-      <div class="big">25%<span> of recovered revenue</span></div>
-      <ul>
-        <li>First 30 days: no minimum, so if we recover nothing, you pay nothing</li>
-        <li>After that: $29/mo minimum keeps your account active</li>
-        <li>Attribution built in, so you're never charged for payments that came back on their own</li>
-      </ul>
-      <p class="price-more"><a href="/pricing/">Full pricing, worked examples, and when 25% is the wrong deal for you →</a></p>
-    </div>
-  </div>
-</section>
-
-<section id="features" class="alt">
-  <div class="wrap">
-    <h2 class="section-title reveal">Built for indie SaaS founders</h2>
-    <p class="section-sub reveal" data-delay="80">No dashboards to babysit. RecoverFlow reacts to your Stripe webhooks in real time.</p>
-    <div class="grid">
-      <div class="card reveal" data-delay="0">
-        <div class="icon">🔁</div>
-        <h3>Smart retry scheduling</h3>
-        <p>Payday-aware retries for insufficient funds, backoff schedules for processing errors, never a blind retry.</p>
-      </div>
-      <div class="card reveal" data-delay="80">
-        <div class="icon">🧭</div>
-        <h3>Decline classification</h3>
-        <p>Every decline code is sorted into hard, soft, or unknown, so you only retry the payments worth retrying.</p>
-      </div>
-      <div class="card reveal" data-delay="160">
-        <div class="icon">✉️</div>
-        <h3>Dunning email sequences</h3>
-        <p>Automatic, well-timed emails prompt customers to update an expired card before you even need to retry.</p>
-      </div>
-      <div class="card reveal" data-delay="240">
-        <div class="icon">🔒</div>
-        <h3>Secure Stripe Connect</h3>
-        <p>Standard OAuth linking with encrypted tokens at rest. RecoverFlow only reads what it needs to recover revenue.</p>
-      </div>
-      <div class="card reveal" data-delay="0">
-        <div class="icon">📊</div>
-        <h3>Recovery attribution</h3>
-        <p>Know exactly which retry, card update, or email sequence brought a customer back, and pay only for what worked.</p>
-      </div>
-      <div class="card reveal" data-delay="80">
-        <div class="icon">⚡</div>
-        <h3>Set up in minutes</h3>
-        <p>Connect your Stripe account and RecoverFlow starts protecting your subscription revenue immediately.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
 <section id="founder">
   <div class="wrap founder-note reveal">
+    <p class="eyebrow">06 &nbsp;/&nbsp; Who builds it</p>
     <h2 class="section-title">A note from the founder</h2>
     <p>
       I'm Bruce McGinley, and I built RecoverFlow because failed payments are the most fixable

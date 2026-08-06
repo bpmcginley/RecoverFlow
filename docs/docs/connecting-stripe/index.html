@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -27,7 +28,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Connecting your Stripe account | RecoverFlow docs</title>
 <meta name="description" content="RecoverFlow connects over Stripe Connect OAuth. What that grants, what it cannot reach, where the token is stored, and how to revoke it.">
@@ -42,7 +42,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -213,19 +213,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     }
   ]
 }</script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/rf.css">
 </head>
 <body>
 
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav>
+    <nav aria-label="Primary">
+      <a href="/#how-it-works">How it works</a>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
-      <a href="/tools/">Tools</a>
-      <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a href="/blog/">Guides</a>
+      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a class="nav-cta" href="/#start">See your backtest</a>
     </nav>
   </div>
 </header>
@@ -270,7 +273,12 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <details><summary>How do I disconnect RecoverFlow?</summary><p>Revoke access from the connected applications section of your own Stripe Dashboard. It is immediate and does not require contacting us.</p></details>
   <details><summary>Is my Stripe token encrypted?</summary><p>Yes, it is encrypted before being stored, so a database dump alone does not produce a usable credential.</p></details>
 </div>
-  </article>
+      <div class="cta-box">
+      <h2>See what you're losing</h2>
+      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
+      <a class="btn" href="/">Run the free 90 day scan</a>
+    </div>
+</article>
 </main>
 
 <footer>

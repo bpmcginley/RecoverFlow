@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -27,7 +28,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Privacy Policy | RecoverFlow</title>
 <meta name="description" content="How RecoverFlow handles your data and your customers' data: exactly what is stored, what is never stored, sub-processors, retention, and your rights.">
@@ -42,7 +42,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -134,19 +134,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     nav a:not(.nav-cta) { display: none; }
   }
 </style>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/rf.css">
 </head>
 <body>
 
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav>
+    <nav aria-label="Primary">
+      <a href="/#how-it-works">How it works</a>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
-      <a href="/tools/">Tools</a>
-      <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a href="/blog/">Guides</a>
+      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
+      <a class="nav-cta" href="/#start">See your backtest</a>
     </nav>
   </div>
 </header>
@@ -239,7 +242,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="subprocessors">6. Sub-processors</h2>
     <p>These are the third parties that touch data in order for the service to work.</p>
     <div class="table-scroll">
-  <table>
+  <div class="tscroll"><table>
     <thead><tr><th scope="col">Sub-processor</th><th scope="col">What it does</th><th scope="col">Data it touches</th></tr></thead>
     <tbody>
       <tr><th scope="row">Stripe</th><td>Payment processing, account connection, and all card handling</td><td>Payment and subscription data, cardholder data (held entirely by Stripe)</td></tr>
@@ -249,8 +252,9 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <tr><th scope="row">GitHub Pages</th><td>Hosting of the public marketing site only</td><td>No account or customer data</td></tr>
       <tr><th scope="row">Google Analytics</th><td>Marketing site traffic measurement only</td><td>Marketing site visitors, not application data</td></tr>
       <tr><th scope="row">LinkedIn</th><td>Advertising measurement on the marketing site only</td><td>Marketing site visitors, not application data</td></tr>
+      <tr><th scope="row">Google Fonts</th><td>Delivery of the web fonts used by the marketing site only</td><td>Visitor IP address and browser user agent, sent with the font request</td></tr>
     </tbody>
-  </table>
+  </table></div>
 </div>
     <p>Google Analytics and the LinkedIn tag run on the public marketing site only. They are not present in the application you log into, and they never see your account data or your customers' data.</p>
 
