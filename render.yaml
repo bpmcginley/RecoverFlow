@@ -15,6 +15,13 @@ services:
     dockerfilePath: ./Dockerfile
     plan: starter              # always-on; free spins down and would miss live webhooks
     healthCheckPath: /health
+    buildFilter:
+      # The marketing site lives in docs/ and is served by GitHub Pages, not by
+      # this service. Without this filter Render rebuilds and restarts the API on
+      # every push to main, so a copy edit on a landing page takes production down
+      # for the length of a Docker build for no reason.
+      ignoredPaths:
+        - docs/**
     disk:
       # Persists the DataProtection key ring across redeploys. Without it, every
       # deploy rotates the keys and invalidates in-flight OAuth `state`, magic-link
