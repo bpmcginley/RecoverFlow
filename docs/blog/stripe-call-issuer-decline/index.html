@@ -29,15 +29,15 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Changelog | RecoverFlow</title>
-<meta name="description" content="What changed in RecoverFlow and when. Bug fixes that affected numbers shown to customers are listed as prominently as features.">
-<link rel="canonical" href="https://recoverflow.org/changelog/">
+<title>call_issuer on Stripe: what it means when the bank says call us | RecoverFlow</title>
+<meta name="description" content="Stripe documents call_issuer as a decline for an unknown reason where the customer needs to contact their card issuer. How it differs from do_not_honor: barely.">
+<link rel="canonical" href="https://recoverflow.org/blog/stripe-call-issuer-decline/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="RecoverFlow">
-<meta property="og:title" content="Changelog | RecoverFlow">
-<meta property="og:description" content="What changed in RecoverFlow and when. Bug fixes that affected numbers shown to customers are listed as prominently as features.">
-<meta property="og:url" content="https://recoverflow.org/changelog/">
+<meta property="og:title" content="call_issuer on Stripe: what it means when the bank says call us | RecoverFlow">
+<meta property="og:description" content="Stripe documents call_issuer as a decline for an unknown reason where the customer needs to contact their card issuer. How it differs from do_not_honor: barely.">
+<meta property="og:url" content="https://recoverflow.org/blog/stripe-call-issuer-decline/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -160,10 +160,63 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": "RecoverFlow changelog",
-  "url": "https://recoverflow.org/changelog/",
-  "description": "What changed in RecoverFlow and when, including fixes that affected numbers shown to customers."
+  "@type": "Article",
+  "headline": "call_issuer on Stripe: what it means when the bank says call us",
+  "description": "Stripe documents call_issuer as a decline for an unknown reason where the customer needs to contact their card issuer. How it differs from do_not_honor: barely.",
+  "url": "https://recoverflow.org/blog/stripe-call-issuer-decline/",
+  "datePublished": "2026-08-12",
+  "dateModified": "2026-08-12",
+  "author": {
+    "@type": "Person",
+    "name": "Bruce McGinley"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "RecoverFlow",
+    "url": "https://recoverflow.org"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://recoverflow.org/blog/stripe-call-issuer-decline/"
+  }
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What does call_issuer mean on Stripe?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Stripe's decline codes reference describes it as the card being declined for an unknown reason, with the customer needing to contact their card issuer for more information. The issuer wants to talk to its cardholder before approving charges like this one."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between call_issuer and do_not_honor?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In Stripe's reference, nothing operational: both carry the same description, declined for an unknown reason, and the same next step, contact the issuer. The names differ because the card networks return different codes for their own reasons."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Will Stripe retry a call_issuer decline?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. It is not on the list of nine codes that stop retries, so your schedule keeps running. Blocks that only the cardholder can lift will keep failing until they make the call, which is why the documented next step matters."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I tell the customer?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The documented advice, in plain words: their bank declined the payment and asked that they get in touch. Include a card update link as the alternative, since a different card is often faster than a phone call."
+      }
+    }
+  ]
 }</script>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/rf.css">
@@ -186,82 +239,71 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </header>
 
 <main>
-  <div class="wrap">
-    <p class="eyebrow">Changelog</p>
-    <h1>What has changed</h1>
-    <p>Grouped by the day the work actually landed. Bug fixes that affected numbers shown to customers are listed as prominently as features, because those are the ones you would want to know about.</p>
+  <article class="wrap">
+    <p class="eyebrow">Guide</p>
+    <h1><code>call_issuer</code> on Stripe: what it means when the bank says call us</h1>
+    <p class="updated">Last updated 12 August 2026 &middot; written by Bruce McGinley, who builds RecoverFlow</p>
 
-    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-08-12</p>
-      <h2 style="margin-top:0;">A cap on the fee, and two things this site was getting wrong</h2>
-      <ul>
-        <li><strong>The fee is now capped at $299 a month.</strong> It was 25% of attributed recoveries with a $29 floor and no ceiling. It is now the same percentage between the same $29 floor and a $299 ceiling, so past roughly $1,196 of attributed recovery in a month the bill stops moving. An uncapped percentage means the vendor earns more as the customer's churn gets worse, and the <a href="/pricing/">pricing page</a> now says so in those words rather than waiting for someone to notice. The cap only ever lowers a bill, and it will not be raised or removed for an account that signed up under it.</li>
-        <li><strong>Corrected a false claim about Visa's reattempt rule.</strong> Five places on this site said Stripe blocks further retry attempts once a card passes Visa's ceiling of 15 reattempts in a rolling 30 days. Stripe's documented behaviour is discretionary: it says it blocks subsequent attempts only where it determines there is a low chance of a successful authorisation, and it does not undertake to keep a merchant inside Visa's limit. The page copy, the structured data, the browser tool and the command-line script now all say the same, correct thing. The <a href="/tools/retry-waste-calculator/">retry waste calculator</a> also now discloses that it counts attempts per card while Visa states the rule per payment, which makes its number a conservative upper bound rather than a compliance verdict.</li>
-        <li><strong>The retry waste report no longer leads with a dollar figure.</strong> Stripe does not reattempt hard declines without a new payment method, so no second charge is placed and no fee is incurred. Quoting a large dollar number for "wasted retries" implies an invoice that was never issued. The report now leads with how many customers were left sitting on an unusable card and how many days they sat there, and the money is shown second and labelled as revenue at risk rather than as a cost incurred.</li>
-        <li><strong>A claim about card networks was corrected across the site.</strong> Several pages said, in one wording or another, that Stripe never sends hard declines to the card network. What Stripe documents is that it does not <em>reattempt</em> those codes until a new payment method is attached. It says nothing about what happens at the network, and we had no way to check it. The observable behaviour is the same one the product acts on, so every one of those sentences now says only that. An earlier entry on this page carried the same wording and has been corrected in place rather than left standing, which is why it reads differently than it did.</li>
-        <li><strong>Recoveries that are later refunded or charged back are no longer billable.</strong> Until now a payment RecoverFlow recovered stayed recovered in its books even if the customer got the money back a week later, which meant a fee on revenue the merchant did not keep. Stripe's refund and dispute notifications for the settling charge are now handled: a reversal before invoicing comes off the billable total, and a reversal after invoicing is credited back on the next invoice at what was actually charged, so a month held down by the $299 cap credits the capped figure rather than an uncapped 25%. Credits apply to the whole invoice including the $29 minimum, carry forward if they outlast a month's bill, and are refunded on request if an account closes with credit outstanding. Written up in the <a href="/terms/#reversals">terms</a> and in <a href="/docs/attribution-and-billing/#reversals">attribution and billing</a>.</li>
-        <li><strong>Six new decline code guides.</strong> Dedicated pages for <a href="/blog/stripe-generic-decline-code/">generic_decline</a>, <a href="/blog/stripe-incorrect-cvc-decline/">incorrect_cvc</a>, <a href="/blog/stripe-processing-error-decline/">processing_error</a>, <a href="/blog/stripe-try-again-later-decline/">try_again_later</a>, <a href="/blog/stripe-card-velocity-exceeded/">card_velocity_exceeded</a> and <a href="/blog/stripe-call-issuer-decline/">call_issuer</a>, each built from the meaning and next steps Stripe documents in its decline codes reference, including the fact that the try_again_later decline code is now marked deprecated while the advice code of the same name is current.</li>
-        <li>Homepage rewritten to lead with the suppression argument, and the primary call to action is now the free browser-side audit rather than a Stripe connection. Also fixed a responsive bug that pushed the headline about 620px down the page on every screen narrower than 900px.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-07-28</p>
-      <h2 style="margin-top:0;">Correctness pass on decline handling</h2>
-      <ul>
-        <li>Fixed six Stripe decline codes being treated as retryable when Stripe will not execute a retry for them without a new payment method: incorrect_number, transaction_not_allowed, revocation_of_authorization, revocation_of_all_authorizations, authentication_required and highest_risk_level. This also inflated the connect-time backtest estimate for accounts holding those failures.</li>
-        <li>Lost, stolen and retained cards now route to the card-update flow instead of being written off. A reissue is the most recoverable failure there is, because the customer usually already has the new card.</li>
-        <li>card_velocity_exceeded is now retried. It is a limit that resets, and Stripe retries it.</li>
-        <li>Dunning step 3 no longer tells customers their subscription will be cancelled. Whether that happens is the merchant's own Stripe setting, which RecoverFlow does not see or control.</li>
-        <li>Published twelve guides at /blog, plus /about, /contact and this documentation.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-07-27</p>
-      <h2 style="margin-top:0;">Comparison and tooling</h2>
-      <ul>
-        <li>Four competitor comparison pages with pricing read from each vendor's own page and dated on-page, plus a comparisons hub.</li>
-        <li>Free recovery estimator and a searchable reference for all 48 Stripe decline codes.</li>
-        <li>Retry schedule builder and dunning email generator, completing the free tool set.</li>
-        <li>Pricing page, including a section on the volume at which 25% becomes the wrong deal for the customer.</li>
-        <li>Privacy policy, terms of service and security pages, with governing law in Massachusetts.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-07-13</p>
-      <h2 style="margin-top:0;">Backtest and analytics</h2>
-      <ul>
-        <li>Instant 90-day backtest scan on Stripe Connect, so a new merchant sees what already failed before committing to anything.</li>
-        <li>DataProtection keys persisted across redeploys, so sessions survive a deployment.</li>
-        <li>Analytics on the marketing site.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-07-12</p>
-      <h2 style="margin-top:0;">Billing, auth and deliverability</h2>
-      <ul>
-        <li>Usage-based billing: 25% of recovered revenue with a $29 monthly floor.</li>
-        <li>Magic-link authentication and the customer dashboard.</li>
-        <li>Self-serve signup funnel.</li>
-        <li>Dunning email deliverability fixes, including rejecting a placeholder SendGrid key at startup rather than silently sending nothing.</li>
-        <li>Open and click tracking disabled on dunning emails at the SendGrid level.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-07-10</p>
-      <h2 style="margin-top:0;">First working system</h2>
-      <ul>
-        <li>Clean Architecture scaffold on .NET 8, with PostgreSQL and EF Core.</li>
-        <li>Stripe Connect OAuth, with the access token encrypted at rest.</li>
-        <li>Multi-tenant isolation via EF Core global query filters, so a query that forgets its tenant filter returns nothing rather than another merchant's rows.</li>
-        <li>Decline classification, retry scheduling and the retry execution worker.</li>
-        <li>Dunning email sending through SendGrid.</li>
-        <li>Read-only merchant dashboard API.</li>
-        <li>Deployment to Render.</li>
-      </ul>
+    <div class="answer">
+      <span class="label">Short answer</span>
+<p><strong>The issuer declined and wants a conversation.</strong> Stripe's decline codes reference describes <code>call_issuer</code> as the card being declined for an unknown reason, with the customer needing to contact their card issuer for more information.</p>
+<p>The name is the useful part. Where most unknown-reason declines are silent, this one carries a suggestion that the bank has something to say to its cardholder, often something a short phone call resolves.</p>
     </div>
 
-    <p style="margin-top:40px;color:var(--text-dim);">RecoverFlow started on 10 July 2026. Anything older than that does not exist.</p>
-      <div class="cta-box">
-      <h2>See what you're losing</h2>
-      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
-      <a class="btn" href="/">Run the free 90 day scan</a>
+    <div class="toc">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#family">The unknown-reason family</a></li>
+        <li><a href="#retry">Will Stripe retry it?</a></li>
+        <li><a href="#email">What to put in the dunning email</a></li>
+        <li><a href="#faq">Questions people actually ask</a></li>
+      </ol>
     </div>
+
+    <h2 id="family">The unknown-reason family</h2>
+<p>Stripe's reference contains a whole family of codes with the identical description, declined for an unknown reason, and the identical next step, contact the issuer: <code>call_issuer</code>, <code>do_not_honor</code>, <code>no_action_taken</code>, <code>security_violation</code>, <code>service_not_allowed</code>, <code>stop_payment_order</code> and others. The issuer chose not to give a machine-readable reason, and each network has its own habits about which of these codes carries the refusal.</p>
+<p>From your side the handling is the same across the family. The difference is purely in what you tell the customer, and for <code>call_issuer</code> the message writes itself: your bank declined this and asked that you contact them.</p>
+
+    <h2 id="retry">Will Stripe retry it?</h2>
+<p>Yes. <code>call_issuer</code> is not one of the nine codes that stop Stripe executing retries, so scheduled retries continue. Some of these clear on their own, because the underlying block was temporary. The ones that do not are typically blocks only the cardholder can lift, which is why the documented next step is the phone call, not the retry.</p>
+
+    <h2 id="email">What to put in the dunning email</h2>
+<p>This is one of the few codes where telling the customer to ring their bank is precisely the documented advice rather than a shrug. One email, plain words: the payment was declined by your bank, they have asked that you contact them, and here is a link if you would rather just use a different card. Both doors open, no urgency theatre.</p>
+
+    <h2 id="faq">Questions people actually ask</h2>
+<div class="faq">
+  <details><summary>What does call_issuer mean on Stripe?</summary><p>Stripe's decline codes reference describes it as the card being declined for an unknown reason, with the customer needing to contact their card issuer for more information. The issuer wants to talk to its cardholder before approving charges like this one.</p></details>
+  <details><summary>What is the difference between call_issuer and do_not_honor?</summary><p>In Stripe's reference, nothing operational: both carry the same description, declined for an unknown reason, and the same next step, contact the issuer. The names differ because the card networks return different codes for their own reasons.</p></details>
+  <details><summary>Will Stripe retry a call_issuer decline?</summary><p>Yes. It is not on the list of nine codes that stop retries, so your schedule keeps running. Blocks that only the cardholder can lift will keep failing until they make the call, which is why the documented next step matters.</p></details>
+  <details><summary>What should I tell the customer?</summary><p>The documented advice, in plain words: their bank declined the payment and asked that they get in touch. Include a card update link as the alternative, since a different card is often faster than a phone call.</p></details>
 </div>
+
+    <div class="sources">
+  <h2>Where this came from</h2>
+  <p style="margin-top:0;color:var(--text-dim);font-size:.93rem;">Checked against primary sources on 12 August 2026. If Stripe changes something and this page has not caught up, tell us and it gets fixed.</p>
+  <ul>
+      <li><a href="https://docs.stripe.com/declines/codes" rel="nofollow noopener" target="_blank">Stripe: Decline codes reference</a> &mdash; the documented meaning and next steps for every code on this page.</li>
+      <li><a href="https://docs.stripe.com/declines/card" rel="nofollow noopener" target="_blank">Stripe: Card declines</a> &mdash; advice codes, and Stripe's guidance on reducing declines.</li>
+      <li><a href="https://docs.stripe.com/billing/revenue-recovery/smart-retries" rel="nofollow noopener" target="_blank">Stripe: Smart Retries</a> &mdash; the source for the nine code list that stops retries.</li>
+  </ul>
+</div>
+
+    <div class="cta-band">
+  <h2>If you would rather not build this yourself</h2>
+  <p>RecoverFlow watches your Stripe account for failed subscription payments, stops retrying the ones that cannot succeed, and emails the customers whose card simply needs replacing. It charges 25% of what it can attribute to a specific action it took, with a $29 monthly floor and a $299 monthly ceiling, and the floor is waived for the first 30 days.</p>
+  <p style="color:var(--text-dim);">It is early. It is run by one person. If Stripe's own free retry settings are enough for you, use those instead, and there is a page on this site that says exactly when that is the right call.</p>
+  <a class="btn" href="/pricing/">See how the pricing works</a>
+</div>
+
+    <div class="related">
+  <h2>Related</h2>
+  <div class="card-grid">
+    <div class="card"><h3><a href="/tools/decline-code-lookup/">Free decline code lookup</a></h3><p>48 codes, searchable, filterable by whether Stripe will retry.</p></div>
+    <div class="card"><h3><a href="/blog/do-not-honor-stripe-decline/">do_not_honor, decoded</a></h3><p>The most common unknown-reason decline, and how to handle it.</p></div>
+    <div class="card"><h3><a href="/blog/stripe-decline-codes-that-stop-retries/">The nine codes that stop retries</a></h3><p>What each one means and what to do instead of retrying.</p></div>
+  </div>
+</div>
+  </article>
 </main>
 
 <footer>
