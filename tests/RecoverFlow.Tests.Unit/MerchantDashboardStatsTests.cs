@@ -10,8 +10,9 @@ public class MerchantDashboardStatsTests
 
     private static CaseSnapshot Case(
         RecoveryStatus status, long amount = 1000,
-        DateTime? openedAt = null, DateTime? recoveredAt = null, DateTime? lostAt = null) =>
-        new(status, amount, openedAt ?? Now.AddDays(-1), recoveredAt, lostAt);
+        DateTime? openedAt = null, DateTime? recoveredAt = null, DateTime? lostAt = null,
+        long reversed = 0) =>
+        new(status, amount, openedAt ?? Now.AddDays(-1), recoveredAt, lostAt, reversed);
 
     [Fact]
     public void No_cases_yields_zero_rate_not_divide_by_zero()
@@ -147,5 +148,57 @@ public class MerchantDashboardStatsTests
             [Case(RecoveryStatus.Recovered, recoveredAt: Cutoff)], since: Cutoff);
 
         Assert.Equal(1, stats.CasesByStatus["Recovered"]);
+    }
+
+    // --- Reversals ---------------------------------------------------------------------------
+    // The headline figure has to be what the merchant kept, or it disagrees with their invoice.
+
+    [Fact]
+    public void Recovered_total_is_net_of_refunds_and_chargebacks()
+    {
+        var stats = MerchantDashboardService.ComputeStats(
+        [
+            Case(RecoveryStatus.Recovered, amount: 10_000, recoveredAt: Now.AddDays(-2), reversed: 4_000),
+            Case(RecoveryStatus.Recovered, amount: 2_500, recoveredAt: Now.AddDays(-3)),
+        ], since: null);
+
+        Assert.Equal(8_500, stats.AmountRecoveredCents);
+        Assert.Equal(12_500, stats.AmountRecoveredGrossCents);
+        Assert.Equal(4_000, stats.AmountReversedCents);
+    }
+
+    [Fact]
+    public void A_fully_refunded_recovery_still_counts_as_a_recovery_but_adds_no_money()
+    {
+        // It happened, and hiding it would make the recovery rate look worse than it was.
+        var stats = MerchantDashboardService.ComputeStats(
+            [Case(RecoveryStatus.Recovered, amount: 6_000, recoveredAt: Now.AddDays(-1), reversed: 6_000)],
+            since: null);
+
+        Assert.Equal(1, stats.CasesByStatus["Recovered"]);
+        Assert.Equal(1, stats.RecoveryRate);
+        Assert.Equal(0, stats.AmountRecoveredCents);
+    }
+
+    [Fact]
+    public void A_dispute_larger_than_the_charge_cannot_push_the_total_negative()
+    {
+        // Dispute amounts carry the card network fee, so they can exceed what we recovered.
+        var stats = MerchantDashboardService.ComputeStats(
+            [Case(RecoveryStatus.Recovered, amount: 5_000, recoveredAt: Now.AddDays(-1), reversed: 6_500)],
+            since: null);
+
+        Assert.Equal(0, stats.AmountRecoveredCents);
+        Assert.Equal(5_000, stats.AmountReversedCents);
+    }
+
+    [Fact]
+    public void Merchants_with_nothing_reversed_see_gross_and_net_agree()
+    {
+        var stats = MerchantDashboardService.ComputeStats(
+            [Case(RecoveryStatus.Recovered, amount: 3_300, recoveredAt: Now.AddDays(-1))], since: null);
+
+        Assert.Equal(0, stats.AmountReversedCents);
+        Assert.Equal(stats.AmountRecoveredGrossCents, stats.AmountRecoveredCents);
     }
 }

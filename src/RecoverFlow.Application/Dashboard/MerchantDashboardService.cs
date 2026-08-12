@@ -28,13 +28,15 @@ public sealed class MerchantDashboardService(IAppDbContext db)
             {
                 p.Id, p.StripeInvoiceId, p.CustomerEmail, p.AmountCents, p.Currency,
                 p.Status, p.FirstFailedAt, p.RecoveredAt, p.LostAt,
+                p.ReversedAmountCents, p.ReversalReason,
                 AttemptCount = p.RetryAttempts.Count,
             })
             .ToListAsync(ct);
 
         var items = rows.Select(r => new RecoveryCaseSummary(
             r.Id, r.StripeInvoiceId, r.CustomerEmail, r.AmountCents, r.Currency,
-            r.Status.ToString(), r.FirstFailedAt, r.RecoveredAt ?? r.LostAt, r.AttemptCount)).ToList();
+            r.Status.ToString(), r.FirstFailedAt, r.RecoveredAt ?? r.LostAt, r.AttemptCount,
+            r.ReversedAmountCents, r.ReversalReason)).ToList();
 
         return new(items, page, pageSize, total);
     }
@@ -48,7 +50,8 @@ public sealed class MerchantDashboardService(IAppDbContext db)
         // and keeps the windowing logic a pure, unit-testable function.
         var cases = await db.FailedPayments
             .Where(p => p.MerchantId == merchantId)
-            .Select(p => new CaseSnapshot(p.Status, p.AmountCents, p.FirstFailedAt, p.RecoveredAt, p.LostAt))
+            .Select(p => new CaseSnapshot(
+                p.Status, p.AmountCents, p.FirstFailedAt, p.RecoveredAt, p.LostAt, p.ReversedAmountCents))
             .ToListAsync(ct);
 
         return new(ComputeStats(cases, since: null), ComputeStats(cases, DateTime.UtcNow.AddDays(-30)));
@@ -70,11 +73,20 @@ public sealed class MerchantDashboardService(IAppDbContext db)
 
         // Amounts sum cents across currencies as-is; a per-currency breakdown
         // can come with multi-currency support.
+        var won = windowed.Where(c => c.Status == RecoveryStatus.Recovered).ToList();
+        // Reversals are clamped at the case amount by the webhook handler, but a dispute
+        // amount carries the network fee, so clamp again rather than trust the stored value.
+        var gross = won.Sum(c => c.AmountCents);
+        var reversed = won.Sum(c => Math.Clamp(c.ReversedCents, 0, c.AmountCents));
+
         return new(
             byStatus,
-            AmountRecoveredCents: windowed.Where(c => c.Status == RecoveryStatus.Recovered).Sum(c => c.AmountCents),
+            // Net, so the headline agrees with the invoice: we bill on what the merchant kept.
+            AmountRecoveredCents: gross - reversed,
             AmountAtRiskCents: windowed.Where(c => c.Status == RecoveryStatus.ActiveRecovery).Sum(c => c.AmountCents),
-            RecoveryRate: closed == 0 ? 0 : (double)recovered / closed);
+            RecoveryRate: closed == 0 ? 0 : (double)recovered / closed,
+            AmountRecoveredGrossCents: gross,
+            AmountReversedCents: reversed);
 
         static DateTime DefiningMoment(CaseSnapshot c) => c.Status switch
         {

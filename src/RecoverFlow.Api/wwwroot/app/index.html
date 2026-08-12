@@ -62,6 +62,9 @@
   .stat .k { font-size: 0.85rem; color: var(--dim); margin-bottom: 8px; }
   .stat .v { font-size: 1.7rem; font-weight: 700; letter-spacing: -0.02em; }
   .stat .v.small { font-size: 1.4rem; }
+  /* Secondary line under a figure: the gross behind a net, or what a case gave back.
+     Deliberately not .small, which already means something else on .stat .v. */
+  .sub { font-size: 0.78rem; color: var(--dim); margin-top: 6px; font-weight: 400; }
 
   .panel { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
   .panel h2 { font-size: 1.05rem; margin: 0; padding: 18px 20px; border-bottom: 1px solid var(--border); }
@@ -101,7 +104,7 @@
     </div>
 
     <div class="stats" id="stats" hidden>
-      <div class="stat"><div class="k">Revenue recovered</div><div class="v" id="s-recovered">—</div></div>
+      <div class="stat"><div class="k">Revenue recovered</div><div class="v" id="s-recovered">—</div><div class="sub" id="s-reversed" hidden></div></div>
       <div class="stat"><div class="k">At risk (active)</div><div class="v" id="s-atrisk">—</div></div>
       <div class="stat"><div class="k">Recovery rate</div><div class="v" id="s-rate">—</div></div>
       <div class="stat"><div class="k">Active cases</div><div class="v small" id="s-active">—</div></div>
@@ -142,6 +145,16 @@
   };
   const date = (iso) => iso ? new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—';
 
+  // The amount column keeps showing the invoice figure so the row still reconciles against
+  // Stripe; what came back out is called out under it. Mapped, not interpolated, so nothing
+  // from the record reaches innerHTML.
+  const REVERSAL = { refund: 'refunded', dispute: 'charged back' };
+  const reversalNote = (c) => {
+    if (!c.reversedCents) return '';
+    const what = REVERSAL[c.reversalReason] || 'reversed';
+    return `<div class="sub">${money(c.reversedCents, c.currency)} ${what}</div>`;
+  };
+
   async function api(path) {
     const res = await fetch(path, { headers: { 'Accept': 'application/json' } });
     if (res.status === 401) { location.href = '/app/login.html'; throw new Error('unauthorized'); }
@@ -154,6 +167,13 @@
     if (!dashboard) return;
     const s = dashboard[windowKey];
     document.getElementById('s-recovered').textContent = usd(s.amountRecoveredCents);
+    // The headline is net of refunds and chargebacks, which is also what we bill on. Show the
+    // gross alongside it when they differ, so the number is never quietly smaller than expected.
+    const rev = document.getElementById('s-reversed');
+    rev.hidden = !s.amountReversedCents;
+    rev.textContent = s.amountReversedCents
+      ? usd(s.amountRecoveredGrossCents) + ' recovered, ' + usd(s.amountReversedCents) + ' since refunded or disputed'
+      : '';
     document.getElementById('s-atrisk').textContent = usd(s.amountAtRiskCents);
     document.getElementById('s-rate').textContent = Math.round((s.recoveryRate || 0) * 100) + '%';
     document.getElementById('s-active').textContent = s.casesByStatus.ActiveRecovery ?? 0;
@@ -169,7 +189,7 @@
       <tr>
         <td>${c.customerEmail || '—'}</td>
         <td>${c.stripeInvoiceId}</td>
-        <td class="amt">${money(c.amountCents, c.currency)}</td>
+        <td class="amt">${money(c.amountCents, c.currency)}${reversalNote(c)}</td>
         <td>${pill(c.status)}</td>
         <td>${date(c.openedAt)}</td>
         <td>${c.attemptCount}</td>
