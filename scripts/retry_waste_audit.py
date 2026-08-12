@@ -35,8 +35,11 @@ BLOCKED = {
 # Retried by Stripe, but the card itself is unusable until the customer acts.
 NEEDS_NEW_CARD = {"expired_card", "incorrect_cvc", "invalid_expiry_month", "invalid_expiry_year"}
 
-# Visa Excessive Reattempts Rule, enforced since April 2022: no more than 15
-# reattempts per card per 30 days. Stripe blocks further attempts past this.
+# Visa Excessive Reattempts Rule: no more than 15 reattempts in a rolling 30 days.
+# Stripe cites the rule and says it blocks subsequent attempts only where it determines
+# a low chance of successful authorisation, so the ceiling is discretionary and Stripe
+# does not claim to keep the merchant compliant. We group per card while Visa states the
+# rule per payment, which makes this a conservative upper bound, not a compliance verdict.
 # https://support.stripe.com/questions/payment-blocked-due-to-excessive-retries
 VISA_CAP = 15
 VISA_WINDOW_DAYS = 30
@@ -195,7 +198,7 @@ def main():
     print("  conversation, not a schedule.\n")
 
     exposure = visa_exposure(rows)
-    print(f"VISA REATTEMPT BUDGET (cap is {VISA_CAP} per card per {VISA_WINDOW_DAYS} days)")
+    print(f"VISA REATTEMPT BUDGET (ceiling is {VISA_CAP} in a rolling {VISA_WINDOW_DAYS} days)")
     print("-" * 62)
     if not cols["card"] and not cols["customer"]:
         print("  Skipped: the export had no card or customer column.\n")
@@ -205,8 +208,10 @@ def main():
         over = [x for x in exposure if x[1] >= VISA_CAP]
         print(f"  {len(exposure)} card(s) reached 10 or more attempts in 30 days.")
         if over:
-            print(f"  {len(over)} of them hit {VISA_CAP} or more, where Stripe starts blocking")
-            print("  further attempts outright.")
+            print(f"  {len(over)} of them are at or over {VISA_CAP}. Stripe may block further")
+            print("  attempts here, but only where it judges a low chance of authorisation,")
+            print("  so nobody is guaranteeing you stay under the ceiling. Counted per card,")
+            print("  which is stricter than Visa's per payment wording.")
         for key, n in exposure[:8]:
             flag = "  <-- at or over the cap" if n >= VISA_CAP else ""
             print(f"     {key[:38]:<38} {n:>3} attempts{flag}")

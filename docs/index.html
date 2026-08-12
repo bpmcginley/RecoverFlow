@@ -682,6 +682,27 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   }
   .promise strong { color: var(--text); font-weight: 700; }
 
+  /* Two-tier hero CTA: the zero-access audit leads, Stripe OAuth is the second step.
+     Wraps rather than shrinks, so the buttons keep a 44px touch target on narrow screens. */
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 0 0 28px;
+  }
+  .hero-actions .btn { min-height: 44px; display: inline-flex; align-items: center; }
+
+  .form-lead {
+    margin: 0 0 14px;
+    padding-top: 22px;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.92rem;
+    line-height: 1.55;
+    max-width: 460px;
+  }
+  .form-lead strong { color: var(--text); font-weight: 600; }
+
   /* Form sits left-aligned in the column, not centered */
   .hero .signup { margin: 0; max-width: 420px; }
   .hero .signup-alt { margin-top: 14px; }
@@ -764,7 +785,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <a href="/docs/">Docs</a>
       <a href="/blog/">Guides</a>
       <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="#start">See your backtest</a>
+      <a class="nav-cta" href="/tools/retry-waste-calculator/">Free retry audit</a>
     </nav>
   </div>
 </header>
@@ -773,10 +794,17 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <div class="wrap hero-grid">
     <div class="hero-copy">
       <span class="badge">Now in early access for Stripe-based SaaS</span>
-      <h1>Win back the Stripe payments that <span class="grad">quietly fail</span></h1>
-      <p class="hero-sub">RecoverFlow watches your subscriptions, classifies every decline, and retries the ones worth retrying, so failed invoices turn back into revenue without you chasing them.</p>
+      <h1>Some of your Stripe retries were <span class="grad">never going to work</span></h1>
+      <p class="hero-sub">Nine decline codes never reach the card network. Stripe keeps the schedule running and the attempt counter climbing, but nothing is really attempted until a new card is attached. Almost every tool here answers that with more retries.</p>
 
-      <p class="promise">You don't pay unless we recover: <strong>25% of what we bring back</strong>, nothing up front.</p>
+      <p class="promise">See what share of yours sits in that group. Reads <strong>your own Stripe export, in your browser</strong>. No account, no Stripe access, nothing uploaded.</p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/tools/retry-waste-calculator/">Audit your export, free</a>
+        <a class="btn btn-secondary" href="#start">Or connect Stripe for the backtest</a>
+      </div>
+
+      <p class="form-lead">Already know you want the full picture? The 90 day backtest reads your history and costs nothing. You don't pay unless we recover: <strong>25% of what we bring back</strong>, nothing up front.</p>
 
       <form id="start" class="signup" method="get" action="https://api.recoverflow.org/connect/stripe/authorize">
         <label for="companyName">Company name</label>
@@ -1064,11 +1092,12 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     });
   }
 
-  // Secondary signal: existing merchant clicks "Sign in" (engagement, not a conversion).
-  var signin = document.querySelector('a.nav-cta');
-  if (signin) {
-    signin.addEventListener('click', function () {
-      gtag('event', 'login_click', { transport_type: 'beacon', location: 'header' });
+  // The header CTA now sends people to the zero-access audit rather than the OAuth form,
+  // so this is a top-of-funnel signal, not a login. Named for what it actually is.
+  var auditCta = document.querySelector('a.nav-cta');
+  if (auditCta) {
+    auditCta.addEventListener('click', function () {
+      gtag('event', 'audit_click', { transport_type: 'beacon', location: 'header' });
     });
   }
 })();

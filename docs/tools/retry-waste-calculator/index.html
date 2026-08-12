@@ -233,7 +233,7 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
       "name": "Is there really a cap on retries?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Yes. Visa's Excessive Reattempts Rule limits reattempts to 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you pass it. Mastercard raised its excessive-authorisation fees in January 2026. Most recovery tools do not show you where you stand against that budget."
+        "text": "Visa's Excessive Reattempts Rule caps reattempts at 15 in a rolling 30 day window. Stripe cites that rule and says it will automatically block subsequent retry attempts, but only where it determines there is a low chance of a successful authorisation. So it is discretionary, and Stripe does not say it keeps you compliant on your behalf. This report counts attempts per card while Visa states the rule per payment, which makes the count a conservative upper bound rather than a compliance verdict. Most recovery tools do not show you where you stand against it at all."
       }
     },
     {
@@ -241,7 +241,7 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
       "name": "Does my export get uploaded anywhere?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. The file is read by this page's JavaScript using the browser's FileReader and the arithmetic runs on your own machine. There is no upload, no request, no server, no account and no form to submit. You can confirm it by opening your browser's developer tools, switching to the Network tab and running the audit: no request is made. You can also disconnect from the internet after the page loads and it will still work."
+        "text": "No. The file is read by this page's JavaScript using the browser's FileReader and the arithmetic runs on your own machine. There is no upload, no request, no server, no account and no form to submit. You do not have to take my word for it: open your browser's developer tools, switch to the Network tab, and run the audit. No request is made. You can also disconnect from the internet after the page loads and it will still work."
       }
     },
     {
@@ -322,8 +322,8 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
     <p>If most of your failed revenue is in the second group, buying a tool that retries harder is buying a solution to the wrong half of your problem. That is worth knowing before you spend anything, including with us.</p>
 
     <h2 id="cap">There is also a ceiling you may be hitting</h2>
-    <p>Visa's Excessive Reattempts Rule caps reattempts at 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you cross it. Mastercard increased its excessive-authorisation fees in January 2026.</p>
-    <p>A third-party recovery tool retrying on top of Stripe's own retries draws down the same budget, and neither system can see the other's count. More attempts is not a free action.</p>
+    <p>Visa's Excessive Reattempts Rule caps reattempts at 15 in a rolling 30 day window. Stripe cites that rule, and says it will automatically block subsequent retry attempts, but only where it determines there is a low chance of a successful authorisation. That is Stripe using its judgement, not Stripe promising to keep you inside Visa's limit. Stripe does not say it enforces the rule on your behalf.</p>
+    <p>Which is the actual reason to count it yourself. This report counts attempts <strong>per card</strong>, while Visa states the rule per payment, so treat the number as a conservative upper bound on your exposure rather than a compliance verdict. A third-party recovery tool retrying on top of Stripe's own retries draws down the same budget, and neither system can see the other's count.</p>
 
     <div class="cta-band">
       <h2>Got a number you did not expect?</h2>
@@ -338,7 +338,7 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
   <details><summary>How do I get the export?</summary><p>Stripe Dashboard, Payments, filter Status is Failed, set a date range, then Export. In the column picker the only one this genuinely needs is Decline Code (some exports label it Failure Code). Adding Amount, Created, and Card ID or Customer ID gets you the money figures and the Visa budget section as well. Ninety days is plenty.</p></details>
   <details><summary>What if I cannot export right now?</summary><p>Use the manual entry further up the page. It asks for counts per decline code and one average invoice amount, so it gives you the same percentages but a rougher money figure. The export is better because it uses your real amounts rather than one average across every failure.</p></details>
   <details><summary>Where do I find decline codes one at a time?</summary><p>In the Stripe Dashboard, filter Payments to failed, or filter Invoices to unpaid and open the latest payment attempt on each. The decline code sits on the failed PaymentIntent as last_payment_error.decline_code.</p></details>
-  <details><summary>Is there really a cap on retries?</summary><p>Yes. Visa's Excessive Reattempts Rule limits reattempts to 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you pass it. Mastercard raised its excessive-authorisation fees in January 2026. Most recovery tools do not show you where you stand against that budget.</p></details>
+  <details><summary>Is there really a cap on retries?</summary><p>Visa's Excessive Reattempts Rule caps reattempts at 15 in a rolling 30 day window. Stripe cites that rule and says it will automatically block subsequent retry attempts, but only where it determines there is a low chance of a successful authorisation. So it is discretionary, and Stripe does not say it keeps you compliant on your behalf. This report counts attempts per card while Visa states the rule per payment, which makes the count a conservative upper bound rather than a compliance verdict. Most recovery tools do not show you where you stand against it at all.</p></details>
   <details><summary>Does my export get uploaded anywhere?</summary><p>No. The file is read by this page's JavaScript using the browser's FileReader and the arithmetic runs on your own machine. There is no upload, no request, no server, no account and no form to submit. You do not have to take my word for it: open your browser's developer tools, switch to the Network tab, and run the audit. No request is made. You can also disconnect from the internet after the page loads and it will still work.</p></details>
   <details><summary>Why is a vendor telling me I might not need the product?</summary><p>Because the number is only worth anything if it is not a sales tool. If most of your failures are ordinary retryable declines, more retries genuinely is the right answer and Stripe already does that for free. Saying so costs one sale and is the only reason to believe the report when it comes back high.</p></details>
 </div>
@@ -458,8 +458,10 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
   // until the customer replaces it.
   var NEEDS_NEW_CARD = ["expired_card", "incorrect_cvc", "invalid_expiry_month", "invalid_expiry_year"];
 
-  // Visa Excessive Reattempts Rule, enforced since April 2022: 15 reattempts per
-  // card per 30 days. Stripe blocks further attempts past it.
+  // Visa Excessive Reattempts Rule: 15 reattempts in a rolling 30 day window.
+  // Stripe cites the rule and blocks subsequent attempts only where it judges a low
+  // chance of authorisation, so the ceiling is discretionary, not guaranteed. We
+  // group per card, while Visa states the rule per payment: a conservative proxy.
   var VISA_CAP = 15, VISA_WINDOW_MS = 30 * 864e5, VISA_WATCH = 10;
 
   var ALIASES = {
@@ -699,14 +701,16 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
       var over = exp.filter(function (x) { return x.peak >= VISA_CAP; });
       if (!exp.length) {
         h.push('<p>No card reached ' + VISA_WATCH + ' failed attempts inside a 30 day window. '
-          + 'Healthy against the cap of ' + VISA_CAP + ' per card per 30 days.</p>');
+          + 'Comfortable against Visa\'s ceiling of ' + VISA_CAP + ' in a rolling 30 days.</p>');
       } else {
         h.push('<p>' + exp.length + ' card' + (exp.length === 1 ? '' : 's') + ' reached '
-          + VISA_WATCH + ' or more attempts in a 30 day window. Visa caps reattempts at '
-          + VISA_CAP + ' per card per 30 days and Stripe blocks further attempts past it'
+          + VISA_WATCH + ' or more attempts in a 30 day window, against Visa\'s ceiling of '
+          + VISA_CAP
           + (over.length ? '. <strong>' + over.length + (over.length === 1 ? ' of them is' : ' of them are')
-              + ' at or over that cap.</strong>' : '.')
-          + '</p>');
+              + ' at or over it.</strong>' : '.')
+          + ' Stripe may block further attempts here, but only where it judges a low chance of '
+          + 'authorisation, so nobody is guaranteeing you stay under the ceiling. Counted per '
+          + 'card, which is stricter than Visa\'s per payment wording.</p>');
         h.push('<table><thead><tr><th>Card or customer</th><th class="n">Peak attempts / 30d</th>'
           + '</tr></thead><tbody>');
         exp.slice(0, 10).forEach(function (x) {
