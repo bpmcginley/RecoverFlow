@@ -197,7 +197,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "name": "Does Stripe stop the retry schedule on these codes?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. Stripe keeps the schedule and keeps incrementing the attempt count. It just does not send the charge to the card network until a new payment method is attached. The invoice looks like it is being retried when in practice nothing is being attempted."
+        "text": "No. Stripe keeps the schedule and keeps incrementing the attempt count. It just does not attempt the charge again until a new payment method is attached. The invoice looks like it is being retried when in practice nothing is being attempted."
       }
     },
     {
@@ -324,7 +324,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="faq">Questions people actually ask</h2>
 <div class="faq">
   <details><summary>Is insufficient_funds a hard decline?</summary><p>No. insufficient_funds is not on Stripe's list of codes that block retry execution, and it is one of the better codes to retry, because the underlying condition genuinely changes when the customer gets paid. A lot of articles list it as a hard decline. They are wrong.</p></details>
-  <details><summary>Does Stripe stop the retry schedule on these codes?</summary><p>No. Stripe keeps the schedule and keeps incrementing the attempt count. It just does not send the charge to the card network until a new payment method is attached. The invoice looks like it is being retried when in practice nothing is being attempted.</p></details>
+  <details><summary>Does Stripe stop the retry schedule on these codes?</summary><p>No. Stripe keeps the schedule and keeps incrementing the attempt count. It just does not attempt the charge again until a new payment method is attached. The invoice looks like it is being retried when in practice nothing is being attempted.</p></details>
   <details><summary>Is expired_card on this list?</summary><p>No, and that surprises people. expired_card is not one of the nine, so Stripe will genuinely retry it, even though an expired card does not become unexpired. Unless the issuer has pushed an updated card through the card account updater, those retries do nothing. It is an email problem wearing a retry problem's clothes.</p></details>
   <details><summary>Can I make Stripe retry these anyway?</summary><p>You can turn Smart Retries off and write your own retry logic, but you cannot make the issuer approve a stolen card. The block exists because the answer is already known. Spending attempts on it only delays the point at which you ask the customer for a new card.</p></details>
   <details><summary>How many decline codes does Stripe have in total?</summary><p>Stripe documents around 48 decline codes. Nine of them block retry execution. The rest are retryable to varying degrees of usefulness.</p></details>

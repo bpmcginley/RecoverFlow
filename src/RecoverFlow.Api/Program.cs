@@ -118,7 +118,7 @@ try
     // Apply any pending EF migrations on boot so a fresh managed database self-provisions.
     using (var scope = app.Services.CreateScope())
     {
-        scope.ServiceProvider.GetRequiredService<AppDbContext>().Database.Migrate();
+        await MigrateWithRetryAsync(scope.ServiceProvider.GetRequiredService<AppDbContext>());
 
         // Monthly billing (1st, 06:00 UTC). DI-resolved manager rather than the static
         // RecurringJob API — JobStorage.Current isn't reliably set this early. The job
@@ -177,6 +177,32 @@ catch (Exception ex)
 finally
 {
     Log.CloseAndFlush();
+}
+
+// Managed Postgres is not always accepting connections at the instant the web service boots:
+// a restart, a failover, or a plan resize gives a few seconds of refusals. Migrating without a
+// retry turns that into a crash, and the host restarts us straight back into it — a crash loop
+// over a blip that would have cleared on its own. Six tries over roughly half a minute covers
+// it; a fault that outlasts that is real, and the process should still die and be seen.
+static async Task MigrateWithRetryAsync(AppDbContext db)
+{
+    const int attempts = 6;
+    for (var i = 1; ; i++)
+    {
+        try
+        {
+            await db.Database.MigrateAsync();
+            return;
+        }
+        catch (Exception ex) when (i < attempts)
+        {
+            var wait = TimeSpan.FromSeconds(1 << (i - 1)); // 1s, 2s, 4s, 8s, 16s
+            Log.Warning(ex,
+                "Database not ready on boot (attempt {Attempt} of {Attempts}); retrying in {Wait}",
+                i, attempts, wait);
+            await Task.Delay(wait);
+        }
+    }
 }
 
 // Converts a postgres:// URL (as handed out by Render/Heroku) into the key-value form

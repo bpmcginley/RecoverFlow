@@ -321,7 +321,7 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
     <p>The other group is a card that is gone. Reported lost or stolen, reissued, expired, revoked, or blocked for this merchant. <strong>No retry schedule can collect from a card that no longer exists.</strong> Stripe will not even send nine of those codes to the network. It keeps incrementing the attempt counter while nothing is attempted.</p>
     <p>If most of your failed revenue is in the second group, buying a tool that retries harder is buying a solution to the wrong half of your problem. That is worth knowing before you spend anything, including with us.</p>
 
-    <p><strong>One thing this report will not do is inflate the number.</strong> Because Stripe never sends those nine codes to the card network, the attempts against them cost you essentially nothing in fees. Anyone selling you a big dollar figure for "wasted retries" is selling you an invoice that was never issued. The money in this report is revenue at risk from the declines themselves, which is real but which a retry schedule was never going to collect either. The thing the wasted retries genuinely cost you is time: days your customer sits on a dead card while a scheduler works through attempts that cannot land. That is why the report leads with elapsed days and affected customers, and puts the money second.</p>
+    <p><strong>One thing this report will not do is inflate the number.</strong> Because Stripe does not reattempt those nine codes without a new payment method, there is no second charge to pay a fee on. Anyone selling you a big dollar figure for "wasted retries" is selling you an invoice that was never issued. The money in this report is revenue at risk from the declines themselves, which is real but which a retry schedule was never going to collect either. The thing the wasted retries genuinely cost you is time: days your customer sits on a dead card while a scheduler works through attempts that cannot land. That is why the report leads with elapsed days and affected customers, and puts the money second.</p>
 
     <h2 id="cap">There is also a ceiling you may be hitting</h2>
     <p>Visa's Excessive Reattempts Rule caps reattempts at 15 in a rolling 30 day window. Stripe cites that rule, and says it will automatically block subsequent retry attempts, but only where it determines there is a low chance of a successful authorisation. That is Stripe using its judgement, not Stripe promising to keep you inside Visa's limit. Stripe does not say it enforces the rule on your behalf.</p>
@@ -654,11 +654,11 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
     var hasAmounts = totalAmt > 0;
 
     /* The dollars here are real revenue at risk, but they are NOT what the retrying cost.
-       Stripe documents that hard declines never reach the card network, so those attempts
-       incur no network fee and no reattempt. What they actually cost is elapsed time and
-       customers left sitting in a failed state, so count that and lead with it. Quoting a
-       big dollar figure as though retries burned it would be the exact overclaim this tool
-       exists to argue against.
+       Stripe documents that it does not reattempt these codes until a new payment method is
+       attached, so no second charge is actually placed and there is no per-attempt cost to
+       quote. What they cost is elapsed time and customers left sitting in a failed state, so
+       count that and lead with it. Quoting a big dollar figure as though retries burned it
+       would be the exact overclaim this tool exists to argue against.
        https://docs.stripe.com/billing/revenue-recovery/smart-retries */
     var wasteRows = blocked.concat(newcard);
     var stuck = {}, stuckN = 0;
@@ -696,14 +696,14 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
       + (hasAmounts
           ? '<p style="margin:6px 0 0">' + money(wasteAmt, cur) + ' of ' + money(totalAmt, cur)
             + ' in failed invoices sits behind those cards. Read that as revenue at risk, not as '
-            + 'a fee you paid. Stripe never sends hard declines to the card network, so the '
-            + 'attempts themselves cost you almost nothing.</p>'
+            + 'a fee you paid. Stripe does not reattempt these codes without a new payment '
+            + 'method, so no further charge is placed and none is billed for.</p>'
           : '')
       + '</div>');
 
     h.push('<h3>What could never have worked</h3>');
     h.push('<p>' + blocked.length.toLocaleString() + ' charges (' + pct(blocked.length, total)
-      + '%) are on the nine codes Stripe will not send to the card network at all without a new '
+      + '%) are on the nine codes Stripe will not reattempt at all without a new '
       + 'payment method' + (hasAmounts ? ', worth ' + money(bAmt, cur) : '')
       + '. The retry schedule keeps running and the attempt counter keeps rising, but no attempt '
       + 'is actually made.</p>');
@@ -814,7 +814,7 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
       L.push(money(totalAmt, cur) + " of invoices failed, " + money(wasteAmt, cur)
         + " of it behind cards that");
       L.push("needed replacing. That is revenue at risk, not a fee you paid: Stripe");
-      L.push("never sends hard declines to the card network.");
+      L.push("does not reattempt these codes without a new payment method.");
     }
     L.push("");
     L.push("WHAT COULD NEVER HAVE WORKED");

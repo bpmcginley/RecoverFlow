@@ -242,7 +242,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>Every failed payment is sorted into one of three buckets, and that decision drives everything downstream: whether a retry is scheduled, which email goes out, and what the backtest estimates you could recover.</p>
 
     <h2 id="blocked">Never retried: the nine Stripe will not execute</h2>
-    <p>For these, Stripe keeps the retry schedule running and keeps incrementing <code>attempt_count</code>, but never sends the charge to the card network until a new payment method is attached. Scheduling our own retry against them would add delay and nothing else.</p>
+    <p>For these, Stripe keeps the retry schedule running and keeps incrementing <code>attempt_count</code>, but does not attempt the charge again until a new payment method is attached. Scheduling our own retry against them would add delay and nothing else.</p>
 <div class="table-scroll">
   <div class="tscroll"><table>
     <thead><tr><th scope="col">Decline code</th><th scope="col">Why we do not retry it</th></tr></thead>
