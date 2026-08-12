@@ -17,7 +17,20 @@ public sealed record PaymentFailedEvent(
 public sealed record InvoicePaidEvent(
     string StripeAccountId,
     string InvoiceId,
+    string? ChargeId,
     DateTime PaidAt);
+
+/// <summary>
+/// A recovery taken back off the merchant: charge.refunded or charge.dispute.created.
+/// <paramref name="ReversedAmountCents"/> is the running total reversed for the charge, not the
+/// delta, because Stripe reports refunds cumulatively and a charge can be refunded more than once.
+/// </summary>
+public sealed record RecoveryReversedEvent(
+    string StripeAccountId,
+    string ChargeId,
+    long ReversedAmountCents,
+    string Reason,
+    DateTime ReversedAt);
 
 /// <summary>Hangfire job contract: parse a verified Stripe event and route it.</summary>
 public interface IStripeWebhookProcessor

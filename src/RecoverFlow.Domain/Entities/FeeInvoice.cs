@@ -14,6 +14,10 @@ public class FeeInvoice
     public long BillableRecoveredCents { get; set; }
     public int RecoveredCaseCount { get; set; }
     public long FeeCents { get; set; }
+    /// <summary>Fee handed back on this invoice for recoveries that were later refunded or charged
+    /// back. Stored as a positive magnitude and subtracted from <see cref="FeeCents"/>; snapshotted
+    /// so a Failed invoice re-sends the same credit rather than recomputing a different one.</summary>
+    public long ReversalCreditCents { get; set; }
     /// <summary>Zero when the fee already meets the floor, or during the merchant's trial.</summary>
     public long FloorTopUpCents { get; set; }
     public long TotalCents { get; set; }

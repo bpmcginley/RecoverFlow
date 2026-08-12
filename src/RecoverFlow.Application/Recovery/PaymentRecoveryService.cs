@@ -83,7 +83,14 @@ public sealed class PaymentRecoveryService(
 
         payment.Status = RecoveryStatus.Recovered;
         payment.RecoveredAt = e.PaidAt;
+        payment.StripeChargeId = e.ChargeId;
         payment.RecoveryMethod = await AttributeRecoveryAsync(payment, ct);
+
+        if (e.ChargeId is null)
+            log.LogWarning(
+                "Invoice {InvoiceId} paid with no charge id on the event; a later refund or dispute " +
+                "of this recovery cannot be matched back to it automatically",
+                e.InvoiceId);
 
         // Cancel anything still pending for this invoice
         foreach (var a in payment.RetryAttempts.Where(a => a.AttemptedAt is null && a.Result is null))
@@ -94,6 +101,37 @@ public sealed class PaymentRecoveryService(
         log.LogInformation(
             "Recovered invoice {InvoiceId} ({Amount} {Currency}) via {Method}",
             e.InvoiceId, payment.AmountCents, payment.Currency, payment.RecoveryMethod);
+    }
+
+    /// <summary>
+    /// A recovery handed back to the customer: refunded, or lost to a chargeback. Recording it is
+    /// what stops us billing for revenue the merchant no longer has — billing reads these fields to
+    /// drop the case from an unsent invoice, or to credit the fee back if it was already charged.
+    /// </summary>
+    public async Task HandleRecoveryReversedAsync(RecoveryReversedEvent e, CancellationToken ct = default)
+    {
+        if (string.IsNullOrEmpty(e.ChargeId)) return;
+
+        var payment = await db.FailedPayments
+            .FirstOrDefaultAsync(p =>
+                p.Merchant.StripeAccountId == e.StripeAccountId
+                && p.StripeChargeId == e.ChargeId
+                && p.Status == RecoveryStatus.Recovered, ct);
+        if (payment is null) return; // Not a recovery of ours, so nothing was ever billed for it
+
+        // Stripe reports refunds as a running total and a dispute can follow a partial refund, so
+        // take the larger figure rather than adding: adding would double-count a redelivered event.
+        var reversed = Math.Min(payment.AmountCents, Math.Max(payment.ReversedAmountCents, e.ReversedAmountCents));
+        if (payment.ReversedAtUtc is not null && reversed <= payment.ReversedAmountCents) return;
+
+        payment.ReversedAmountCents = reversed;
+        payment.ReversalReason = e.Reason;
+        payment.ReversedAtUtc ??= e.ReversedAt;
+        await db.SaveChangesAsync(ct);
+
+        log.LogInformation(
+            "Recovery {PaymentId} on invoice {InvoiceId} reversed by {Reason}: {Reversed} of {Amount} {Currency}",
+            payment.Id, payment.StripeInvoiceId, e.Reason, reversed, payment.AmountCents, payment.Currency);
     }
 
     private RetryAttempt? ScheduleNextRetry(FailedPayment payment, DateTime failedAt)

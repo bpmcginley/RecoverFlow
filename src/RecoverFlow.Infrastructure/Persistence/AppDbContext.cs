@@ -46,7 +46,11 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, ITenantContext
             e.Property(p => p.FailureType).HasConversion<string>().HasMaxLength(20);
             e.Property(p => p.Status).HasConversion<string>().HasMaxLength(20);
             e.Property(p => p.RecoveryMethod).HasConversion<string>().HasMaxLength(20);
+            e.Property(p => p.StripeChargeId).HasMaxLength(255);
+            e.Property(p => p.ReversalReason).HasMaxLength(30);
             e.HasIndex(p => new { p.MerchantId, p.StripeInvoiceId }).IsUnique();
+            // Reversal webhooks arrive knowing only a charge id, so this is the lookup path.
+            e.HasIndex(p => p.StripeChargeId);
             e.HasIndex(p => p.Status);
             e.HasIndex(p => p.FeeInvoiceId);
             e.HasOne(p => p.Merchant).WithMany(m => m.FailedPayments).HasForeignKey(p => p.MerchantId);

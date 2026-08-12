@@ -73,6 +73,11 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         },
         {
           "@type": "Question",
+          "name": "What if a recovered payment is later refunded or charged back?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Then it was not recovered revenue and we do not keep a fee on it. If it has not been invoiced yet, the reversed amount comes off the billable total. If it has, the fee we charged for it is credited back on your next invoice, against the whole invoice including the $29 minimum, and any unused credit carries forward." }
+        },
+        {
+          "@type": "Question",
           "name": "What happens if RecoverFlow recovers nothing?",
           "acceptedAnswer": { "@type": "Answer", "text": "In your first 30 days you pay nothing at all. After that the $29 monthly minimum applies whether or not there was anything to recover, which keeps the account and the monitoring running." }
         },
@@ -277,6 +282,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         <li><strong>A $299 monthly ceiling</strong>, however much we recover. The floor and the percentage never stack past it.</li>
         <li><strong>First 30 days:</strong> no floor at all. Recover nothing, pay nothing.</li>
         <li><strong>Never billed</strong> for payments that came back on their own.</li>
+        <li><strong>Refunded or charged back later?</strong> Not billed, and if we already billed it, the fee comes back as a credit.</li>
         <li><strong>No card required</strong> to connect and run the 90 day scan.</li>
       </ul>
       <br>
@@ -372,6 +378,9 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
       <h3>Am I charged for payments that would have recovered anyway?</h3>
       <p>No. Every recovery is attributed to the specific action that caused it. Payments that came back on their own, or that Stripe's own retries recovered, are not attributed and are not billed.</p>
+
+      <h3>What if a recovered payment is later refunded or charged back?</h3>
+      <p>Then it was not recovered revenue and we do not keep a fee on it. If it has not been invoiced yet, the reversed amount comes off the billable total. If it has, the fee we charged for it is credited back on your next invoice, against the whole invoice including the $29 minimum, and any unused credit carries forward.</p>
 
       <h3>What happens if RecoverFlow recovers nothing?</h3>
       <p>In your first 30 days you pay nothing at all. After that the $29 monthly minimum applies whether or not there was anything to recover.</p>

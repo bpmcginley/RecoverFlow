@@ -164,6 +164,149 @@ public class MerchantBillingServiceTests
         Assert.DoesNotContain("capped", Assert.Single(Assert.Single(invoicer.SendCalls).Item3).Description);
     }
 
+    // --- Reversals: refunds and chargebacks --------------------------------------------------
+    // The rule these cover: we never keep a fee on revenue the merchant did not keep.
+
+    /// <summary>Marks a case as refunded/charged back the way the webhook handler would.</summary>
+    private static void Reverse(AppDbContext db, FailedPayment payment, long reversedCents, string reason = "refund")
+    {
+        payment.ReversedAmountCents = reversedCents;
+        payment.ReversedAtUtc ??= DateTime.UtcNow;
+        payment.ReversalReason = reason;
+        db.SaveChanges();
+    }
+
+    [Fact]
+    public async Task Recovery_reversed_before_billing_is_never_billed_at_all()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 5); // in trial, so no floor to hide behind
+        var charged_back = SeedCase(db, merchant, 40_000);
+        Reverse(db, charged_back, 40_000, "dispute");
+        var invoicer = new FakePlatformFeeInvoicer();
+
+        await Service(db, invoicer).RunMonthlyBillingAsync();
+
+        Assert.Empty(db.FeeInvoices);
+        Assert.Empty(invoicer.SendCalls);
+        Assert.Null(db.FailedPayments.Single().FeeInvoiceId);
+    }
+
+    [Fact]
+    public async Task Partly_refunded_recovery_bills_on_what_the_merchant_kept()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 5);
+        var payment = SeedCase(db, merchant, 40_000);
+        Reverse(db, payment, 10_000); // $100 handed back, $300 kept
+        var invoicer = new FakePlatformFeeInvoicer();
+
+        await Service(db, invoicer).RunMonthlyBillingAsync();
+
+        var invoice = Assert.Single(db.FeeInvoices);
+        Assert.Equal(30_000, invoice.BillableRecoveredCents);
+        Assert.Equal(7_500, invoice.TotalCents);
+        Assert.Equal(30_000, db.FailedPayments.Single().BilledBaseCents);
+    }
+
+    [Fact]
+    public async Task Fee_for_a_recovery_reversed_after_billing_comes_back_on_the_next_invoice()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 60, platformCustomerId: "cus_x");
+        var reversed = SeedCase(db, merchant, 40_000); // fee $100
+        var invoicer = new FakePlatformFeeInvoicer();
+        var svc = Service(db, invoicer);
+        await svc.RunMonthlyBillingAsync();
+        Assert.Equal(10_000, db.FeeInvoices.Single().TotalCents);
+
+        Reverse(db, reversed, 40_000);
+        SeedCase(db, merchant, 60_000); // next month: fee $150, so the $100 credit fits
+        await svc.RunMonthlyBillingAsync();
+
+        var second = db.FeeInvoices.Single(f => f.ReversalCreditCents > 0);
+        Assert.Equal(15_000, second.FeeCents);
+        Assert.Equal(10_000, second.ReversalCreditCents);
+        Assert.Equal(5_000, second.TotalCents);
+
+        // Lines must still sum to the total, or Stripe rejects the invoice.
+        var lines = invoicer.SendCalls.Last().Lines;
+        Assert.Equal(5_000, lines.Sum(l => l.AmountCents));
+        Assert.Contains(lines, l => l.AmountCents == -10_000);
+        Assert.Equal(10_000, db.FailedPayments.Single(p => p.Id == reversed.Id).ReversalCreditedCents);
+    }
+
+    [Fact]
+    public async Task Credit_too_big_for_one_month_finishes_on_the_month_after()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 60, platformCustomerId: "cus_x");
+        var big = SeedCase(db, merchant, 400_000); // 25% is $1,000 but the cap charges $299
+        var invoicer = new FakePlatformFeeInvoicer();
+        var svc = Service(db, invoicer);
+        await svc.RunMonthlyBillingAsync();
+        Assert.Equal(29_900, db.FeeInvoices.Single().TotalCents);
+
+        // Charged back in full: we owe back the $299 we actually took, not 25% of $4,000.
+        Reverse(db, big, 400_000, "dispute");
+        SeedCase(db, merchant, 40_000); // fee $100 + floor 0 => only $100 of the credit fits
+        await svc.RunMonthlyBillingAsync();
+
+        var stamped = db.FailedPayments.Single(p => p.Id == big.Id);
+        Assert.Equal(29_900, stamped.BilledFeeCents);
+        Assert.Equal(10_000, stamped.ReversalCreditedCents);
+
+        // Month two owes nothing, so Stripe is never called: only month one was ever sent. The
+        // month is still recorded, or the credit it spent would be spendable a second time.
+        Assert.Single(invoicer.SendCalls);
+        var settled = db.FeeInvoices.Single(f => f.ReversalCreditCents == 10_000);
+        Assert.Equal(0, settled.TotalCents);
+        Assert.Equal(FeeInvoiceStatus.Sent, settled.Status);
+
+        // A third month with nothing recovered: the floor is billed and the rest of the credit
+        // lands on it, so the leftover cannot sit on the account forever.
+        await svc.RunMonthlyBillingAsync();
+        Assert.Equal(12_900, db.FailedPayments.Single(p => p.Id == big.Id).ReversalCreditedCents);
+        Assert.Single(invoicer.SendCalls);
+    }
+
+    [Fact]
+    public async Task Reversal_of_the_part_that_was_never_billed_is_not_credited_again()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 5); // trial: no floor in the arithmetic
+        var payment = SeedCase(db, merchant, 40_000);
+        Reverse(db, payment, 10_000); // refunded before billing: bills on $300, fee $75
+        var invoicer = new FakePlatformFeeInvoicer();
+        var svc = Service(db, invoicer);
+        await svc.RunMonthlyBillingAsync();
+        Assert.Equal(7_500, db.FeeInvoices.Single().TotalCents);
+
+        Reverse(db, payment, 40_000); // the rest goes back later
+        SeedCase(db, merchant, 40_000);
+        await svc.RunMonthlyBillingAsync();
+
+        // Only the $300 we actually charged for is credited: $75, not $100.
+        Assert.Equal(7_500, db.FailedPayments.Single(p => p.Id == payment.Id).ReversalCreditedCents);
+        Assert.Equal(2_500, invoicer.SendCalls.Last().Lines.Sum(l => l.AmountCents)); // $100 fee less $75
+    }
+
+    [Fact]
+    public async Task Credit_is_split_across_the_cases_that_earned_the_fee()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 5);
+        var a = SeedCase(db, merchant, 30_000);
+        var b = SeedCase(db, merchant, 10_000);
+        var invoicer = new FakePlatformFeeInvoicer();
+        await Service(db, invoicer).RunMonthlyBillingAsync();
+
+        // $400 recovered, $100 fee, split 3:1 by what each case contributed.
+        Assert.Equal(7_500, db.FailedPayments.Single(p => p.Id == a.Id).BilledFeeCents);
+        Assert.Equal(2_500, db.FailedPayments.Single(p => p.Id == b.Id).BilledFeeCents);
+        Assert.Equal(10_000, db.FailedPayments.Sum(p => p.BilledFeeCents));
+    }
+
     [Fact]
     public async Task No_topup_when_fee_meets_floor()
     {

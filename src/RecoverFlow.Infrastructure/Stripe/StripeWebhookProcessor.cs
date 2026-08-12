@@ -37,7 +37,20 @@ public sealed class StripeWebhookProcessor(
                 await recovery.HandleInvoicePaidAsync(new InvoicePaidEvent(
                     stripeEvent.Account,
                     invoice.Id,
+                    SettlingChargeId(invoice),
                     invoice.StatusTransitions?.PaidAt ?? stripeEvent.Created));
+                break;
+
+            // A recovery we billed for can be handed back later. Both events name a charge and
+            // nothing else, which is why the paid invoice's charge id is stored on the case.
+            case EventTypes.ChargeRefunded when stripeEvent.Data.Object is Charge charge:
+                await recovery.HandleRecoveryReversedAsync(new RecoveryReversedEvent(
+                    stripeEvent.Account, charge.Id, charge.AmountRefunded, "refund", stripeEvent.Created));
+                break;
+
+            case EventTypes.ChargeDisputeCreated when stripeEvent.Data.Object is Dispute dispute:
+                await recovery.HandleRecoveryReversedAsync(new RecoveryReversedEvent(
+                    stripeEvent.Account, dispute.ChargeId, dispute.Amount, "dispute", stripeEvent.Created));
                 break;
 
             default:
@@ -62,6 +75,14 @@ public sealed class StripeWebhookProcessor(
             log.LogInformation("Webhook event {EventId} was processed concurrently", stripeEvent.Id);
         }
     }
+
+    // Modern Stripe invoices no longer carry a single charge id; they carry a list of payments.
+    // Null is a legitimate answer (a payment recorded outside a card charge), and the caller
+    // logs it — a case with no charge id simply can't be matched to a later refund.
+    private static string? SettlingChargeId(Invoice invoice) =>
+        invoice.Payments?.Data?
+            .Select(p => p.Payment?.ChargeId)
+            .LastOrDefault(id => !string.IsNullOrEmpty(id));
 
     private static PaymentFailedEvent MapPaymentFailed(Event stripeEvent, Invoice invoice)
     {
