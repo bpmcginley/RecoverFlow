@@ -92,6 +92,25 @@ public class AccountBacktestServiceTests
     }
 
     [Fact]
+    public async Task Fee_estimate_is_bounded_by_the_monthly_cap_across_the_window()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db);
+        var reader = new FakeHistoricalInvoiceReader();
+        // 25% of the high range here is far past three months of cap.
+        reader.Invoices.Add(Inv(2_000_000, "insufficient_funds"));
+        var svc = Service(db, reader);
+        var id = await svc.BeginAsync(merchant.Id);
+
+        await svc.RunAsync(id);
+
+        var row = await db.AccountBacktests.SingleAsync();
+        Assert.Equal(1_000_000, row.RecoverableHighCents);
+        Assert.Equal(89_700, row.EstimatedFeeHighCents); // 3 months x $299, not $2,500
+        Assert.Equal(89_700, row.EstimatedFeeLowCents);  // the low end clears the cap too
+    }
+
+    [Fact]
     public async Task Hard_declines_are_scored_as_all_but_unrecoverable()
     {
         using var db = CreateDb();

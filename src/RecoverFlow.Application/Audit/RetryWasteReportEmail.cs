@@ -246,8 +246,8 @@ public static class RetryWasteReportEmail
         ? ""
         : "<h3>If you want this watched rather than audited once</h3>"
         + "<p>RecoverFlow retries what is worth retrying, asks for a new card where a retry cannot "
-        + "help, and bills 25% of what it actually recovers, with a $29 monthly minimum. If it "
-        + "recovers nothing you pay the minimum and nothing else. "
+        + "help, and bills 25% of what it actually recovers, with a $29 monthly minimum and a "
+        + "$299 monthly cap. If it recovers nothing you pay the minimum and nothing else. "
         + "<a href=\"https://recoverflow.org/pricing/\">recoverflow.org/pricing</a></p>"
         + "<p style=\"color:#666\">Not interested is a fine answer. This report is yours either way, "
         + "and I will not email you again about it.</p>";
@@ -261,7 +261,8 @@ public static class RetryWasteReportEmail
         foreach (var line in Wrap(
             "RecoverFlow retries what is worth retrying, asks for a new card where a retry "
             + "cannot help, and bills 25% of what it actually recovers, with a $29 monthly "
-            + "minimum. If it recovers nothing you pay the minimum and nothing else.", 60))
+            + "minimum and a $299 monthly cap. If it recovers nothing you pay the minimum "
+            + "and nothing else.", 60))
             yield return "  " + line;
         yield return "  https://recoverflow.org/pricing/";
         yield return "";

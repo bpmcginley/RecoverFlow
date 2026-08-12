@@ -51,6 +51,12 @@ public sealed class BillingOptions
     public bool Enabled { get; set; }
     public int FeeBasisPoints { get; set; } = 2500;
     public long MonthlyMinimumCents { get; set; } = 2900;
+    /// <summary>
+    /// Absolute ceiling on a single monthly invoice, published at /pricing/ and in the terms.
+    /// Unlike the minimum it is never waived, and it is a one-way commitment: lowering it is
+    /// fine, raising it is a price rise on everyone who signed up under the published number.
+    /// </summary>
+    public long MonthlyCapCents { get; set; } = 29_900;
     /// <summary>Days after signup during which the monthly minimum is waived (the % still applies).</summary>
     public int TrialDays { get; set; } = 30;
     public int InvoiceDueDays { get; set; } = 7;

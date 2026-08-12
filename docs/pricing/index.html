@@ -29,14 +29,14 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pricing: 25% of What We Recover | RecoverFlow</title>
-<meta name="description" content="RecoverFlow costs 25% of the failed Stripe payments it actually recovers, with a $29/month minimum after 30 days. Nothing up front, no charge for self-recovery.">
+<title>Pricing: 25% of What We Recover, Capped at $299 | RecoverFlow</title>
+<meta name="description" content="25% of the failed Stripe payments RecoverFlow can prove it recovered, with a $29 monthly floor and a $299 monthly cap. Nothing up front, no charge for self-recovery.">
 <link rel="canonical" href="https://recoverflow.org/pricing/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RecoverFlow">
-<meta property="og:title" content="Pricing: 25% of What We Recover | RecoverFlow">
-<meta property="og:description" content="25% of what RecoverFlow actually recovers. $29/month minimum after the first 30 days. Nothing up front.">
+<meta property="og:title" content="Pricing: 25% of What We Recover, Capped at $299 | RecoverFlow">
+<meta property="og:description" content="25% of what RecoverFlow can prove it recovered, floor $29 a month, cap $299 a month. Nothing up front.">
 <meta property="og:url" content="https://recoverflow.org/pricing/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -50,12 +50,12 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "url": "https://recoverflow.org/",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
-      "description": "Recovers failed Stripe subscription payments. Billed at 25% of recovered revenue with a $29/month minimum after the first 30 days.",
+      "description": "Recovers failed Stripe subscription payments. Billed at 25% of attributed recovered revenue, subject to a $29 monthly minimum and a $299 monthly cap.",
       "offers": {
         "@type": "Offer",
         "price": "29",
         "priceCurrency": "USD",
-        "description": "25% of recovered revenue; $29/month minimum after the first 30 days; nothing up front"
+        "description": "25% of attributed recovered revenue, with a $29 monthly minimum after the first 30 days and a $299 monthly cap; nothing up front"
       }
     },
     {
@@ -64,7 +64,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         {
           "@type": "Question",
           "name": "What does RecoverFlow cost?",
-          "acceptedAnswer": { "@type": "Answer", "text": "25% of the failed payments RecoverFlow actually recovers, plus a $29 per month minimum that starts after your first 30 days. There is nothing to pay up front and no card is required to connect." }
+          "acceptedAnswer": { "@type": "Answer", "text": "25% of the failed payments RecoverFlow can attribute to a specific action it took, with a $29 monthly floor and a $299 monthly ceiling however much it recovers. The $29 floor starts after your first 30 days. There is nothing to pay up front and no card is required to connect." }
         },
         {
           "@type": "Question",
@@ -79,7 +79,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         {
           "@type": "Question",
           "name": "Is 25% expensive?",
-          "acceptedAnswer": { "@type": "Answer", "text": "It depends entirely on your volume. At small and mid volumes it usually costs less than a flat monthly subscription because you only pay when money comes back. At high recovery volumes a percentage becomes the more expensive structure, and a flat rate would suit you better. That crossover is real and worth doing the arithmetic on before signing up." }
+          "acceptedAnswer": { "@type": "Answer", "text": "It depends on your volume, and there are three bands. Below about $116 of attributed recovery a month you pay the $29 minimum. Between there and about $1,196 you pay the 25%. Above $1,196 the share would exceed $299, so you pay $299 and nothing more. The cap exists because an uncapped percentage means the vendor earns more as your churn gets worse, which is a fair criticism of this pricing model and one worth bounding in writing." }
         },
         {
           "@type": "Question",
@@ -265,15 +265,17 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <article>
   <div class="wrap">
     <p class="eyebrow">Pricing</p>
-    <h1>You don't pay unless we recover</h1>
-    <p class="lede">One number, no plans, no seats, nothing up front. If RecoverFlow brings nothing back, there is nothing to bill for.</p>
+    <h1>A quarter of what we recover, with a floor and a ceiling</h1>
+    <p class="lede">One percentage, a floor and a ceiling. No plans, no seats, nothing up front, and no charge for payments that came back on their own.</p>
 
     <div class="price-card">
       <p class="big">25%</p>
-      <p class="of">of the failed payments we actually recover</p>
+      <p class="of">of what we can prove we recovered, never below $29 a month and never above $299</p>
       <ul>
-        <li><strong>First 30 days:</strong> no minimum at all. Recover nothing, pay nothing.</li>
-        <li><strong>After that:</strong> a $29/month minimum keeps the account active.</li>
+        <li><strong>The 25%</strong> applies only to recoveries we can attribute to a specific thing we did.</li>
+        <li><strong>A $29 monthly floor</strong> once your first 30 days are up, so a quiet month costs $29 rather than nothing.</li>
+        <li><strong>A $299 monthly ceiling</strong>, however much we recover. The floor and the percentage never stack past it.</li>
+        <li><strong>First 30 days:</strong> no floor at all. Recover nothing, pay nothing.</li>
         <li><strong>Never billed</strong> for payments that came back on their own.</li>
         <li><strong>No card required</strong> to connect and run the 90 day scan.</li>
       </ul>
@@ -322,30 +324,33 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
           </tr>
           <tr>
             <th scope="row" class="num">$2,000</th>
-            <td class="num">$500</td>
+            <td class="num">$299</td>
             <td class="num">$0</td>
-            <td class="num">$500</td>
-            <td class="num">$1,500</td>
+            <td class="num">$299</td>
+            <td class="num">$1,701</td>
           </tr>
           <tr>
             <th scope="row" class="num">$10,000</th>
-            <td class="num">$2,500</td>
+            <td class="num">$299</td>
             <td class="num">$0</td>
-            <td class="num">$2,500</td>
-            <td class="num">$7,500</td>
+            <td class="num">$299</td>
+            <td class="num">$9,701</td>
           </tr>
         </tbody>
       </table></div>
     </div>
-    <p>Below about $116 of attributed recovery in a month, the $29 minimum is the larger number and that is what you pay. Above it, you are purely on the percentage.</p>
+    <p>Three bands, and you can work out which one you are in without a call. Below about $116 of attributed recovery in a month, the $29 minimum is the larger number and that is what you pay. Between there and about $1,196 you are purely on the percentage. Above $1,196 the 25% would exceed $299, so you pay $299 and nothing more, which is why both of the bottom rows read the same.</p>
 
-    <h2>When 25% is the wrong deal for you</h2>
-    <p>A percentage is not always the cheaper structure, and pretending otherwise would be a bad way to start a working relationship.</p>
+    <h2>Why there is a cap at all</h2>
+    <p>Because without one, this pricing has a real problem, and it is worth naming rather than waiting for you to notice it.</p>
 
     <div class="warn-box">
-      <p><strong>At high recovery volume, a flat fee wins.</strong> If RecoverFlow were attributing something like $10,000 a month back to you, 25% is $2,500 a month, which is more than a flat-rate tool in this category would charge. The percentage model suits small and mid volumes, where you would otherwise be paying a subscription in months when nothing failed.</p>
-      <p>If your scan comes back showing numbers at that scale, email me at <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a> before you sign up and we will work out something that is not silly. I would rather have a customer on sensible terms than lose one to arithmetic I could have fixed.</p>
+      <p><strong>A pure percentage means my revenue goes up when your churn gets worse.</strong> That is an uncomfortable thing to build a business on. It is also a criticism competitors in this category make of each other in public, and it lands hardest on whoever is charging the highest share, which among tools that publish a number is us.</p>
+      <p>The cap is the part of the answer I can put in writing. Past $1,196 of attributed recovery a month, your bill stops moving, so a worse month for you stops being a better month for me. It does not fix the alignment problem below that line, and I am not going to claim it does. What it does is bound it, and bound it at a number you can see before you sign up rather than discover afterwards.</p>
+      <p>If your scan comes back at a scale where even this looks wrong, email me at <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a> before you sign up. I would rather have a customer on sensible terms than lose one to arithmetic I could have fixed.</p>
     </div>
+
+    <p>The cap only ever lowers a bill, so it takes nothing away from anyone. It is also easier to promise than to withdraw: raising or removing it later would be a price rise on everyone who signed up under it, so treat it as a commitment rather than an introductory offer.</p>
 
     <h2>What the $29 minimum is for</h2>
     <p>It covers running your account in months when there was little or nothing to recover: watching your subscriptions, processing Stripe events, keeping your history and reporting available. It is waived entirely for your first 30 days so you can see real behaviour on your own data before any money changes hands.</p>
@@ -363,7 +368,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="faq">Frequently asked questions</h2>
     <div class="faq">
       <h3>What does RecoverFlow cost?</h3>
-      <p>25% of the failed payments RecoverFlow actually recovers, plus a $29 per month minimum that starts after your first 30 days. Nothing up front, and no card is required to connect.</p>
+      <p>25% of the failed payments RecoverFlow can attribute to a specific action it took, with a $29 monthly floor and a $299 monthly ceiling however much it recovers. The $29 floor starts after your first 30 days. There is nothing to pay up front and no card is required to connect.</p>
 
       <h3>Am I charged for payments that would have recovered anyway?</h3>
       <p>No. Every recovery is attributed to the specific action that caused it. Payments that came back on their own, or that Stripe's own retries recovered, are not attributed and are not billed.</p>
@@ -372,7 +377,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <p>In your first 30 days you pay nothing at all. After that the $29 monthly minimum applies whether or not there was anything to recover.</p>
 
       <h3>Is 25% expensive?</h3>
-      <p>It depends entirely on your volume. At small and mid volumes it usually costs less than a flat monthly subscription, because you only pay in months when money actually comes back. At high recovery volumes a percentage becomes the more expensive structure and a flat rate would suit you better. The crossover is real, and the section above spells out where it sits.</p>
+      <p>It depends on your volume, and there are three bands. Below about $116 of attributed recovery a month you pay the $29 minimum. Between there and about $1,196 you pay the 25%. Above $1,196 the share would exceed $299, so you pay $299 and nothing more. The cap exists because an uncapped percentage means the vendor earns more as your churn gets worse, which is a fair criticism of this pricing model and one worth bounding in writing.</p>
 
       <h3>Is there a contract or lock-in?</h3>
       <p>No. RecoverFlow connects through Stripe Connect and you can revoke that access from your own Stripe dashboard at any time. Your billing keeps working exactly as before.</p>

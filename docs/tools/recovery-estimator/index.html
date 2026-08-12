@@ -348,7 +348,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <ul>
       <li><strong>Failing per month</strong> is your MRR multiplied by the failure rate you set.</li>
       <li><strong>Recovered</strong> is that figure multiplied by the recovery rate you set.</li>
-      <li><strong>RecoverFlow cost</strong> is 25% of the recovered amount, or $29, whichever is larger. The $29 minimum does not apply during your first 30 days.</li>
+      <li><strong>RecoverFlow cost</strong> is 25% of the recovered amount, floored at $29 and capped at $299 a month. The $29 floor does not apply during your first 30 days; the $299 cap always applies.</li>
       <li><strong>Competitor costs</strong> are flat monthly fees and do not change with how much is recovered, which is exactly why they win at high volume and lose at low volume.</li>
       <li><strong>You keep</strong> is recovered revenue minus the tool cost.</li>
     </ul>
@@ -424,7 +424,11 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       note: 'Starter is limited to under $5,000/mo churn volume. Above that Churnkey quotes custom pricing.'
     }
   ];
-  var FEE = 0.25, FLOOR = 29;
+  // The fee is a percentage bounded on both sides: a $29 floor once the first 30 days
+  // are up, and a $299 ceiling that never lifts. Without the ceiling this tool quotes a
+  // price we do not charge, and quotes it high, which would make the comparison wrong
+  // in our own favour on the honesty side and against us on the arithmetic.
+  var FEE = 0.25, FLOOR = 29, CAP = 299;
 
   var $ = function (id) { return document.getElementById(id); };
   var mrrEl = $('mrr'), failEl = $('failRate'), recEl = $('recRate');
@@ -453,10 +457,10 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     // Build the cost comparison. `cost === null` means the vendor does not
     // publish a price at this size, so it is shown as a caveat and left out of
     // the cheapest comparison instead of being guessed at.
-    var ourCost = Math.max(FLOOR, recMonth * FEE);
+    var ourCost = Math.min(CAP, Math.max(FLOOR, recMonth * FEE));
     var rows = [{
       name: 'RecoverFlow',
-      model: '25% of recovered, $29/mo minimum',
+      model: '25% of recovered, $29/mo floor, $299/mo cap',
       cost: ourCost,
       note: null
     }];
@@ -503,7 +507,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       html = '<p><strong>At these numbers RecoverFlow is the cheapest option that publishes a price</strong>, at ' +
         money(cheapest.cost) + ' a month' +
         (nextUp ? ' against ' + money(nextUp.cost) + ' for ' + nextUp.name : '') +
-        '. That is because a percentage only charges you when money actually comes back.</p>' +
+        '. That is because a percentage only charges you when money actually comes back' +
+        (ourCost >= CAP ? ', and because the fee stops climbing at $299 a month' : '') + '.</p>' +
         '<p>Worth checking Stripe\'s own free retries are switched on first either way.</p>';
     } else {
       html = '<p><strong>At these numbers ' + cheapest.name + ' would cost you less than RecoverFlow</strong>, ' +

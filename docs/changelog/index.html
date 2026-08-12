@@ -192,6 +192,15 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>Grouped by the day the work actually landed. Bug fixes that affected numbers shown to customers are listed as prominently as features, because those are the ones you would want to know about.</p>
 
     <div class="release">
+      <p class="updated" style="margin-bottom:4px;">2026-08-12</p>
+      <h2 style="margin-top:0;">A cap on the fee, and two things this site was getting wrong</h2>
+      <ul>
+        <li><strong>The fee is now capped at $299 a month.</strong> It was 25% of attributed recoveries with a $29 floor and no ceiling. It is now the same percentage between the same $29 floor and a $299 ceiling, so past roughly $1,196 of attributed recovery in a month the bill stops moving. An uncapped percentage means the vendor earns more as the customer's churn gets worse, and the <a href="/pricing/">pricing page</a> now says so in those words rather than waiting for someone to notice. The cap only ever lowers a bill, and it will not be raised or removed for an account that signed up under it.</li>
+        <li><strong>Corrected a false claim about Visa's reattempt rule.</strong> Five places on this site said Stripe blocks further retry attempts once a card passes Visa's ceiling of 15 reattempts in a rolling 30 days. Stripe's documented behaviour is discretionary: it says it blocks subsequent attempts only where it determines there is a low chance of a successful authorisation, and it does not undertake to keep a merchant inside Visa's limit. The page copy, the structured data, the browser tool and the command-line script now all say the same, correct thing. The <a href="/tools/retry-waste-calculator/">retry waste calculator</a> also now discloses that it counts attempts per card while Visa states the rule per payment, which makes its number a conservative upper bound rather than a compliance verdict.</li>
+        <li><strong>The retry waste report no longer leads with a dollar figure.</strong> Stripe never sends hard declines to the card network, so the retries against them cost essentially nothing in fees. Quoting a large dollar number for "wasted retries" implies an invoice that was never issued. The report now leads with how many customers were left sitting on an unusable card and how many days they sat there, and the money is shown second and labelled as revenue at risk rather than as a cost incurred.</li>
+        <li>Homepage rewritten to lead with the suppression argument, and the primary call to action is now the free browser-side audit rather than a Stripe connection. Also fixed a responsive bug that pushed the headline about 620px down the page on every screen narrower than 900px.</li>
+      </ul>
+    </div>    <div class="release">
       <p class="updated" style="margin-bottom:4px;">2026-07-28</p>
       <h2 style="margin-top:0;">Correctness pass on decline handling</h2>
       <ul>

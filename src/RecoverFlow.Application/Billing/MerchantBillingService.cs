@@ -13,8 +13,9 @@ public sealed class BillingRunIncompleteException(int failedMerchants)
     : Exception($"Billing failed for {failedMerchants} merchant(s); see logs. Rerun resumes them.");
 
 /// <summary>
-/// Monthly billing: 25% of attributably-recovered revenue plus a monthly-minimum top-up
-/// (waived during the trial window). Crash-safety order per merchant: reserve the
+/// Monthly billing: 25% of attributably-recovered revenue, raised to the monthly minimum by a
+/// top-up (waived during the trial window) and trimmed to the published monthly cap, which is
+/// never waived. Crash-safety order per merchant: reserve the
 /// FeeInvoice row and stamp its cases in one SaveChanges BEFORE calling Stripe; on failure
 /// the cases stay reserved and the invoice is resumed on the next run — never re-billed.
 /// </summary>
@@ -95,6 +96,11 @@ public sealed class MerchantBillingService(
         var feeCents = baseCents * _opts.FeeBasisPoints / 10_000; // integer division rounds down, in the merchant's favor
         var inTrial = merchant.CreatedAt.AddDays(_opts.TrialDays) > now;
         var floorTopUp = inTrial ? 0 : Math.Max(0, _opts.MonthlyMinimumCents - feeCents);
+
+        // The published monthly ceiling. It binds far above the floor, so the excess always
+        // comes off the percentage line and the two lines still sum to the total. Trimming
+        // here rather than at send time means the stored invoice matches what we charged.
+        feeCents -= Math.Max(0, feeCents + floorTopUp - _opts.MonthlyCapCents);
         var total = feeCents + floorTopUp;
 
         // Post-trial merchants with zero recoveries still owe the floor — that's the deal.
@@ -166,9 +172,17 @@ public sealed class MerchantBillingService(
     {
         var lines = new List<FeeInvoiceLine>();
         if (invoice.FeeCents > 0)
+        {
+            // Whether the cap bit is derivable from the stored numbers, so no extra column is
+            // needed. Say it on the invoice: a merchant should be able to see the ceiling work.
+            var uncapped = invoice.BillableRecoveredCents * _opts.FeeBasisPoints / 10_000;
+            var capped = uncapped > invoice.FeeCents
+                ? $", capped at ${_opts.MonthlyCapCents / 100m:0.##}/mo (would have been ${uncapped / 100m:N2})"
+                : "";
             lines.Add(new(invoice.FeeCents,
                 $"{_opts.FeeBasisPoints / 100m:0.##}% performance fee on ${invoice.BillableRecoveredCents / 100m:N2} " +
-                $"recovered ({invoice.RecoveredCaseCount} payment{(invoice.RecoveredCaseCount == 1 ? "" : "s")})"));
+                $"recovered ({invoice.RecoveredCaseCount} payment{(invoice.RecoveredCaseCount == 1 ? "" : "s")}){capped}"));
+        }
         if (invoice.FloorTopUpCents > 0)
             lines.Add(new(invoice.FloorTopUpCents,
                 $"Monthly minimum top-up (${_opts.MonthlyMinimumCents / 100m:0.##}/mo)"));

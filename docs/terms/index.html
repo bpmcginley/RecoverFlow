@@ -30,13 +30,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </noscript>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Terms of Service | RecoverFlow</title>
-<meta name="description" content="RecoverFlow's terms: what the service does, how the 25% fee and attribution work, how billing runs, and how to stop at any time with no contract.">
+<meta name="description" content="RecoverFlow's terms: what the service does, how the capped fee and attribution work, how billing runs, and how to stop at any time with no contract.">
 <link rel="canonical" href="https://recoverflow.org/terms/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RecoverFlow">
 <meta property="og:title" content="Terms of Service | RecoverFlow">
-<meta property="og:description" content="RecoverFlow's terms: what the service does, how the 25% fee and attribution work, how billing runs, and how to stop at any time with no contract.">
+<meta property="og:description" content="RecoverFlow's terms: what the service does, how the capped fee and attribution work, how billing runs, and how to stop at any time with no contract.">
 <meta property="og:url" content="https://recoverflow.org/terms/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -197,20 +197,22 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     </ul>
 
     <h2 id="fees">4. Fees and how attribution works</h2>
-    <p><strong>25% of the failed payments RecoverFlow recovers, plus a $29 per month minimum that begins after your first 30 days.</strong> Nothing is payable up front and no card is required to connect.</p>
+    <p><strong>25% of the failed payments RecoverFlow recovers, subject to a $29 per calendar month minimum that begins after your first 30 days and a $299 per calendar month maximum.</strong> Nothing is payable up front and no card is required to connect.</p>
     <p>The word "recovers" is doing real work in that sentence, so here is exactly what it means:</p>
     <ul>
       <li>A recovery is billable only when it can be <strong>attributed</strong> to a specific action RecoverFlow took, being either a retry it scheduled or a card update email it sent that the customer acted on.</li>
       <li>Payments that come back on their own, or that Stripe's own retries recover, are recorded as unattributed and <strong>are not billed</strong>.</li>
       <li>Where attribution is ambiguous, the system is built to resolve it in your favour rather than ours.</li>
       <li>Fees are calculated in whole cents and rounded down.</li>
+      <li>The <strong>$299 monthly cap</strong> is an absolute ceiling. However much RecoverFlow recovers in a calendar month, no invoice for that month exceeds $299.</li>
+      <li>The cap can be lowered but will not be raised or removed for an account while it remains subscribed. A change to it applies only to accounts created after the change.</li>
     </ul>
     <p>During your first 30 days the monthly minimum does not apply at all. If nothing is recovered in that period, you owe nothing.</p>
     <p>Fees are currently charged in US dollars. If your Stripe account operates in another currency, contact us before connecting so we can tell you honestly whether the service is ready for you.</p>
 
     <h2 id="billing">5. How and when you are billed</h2>
     <ul>
-      <li>Billing runs monthly. We total the attributed recoveries for the period, apply the 25%, and add a top-up if that total is below the $29 minimum and your first 30 days have passed.</li>
+      <li>Billing runs monthly. We total the attributed recoveries for the period, apply the 25%, add a top-up if that total is below the $29 minimum and your first 30 days have passed, then reduce the result to $299 if it came out higher.</li>
       <li>You receive a Stripe invoice by email with a hosted payment page. Payment is due within 7 days.</li>
       <li>We do not hold a card on file for you and we do not auto-charge. You pay the invoice.</li>
       <li>Every invoice itemises which recoveries it is charging for, so you can check the arithmetic against your own Stripe data.</li>

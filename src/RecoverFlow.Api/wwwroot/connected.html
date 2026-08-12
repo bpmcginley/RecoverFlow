@@ -126,7 +126,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         ' <small>lost across ' + d.failedInvoiceCount + ' failed payment' + (d.failedInvoiceCount === 1 ? '' : 's') + '</small></p>' +
       '<p class="recover">We estimate we\'d have recovered ' +
         money(d.recoverableLowCents, d.currency) + '–' + money(d.recoverableHighCents, d.currency) + '.</p>' +
-      '<p class="fee">Your fee on that would have been ' + lowFee + '–' + highFee + ' (25% of recovered).</p>' +
+      '<p class="fee">Your fee on that would have been ' + lowFee + '–' + highFee + ' (25% of recovered, capped at $299 a month).</p>' +
       '<p class="disclaimer">The invoices and amounts above are your real Stripe data. The recovery range ' +
         'applies deliberately conservative assumptions by decline type, not measured results, because we ' +
         'have no customer results to quote yet. <a href="https://recoverflow.org/docs/backtest/" ' +

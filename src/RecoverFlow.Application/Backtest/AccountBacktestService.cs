@@ -22,6 +22,7 @@ public sealed class AccountBacktestService(
 {
     private readonly BacktestOptions _opts = backtestOptions.Value;
     private readonly int _feeBps = billingOptions.Value.FeeBasisPoints;
+    private readonly long _monthlyCapCents = billingOptions.Value.MonthlyCapCents;
 
     /// <summary>Creates a Pending row in the request path so the page has something to poll immediately.</summary>
     public async Task<Guid> BeginAsync(Guid merchantId, CancellationToken ct = default)
@@ -110,8 +111,13 @@ public sealed class AccountBacktestService(
 
         backtest.RecoverableLowCents = breakdown.Sum(r => r.RecoverableLowCents);
         backtest.RecoverableHighCents = breakdown.Sum(r => r.RecoverableHighCents);
-        backtest.EstimatedFeeLowCents = backtest.RecoverableLowCents * _feeBps / 10_000;
-        backtest.EstimatedFeeHighCents = backtest.RecoverableHighCents * _feeBps / 10_000;
+        // The cap is per calendar month, so over a WindowDays scan the most that could have been
+        // charged is one cap per month it spans. Recoveries are rarely spread evenly, and a month
+        // that concentrates them hits the cap sooner, so this is an upper bound on the fee rather
+        // than an estimate of it. Quoting the uncapped percentage would overstate what we charge.
+        var windowCap = _monthlyCapCents * Math.Max(1, _opts.WindowDays) / 30;
+        backtest.EstimatedFeeLowCents = Math.Min(windowCap, backtest.RecoverableLowCents * _feeBps / 10_000);
+        backtest.EstimatedFeeHighCents = Math.Min(windowCap, backtest.RecoverableHighCents * _feeBps / 10_000);
         backtest.BreakdownJson = JsonSerializer.Serialize(breakdown);
     }
 

@@ -321,6 +321,8 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
     <p>The other group is a card that is gone. Reported lost or stolen, reissued, expired, revoked, or blocked for this merchant. <strong>No retry schedule can collect from a card that no longer exists.</strong> Stripe will not even send nine of those codes to the network. It keeps incrementing the attempt counter while nothing is attempted.</p>
     <p>If most of your failed revenue is in the second group, buying a tool that retries harder is buying a solution to the wrong half of your problem. That is worth knowing before you spend anything, including with us.</p>
 
+    <p><strong>One thing this report will not do is inflate the number.</strong> Because Stripe never sends those nine codes to the card network, the attempts against them cost you essentially nothing in fees. Anyone selling you a big dollar figure for "wasted retries" is selling you an invoice that was never issued. The money in this report is revenue at risk from the declines themselves, which is real but which a retry schedule was never going to collect either. The thing the wasted retries genuinely cost you is time: days your customer sits on a dead card while a scheduler works through attempts that cannot land. That is why the report leads with elapsed days and affected customers, and puts the money second.</p>
+
     <h2 id="cap">There is also a ceiling you may be hitting</h2>
     <p>Visa's Excessive Reattempts Rule caps reattempts at 15 in a rolling 30 day window. Stripe cites that rule, and says it will automatically block subsequent retry attempts, but only where it determines there is a low chance of a successful authorisation. That is Stripe using its judgement, not Stripe promising to keep you inside Visa's limit. Stripe does not say it enforces the rule on your behalf.</p>
     <p>Which is the actual reason to count it yourself. This report counts attempts <strong>per card</strong>, while Visa states the rule per payment, so treat the number as a conservative upper bound on your exposure rather than a compliance verdict. A third-party recovery tool retrying on top of Stripe's own retries draws down the same budget, and neither system can see the other's count.</p>
@@ -651,12 +653,53 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
     var wastePct = pct(wasteN, total);
     var hasAmounts = totalAmt > 0;
 
+    /* The dollars here are real revenue at risk, but they are NOT what the retrying cost.
+       Stripe documents that hard declines never reach the card network, so those attempts
+       incur no network fee and no reattempt. What they actually cost is elapsed time and
+       customers left sitting in a failed state, so count that and lead with it. Quoting a
+       big dollar figure as though retries burned it would be the exact overclaim this tool
+       exists to argue against.
+       https://docs.stripe.com/billing/revenue-recovery/smart-retries */
+    var wasteRows = blocked.concat(newcard);
+    var stuck = {}, stuckN = 0;
+    wasteRows.forEach(function (r) {
+      var k = r.customer || r.card;
+      if (!k) return;
+      if (!stuck[k]) { stuck[k] = { min: r.when, max: r.when }; stuckN++; }
+      if (!r.when) return;
+      var s = stuck[k];
+      if (!s.min || r.when < s.min) s.min = r.when;
+      if (!s.max || r.when > s.max) s.max = r.when;
+    });
+    var spans = [];
+    Object.keys(stuck).forEach(function (k) {
+      var s = stuck[k];
+      if (s.min && s.max) spans.push(Math.round((s.max - s.min) / 864e5));
+    });
+    spans.sort(function (a, b) { return a - b; });
+    var medianDays = spans.length ? spans[Math.floor(spans.length / 2)] : null;
+    var longestDays = spans.length ? spans[spans.length - 1] : null;
+
     var h = ['<div class="rep">'];
     h.push('<div class="hero"><div class="big">' + wastePct + '% of your failed payments'
       + '</div><p style="margin:8px 0 0">'
-      + wasteN.toLocaleString() + ' of ' + total.toLocaleString() + ' failed charges'
-      + (hasAmounts ? ', worth ' + money(wasteAmt, cur) + ' of ' + money(totalAmt, cur) : '')
-      + ' sat on cards that needed replacing rather than retrying.</p></div>');
+      + wasteN.toLocaleString() + ' of ' + total.toLocaleString() + ' failed charges sat on cards '
+      + 'that needed replacing rather than retrying'
+      + (stuckN ? ', across ' + stuckN.toLocaleString() + ' customer' + (stuckN === 1 ? '' : 's') : '')
+      + '.</p>'
+      + (medianDays !== null && longestDays > 0
+          ? '<p style="margin:6px 0 0">Those customers stayed in a failed state for a median of '
+            + medianDays + ' day' + (medianDays === 1 ? '' : 's')
+            + (longestDays > medianDays ? ', and the worst of them for ' + longestDays : '')
+            + '. That elapsed time is the real cost here.</p>'
+          : '')
+      + (hasAmounts
+          ? '<p style="margin:6px 0 0">' + money(wasteAmt, cur) + ' of ' + money(totalAmt, cur)
+            + ' in failed invoices sits behind those cards. Read that as revenue at risk, not as '
+            + 'a fee you paid. Stripe never sends hard declines to the card network, so the '
+            + 'attempts themselves cost you almost nothing.</p>'
+          : '')
+      + '</div>');
 
     h.push('<h3>What could never have worked</h3>');
     h.push('<p>' + blocked.length.toLocaleString() + ' charges (' + pct(blocked.length, total)
@@ -727,10 +770,14 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
        worth trusting at all. */
     if (wastePct >= 35) {
       h.push('<div class="verdict high"><p style="margin:0"><strong>' + wastePct + '% of your failed '
-        + 'revenue' + (hasAmounts ? ' (' + money(wasteAmt, cur) + ')' : '') + ' sits on cards that '
-        + 'needed replacing, not retrying.</strong> Any tool that answers this with more retry '
-        + 'attempts is solving the wrong half of the problem. What that group needs is a request '
-        + 'for a new card, and it needs to stop consuming reattempts in the meantime.</p></div>');
+        + 'payments' + (stuckN ? ', held by ' + stuckN.toLocaleString() + ' customer'
+            + (stuckN === 1 ? '' : 's') : '') + ', sat on cards that needed replacing, not '
+        + 'retrying.</strong> Any tool that answers this with more retry attempts is solving the '
+        + 'wrong half of the problem. What that group needs is a request for a new card, sent '
+        + 'sooner than '
+        + (medianDays !== null && longestDays > 0 ? 'the ' + medianDays + ' day median above'
+            : 'a retry schedule will get to it')
+        + ', and it needs to stop consuming reattempts in the meantime.</p></div>');
     } else {
       h.push('<div class="verdict low"><p style="margin:0"><strong>Most of your failures are the '
         + 'ordinary retryable kind.</strong> Stripe\'s own free Smart Retries already cover this '
@@ -747,16 +794,28 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
 
     h.push('<p style="margin-top:18px"><button class="btn" type="button" id="dl">Download this report</button></p>');
     h.push('</div>');
-    return { html: h.join(""), text: plain(rows, cur, total, totalAmt, blocked, newcard, bAmt, nAmt, reach, wastePct, wasteAmt, hasAmounts) };
+    return { html: h.join(""), text: plain(rows, cur, total, totalAmt, blocked, newcard, bAmt, nAmt, reach, wastePct, wasteAmt, hasAmounts, stuckN, medianDays, longestDays) };
   }
 
   // A plain-text copy so the number survives outside this tab.
-  function plain(rows, cur, total, totalAmt, blocked, newcard, bAmt, nAmt, reach, wastePct, wasteAmt, hasAmounts) {
+  function plain(rows, cur, total, totalAmt, blocked, newcard, bAmt, nAmt, reach, wastePct, wasteAmt, hasAmounts, stuckN, medianDays, longestDays) {
     var L = [], line = new Array(63).join("=");
     L.push("RETRY WASTE AUDIT");
     L.push(line);
     L.push("");
-    L.push(total.toLocaleString() + " failed charges" + (hasAmounts ? ", " + money(totalAmt, cur) + " at risk" : ""));
+    L.push(total.toLocaleString() + " failed charges"
+      + (stuckN ? ", " + stuckN.toLocaleString() + " customer" + (stuckN === 1 ? "" : "s")
+          + " left on an unusable card" : ""));
+    if (medianDays !== null && longestDays > 0) {
+      L.push("Median " + medianDays + " day" + (medianDays === 1 ? "" : "s")
+        + " in a failed state, worst case " + longestDays + ".");
+    }
+    if (hasAmounts) {
+      L.push(money(totalAmt, cur) + " of invoices failed, " + money(wasteAmt, cur)
+        + " of it behind cards that");
+      L.push("needed replacing. That is revenue at risk, not a fee you paid: Stripe");
+      L.push("never sends hard declines to the card network.");
+    }
     L.push("");
     L.push("WHAT COULD NEVER HAVE WORKED");
     L.push("  " + blocked.length.toLocaleString() + " charges (" + pct(blocked.length, total) + "%)"
@@ -772,9 +831,10 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
     L.push("  " + reach.toLocaleString() + " charges (" + pct(reach, total) + "%).");
     L.push("");
     L.push("THE ONE SENTENCE VERSION");
-    L.push("  " + wastePct + "% of failed revenue" + (hasAmounts ? " (" + money(wasteAmt, cur) + ")" : "")
-      + " sat on cards that needed");
-    L.push("  replacing, not retrying.");
+    L.push("  " + wastePct + "% of failed payments"
+      + (stuckN ? ", held by " + stuckN.toLocaleString() + " customer" + (stuckN === 1 ? "" : "s") : "")
+      + ", sat on cards that");
+    L.push("  needed replacing, not retrying.");
     L.push("");
     L.push("Every figure above is arithmetic on your own export. No recovery rate,");
     L.push("benchmark or estimate appears anywhere in it.");

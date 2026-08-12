@@ -167,9 +167,32 @@ def main():
     newcard = [r for r in rows if r["code"] in NEEDS_NEW_CARD]
     retryable = [r for r in rows if r["code"] not in BLOCKED]
 
+    # Stripe never sends the nine hard-decline codes to the card network, so attempts
+    # against them cost no network fee and no reattempt. Denominating this report in
+    # dollars alone would imply a bill that was never issued. The real cost is elapsed
+    # time and customers stranded on a dead card, so lead with that and put money second.
+    # https://docs.stripe.com/billing/revenue-recovery/smart-retries
+    spans = {}
+    for r in blocked + newcard:
+        key = r["customer"] or r["card"]
+        if not key:
+            continue
+        lo, hi = spans.get(key, (None, None))
+        if r["when"]:
+            lo = r["when"] if lo is None or r["when"] < lo else lo
+            hi = r["when"] if hi is None or r["when"] > hi else hi
+        spans[key] = (lo, hi)
+    days = sorted((hi - lo).days for lo, hi in spans.values() if lo and hi)
+    median_days = days[len(days) // 2] if days else None
+
     print(f"\nRETRY WASTE AUDIT: {a.company}")
     print("=" * 62)
-    print(f"\n{total:,} failed charges, {money(total_amt, cur)} at risk\n")
+    print(f"\n{total:,} failed charges, {len(spans):,} customers left on an unusable card")
+    if median_days is not None and days[-1] > 0:
+        print(f"Median {median_days} days in a failed state, worst case {days[-1]}.")
+    print(f"{money(total_amt, cur)} of invoices failed. That is revenue at risk, not a fee")
+    print("you paid: Stripe never sends hard declines to the card network, so the")
+    print("attempts against them cost essentially nothing.\n")
 
     print("WHAT COULD NEVER HAVE WORKED")
     print("-" * 62)
@@ -208,7 +231,8 @@ def main():
         over = [x for x in exposure if x[1] >= VISA_CAP]
         print(f"  {len(exposure)} card(s) reached 10 or more attempts in 30 days.")
         if over:
-            print(f"  {len(over)} of them are at or over {VISA_CAP}. Stripe may block further")
+            verb = "is" if len(over) == 1 else "are"
+            print(f"  {len(over)} of them {verb} at or over {VISA_CAP}. Stripe may block further")
             print("  attempts here, but only where it judges a low chance of authorisation,")
             print("  so nobody is guaranteeing you stay under the ceiling. Counted per card,")
             print("  which is stricter than Visa's per payment wording.")
@@ -221,9 +245,10 @@ def main():
     print("-" * 62)
     waste_pct = (len(blocked) + len(newcard)) / total * 100
     waste_amt = bamt + namt
-    print(f"  {waste_pct:.0f}% of {a.company}'s failed revenue ({money(waste_amt, cur)}) sits on")
-    print("  cards that needed replacing, not retrying. Any tool that answers this")
-    print("  with more retry attempts is solving the wrong half of the problem.\n")
+    print(f"  {waste_pct:.0f}% of {a.company}'s failed payments, held by {len(spans):,} customers,")
+    print(f"  sat on cards that needed replacing, not retrying ({money(waste_amt, cur)} of")
+    print("  invoices behind them). Any tool that answers this with more retry")
+    print("  attempts is solving the wrong half of the problem.\n")
 
 
 if __name__ == "__main__":

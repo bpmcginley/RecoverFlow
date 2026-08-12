@@ -128,6 +128,43 @@ public class MerchantBillingServiceTests
     }
 
     [Fact]
+    public async Task Fee_is_capped_at_the_published_monthly_ceiling()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
+        SeedCase(db, merchant, 500_000); // 25% would be $1,250
+        var invoicer = new FakePlatformFeeInvoicer();
+
+        await Service(db, invoicer).RunMonthlyBillingAsync();
+
+        var invoice = Assert.Single(db.FeeInvoices);
+        Assert.Equal(500_000, invoice.BillableRecoveredCents);
+        Assert.Equal(29_900, invoice.FeeCents);
+        Assert.Equal(0, invoice.FloorTopUpCents);
+        Assert.Equal(29_900, invoice.TotalCents);
+
+        // Lines must still sum to the total, or Stripe rejects the invoice.
+        var (_, _, lines, _) = Assert.Single(invoicer.SendCalls);
+        Assert.Equal(29_900, lines.Sum(l => l.AmountCents));
+        Assert.Contains("capped", Assert.Single(lines).Description);
+    }
+
+    [Fact]
+    public async Task Cap_does_not_bite_just_below_the_ceiling()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
+        SeedCase(db, merchant, 119_600); // 25% is exactly $299, the ceiling itself
+        var invoicer = new FakePlatformFeeInvoicer();
+
+        await Service(db, invoicer).RunMonthlyBillingAsync();
+
+        var invoice = Assert.Single(db.FeeInvoices);
+        Assert.Equal(29_900, invoice.TotalCents);
+        Assert.DoesNotContain("capped", Assert.Single(Assert.Single(invoicer.SendCalls).Item3).Description);
+    }
+
+    [Fact]
     public async Task No_topup_when_fee_meets_floor()
     {
         using var db = CreateDb();

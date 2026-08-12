@@ -31,13 +31,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </noscript>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RecoverFlow | Recover Failed Stripe Subscription Payments</title>
-<meta name="description" content="RecoverFlow recovers failed Stripe subscription payments with smart retries and dunning emails. Pay 25% of recovered revenue. No card required to start.">
+<meta name="description" content="Recover failed Stripe subscription payments. 25% of what we bring back, floored at $29 a month and capped at $299. No card required to start.">
 <link rel="canonical" href="https://recoverflow.org/">
 <link rel="icon" type="image/png" href="assets/logo-mark.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RecoverFlow">
 <meta property="og:title" content="RecoverFlow | Recover Failed Stripe Subscription Payments">
-<meta property="og:description" content="Smart retries + dunning emails for Stripe. Pay 25% of recovered revenue, with no card up front.">
+<meta property="og:description" content="Smart retries + dunning emails for Stripe. 25% of what we recover, floor $29 a month, cap $299. No card up front.">
 <meta property="og:url" content="https://recoverflow.org/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta property="og:image:width" content="1152">
@@ -68,7 +68,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "@type": ["SoftwareApplication", "WebApplication"],
       "name": "RecoverFlow",
       "url": "https://recoverflow.org/",
-      "description": "Recovers failed Stripe subscription payments with smart retries and dunning emails. Pricing: 25% of recovered revenue, $29/month minimum after the first 30 days.",
+      "description": "Recovers failed Stripe subscription payments with smart retries and dunning emails. Pricing: 25% of attributed recovered revenue, with a $29 monthly minimum and a $299 monthly cap.",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web",
       "publisher": { "@id": "https://recoverflow.org/#org" },
@@ -76,7 +76,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         "@type": "Offer",
         "price": "29",
         "priceCurrency": "USD",
-        "description": "25% of recovered revenue; $29/month minimum after first 30 days; no card required to start"
+        "description": "25% of attributed recovered revenue, with a $29 monthly minimum after the first 30 days and a $299 monthly cap; no card required to start"
       }
     }
   ]
@@ -804,7 +804,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         <a class="btn btn-secondary" href="#start">Or connect Stripe for the backtest</a>
       </div>
 
-      <p class="form-lead">Already know you want the full picture? The 90 day backtest reads your history and costs nothing. You don't pay unless we recover: <strong>25% of what we bring back</strong>, nothing up front.</p>
+      <p class="form-lead">Already know you want the full picture? The 90 day backtest reads your history and costs nothing. After that it is <strong>25% of what we bring back, never below $29 a month or above $299</strong>, with nothing at all up front.</p>
 
       <form id="start" class="signup" method="get" action="https://api.recoverflow.org/connect/stripe/authorize">
         <label for="companyName">Company name</label>
@@ -851,7 +851,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <li><strong>Connect Stripe</strong>: read access via Stripe Connect OAuth, about 60 seconds.</li>
       <li><strong>See your backtest</strong>: we scan your last 90 days of failed payments and show what was recoverable, in dollars.</li>
       <li><strong>We go to work</strong>: when a payment fails, we schedule smart retries around the times and decline reasons most likely to succeed, and send dunning emails under <em>your</em> brand, not ours.</li>
-      <li><strong>You keep the revenue</strong>: every recovered payment shows up in your dashboard, and we bill 25% of only those.</li>
+      <li><strong>You keep the revenue</strong>: every recovered payment shows up in your dashboard, and we bill 25% of only those, never more than $299 in a month.</li>
     </ol>
   </div>
 </section>
@@ -859,16 +859,18 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <section id="pricing">
   <div class="wrap">
     <p class="eyebrow">02 &nbsp;/&nbsp; Pricing</p>
-    <h2 class="section-title reveal">Pricing that only wins when you do</h2>
-    <p class="section-sub reveal" data-delay="80">No plans, no seats, nothing up front. We take a cut of the revenue we actually bring back. That's the whole model.</p>
+    <h2 class="section-title reveal">Pricing with a ceiling on it</h2>
+    <p class="section-sub reveal" data-delay="80">No plans, no seats, nothing up front. A cut of the revenue we actually bring back, with a small floor so a quiet month still keeps the lights on and a hard cap so a bad month for you is never a better one for us.</p>
     <div class="price-card reveal" data-delay="120">
-      <div class="big">25%<span> of recovered revenue</span></div>
+      <div class="big">25%<span> of what we recover, floor $29, cap $299</span></div>
       <ul>
-        <li>First 30 days: no minimum, so if we recover nothing, you pay nothing</li>
-        <li>After that: $29/mo minimum keeps your account active</li>
+        <li>Charged only on recoveries we can attribute to something we actually did</li>
+        <li><strong>Never more than $299 a month</strong>, however much we recover</li>
+        <li>After the first 30 days, a <strong>$29 floor</strong> keeps the account and monitoring running</li>
+        <li>First 30 days: no floor at all, so if we recover nothing, you pay nothing</li>
         <li>Attribution built in, so you're never charged for payments that came back on their own</li>
       </ul>
-      <p class="price-more"><a href="/pricing/">Full pricing, worked examples, and when 25% is the wrong deal for you →</a></p>
+      <p class="price-more"><a href="/pricing/">Full pricing, worked examples, and why the cap exists →</a></p>
     </div>
   </div>
 </section>
@@ -956,8 +958,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         <p>Stripe's Smart Retries help, but they're generic. RecoverFlow classifies each decline code and reacts differently: payday-aware retries for insufficient funds, immediate card-update emails for expired cards, backoff for processing errors. It then layers branded dunning sequences on top. The two coexist fine; we simply recover what slips through.</p>
       </details>
       <details>
-        <summary>How is the 25% calculated and billed?</summary>
-        <p>We attribute every recovery to the retry, card update, or email that caused it. Payments that came back on their own are never counted. At the end of each month you get an invoice for 25% of attributed recoveries ($29 minimum after your first 30 days).</p>
+        <summary>How is the share calculated and billed?</summary>
+        <p>We attribute every recovery to the retry, card update, or email that caused it. Payments that came back on their own are never counted. At the end of each month you get an invoice for 25% of attributed recoveries, topped up to $29 if it came out below that and reduced to $299 if it came out above. The $29 floor is waived for your first 30 days.</p>
       </details>
       <details>
         <summary>Could retries annoy my customers or trigger disputes?</summary>
