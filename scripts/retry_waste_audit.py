@@ -41,6 +41,11 @@ NEEDS_NEW_CARD = {"expired_card", "incorrect_cvc", "invalid_expiry_month", "inva
 VISA_CAP = 15
 VISA_WINDOW_DAYS = 30
 
+# Currencies Stripe holds with no minor unit: "500" in JPY is 500 yen, not 5.00.
+# https://docs.stripe.com/currencies#zero-decimal
+ZERO_DECIMAL = {"bif", "clp", "djf", "gnf", "jpy", "kmf", "krw", "mga", "pyg",
+                "rwf", "ugx", "vnd", "vuv", "xaf", "xof", "xpf"}
+
 ALIASES = {
     "decline": ["decline_code", "Decline Code", "failure_code", "Failure Code",
                 "decline_reason", "Decline Reason", "outcome_reason"],
@@ -72,8 +77,25 @@ def parse_date(v):
     return None
 
 
-def money(cents, cur="USD"):
-    return f"${cents/100:,.0f}" if cur.upper() == "USD" else f"{cents/100:,.0f} {cur.upper()}"
+def parse_amount(raw, currency):
+    """CSV exports carry amounts in MAJOR units ("79.00"), unlike the API which uses
+    minor units. Guessing from the presence of a decimal point, as this did before,
+    reads a whole-dollar "79" as 79 cents and understates the total by 100x. Exports
+    are always major units, so convert unconditionally and special-case the
+    zero-decimal currencies."""
+    s = "".join(ch for ch in str(raw or "") if ch.isdigit() or ch in ".-")
+    if not s or s in ("-", "."):
+        return 0
+    try:
+        n = float(s)
+    except ValueError:
+        return 0
+    return round(n) if (currency or "usd").lower() in ZERO_DECIMAL else round(n * 100)
+
+
+def money(minor, cur="USD"):
+    v = minor if cur.lower() in ZERO_DECIMAL else minor / 100
+    return f"${v:,.0f}" if cur.upper() == "USD" else f"{v:,.0f} {cur.upper()}"
 
 
 def load(path):
@@ -92,26 +114,15 @@ def load(path):
         code = (r.get(cols["decline"]) or "").strip().lower()
         if not code:
             continue
-        try:
-            amt = int(float(r.get(cols["amount"]) or 0))
-        except ValueError:
-            amt = 0
-        # Stripe CSV exports amounts in major units; API uses cents. Normalise up
-        # if the column looks like dollars (has a decimal point in the raw text).
-        rawamt = (r.get(cols["amount"]) or "")
-        if "." in rawamt:
-            try:
-                amt = int(round(float(rawamt) * 100))
-            except ValueError:
-                pass
+        currency = ((r.get(cols["currency"]) or "usd").strip() if cols["currency"] else "usd")
         rows.append({
             "code": code,
-            "amount": amt,
+            "amount": parse_amount(r.get(cols["amount"]), currency),
             "when": parse_date(r.get(cols["created"]) or "") if cols["created"] else None,
             "customer": (r.get(cols["customer"]) or "").strip() if cols["customer"] else "",
             "card": (r.get(cols["card"]) or "").strip() if cols["card"] else "",
             "brand": (r.get(cols["brand"]) or "").strip().lower() if cols["brand"] else "",
-            "currency": (r.get(cols["currency"]) or "usd").strip() if cols["currency"] else "usd",
+            "currency": currency,
         })
     return rows, cols
 
