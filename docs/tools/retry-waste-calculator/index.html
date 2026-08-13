@@ -241,7 +241,7 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
       "name": "Does my export get uploaded anywhere?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. The file is read by this page's JavaScript using the browser's FileReader and the arithmetic runs on your own machine. There is no upload, no request, no server, no account and no form to submit. You do not have to take my word for it: open your browser's developer tools, switch to the Network tab, and run the audit. No request is made. You can also disconnect from the internet after the page loads and it will still work."
+        "text": "No. The file is read by this page's JavaScript using the browser's FileReader and the arithmetic runs on your own machine. There is no upload, no server, no account and no form to submit. You do not have to take my word for it: open your browser's developer tools, switch to the Network tab, and run the audit. The audit itself makes no request. The only traffic on this page is the same analytics tags the rest of the site loads, and nothing from your file is in them. You can also disconnect from the internet after the page loads and the audit will still work."
       }
     },
     {
@@ -296,9 +296,11 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
 
     <p class="local-note">
       <strong>This file never leaves your computer.</strong> The parsing and the arithmetic run
-      in this page's JavaScript. There is no upload, no request, no server involved and no
-      account to make. You can confirm it: open your browser's developer tools, switch to the
-      Network tab, and run the audit. Nothing is sent.
+      in this page's JavaScript. There is no upload, no server involved and no account to make.
+      You can confirm it: open your browser's developer tools, switch to the Network tab, and
+      run the audit. The audit itself sends nothing. The only requests on this page are the
+      same analytics tags the rest of the site loads, and they never see your file. You can
+      even load the page, go offline, and run the audit disconnected.
     </p>
 
     <div id="fileOut" hidden></div>
@@ -341,7 +343,7 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
   <details><summary>What if I cannot export right now?</summary><p>Use the manual entry further up the page. It asks for counts per decline code and one average invoice amount, so it gives you the same percentages but a rougher money figure. The export is better because it uses your real amounts rather than one average across every failure.</p></details>
   <details><summary>Where do I find decline codes one at a time?</summary><p>In the Stripe Dashboard, filter Payments to failed, or filter Invoices to unpaid and open the latest payment attempt on each. The decline code sits on the failed PaymentIntent as last_payment_error.decline_code.</p></details>
   <details><summary>Is there really a cap on retries?</summary><p>Visa's Excessive Reattempts Rule caps reattempts at 15 in a rolling 30 day window. Stripe cites that rule and says it will automatically block subsequent retry attempts, but only where it determines there is a low chance of a successful authorisation. So it is discretionary, and Stripe does not say it keeps you compliant on your behalf. This report counts attempts per card while Visa states the rule per payment, which makes the count a conservative upper bound rather than a compliance verdict. Most recovery tools do not show you where you stand against it at all.</p></details>
-  <details><summary>Does my export get uploaded anywhere?</summary><p>No. The file is read by this page's JavaScript using the browser's FileReader and the arithmetic runs on your own machine. There is no upload, no request, no server, no account and no form to submit. You do not have to take my word for it: open your browser's developer tools, switch to the Network tab, and run the audit. No request is made. You can also disconnect from the internet after the page loads and it will still work.</p></details>
+  <details><summary>Does my export get uploaded anywhere?</summary><p>No. The file is read by this page's JavaScript using the browser's FileReader and the arithmetic runs on your own machine. There is no upload, no server, no account and no form to submit. You do not have to take my word for it: open your browser's developer tools, switch to the Network tab, and run the audit. The audit itself makes no request. The only traffic on this page is the same analytics tags the rest of the site loads, and nothing from your file is in them. You can also disconnect from the internet after the page loads and the audit will still work.</p></details>
   <details><summary>Why is a vendor telling me I might not need the product?</summary><p>Because the number is only worth anything if it is not a sales tool. If most of your failures are ordinary retryable declines, more retries genuinely is the right answer and Stripe already does that for free. Saying so costs one sale and is the only reason to believe the report when it comes back high.</p></details>
 </div>
   </div>

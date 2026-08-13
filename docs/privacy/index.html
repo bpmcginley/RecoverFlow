@@ -158,7 +158,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <div class="wrap">
     <p class="eyebrow">Legal</p>
     <h1>Privacy policy</h1>
-    <p class="updated">Last updated 4 August 2026</p>
+    <p class="updated">Last updated 13 August 2026</p>
 
     <div class="lawyer">
   <p><strong>Plain English, not a substitute for legal advice.</strong> RecoverFlow is run by one person and these documents were written to describe accurately what the software actually does, rather than copied from a generator. They have not been reviewed by a solicitor.</p>
@@ -170,7 +170,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <ol>
         <li><a href="#roles">The two different roles we play</a></li>
         <li><a href="#collect">What we actually store</a></li>
-        <li><a href="#audit">The Marketplace audit, which stores nothing</a></li>
+        <li><a href="#audit">The free audit and the Dashboard app</a></li>
         <li><a href="#never">What we never store</a></li>
         <li><a href="#emails">Email tracking, stated plainly</a></li>
         <li><a href="#subprocessors">Sub-processors</a></li>
@@ -189,7 +189,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>If you are subject to the UK GDPR or the EU GDPR, that makes you the controller and RecoverFlow the processor for that data, and you are entitled to a Data Processing Agreement. Email us and you will get one.</p>
 
     <h2 id="collect">2. What we actually store</h2>
-    <p>This list is taken from the database schema rather than written from memory. It describes a full RecoverFlow account. If you only ran the free Marketplace audit, almost none of it applies to you: see <a href="#audit">section 3</a>.</p>
+    <p>This list is taken from the database schema rather than written from memory. It describes a full RecoverFlow account. If you only ran the free audit, almost none of it applies to you: see <a href="#audit">section 3</a>.</p>
     <h3>About you, the merchant</h3>
     <ul>
       <li>Your email address and company name</li>
@@ -214,8 +214,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <li>The results of the 90 day backward-looking scan we run when you first connect, which is a summary of what failed and what was estimated recoverable</li>
     </ul>
 
-    <h2 id="audit">3. The Marketplace audit, which stores nothing</h2>
-    <p>The <strong>Retry Waste Audit</strong> on the Stripe Marketplace is a separate thing from the product described above, and it has a much shorter privacy story. Everything in section 2 describes what happens when you sign up for RecoverFlow. Almost none of it applies if you only ran the audit.</p>
+    <h2 id="audit">3. The free audit and the Dashboard app</h2>
+    <p>The free <strong>retry waste audit</strong> you can run from recoverflow.org is a separate thing from the product described above, and it has a much shorter privacy story. Everything in section 2 describes what happens when you sign up for RecoverFlow. Almost none of it applies if you only ran the audit.</p>
     <div class="callout">
       <p><strong>The audit requests read access only, and we do not keep your Stripe access token.</strong> The authorisation code is exchanged solely to learn <em>which</em> Stripe account authorised the audit. Every read after that uses our own platform key with your account identifier in a request header, which means the access token is never written to our database at all.</p>
       <p><strong>Running the audit does not create an account.</strong> No merchant record, no password, no login. An audit is not a signup.</p>
@@ -228,6 +228,14 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h3>What the audit keeps</h3>
     <p>Nothing. The figures are calculated in memory, written into an email, and sent to you. The report is not stored, and neither are the charges it was calculated from.</p>
     <p>Your email address is used to deliver that one report, through the same email provider listed in the sub-processors section. It is not added to a mailing list and you will not receive anything else because of it. If you would like a copy of the report re-sent, we cannot do it from our records, because we do not have any: you would need to run the audit again.</p>
+
+    <h3>The RecoverFlow app for the Stripe Dashboard</h3>
+    <p>There is also a <strong>RecoverFlow app that runs inside the Stripe Dashboard</strong>. It is a read-only window onto data RecoverFlow already holds for your account, and it creates no new records.</p>
+    <ul>
+      <li>It asks Stripe for two read permissions: the identity of the customer you are viewing and the identity of the invoice you are viewing. They are used to look up the matching recovery cases, and for nothing else.</li>
+      <li>When you open one of its views, a request signed by Stripe is sent to our API. It tells us which Stripe account it came from and which customer or invoice is on screen, and the reply is the recovery data we already hold for that account. If the account has never been connected to RecoverFlow, the reply is that there is nothing to show.</li>
+      <li>The app performs no writes. It cannot create, change or delete anything in your Stripe account or in RecoverFlow.</li>
+    </ul>
 
     <h2 id="never">4. What we never store</h2>
     <div class="callout">
