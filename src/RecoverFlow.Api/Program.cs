@@ -161,6 +161,12 @@ try
     app.UseDefaultFiles();
     app.UseStaticFiles();
 
+    // Embedded Stripe app traffic (/app/v1) authenticates by request signature, not the
+    // cookie, and needs null-origin CORS. Both live on this branch and nowhere else.
+    app.UseWhen(
+        ctx => ctx.Request.Path.StartsWithSegments("/app/v1"),
+        b => b.UseMiddleware<StripeAppAuthMiddleware>());
+
     app.UseAuthentication();
     app.UseMiddleware<TenantResolutionMiddleware>(); // reads the auth claim → tenant scope
     app.UseAuthorization();

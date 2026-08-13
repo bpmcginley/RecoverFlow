@@ -23,7 +23,7 @@ public sealed class MerchantDashboardController(MerchantDashboardService dashboa
     {
         if (User.GetMerchantId() is not { } merchantId) return Unauthorized();
 
-        var result = await dashboard.GetRecoveryCasesAsync(merchantId, page, pageSize, ct);
+        var result = await dashboard.GetRecoveryCasesAsync(merchantId, page, pageSize, ct: ct);
         return result is null ? NotFound() : Ok(result);
     }
 

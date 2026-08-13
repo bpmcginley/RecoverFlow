@@ -45,3 +45,18 @@ public sealed record DashboardStats(
     long AmountReversedCents = 0);
 
 public sealed record MerchantDashboard(DashboardStats AllTime, DashboardStats Last30Days);
+
+/// <summary>An uncapped total with a capped newest-first page; the embedded app's per-customer view.</summary>
+public sealed record CaseList(IReadOnlyList<RecoveryCaseSummary> Items, int TotalCount);
+
+public sealed record DunningEntry(
+    int SequenceStep,
+    string EmailType,
+    DateTime SentAt,
+    DateTime? OpenedAt,
+    DateTime? ClickedAt,
+    bool ResultedInRecovery);
+
+/// <summary>Dunning-email progress for one recovery case, ordered by sequence step.
+/// An empty entry list is a normal state: smart-retry-only cases send no emails.</summary>
+public sealed record DunningProgress(Guid CaseId, IReadOnlyList<DunningEntry> Entries);

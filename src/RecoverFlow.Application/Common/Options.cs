@@ -15,6 +15,14 @@ public sealed class StripeOptions
     /// and the two flows must never be able to land on each other's callback.
     /// </summary>
     public string AuditRedirectUri { get; set; } = "";
+
+    /// <summary>
+    /// Signing secret (absec_...) of the embedded Stripe Dashboard app, used to verify the
+    /// Stripe-Signature header on /app/v1 requests. Stripe only generates it on the app's
+    /// first upload, so this ships EMPTY; while it is empty every app endpoint answers
+    /// 503 app_not_configured rather than skipping verification.
+    /// </summary>
+    public string AppSigningSecret { get; set; } = "";
 }
 
 public sealed class RetryOptions

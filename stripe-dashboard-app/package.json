@@ -1,0 +1,17 @@
+{
+  "name": "recoverflow-stripe-dashboard-app",
+  "version": "0.0.1",
+  "private": true,
+  "description": "RecoverFlow embedded Stripe App: Dashboard UI extension views for failed payment recovery",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@stripe/ui-extension-sdk": "8.10.0",
+    "react": "17.0.2"
+  },
+  "devDependencies": {
+    "@types/react": "~17.0.83",
+    "typescript": "~5.5.4"
+  }
+}

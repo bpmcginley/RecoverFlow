@@ -13,7 +13,10 @@ public sealed class TenantResolutionMiddleware(RequestDelegate next)
 {
     public Task InvokeAsync(HttpContext http, TenantContext tenant)
     {
-        if (http.User.GetMerchantId() is { } merchantId)
+        // A merchant already resolved upstream (StripeAppAuthMiddleware, from the signed
+        // account_id) wins over the cookie claim; the audit log and the data served must
+        // never disagree about whose request this was.
+        if (tenant.MerchantId is null && http.User.GetMerchantId() is { } merchantId)
             tenant.MerchantId = merchantId;
         return next(http);
     }

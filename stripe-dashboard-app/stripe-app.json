@@ -1,0 +1,53 @@
+{
+  "$schema": "https://stripe.com/stripe-app.schema.json",
+  "id": "com.recoverflow.dashboard",
+  "name": "RecoverFlow",
+  "version": "0.0.1",
+  "icon": "./icon.png",
+  "ui_extension": {
+    "views": [
+      {
+        "viewport": "stripe.dashboard.customer.detail",
+        "component": "CustomerDetail"
+      },
+      {
+        "viewport": "stripe.dashboard.invoice.detail",
+        "component": "InvoiceDetail"
+      },
+      {
+        "viewport": "stripe.dashboard.drawer.default",
+        "component": "AppOverview"
+      },
+      {
+        "viewport": "settings",
+        "component": "AppSettings"
+      }
+    ],
+    "content_security_policy": {
+      "connect-src": [
+        "https://api.recoverflow.org/app/"
+      ],
+      "purpose": "The app loads your RecoverFlow recovery data from the RecoverFlow API."
+    }
+  },
+  "extensions": null,
+  "permissions": [
+    {
+      "permission": "customer_read",
+      "purpose": "Identifies the customer you are viewing so the app can show that customer's RecoverFlow recovery cases and dunning email progress."
+    },
+    {
+      "permission": "invoice_read",
+      "purpose": "Identifies the invoice you are viewing so the app can show whether it has a RecoverFlow recovery case and how far it has progressed."
+    }
+  ],
+  "post_install_action": {
+    "type": "external",
+    "url": "https://recoverflow.org/"
+  },
+  "constants": {
+    "API_BASE": "https://api.recoverflow.org/app/v1"
+  },
+  "distribution_type": "public",
+  "sandbox_install_compatible": true
+}

@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Domain;
+using RecoverFlow.Domain.Entities;
 
 namespace RecoverFlow.Application.Dashboard;
 
@@ -9,9 +10,14 @@ public sealed class MerchantDashboardService(IAppDbContext db)
 {
     public const int MaxPageSize = 100;
 
-    /// <summary>Newest-first page of the merchant's recovery cases; null for an unknown merchant.</summary>
+    /// <summary>A single end customer rarely accumulates more than a handful of cases,
+    /// so the per-customer view takes a fixed cap instead of paging.</summary>
+    public const int MaxCustomerCases = 25;
+
+    /// <summary>Newest-first page of the merchant's recovery cases, optionally filtered
+    /// by status; null for an unknown merchant.</summary>
     public async Task<PagedResult<RecoveryCaseSummary>?> GetRecoveryCasesAsync(
-        Guid merchantId, int page, int pageSize, CancellationToken ct = default)
+        Guid merchantId, int page, int pageSize, RecoveryStatus? status = null, CancellationToken ct = default)
     {
         if (!await db.Merchants.AnyAsync(m => m.Id == merchantId, ct)) return null;
 
@@ -19,11 +25,65 @@ public sealed class MerchantDashboardService(IAppDbContext db)
         pageSize = Math.Clamp(pageSize, 1, MaxPageSize);
 
         var cases = db.FailedPayments.Where(p => p.MerchantId == merchantId);
+        if (status is { } s) cases = cases.Where(p => p.Status == s);
+
         var total = await cases.CountAsync(ct);
+        var items = await ProjectSummariesAsync(
+            cases.OrderByDescending(p => p.FirstFailedAt).Skip((page - 1) * pageSize).Take(pageSize), ct);
+
+        return new(items, page, pageSize, total);
+    }
+
+    /// <summary>Newest-first cases for one Stripe customer, capped at <see cref="MaxCustomerCases"/>.
+    /// An empty list is a normal answer, not an error.</summary>
+    public async Task<CaseList> GetCustomerCasesAsync(
+        Guid merchantId, string stripeCustomerId, CancellationToken ct = default)
+    {
+        var cases = db.FailedPayments
+            .Where(p => p.MerchantId == merchantId && p.StripeCustomerId == stripeCustomerId);
+
+        var total = await cases.CountAsync(ct);
+        var items = await ProjectSummariesAsync(
+            cases.OrderByDescending(p => p.FirstFailedAt).Take(MaxCustomerCases), ct);
+
+        return new(items, total);
+    }
+
+    /// <summary>The recovery case opened for a Stripe invoice; null when none was.
+    /// At most one case per invoice, guaranteed by the (MerchantId, StripeInvoiceId) index.</summary>
+    public async Task<RecoveryCaseSummary?> GetCaseByInvoiceAsync(
+        Guid merchantId, string stripeInvoiceId, CancellationToken ct = default)
+    {
+        var items = await ProjectSummariesAsync(
+            db.FailedPayments.Where(p => p.MerchantId == merchantId && p.StripeInvoiceId == stripeInvoiceId), ct);
+        return items.SingleOrDefault();
+    }
+
+    /// <summary>Dunning-email progress for one case; null when the case is unknown or
+    /// belongs to another merchant.</summary>
+    public async Task<DunningProgress?> GetDunningProgressAsync(
+        Guid merchantId, Guid caseId, CancellationToken ct = default)
+    {
+        if (!await db.FailedPayments.AnyAsync(p => p.Id == caseId && p.MerchantId == merchantId, ct))
+            return null;
+
+        var entries = await db.EmailSequences
+            .Where(e => e.FailedPaymentId == caseId)
+            .OrderBy(e => e.SequenceStep)
+            .Select(e => new DunningEntry(
+                e.SequenceStep, e.EmailType, e.SentAt, e.OpenedAt, e.ClickedAt, e.ResultedInRecovery))
+            .ToListAsync(ct);
+
+        return new(caseId, entries);
+    }
+
+    /// <summary>Runs the shared case projection over an already-filtered-and-ordered query.
+    /// Two steps because enum-to-string isn't translatable: SQL fetches a slim row,
+    /// memory shapes the record.</summary>
+    private static async Task<List<RecoveryCaseSummary>> ProjectSummariesAsync(
+        IQueryable<FailedPayment> cases, CancellationToken ct)
+    {
         var rows = await cases
-            .OrderByDescending(p => p.FirstFailedAt)
-            .Skip((page - 1) * pageSize)
-            .Take(pageSize)
             .Select(p => new
             {
                 p.Id, p.StripeInvoiceId, p.CustomerEmail, p.AmountCents, p.Currency,
@@ -33,12 +93,10 @@ public sealed class MerchantDashboardService(IAppDbContext db)
             })
             .ToListAsync(ct);
 
-        var items = rows.Select(r => new RecoveryCaseSummary(
+        return rows.Select(r => new RecoveryCaseSummary(
             r.Id, r.StripeInvoiceId, r.CustomerEmail, r.AmountCents, r.Currency,
             r.Status.ToString(), r.FirstFailedAt, r.RecoveredAt ?? r.LostAt, r.AttemptCount,
             r.ReversedAmountCents, r.ReversalReason)).ToList();
-
-        return new(items, page, pageSize, total);
     }
 
     /// <summary>All-time and last-30-days summary stats; null for an unknown merchant.</summary>

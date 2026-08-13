@@ -58,6 +58,10 @@ services:
         sync: false
       - key: Stripe__WebhookSecret
         sync: false
+      # Signing secret of the embedded Stripe Dashboard app (absec_...). Stripe only
+      # generates it after the app's first upload; until it is set, /app/v1 answers 503.
+      - key: Stripe__AppSigningSecret
+        sync: false
       - key: Encryption__Key
         sync: false
       - key: Email__ApiKey
