@@ -41,7 +41,7 @@ public sealed class AuthController(
         {
             var link = $"{app.DashboardUrl}/auth/verify?token={Uri.EscapeDataString(tokens.Mint(merchant.Id))}";
             var (subject, html, plain) = LoginEmail.Build(merchant.CompanyName, link);
-            await email.SendAsync(merchant.Email, subject, html, plain, ct);
+            await email.SendAsync(merchant.Email, subject, html, plain, ct: ct);
             log.LogInformation("Sent magic-link sign-in email to merchant {MerchantId}", merchant.Id);
         }
         else

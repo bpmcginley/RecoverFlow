@@ -45,7 +45,8 @@ public class StripeAuditControllerTests
     private sealed class RecordingEmail : IEmailSender
     {
         public readonly List<(string To, string Subject, string Html, string Text)> Sent = [];
-        public Task SendAsync(string to, string subject, string html, string text, CancellationToken ct = default)
+        public Task SendAsync(string to, string subject, string html, string text,
+            string? trackingId = null, CancellationToken ct = default)
         {
             Sent.Add((to, subject, html, text));
             return Task.CompletedTask;

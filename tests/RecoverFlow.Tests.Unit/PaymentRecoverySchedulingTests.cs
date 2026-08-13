@@ -13,7 +13,8 @@ public class PaymentRecoverySchedulingTests
 {
     private sealed class NoOpEmailSender : IEmailSender
     {
-        public Task SendAsync(string toEmail, string subject, string htmlBody, string plainTextBody, CancellationToken ct = default) =>
+        public Task SendAsync(string toEmail, string subject, string htmlBody, string plainTextBody,
+            string? trackingId = null, CancellationToken ct = default) =>
             Task.CompletedTask;
     }
 

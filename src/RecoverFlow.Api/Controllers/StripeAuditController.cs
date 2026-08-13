@@ -157,7 +157,7 @@ public sealed class StripeAuditController(
 
         var report = RetryWasteAuditService.Build(scan, windowDays);
         var content = RetryWasteReportEmail.Render(report, companyName);
-        await email.SendAsync(to, content.Subject, content.Html, content.PlainText, ct);
+        await email.SendAsync(to, content.Subject, content.Html, content.PlainText, ct: ct);
 
         log.LogInformation(
             "Retry waste audit for {StripeAccountId}: {Failed} failed charges, {Wasted:0}% wasted, report sent",

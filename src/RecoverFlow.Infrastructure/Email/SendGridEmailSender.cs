@@ -1,6 +1,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RecoverFlow.Application.Common;
+using RecoverFlow.Application.Recovery;
 using SendGrid;
 using SendGrid.Helpers.Mail;
 
@@ -19,7 +20,8 @@ public sealed class SendGridEmailSender(
     private bool IsConfigured =>
         _email.ApiKey.StartsWith("SG.", StringComparison.Ordinal) && _email.ApiKey.Length >= 50;
 
-    public async Task SendAsync(string to, string subject, string htmlBody, string plainTextBody, CancellationToken ct = default)
+    public async Task SendAsync(string to, string subject, string htmlBody, string plainTextBody,
+        string? trackingId = null, CancellationToken ct = default)
     {
         if (!IsConfigured)
         {
@@ -34,10 +36,22 @@ public sealed class SendGridEmailSender(
             plainTextContent: plainTextBody,
             htmlContent: htmlBody);
 
-        // Transactional dunning mail doesn't need SendGrid's tracking pixel/link-rewriting —
-        // it's a spam-score deduction and the rewritten links look worse to filters.
-        message.SetClickTracking(false, false);
-        message.SetOpenTracking(false);
+        // Tracking only where we can attribute it: dunning mail passes a trackingId (the
+        // EmailSequenceEntry id), which rides along as a custom arg so the event webhook can
+        // write opened_at/clicked_at. Everything else (sign-in links, audit reports) keeps
+        // tracking off — no pixel, no rewritten links. Click tracking stays out of the
+        // plain-text part either way; rewritten bare URLs there look broken.
+        if (trackingId is null)
+        {
+            message.SetClickTracking(false, false);
+            message.SetOpenTracking(false);
+        }
+        else
+        {
+            message.SetClickTracking(true, false);
+            message.SetOpenTracking(true);
+            message.AddCustomArg(SendGridEventProcessor.TrackingArg, trackingId);
+        }
 
         var response = await new SendGridClient(_email.ApiKey).SendEmailAsync(message, ct);
         if (!response.IsSuccessStatusCode)

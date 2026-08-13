@@ -66,3 +66,7 @@ services:
         sync: false
       - key: Email__ApiKey
         sync: false
+      # Verification key of SendGrid's Signed Event Webhook (Settings > Mail Settings >
+      # Event Webhook). Until it is set, /webhooks/sendgrid answers 503.
+      - key: Email__WebhookVerificationKey
+        sync: false

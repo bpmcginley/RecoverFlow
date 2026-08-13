@@ -37,6 +37,7 @@ public static class DependencyInjection
 
         services.AddScoped<IEmailSender, SendGridEmailSender>();
         services.AddScoped<DunningEmailService>();
+        services.AddScoped<SendGridEventProcessor>();
 
         services.AddScoped<MerchantBillingService>();
         services.AddScoped<IPlatformFeeInvoicer, StripePlatformFeeInvoicer>();

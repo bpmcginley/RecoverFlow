@@ -42,6 +42,13 @@ public sealed class EmailOptions
     public string ApiKey { get; set; } = "";
     public string FromAddress { get; set; } = "";
     public string FromName { get; set; } = "";
+
+    /// <summary>
+    /// Base64 verification key from SendGrid's Signed Event Webhook settings, used to verify
+    /// signatures on /webhooks/sendgrid. Ships EMPTY; while it is empty the endpoint answers
+    /// 503 rather than accepting unverified events.
+    /// </summary>
+    public string WebhookVerificationKey { get; set; } = "";
 }
 
 public sealed class EncryptionOptions

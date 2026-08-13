@@ -46,11 +46,12 @@ public class DunningEmailServiceTests
 {
     private sealed class RecordingEmailSender : IEmailSender
     {
-        public List<(string To, string Subject, string Html, string PlainText)> Sent { get; } = [];
+        public List<(string To, string Subject, string Html, string PlainText, string? TrackingId)> Sent { get; } = [];
 
-        public Task SendAsync(string to, string subject, string htmlBody, string plainTextBody, CancellationToken ct = default)
+        public Task SendAsync(string to, string subject, string htmlBody, string plainTextBody,
+            string? trackingId = null, CancellationToken ct = default)
         {
-            Sent.Add((to, subject, htmlBody, plainTextBody));
+            Sent.Add((to, subject, htmlBody, plainTextBody, trackingId));
             return Task.CompletedTask;
         }
     }
@@ -98,7 +99,7 @@ public class DunningEmailServiceTests
 
         await CreateService(db, sender).SendStepAsync(payment.Id, 1);
 
-        var (to, subject, html, plain) = Assert.Single(sender.Sent);
+        var (to, subject, html, plain, trackingId) = Assert.Single(sender.Sent);
         Assert.Equal("customer@example.com", to);
         Assert.Contains("Acme Corp", subject);
         Assert.Contains("42.00 USD", html);
@@ -110,6 +111,7 @@ public class DunningEmailServiceTests
         Assert.Equal(1, entry.SequenceStep);
         Assert.Equal("friendly_reminder", entry.EmailType);
         Assert.NotEqual(default, entry.SentAt);
+        Assert.Equal(entry.Id.ToString(), trackingId); // the send carried the entry id for event attribution
     }
 
     [Fact]

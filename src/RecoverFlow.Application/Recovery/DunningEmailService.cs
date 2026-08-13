@@ -35,11 +35,16 @@ public sealed class DunningEmailService(
 
         var content = DunningEmailTemplates.ForStep(
             sequenceStep, payment.Merchant.CompanyName, payment.AmountCents, payment.Currency);
-        await emailSender.SendAsync(payment.CustomerEmail, content.Subject, content.Html, content.PlainText, ct);
+
+        // The entry id is minted before the send so it can travel with the message as the
+        // tracking id; the SendGrid event webhook uses it to stamp OpenedAt/ClickedAt.
+        var entryId = Guid.NewGuid();
+        await emailSender.SendAsync(payment.CustomerEmail, content.Subject, content.Html, content.PlainText,
+            trackingId: entryId.ToString(), ct: ct);
 
         db.EmailSequences.Add(new EmailSequenceEntry
         {
-            Id = Guid.NewGuid(),
+            Id = entryId,
             FailedPaymentId = payment.Id,
             SequenceStep = sequenceStep,
             EmailType = content.EmailType,
