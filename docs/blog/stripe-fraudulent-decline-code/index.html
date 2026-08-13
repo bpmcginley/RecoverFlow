@@ -29,15 +29,15 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Changelog | RecoverFlow</title>
-<meta name="description" content="What changed in RecoverFlow and when. Bug fixes that affected numbers shown to customers are listed as prominently as features.">
-<link rel="canonical" href="https://recoverflow.org/changelog/">
+<title>The fraudulent decline code on Stripe: who suspects what, and what to tell the customer | RecoverFlow</title>
+<meta name="description" content="Stripe documents fraudulent as a payment declined because Stripe suspects it is fraudulent, and instructs you to present it to the customer as a generic decline.">
+<link rel="canonical" href="https://recoverflow.org/blog/stripe-fraudulent-decline-code/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="RecoverFlow">
-<meta property="og:title" content="Changelog | RecoverFlow">
-<meta property="og:description" content="What changed in RecoverFlow and when. Bug fixes that affected numbers shown to customers are listed as prominently as features.">
-<meta property="og:url" content="https://recoverflow.org/changelog/">
+<meta property="og:title" content="The fraudulent decline code on Stripe: who suspects what, and what to tell the customer | RecoverFlow">
+<meta property="og:description" content="Stripe documents fraudulent as a payment declined because Stripe suspects it is fraudulent, and instructs you to present it to the customer as a generic decline.">
+<meta property="og:url" content="https://recoverflow.org/blog/stripe-fraudulent-decline-code/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -160,10 +160,63 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
-  "@type": "WebPage",
-  "name": "RecoverFlow changelog",
-  "url": "https://recoverflow.org/changelog/",
-  "description": "What changed in RecoverFlow and when, including fixes that affected numbers shown to customers."
+  "@type": "Article",
+  "headline": "The fraudulent decline code on Stripe: who suspects what, and what to tell the customer",
+  "description": "Stripe documents fraudulent as a payment declined because Stripe suspects it is fraudulent, and instructs you to present it to the customer as a generic decline.",
+  "url": "https://recoverflow.org/blog/stripe-fraudulent-decline-code/",
+  "datePublished": "2026-08-13",
+  "dateModified": "2026-08-13",
+  "author": {
+    "@type": "Person",
+    "name": "Bruce McGinley"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "RecoverFlow",
+    "url": "https://recoverflow.org"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://recoverflow.org/blog/stripe-fraudulent-decline-code/"
+  }
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is fraudulent a hard decline on Stripe?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It is not on Stripe's list of nine codes that stop retry execution, so Stripe retries it on your schedule. The related code highest_risk_level is on that list. Whether a retried payment fares better is a different question: the documented cause is Stripe suspecting fraud, which is not a timing problem."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Should I tell the customer their payment was flagged as fraudulent?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Stripe's decline codes reference says not to report more detailed information to the customer and to present it in the same manner as a generic_decline. Send a plain payment-failed message with a card update link if you contact them at all."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between fraudulent and merchant_blacklist?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Who owns the list. fraudulent is documented as Stripe suspecting the payment is fraudulent. merchant_blacklist means the payment matched a value on your own Stripe block list. Both carry the same instruction: present as a generic decline."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is the difference between fraudulent and highest_risk_level?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "highest_risk_level appears on the nine code list in Stripe's Smart Retries documentation, so it stops retry execution until a new payment method is added. fraudulent does not appear there, so scheduled retries continue."
+      }
+    }
+  ]
 }</script>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/rf.css">
@@ -186,83 +239,79 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </header>
 
 <main>
-  <div class="wrap">
-    <p class="eyebrow">Changelog</p>
-    <h1>What has changed</h1>
-    <p>Grouped by the day the work actually landed. Bug fixes that affected numbers shown to customers are listed as prominently as features, because those are the ones you would want to know about.</p>
+  <article class="wrap">
+    <p class="eyebrow">Guide</p>
+    <h1>The <code>fraudulent</code> decline code on Stripe: who suspects what, and what to say</h1>
+    <p class="updated">Last updated 13 August 2026 &middot; written by Bruce McGinley, who builds RecoverFlow</p>
 
-    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-08-12</p>
-      <h2 style="margin-top:0;">A cap on the fee, and two things this site was getting wrong</h2>
-      <ul>
-        <li><strong>The fee is now capped at $299 a month.</strong> It was 25% of attributed recoveries with a $29 floor and no ceiling. It is now the same percentage between the same $29 floor and a $299 ceiling, so past roughly $1,196 of attributed recovery in a month the bill stops moving. An uncapped percentage means the vendor earns more as the customer's churn gets worse, and the <a href="/pricing/">pricing page</a> now says so in those words rather than waiting for someone to notice. The cap only ever lowers a bill, and it will not be raised or removed for an account that signed up under it.</li>
-        <li><strong>Corrected a false claim about Visa's reattempt rule.</strong> Five places on this site said Stripe blocks further retry attempts once a card passes Visa's ceiling of 15 reattempts in a rolling 30 days. Stripe's documented behaviour is discretionary: it says it blocks subsequent attempts only where it determines there is a low chance of a successful authorisation, and it does not undertake to keep a merchant inside Visa's limit. The page copy, the structured data, the browser tool and the command-line script now all say the same, correct thing. The <a href="/tools/retry-waste-calculator/">retry waste calculator</a> also now discloses that it counts attempts per card while Visa states the rule per payment, which makes its number a conservative upper bound rather than a compliance verdict.</li>
-        <li><strong>The retry waste report no longer leads with a dollar figure.</strong> Stripe does not reattempt hard declines without a new payment method, so no second charge is placed and no fee is incurred. Quoting a large dollar number for "wasted retries" implies an invoice that was never issued. The report now leads with how many customers were left sitting on an unusable card and how many days they sat there, and the money is shown second and labelled as revenue at risk rather than as a cost incurred.</li>
-        <li><strong>A claim about card networks was corrected across the site.</strong> Several pages said, in one wording or another, that Stripe never sends hard declines to the card network. What Stripe documents is that it does not <em>reattempt</em> those codes until a new payment method is attached. It says nothing about what happens at the network, and we had no way to check it. The observable behaviour is the same one the product acts on, so every one of those sentences now says only that. An earlier entry on this page carried the same wording and has been corrected in place rather than left standing, which is why it reads differently than it did.</li>
-        <li><strong>Recoveries that are later refunded or charged back are no longer billable.</strong> Until now a payment RecoverFlow recovered stayed recovered in its books even if the customer got the money back a week later, which meant a fee on revenue the merchant did not keep. Stripe's refund and dispute notifications for the settling charge are now handled: a reversal before invoicing comes off the billable total, and a reversal after invoicing is credited back on the next invoice at what was actually charged, so a month held down by the $299 cap credits the capped figure rather than an uncapped 25%. Credits apply to the whole invoice including the $29 minimum, carry forward if they outlast a month's bill, and are refunded on request if an account closes with credit outstanding. Written up in the <a href="/terms/#reversals">terms</a> and in <a href="/docs/attribution-and-billing/#reversals">attribution and billing</a>.</li>
-        <li><strong>Eight more decline code and webhook guides.</strong> New pages for <a href="/blog/stripe-lost-card-stolen-card-declines/">lost_card and stolen_card</a>, <a href="/blog/stripe-pickup-card-vs-restricted-card/">pickup_card vs restricted_card</a>, <a href="/blog/stripe-fraudulent-decline-code/">fraudulent</a>, <a href="/blog/stripe-incorrect-number-vs-invalid-number/">incorrect_number vs invalid_number</a>, <a href="/blog/stripe-currency-not-supported-decline/">currency_not_supported</a>, <a href="/blog/stripe-duplicate-transaction-decline/">duplicate_transaction</a> and <a href="/blog/stripe-transaction-not-allowed-decline/">transaction_not_allowed</a>, plus a guide to <a href="/blog/invoice-payment-failed-vs-payment-intent-payment-failed/">invoice.payment_failed vs payment_intent.payment_failed</a>. Every claim checked against Stripe's decline codes reference, card declines guide, Smart Retries and subscription webhooks documentation on 13 August 2026.</li>
-        <li><strong>Six new decline code guides.</strong> Dedicated pages for <a href="/blog/stripe-generic-decline-code/">generic_decline</a>, <a href="/blog/stripe-incorrect-cvc-decline/">incorrect_cvc</a>, <a href="/blog/stripe-processing-error-decline/">processing_error</a>, <a href="/blog/stripe-try-again-later-decline/">try_again_later</a>, <a href="/blog/stripe-card-velocity-exceeded/">card_velocity_exceeded</a> and <a href="/blog/stripe-call-issuer-decline/">call_issuer</a>, each built from the meaning and next steps Stripe documents in its decline codes reference, including the fact that the try_again_later decline code is now marked deprecated while the advice code of the same name is current.</li>
-        <li>Homepage rewritten to lead with the suppression argument, and the primary call to action is now the free browser-side audit rather than a Stripe connection. Also fixed a responsive bug that pushed the headline about 620px down the page on every screen narrower than 900px.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-07-28</p>
-      <h2 style="margin-top:0;">Correctness pass on decline handling</h2>
-      <ul>
-        <li>Fixed six Stripe decline codes being treated as retryable when Stripe will not execute a retry for them without a new payment method: incorrect_number, transaction_not_allowed, revocation_of_authorization, revocation_of_all_authorizations, authentication_required and highest_risk_level. This also inflated the connect-time backtest estimate for accounts holding those failures.</li>
-        <li>Lost, stolen and retained cards now route to the card-update flow instead of being written off. A reissue is the most recoverable failure there is, because the customer usually already has the new card.</li>
-        <li>card_velocity_exceeded is now retried. It is a limit that resets, and Stripe retries it.</li>
-        <li>Dunning step 3 no longer tells customers their subscription will be cancelled. Whether that happens is the merchant's own Stripe setting, which RecoverFlow does not see or control.</li>
-        <li>Published twelve guides at /blog, plus /about, /contact and this documentation.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-07-27</p>
-      <h2 style="margin-top:0;">Comparison and tooling</h2>
-      <ul>
-        <li>Four competitor comparison pages with pricing read from each vendor's own page and dated on-page, plus a comparisons hub.</li>
-        <li>Free recovery estimator and a searchable reference for all 48 Stripe decline codes.</li>
-        <li>Retry schedule builder and dunning email generator, completing the free tool set.</li>
-        <li>Pricing page, including a section on the volume at which 25% becomes the wrong deal for the customer.</li>
-        <li>Privacy policy, terms of service and security pages, with governing law in Massachusetts.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-07-13</p>
-      <h2 style="margin-top:0;">Backtest and analytics</h2>
-      <ul>
-        <li>Instant 90-day backtest scan on Stripe Connect, so a new merchant sees what already failed before committing to anything.</li>
-        <li>DataProtection keys persisted across redeploys, so sessions survive a deployment.</li>
-        <li>Analytics on the marketing site.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-07-12</p>
-      <h2 style="margin-top:0;">Billing, auth and deliverability</h2>
-      <ul>
-        <li>Usage-based billing: 25% of recovered revenue with a $29 monthly floor.</li>
-        <li>Magic-link authentication and the customer dashboard.</li>
-        <li>Self-serve signup funnel.</li>
-        <li>Dunning email deliverability fixes, including rejecting a placeholder SendGrid key at startup rather than silently sending nothing.</li>
-        <li>Open and click tracking disabled on dunning emails at the SendGrid level.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-07-10</p>
-      <h2 style="margin-top:0;">First working system</h2>
-      <ul>
-        <li>Clean Architecture scaffold on .NET 8, with PostgreSQL and EF Core.</li>
-        <li>Stripe Connect OAuth, with the access token encrypted at rest.</li>
-        <li>Multi-tenant isolation via EF Core global query filters, so a query that forgets its tenant filter returns nothing rather than another merchant's rows.</li>
-        <li>Decline classification, retry scheduling and the retry execution worker.</li>
-        <li>Dunning email sending through SendGrid.</li>
-        <li>Read-only merchant dashboard API.</li>
-        <li>Deployment to Render.</li>
-      </ul>
+    <div class="answer">
+      <span class="label">Short answer</span>
+<p><strong>Stripe suspects the payment is fraudulent.</strong> That is the documented description, and the emphasis matters: this code is Stripe's own suspicion, not the issuer's.</p>
+<p>The documented next step is aimed at you: do not report more detailed information to your customer. Present it in the same manner as a <code>generic_decline</code>.</p>
+<p>It is not one of the nine codes that stop Stripe executing retries, so your retry schedule continues to run.</p>
     </div>
 
-    <p style="margin-top:40px;color:var(--text-dim);">RecoverFlow started on 10 July 2026. Anything older than that does not exist.</p>
-      <div class="cta-box">
-      <h2>See what you're losing</h2>
-      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
-      <a class="btn" href="/">Run the free 90 day scan</a>
+    <div class="toc">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#who">Three kinds of fraud suspicion, three different codes</a></li>
+        <li><a href="#email">What to put in the email: nothing specific</a></li>
+        <li><a href="#retries">Retries run, but read the payment first</a></li>
+        <li><a href="#faq">Questions people actually ask</a></li>
+      </ol>
     </div>
+
+    <h2 id="who">Three kinds of fraud suspicion, three different codes</h2>
+<p>Fraud suspicion can come from three places in a card payment, and Stripe's documentation gives each its own surface.</p>
+<ul>
+<li><strong>Stripe suspects fraud:</strong> that is <code>fraudulent</code>, per the decline codes reference.</li>
+<li><strong>Your own block list matches:</strong> that is <code>merchant_blacklist</code>, documented as the payment matching a value on the Stripe user's block list, meaning yours. It carries the same instruction to present it as a generic decline.</li>
+<li><strong>The issuer suspects fraud:</strong> Stripe's card declines guide notes that issuers may decline when they suspect fraudulent activity, and that the customer resolves it by contacting their issuing bank and confirming their identity. Issuer-side suspicion usually surfaces as other codes, since issuers categorize most declines as generic.</li>
+</ul>
+<p>Knowing which party said no tells you where the fix lives. For <code>fraudulent</code>, the assessment happened on Stripe's side of the fence.</p>
+
+    <h2 id="email">What to put in the email: nothing specific</h2>
+<p>The reference gives <code>fraudulent</code> the same handling instruction as <code>lost_card</code>, <code>stolen_card</code> and <code>merchant_blacklist</code>: do not share the detailed reason, present it as a generic decline. Our <a href="/tools/decline-code-lookup/">free decline code lookup</a> flags this whole group, because they are the codes where a well-meaning, transparent dunning email is exactly the wrong move.</p>
+<p>If a message goes out at all, it says the payment did not go through and links to a card update page. It does not say fraud. The word does nothing useful for a legitimate customer and does something actively harmful in front of anyone else.</p>
+
+    <h2 id="retries">Retries run, but read the payment first</h2>
+<p><code>fraudulent</code> is not on the nine code list, so scheduled retries continue to execute. Before leaning on them, open the payment in the Stripe Dashboard and look at what actually happened, since the code tells you Stripe's fraud systems were involved and the payment page carries the detail.</p>
+<p>Stripe's card declines guide also documents the general levers for declines that stem from suspected fraud: collect CVC and postal code at checkout, and consider 3D Secure, which can lower decline rates in countries that support it. Those help the next checkout. For a failing subscription renewal, the customer re-entering their card through your dunning link gives the next attempt a fresh, fully verified starting point.</p>
+
+    <h2 id="faq">Questions people actually ask</h2>
+<div class="faq">
+  <details><summary>Is fraudulent a hard decline on Stripe?</summary><p>It is not on Stripe's list of nine codes that stop retry execution, so Stripe retries it on your schedule. The related code highest_risk_level is on that list. Whether a retried payment fares better is a different question: the documented cause is Stripe suspecting fraud, which is not a timing problem.</p></details>
+  <details><summary>Should I tell the customer their payment was flagged as fraudulent?</summary><p>No. Stripe's decline codes reference says not to report more detailed information to the customer and to present it in the same manner as a generic_decline. Send a plain payment-failed message with a card update link if you contact them at all.</p></details>
+  <details><summary>What is the difference between fraudulent and merchant_blacklist?</summary><p>Who owns the list. fraudulent is documented as Stripe suspecting the payment is fraudulent. merchant_blacklist means the payment matched a value on your own Stripe block list. Both carry the same instruction: present as a generic decline.</p></details>
+  <details><summary>What is the difference between fraudulent and highest_risk_level?</summary><p>highest_risk_level appears on the nine code list in Stripe's Smart Retries documentation, so it stops retry execution until a new payment method is added. fraudulent does not appear there, so scheduled retries continue.</p></details>
 </div>
+
+    <div class="sources">
+  <h2>Where this came from</h2>
+  <p style="margin-top:0;color:var(--text-dim);font-size:.93rem;">Checked against primary sources on 13 August 2026. If Stripe changes something and this page has not caught up, tell us and it gets fixed.</p>
+  <ul>
+      <li><a href="https://docs.stripe.com/declines/codes" rel="nofollow noopener" target="_blank">Stripe: Decline codes reference</a> &mdash; the documented meaning and next steps for every code on this page.</li>
+      <li><a href="https://docs.stripe.com/declines/card" rel="nofollow noopener" target="_blank">Stripe: Card declines</a> &mdash; advice codes, retry limits, and Stripe's guidance on reducing declines.</li>
+      <li><a href="https://docs.stripe.com/billing/revenue-recovery/smart-retries" rel="nofollow noopener" target="_blank">Stripe: Smart Retries</a> &mdash; the source for the nine hard decline codes and what happens to scheduled retries after one.</li>
+  </ul>
+</div>
+
+    <div class="cta-band">
+  <h2>If you would rather not build this yourself</h2>
+  <p>RecoverFlow watches your Stripe account for failed subscription payments, stops retrying the ones that cannot succeed, and emails the customers whose card simply needs replacing. It charges 25% of what it can attribute to a specific action it took, with a $29 monthly floor and a $299 monthly ceiling, and the floor is waived for the first 30 days.</p>
+  <p style="color:var(--text-dim);">It is early. It is run by one person. If Stripe's own free retry settings are enough for you, use those instead, and there is a page on this site that says exactly when that is the right call.</p>
+  <a class="btn" href="/pricing/">See how the pricing works</a>
+</div>
+
+    <div class="related">
+  <h2>Related</h2>
+  <div class="card-grid">
+    <div class="card"><h3><a href="/blog/stripe-decline-codes-that-stop-retries/">The nine codes that stop retries</a></h3><p>What each one means and what to do instead of retrying.</p></div>
+    <div class="card"><h3><a href="/blog/stripe-dunning-emails-what-you-control/">Dunning emails: what you control</a></h3><p>What Stripe sends for you, and what only your own emails can do.</p></div>
+    <div class="card"><h3><a href="/tools/decline-code-lookup/">Free decline code lookup</a></h3><p>48 codes, searchable, filterable by whether Stripe will retry.</p></div>
+  </div>
+</div>
+  </article>
 </main>
 
 <footer>

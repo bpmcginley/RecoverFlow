@@ -272,6 +272,54 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "headline": "call_issuer on Stripe: what it means when the bank says call us",
       "url": "https://recoverflow.org/blog/stripe-call-issuer-decline/",
       "description": "Stripe documents call_issuer as a decline for an unknown reason where the customer needs to contact their card issuer. How it differs from do_not_honor: barely."
+    },
+    {
+      "@type": "Article",
+      "headline": "lost_card and stolen_card on Stripe: what to do, and what never to say",
+      "url": "https://recoverflow.org/blog/stripe-lost-card-stolen-card-declines/",
+      "description": "Both codes sit on Stripe's hard decline list, and both carry the same documented instruction: do not tell the customer the specific reason. Here is the playbook."
+    },
+    {
+      "@type": "Article",
+      "headline": "pickup_card vs restricted_card on Stripe: same words, opposite retry treatment",
+      "url": "https://recoverflow.org/blog/stripe-pickup-card-vs-restricted-card/",
+      "description": "Stripe documents both codes with the same description, yet one is on the hard decline list and the other gets retried. The difference decides your next move."
+    },
+    {
+      "@type": "Article",
+      "headline": "The fraudulent decline code on Stripe: who suspects what, and what to tell the customer",
+      "url": "https://recoverflow.org/blog/stripe-fraudulent-decline-code/",
+      "description": "Stripe documents fraudulent as a payment declined because Stripe suspects it is fraudulent, and instructs you to present it to the customer as a generic decline."
+    },
+    {
+      "@type": "Article",
+      "headline": "incorrect_number vs invalid_number on Stripe: one blocks retries, neither is fixed by them",
+      "url": "https://recoverflow.org/blog/stripe-incorrect-number-vs-invalid-number/",
+      "description": "Stripe documents both codes as the card number being incorrect. Only one is on the list that stops retries, and either way no retry can type a card number."
+    },
+    {
+      "@type": "Article",
+      "headline": "currency_not_supported on Stripe: the card cannot pay in that currency",
+      "url": "https://recoverflow.org/blog/stripe-currency-not-supported-decline/",
+      "description": "Stripe documents currency_not_supported as the card not supporting the specified currency, with the customer needing to check with their issuer. What to do next."
+    },
+    {
+      "@type": "Article",
+      "headline": "duplicate_transaction on Stripe: check your records before you do anything",
+      "url": "https://recoverflow.org/blog/stripe-duplicate-transaction-decline/",
+      "description": "Stripe documents this decline as an identical transaction submitted very recently, and the next step is aimed at you, not the customer: check whether a recent payment already exists."
+    },
+    {
+      "@type": "Article",
+      "headline": "transaction_not_allowed on Stripe: the unknown-reason decline that stops retries",
+      "url": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "description": "Stripe documents transaction_not_allowed as a decline for an unknown reason, yet it sits on the hard decline list. That combination changes how you handle it."
+    },
+    {
+      "@type": "Article",
+      "headline": "invoice.payment_failed vs payment_intent.payment_failed: which webhook to build on",
+      "url": "https://recoverflow.org/blog/invoice-payment-failed-vs-payment-intent-payment-failed/",
+      "description": "Both events report a failed payment, from different layers of Stripe. For subscription dunning, one of them carries the retry state you need. Here is how to choose."
     }
   ]
 }</script>
@@ -391,6 +439,46 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <p class="meta">Guide</p>
       <h3><a href="/blog/stripe-call-issuer-decline/"><code>call_issuer</code> on Stripe: what it means when the bank says call us</a></h3>
       <p>Stripe documents call_issuer as a decline for an unknown reason where the customer needs to contact their card issuer. How it differs from do_not_honor: barely.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-lost-card-stolen-card-declines/"><code>lost_card</code> and <code>stolen_card</code> on Stripe: what to do, and what never to say</a></h3>
+      <p>Both codes sit on Stripe's hard decline list, and both carry the same documented instruction: do not tell the customer the specific reason. Here is the playbook.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-pickup-card-vs-restricted-card/"><code>pickup_card</code> vs <code>restricted_card</code> on Stripe: same words, opposite retry treatment</a></h3>
+      <p>Stripe documents both codes with the same description, yet one is on the hard decline list and the other gets retried. The difference decides your next move.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-fraudulent-decline-code/">The <code>fraudulent</code> decline code on Stripe: who suspects what, and what to say</a></h3>
+      <p>Stripe documents fraudulent as a payment declined because Stripe suspects it is fraudulent, and instructs you to present it to the customer as a generic decline.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-incorrect-number-vs-invalid-number/"><code>incorrect_number</code> vs <code>invalid_number</code> on Stripe</a></h3>
+      <p>Stripe documents both codes as the card number being incorrect. Only one is on the list that stops retries, and either way no retry can type a card number.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-currency-not-supported-decline/"><code>currency_not_supported</code> on Stripe: the card cannot pay in that currency</a></h3>
+      <p>Stripe documents currency_not_supported as the card not supporting the specified currency, with the customer needing to check with their issuer. What to do next.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-duplicate-transaction-decline/"><code>duplicate_transaction</code> on Stripe: check your records before you do anything</a></h3>
+      <p>Stripe documents this decline as an identical transaction submitted very recently, and the next step is aimed at you, not the customer: check whether a recent payment already exists.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/stripe-transaction-not-allowed-decline/"><code>transaction_not_allowed</code> on Stripe: the unknown-reason decline that stops retries</a></h3>
+      <p>Stripe documents transaction_not_allowed as a decline for an unknown reason, yet it sits on the hard decline list. That combination changes how you handle it.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Guide</p>
+      <h3><a href="/blog/invoice-payment-failed-vs-payment-intent-payment-failed/"><code>invoice.payment_failed</code> vs <code>payment_intent.payment_failed</code>: which webhook to build on</a></h3>
+      <p>Both events report a failed payment, from different layers of Stripe. For subscription dunning, one of them carries the retry state you need. Here is how to choose.</p>
     </div>
     <div class="card">
       <p class="meta">Pillar</p>

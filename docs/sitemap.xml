@@ -229,6 +229,54 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://recoverflow.org/blog/stripe-lost-card-stolen-card-declines/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/blog/stripe-pickup-card-vs-restricted-card/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/blog/stripe-fraudulent-decline-code/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/blog/stripe-incorrect-number-vs-invalid-number/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/blog/stripe-currency-not-supported-decline/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/blog/stripe-duplicate-transaction-decline/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://recoverflow.org/blog/invoice-payment-failed-vs-payment-intent-payment-failed/</loc>
+    <lastmod>2026-08-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://recoverflow.org/blog/stripe-automatic-card-updates/</loc>
     <lastmod>2026-08-12</lastmod>
     <changefreq>weekly</changefreq>
