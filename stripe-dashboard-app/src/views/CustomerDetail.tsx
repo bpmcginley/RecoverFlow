@@ -28,9 +28,15 @@ const CaseItem = ({
   const [expanded, setExpanded] = useState(false);
   return (
     <AccordionItem
-      title={<Inline>{formatAmount(caseSummary.amountCents, caseSummary.currency)}</Inline>}
+      // The badge sits in the title, not in `actions`: the drawer is narrow enough that
+      // the actions slot clips a status word like "Recovering" against the right edge.
+      title={
+        <Box css={{ stack: 'x', gap: 'small', alignY: 'center' }}>
+          <Inline>{formatAmount(caseSummary.amountCents, caseSummary.currency)}</Inline>
+          <CaseStatusBadge status={caseSummary.status} />
+        </Box>
+      }
       subtitle={<Inline>Invoice {caseSummary.stripeInvoiceId}</Inline>}
-      actions={<CaseStatusBadge status={caseSummary.status} />}
       onChange={(isOpen) => {
         if (isOpen) setExpanded(true);
       }}
