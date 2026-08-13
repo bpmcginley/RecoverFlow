@@ -1,6 +1,6 @@
 # RecoverFlow Stripe App
 
-Embedded Stripe App (Dashboard UI extension) for RecoverFlow. App id: `com.recoverflow.dashboard`. Manifest: `stripe-app.json` (production) and `stripe-app.dev.json` (localhost overrides for `stripe apps start`).
+Embedded Stripe App (Dashboard UI extension) for RecoverFlow. App id: `com.recoverflow.dashboard`. Manifest: `stripe-app.json`.
 
 Do not confuse this with `../stripe-app/`, the retired Retry Waste Audit app. That folder is a historical record (see its BLOCKED.md) and must not be modified.
 
@@ -34,10 +34,19 @@ npm run typecheck
 Live preview in your own Dashboard (requires the Stripe CLI apps plugin):
 
 ```
-stripe apps start --manifest stripe-app.dev.json
+stripe apps start
 ```
 
-The dev manifest points `connect-src` and `API_BASE` at `http://localhost:5157` (the RecoverFlow.Api dev profile port).
+Note that `stripe apps start` defaults to `--manifest stripe-app.json`; it does not pick up an alternate manifest unless you pass one explicitly.
+
+The preview reaches the **production** API, because a local one cannot be reached at all. Stripe validates `connect-src` at manifest load and rejects any entry that is not HTTPS on a public-suffix domain:
+
+```
+found violations for connect-src "http://localhost:5157/app/": protocol has to be https,
+publicsuffix: cannot derive eTLD+1 for domain "localhost"
+```
+
+So pointing the app at `localhost` is not a configuration problem to work around, it is refused outright. To develop against a local API you need an HTTPS tunnel on a real domain (cloudflared, ngrok) and must put that hostname in both `connect-src` and `API_BASE`. Without one, develop against production.
 
 Building and uploading are done by the Stripe CLI (`stripe apps upload`). Do not run the upload until the publishing account question is settled; the first upload permanently fixes the app id and generates the signing secret.
 
@@ -45,5 +54,6 @@ Building and uploading are done by the Stripe CLI (`stripe apps upload`). Do not
 
 - Only components from `@stripe/ui-extension-sdk/ui` render inside the Dashboard sandbox. No DOM access, no refs, no localStorage.
 - `@stripe/ui-extension-sdk` is pinned to 8.10.0, the last 8.x release built against React 17.0.2. The 8.11.x releases moved to React 18.
-- Network requests may only target URLs declared in `ui_extension.content_security_policy.connect-src`.
+- Network requests may only target URLs declared in `ui_extension.content_security_policy.connect-src`, and every such URL must be HTTPS on a public-suffix domain.
+- `API_BASE` resolves from `context.environment.constants` first and only falls back to the `PRODUCTION_API_BASE` constant in `src/lib/api.ts`. Editing that constant has no effect while the manifest defines `API_BASE`.
 - The `listing/` folder (marketplace listing copy) is owned by a separate workstream.

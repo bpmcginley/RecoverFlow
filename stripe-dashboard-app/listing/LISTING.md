@@ -136,12 +136,12 @@ for those viewports actually ships.
 
 **Description (300 max):**
 
-> The view requests five read permissions and no write access of any kind. Retries and
+> The view requests two read permissions and no write access of any kind. Retries and
 > emails run through your existing RecoverFlow connection, scheduled by decline code,
 > so cards Stripe will not put on the wire without new details are left alone rather
 > than retried into the ground.
 
-> 281 characters.
+> 280 characters.
 
 <!-- Verification: permission set is the two read-only scopes tied to real views
      (customer_read, invoice_read), trimmed 2026-08-13 from an earlier five-scope
