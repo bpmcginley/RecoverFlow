@@ -22,6 +22,11 @@ services:
       # for the length of a Docker build for no reason.
       ignoredPaths:
         - docs/**
+        # Same reasoning: the outbound pipeline is a CSV, some copy templates and a
+        # script that runs on a laptop. None of it is in the image, and logging a sent
+        # follow-up should not restart the API.
+        - growth/**
+        - .claude/**
     disk:
       # Persists the DataProtection key ring across redeploys. Without it, every
       # deploy rotates the keys and invalidates in-flight OAuth `state`, magic-link
