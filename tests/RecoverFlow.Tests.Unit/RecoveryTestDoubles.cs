@@ -35,8 +35,11 @@ internal sealed class FakeStripeOAuthClient : IStripeOAuthClient
         new("acct_123", "sk_refreshed", "rt_new", null, DateTime.UtcNow.AddHours(1));
     public List<string> RefreshedWith { get; } = [];
 
-    public Task<StripeOAuthTokenResult> ExchangeCodeAsync(string code, CancellationToken ct = default) =>
+    public Task<StripeOAuthTokenResult> ExchangeAppInstallCodeAsync(string code, CancellationToken ct = default) =>
         Task.FromResult(NextResult);
+
+    public Task<StripeOAuthTokenResult> ExchangeAuditCodeAsync(string code, CancellationToken ct = default) =>
+        throw new NotSupportedException("The recovery path never runs the audit's Connect exchange.");
 
     public Task<StripeOAuthTokenResult> RefreshAsync(string refreshToken, CancellationToken ct = default)
     {

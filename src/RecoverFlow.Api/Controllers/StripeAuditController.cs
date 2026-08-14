@@ -106,7 +106,7 @@ public sealed class StripeAuditController(
         // The code is exchanged only to learn WHICH account authorized us. Reads then go through
         // the platform key plus the Stripe-Account header, so the merchant's access token is never
         // stored, never written to the database, and goes out of scope with this local.
-        var token = await oauthClient.ExchangeCodeAsync(code, ct);
+        var token = await oauthClient.ExchangeAuditCodeAsync(code, ct);
 
         if (auditState is null)
         {

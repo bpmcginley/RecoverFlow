@@ -17,6 +17,20 @@ public sealed class StripeOptions
     public string AppClientId { get; set; } = "";
 
     /// <summary>
+    /// Secret key of the account that owns the Stripe App, used to authenticate the app's OAuth
+    /// token exchange and refresh. Stripe requires the <em>app developer's</em> key there, which
+    /// is only the same string as <see cref="SecretKey"/> if the app happens to live on the same
+    /// account as the rest of the integration. Leave it blank in that case and this falls back.
+    /// Getting it wrong shows up as a permissions error on the exchange, not on startup.
+    /// </summary>
+    /// <remarks>
+    /// Source: https://docs.stripe.com/stripe-apps/api-authentication/oauth, which authenticates
+    /// both grants with <c>-u sk_live_***:</c> and says the error to expect is "you don't have
+    /// the required permissions" when the wrong key is used.
+    /// </remarks>
+    public string AppSecretKey { get; set; } = "";
+
+    /// <summary>
     /// Redirect URI for the read-only Marketplace audit app. Separate from
     /// <see cref="OAuthRedirectUri"/> on purpose: the audit grants read_only and keeps nothing,
     /// and the two flows must never be able to land on each other's callback.

@@ -104,7 +104,9 @@ public class StripeConnectControllerTests : IDisposable
     // fails loudly instead of asserting against a fake that quietly does nothing.
     private sealed class UnusedOAuth : IStripeOAuthClient
     {
-        public Task<StripeOAuthTokenResult> ExchangeCodeAsync(string code, CancellationToken ct = default) =>
+        public Task<StripeOAuthTokenResult> ExchangeAppInstallCodeAsync(string code, CancellationToken ct = default) =>
+            throw new NotSupportedException();
+        public Task<StripeOAuthTokenResult> ExchangeAuditCodeAsync(string code, CancellationToken ct = default) =>
             throw new NotSupportedException();
         public Task<StripeOAuthTokenResult> RefreshAsync(string refreshToken, CancellationToken ct = default) =>
             throw new NotSupportedException();

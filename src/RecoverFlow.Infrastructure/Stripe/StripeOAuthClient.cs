@@ -7,14 +7,29 @@ using Stripe;
 namespace RecoverFlow.Infrastructure.Stripe;
 
 /// <summary>
-/// Exchanges OAuth codes and refresh tokens for a merchant's access token, using the platform
-/// secret key (never the merchant's own token) to authenticate the exchange. The same
-/// POST /v1/oauth/token endpoint serves both the Stripe Apps install and the read-only
-/// Connect audit, so one client covers both flows.
+/// Exchanges OAuth codes and refresh tokens for a merchant's access token, using one of our own
+/// secret keys (never the merchant's own token) to authenticate the exchange. The same
+/// POST /v1/oauth/token endpoint serves both the Stripe Apps install and the read-only Connect
+/// audit, but they are authenticated with different keys because they live on different accounts.
 /// </summary>
 public sealed class StripeOAuthClient(IOptions<StripeOptions> stripeOptions) : IStripeOAuthClient
 {
-    public Task<StripeOAuthTokenResult> ExchangeCodeAsync(string code, CancellationToken ct = default) =>
+    // Stripe authenticates both app grants with the app developer's own secret key. That is a
+    // different account from the Connect platform, so falling back to the platform key here is
+    // only correct when the app happens to live on it. See StripeOptions.AppSecretKey.
+    private string AppKey => string.IsNullOrWhiteSpace(stripeOptions.Value.AppSecretKey)
+        ? stripeOptions.Value.SecretKey
+        : stripeOptions.Value.AppSecretKey;
+
+    public Task<StripeOAuthTokenResult> ExchangeAppInstallCodeAsync(string code, CancellationToken ct = default) =>
+        PostAsync(new OAuthTokenCreateOptions
+        {
+            GrantType = "authorization_code",
+            Code = code,
+            ClientSecret = AppKey,
+        }, ct);
+
+    public Task<StripeOAuthTokenResult> ExchangeAuditCodeAsync(string code, CancellationToken ct = default) =>
         PostAsync(new OAuthTokenCreateOptions
         {
             GrantType = "authorization_code",
@@ -27,7 +42,7 @@ public sealed class StripeOAuthClient(IOptions<StripeOptions> stripeOptions) : I
         {
             GrantType = "refresh_token",
             RefreshToken = refreshToken,
-            ClientSecret = stripeOptions.Value.SecretKey,
+            ClientSecret = AppKey,
         }, ct);
 
     private static async Task<StripeOAuthTokenResult> PostAsync(OAuthTokenCreateOptions options, CancellationToken ct)

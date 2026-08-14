@@ -22,13 +22,17 @@ public class StripeAuditControllerTests
     private sealed class FakeOAuth : IStripeOAuthClient
     {
         public string? SeenCode;
-        public Task<StripeOAuthTokenResult> ExchangeCodeAsync(string code, CancellationToken ct = default)
+        public Task<StripeOAuthTokenResult> ExchangeAuditCodeAsync(string code, CancellationToken ct = default)
         {
             SeenCode = code;
             // Connect tokens carry no expiry, which is why the audit never needed a refresh path.
             return Task.FromResult(
                 new StripeOAuthTokenResult(AccountId, "sk_live_SECRET_TOKEN", null, "read_only", null));
         }
+
+        // The audit must not reach the app grant: that is a different account and a different key.
+        public Task<StripeOAuthTokenResult> ExchangeAppInstallCodeAsync(string code, CancellationToken ct = default) =>
+            throw new NotSupportedException("The audit is a Connect authorization, not an app install.");
 
         public Task<StripeOAuthTokenResult> RefreshAsync(string refreshToken, CancellationToken ct = default) =>
             throw new NotSupportedException("The read-only audit exchanges a code once and keeps nothing.");
