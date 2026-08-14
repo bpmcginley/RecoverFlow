@@ -53,6 +53,7 @@ public static class DependencyInjection
         services.AddSingleton<ITokenEncryptor, TokenEncryptor>();
         services.AddScoped<IStripeOAuthClient, StripeOAuthClient>();
         services.AddScoped<StripeConnectService>();
+        services.AddScoped<MerchantStripeTokenProvider>();
 
         return services;
     }

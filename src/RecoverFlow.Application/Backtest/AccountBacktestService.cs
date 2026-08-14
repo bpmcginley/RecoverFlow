@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RecoverFlow.Application.Common;
+using RecoverFlow.Application.Connect;
 using RecoverFlow.Domain;
 using RecoverFlow.Domain.Entities;
 
@@ -16,6 +17,7 @@ namespace RecoverFlow.Application.Backtest;
 public sealed class AccountBacktestService(
     IAppDbContext db,
     IHistoricalInvoiceReader invoices,
+    MerchantStripeTokenProvider tokens,
     IOptions<BacktestOptions> backtestOptions,
     IOptions<BillingOptions> billingOptions,
     ILogger<AccountBacktestService> log)
@@ -63,7 +65,7 @@ public sealed class AccountBacktestService(
         {
             var since = DateTime.UtcNow.AddDays(-_opts.WindowDays);
             var found = await invoices.ListUncollectedInvoicesAsync(
-                merchant.StripeAccountId, since, _opts.MaxInvoices, ct);
+                await tokens.GetAccessTokenAsync(merchant, ct), since, _opts.MaxInvoices, ct);
 
             Populate(backtest, found);
             backtest.Status = BacktestStatus.Complete;

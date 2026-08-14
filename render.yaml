@@ -56,6 +56,16 @@ services:
         sync: false
       - key: Stripe__ClientId
         sync: false
+      # OAuth client ID of the published Stripe App. Distinct from Stripe__ClientId, which is
+      # the Connect ca_... id and still drives the free read-only audit.
+      - key: Stripe__AppClientId
+        sync: false
+      # Secret key of the account that OWNS the Stripe App (acct_1U3nACLGfYzeGCai), which is not
+      # the Connect platform in Stripe__SecretKey. Stripe authenticates the app's install and
+      # refresh grants with the app developer's own key; the wrong one fails the exchange with a
+      # permissions error, not at startup. Leave unset only if the app moves onto the platform.
+      - key: Stripe__AppSecretKey
+        sync: false
       - key: Stripe__WebhookSecret
         sync: false
       # Signing secret of the embedded Stripe Dashboard app (absec_...). Stripe only

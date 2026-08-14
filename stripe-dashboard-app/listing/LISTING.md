@@ -52,10 +52,11 @@ against Stripe's publishing guide on 12 August 2026.
 > clicked, and what has been recovered or later reversed. An overview shows
 > recovered revenue, the amount still at risk, and your recovery rate.
 >
-> The view requests read access only. Recovery actions run through your existing
-> RecoverFlow connection, and you can start with a free 90 day scan, no card required.
+> RecoverFlow reads your customers and invoices, and pays an unpaid invoice only when
+> a retry is due. It never creates invoices or charges. You can start with a free 90
+> day scan, no card required.
 
-> 955 characters measured on the plain text (without blockquote markers, with blank
+> 986 characters measured on the plain text (without blockquote markers, with blank
 > lines between paragraphs).
 
 <!-- Claim verification:
@@ -77,8 +78,10 @@ against Stripe's publishing guide on 12 August 2026.
      - Free 90 day scan, no card: BacktestOptions.WindowDays = 90 in
        src/RecoverFlow.Application/Common/Options.cs and docs/pricing/index.html
        ("The 90 day backward-looking scan. That is free and does not require a card.").
-     - Read access only: the two read permissions in the stripe-dashboard-app manifest
-       (customer_read, invoice_read); justifications in PERMISSIONS.md. -->
+     - Permission set: customer_read, invoice_read, invoice_write in the
+       stripe-dashboard-app manifest; justifications in PERMISSIONS.md. invoice_write
+       was added in v0.0.3 when the server moved off Connect onto Stripe Apps OAuth,
+       so retries now run on the app grant rather than a separate connection. -->
 
 ## Works with
 
@@ -130,25 +133,27 @@ for those viewports actually ships.
 
 ### 3. Title (80 max)
 
-`Read access only, with retries that know when to stop`
+`One write permission, used only to retry an invoice you already issued`
 
-> 53 characters.
+> 70 characters.
 
 **Description (300 max):**
 
-> The view requests two read permissions and no write access of any kind. Retries and
-> emails run through your existing RecoverFlow connection, scheduled by decline code,
-> so cards Stripe will not put on the wire without new details are left alone rather
-> than retried into the ground.
+> RecoverFlow asks for three permissions: read your customers, read your invoices, and
+> pay an unpaid one. It never creates invoices or charges. Retries are scheduled by
+> decline code, so cards Stripe will not put on the wire without new details are left
+> alone rather than retried into the ground.
 
-> 280 characters.
+> 293 characters.
 
-<!-- Verification: permission set is the two read-only scopes tied to real views
-     (customer_read, invoice_read), trimmed 2026-08-13 from an earlier five-scope
-     draft; see PERMISSIONS.md. Decline code behavior: src/RecoverFlow.Domain/Services/
-     DeclineCodeClassifier.cs (IsBlockedByStripe, ShouldRetry). Server-side actions run
-     via the platform key + Stripe-Account header: src/RecoverFlow.Infrastructure/Stripe/
-     StripeInvoicePayer.cs. -->
+<!-- Verification: permission set is customer_read, invoice_read and invoice_write.
+     charge_read was requested during the v0.0.3 draft and removed again: the only code
+     that reads charges is StripeRetryWasteReader, which serves the free audit on its own
+     Connect read_only grant, not the app grant. Decline code behavior:
+     src/RecoverFlow.Domain/Services/DeclineCodeClassifier.cs (IsBlockedByStripe,
+     ShouldRetry). The single write is the invoice pay in
+     src/RecoverFlow.Infrastructure/Stripe/StripeInvoicePayer.cs, which calls
+     InvoiceService.PayAsync and nothing else. -->
 
 ## Pricing
 

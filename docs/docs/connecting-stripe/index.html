@@ -30,13 +30,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </noscript>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Connecting your Stripe account | RecoverFlow docs</title>
-<meta name="description" content="RecoverFlow connects over Stripe Connect OAuth. What that grants, what it cannot reach, where the token is stored, and how to revoke it.">
+<meta name="description" content="RecoverFlow installs as a Stripe App. What the three permissions grant, what they cannot reach, where the token is stored, and how to uninstall.">
 <link rel="canonical" href="https://recoverflow.org/docs/connecting-stripe/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="RecoverFlow">
 <meta property="og:title" content="Connecting your Stripe account | RecoverFlow docs">
-<meta property="og:description" content="RecoverFlow connects over Stripe Connect OAuth. What that grants, what it cannot reach, where the token is stored, and how to revoke it.">
+<meta property="og:description" content="RecoverFlow installs as a Stripe App. What the three permissions grant, what they cannot reach, where the token is stored, and how to uninstall.">
 <meta property="og:url" content="https://recoverflow.org/docs/connecting-stripe/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -162,7 +162,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Connecting Stripe",
-  "description": "RecoverFlow connects over Stripe Connect OAuth. What that grants, what it cannot reach, where the token is stored, and how to revoke it.",
+  "description": "RecoverFlow installs as a Stripe App. What the three permissions grant, what they cannot reach, where the token is stored, and how to uninstall.",
   "url": "https://recoverflow.org/docs/connecting-stripe/",
   "dateModified": "2026-07-28",
   "author": {
@@ -200,7 +200,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "name": "How do I disconnect RecoverFlow?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Revoke access from the connected applications section of your own Stripe Dashboard. It is immediate and does not require contacting us."
+        "text": "Uninstall RecoverFlow from the installed apps section of your own Stripe Dashboard. It is immediate and does not require contacting us."
       }
     },
     {
@@ -237,31 +237,34 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <article class="wrap">
     <p class="eyebrow"><a href="/docs/">Docs</a></p>
     <h1>Connecting Stripe</h1>
-    <p class="updated">Reflects the code as of 28 July 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
+    <p class="updated">Reflects the code as of 14 August 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
 
-    <p>RecoverFlow connects to your Stripe account using Stripe Connect OAuth. You approve the connection inside Stripe's own interface, not ours, and you can withdraw it the same way without asking us.</p>
+    <p>RecoverFlow installs into your Stripe account as a <strong>Stripe App</strong>. You approve the exact list of permissions inside Stripe's own interface, not ours, and you can uninstall it the same way without asking us.</p>
+    <p>The free <a href="/audit/">retry waste audit</a> is a separate thing with a separate connection: it uses Stripe Connect OAuth, asks for read-only access, and keeps no token at all. Everything below describes the full product.</p>
 
     <h2 id="grants">What the connection allows</h2>
+    <p>Three permissions, and Stripe enforces the list on its own side:</p>
     <ul>
-      <li>Reading subscriptions, invoices and payment intents, so we can see what failed and why.</li>
-      <li>Attempting payment on a failed invoice, which is the retry.</li>
-      <li>Reading customer email addresses, so dunning emails can be addressed to the right person.</li>
+      <li><strong>Read your invoices</strong>, so we can see what failed and why.</li>
+      <li><strong>Read your customers</strong>, so dunning emails can be addressed to the right person and a case can be matched to the customer you are looking at.</li>
+      <li><strong>Pay an unpaid invoice</strong>, which is the retry. This is the only write.</li>
     </ul>
 
     <h2 id="cannot">What it does not allow</h2>
     <ul>
       <li><strong>We never see card numbers.</strong> Stripe holds those. RecoverFlow asks Stripe to charge a payment method by its ID; the card details never reach our servers. This is why the platform is PCI SAQ A.</li>
-      <li>We do not create, change or cancel subscriptions.</li>
+      <li>We do not create, change or cancel subscriptions, and we do not read them.</li>
+      <li>We do not create, edit or void invoices. The one write we have pays an invoice you already issued.</li>
       <li>We do not issue refunds or move money out of your account.</li>
       <li>We do not change your Stripe retry settings, your dunning settings or your branding.</li>
     </ul>
 
     <h2 id="token">Where the access token lives</h2>
-    <p>The OAuth token is encrypted at rest before it is written to the database, so a database dump on its own does not yield a usable Stripe credential. Merchant records are isolated by tenant at the query layer.</p>
+    <p>The OAuth token is encrypted at rest before it is written to the database, so a database dump on its own does not yield a usable Stripe credential. It also expires an hour after it is issued, and the refresh token used to renew it is encrypted the same way. Merchant records are isolated by tenant at the query layer.</p>
     <p>More on the surrounding controls, including the certifications RecoverFlow does not hold, on the <a href="/security/">security page</a>.</p>
 
     <h2 id="revoke">Revoking access</h2>
-    <p>Go to your Stripe Dashboard, find RecoverFlow under connected applications, and revoke it. It takes effect immediately. You do not need to email anyone, and nothing further is billed beyond recoveries already attributed before that point.</p>
+    <p>Go to your Stripe Dashboard, find RecoverFlow under your installed apps, and uninstall it. It takes effect immediately. You do not need to email anyone, and nothing further is billed beyond recoveries already attributed before that point.</p>
     <div class="callout">
       <p><strong>This is the important bit:</strong> the off switch is on your side, in software you already trust, and it does not route through a retention conversation with us.</p>
     </div>
@@ -270,7 +273,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <div class="faq">
   <details><summary>Does RecoverFlow ever see my customers' card numbers?</summary><p>No. Card data stays with Stripe. RecoverFlow references payment methods by ID and asks Stripe to attempt the charge, so card numbers never reach our servers. That is what keeps the platform in PCI SAQ A scope.</p></details>
   <details><summary>Can RecoverFlow cancel my customers' subscriptions?</summary><p>No. The connection does not include changing or cancelling subscriptions. Whether a subscription cancels after failed payments is decided by your own Stripe subscription settings.</p></details>
-  <details><summary>How do I disconnect RecoverFlow?</summary><p>Revoke access from the connected applications section of your own Stripe Dashboard. It is immediate and does not require contacting us.</p></details>
+  <details><summary>How do I disconnect RecoverFlow?</summary><p>Uninstall RecoverFlow from the installed apps section of your own Stripe Dashboard. It is immediate and does not require contacting us.</p></details>
   <details><summary>Is my Stripe token encrypted?</summary><p>Yes, it is encrypted before being stored, so a database dump alone does not produce a usable credential.</p></details>
 </div>
       <div class="cta-box">
@@ -283,7 +286,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
     <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>

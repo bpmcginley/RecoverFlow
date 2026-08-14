@@ -12,8 +12,7 @@ public sealed class StripeConnectService(
     public async Task<Merchant> CompleteConnectionAsync(
         string code, string email, string companyName, CancellationToken ct = default)
     {
-        var token = await oauthClient.ExchangeCodeAsync(code, ct);
-        var encryptedAccessToken = encryptor.Encrypt(token.AccessToken);
+        var token = await oauthClient.ExchangeAppInstallCodeAsync(code, ct);
 
         var merchant = await db.Merchants.SingleOrDefaultAsync(m => m.StripeAccountId == token.StripeAccountId, ct);
         if (merchant is null)
@@ -29,7 +28,7 @@ public sealed class StripeConnectService(
             db.Merchants.Add(merchant);
         }
 
-        merchant.EncryptedStripeAccessToken = encryptedAccessToken;
+        MerchantStripeTokenProvider.Store(merchant, token, encryptor);
         await db.SaveChangesAsync(ct);
 
         return merchant;

@@ -848,7 +848,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <div class="step">Revenue recovered</div>
     </div>
     <ol class="how-steps reveal" data-delay="160">
-      <li><strong>Connect Stripe</strong>: read access via Stripe Connect OAuth, about 60 seconds.</li>
+      <li><strong>Connect Stripe</strong>: install the RecoverFlow app from Stripe's own permissions screen, about 60 seconds.</li>
       <li><strong>See your backtest</strong>: we scan your last 90 days of failed payments and show what was recoverable, in dollars.</li>
       <li><strong>We go to work</strong>: when a payment fails, we schedule smart retries around the times and decline reasons most likely to succeed, and send dunning emails under <em>your</em> brand, not ours.</li>
       <li><strong>You keep the revenue</strong>: every recovered payment shows up in your dashboard, and we bill 25% of only those, never more than $299 in a month.</li>
@@ -884,7 +884,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <div class="card reveal" data-delay="0">
         <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></svg></div>
         <h3>Access you control</h3>
-        <p>RecoverFlow connects via Stripe Connect OAuth with access you grant, and can revoke, from your own Stripe dashboard at any time.</p>
+        <p>RecoverFlow installs as a Stripe App with permissions you grant, and can withdraw by uninstalling it, from your own Stripe dashboard at any time.</p>
       </div>
       <div class="card reveal" data-delay="80">
         <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></div>
@@ -923,8 +923,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       </div>
       <div class="card reveal" data-delay="240">
         <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-        <h3>Secure Stripe Connect</h3>
-        <p>Standard OAuth linking with encrypted tokens at rest. RecoverFlow only reads what it needs to recover revenue.</p>
+        <h3>Secure Stripe install</h3>
+        <p>Standard OAuth linking with encrypted tokens at rest. Three permissions in total: read your customers, read your invoices, and pay an unpaid one.</p>
       </div>
       <div class="card reveal" data-delay="0">
         <div class="icon"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg></div>
@@ -951,7 +951,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       </details>
       <details>
         <summary>What access do you have to my Stripe account?</summary>
-        <p>Read access to subscriptions and invoices via Stripe Connect OAuth, plus the ability to retry failed invoices. You can revoke it from your Stripe dashboard at any time, and we never see or store card numbers. Stripe holds those.</p>
+        <p>Three permissions: read your customers, read your invoices, and pay an unpaid invoice, which is what a retry is. That is the whole list, and Stripe shows it to you on the screen where you approve it. You can uninstall from your Stripe dashboard at any time, and we never see or store card numbers. Stripe holds those.</p>
       </details>
       <details>
         <summary>Doesn't Stripe already retry failed payments?</summary>
@@ -989,7 +989,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe Connect · Access you control, revoke anytime from your Stripe dashboard · No contracts, no lock-in</div>
+    <div class="footer-trust">Built on Stripe · Access you control, revoke anytime from your Stripe dashboard · No contracts, no lock-in</div>
     <div class="footer-trust"><a href="/recover-failed-stripe-payments/">Guide: How to recover failed Stripe subscription payments</a></div>
     <div class="footer-trust"><a href="/compare/">Compare RecoverFlow with Churnkey, Baremetrics, Stunning, Paddle Retain and Stripe built-in</a> · <a href="/pricing/">Pricing</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a> &middot; <a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
