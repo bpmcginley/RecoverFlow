@@ -192,6 +192,15 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>Grouped by the day the work actually landed. Bug fixes that affected numbers shown to customers are listed as prominently as features, because those are the ones you would want to know about.</p>
 
     <div class="release">
+      <p class="updated" style="margin-bottom:4px;">2026-08-14</p>
+      <h2 style="margin-top:0;">RecoverFlow is now a Stripe App, and the permission list is shorter</h2>
+      <ul>
+        <li><strong>The connection changed from Stripe Connect to a Stripe App install.</strong> Stripe refused the previous submission because the install link sent people arriving from the Marketplace to a Connect authorisation screen instead of the Marketplace one. Fixing that moved the whole merchant connection onto the app's own OAuth grant. The practical difference for you is that the permissions are now a fixed list declared in the app itself and shown to you on the approval screen, rather than a scope string chosen by our server.</li>
+        <li><strong>The list is three permissions: read your customers, read your invoices, and pay an unpaid invoice.</strong> The write is the retry, and there is no second write. The previous Connect authorisation asked for read and write access across the account, so this is narrower than what came before, not wider. A fourth permission to read charges was drafted and then removed, because nothing under this grant reads charges.</li>
+        <li><strong>Access tokens now expire after an hour and are renewed automatically.</strong> The refresh token is encrypted at rest the same way the access token already was. Accounts connected before this change keep working unchanged.</li>
+        <li><strong>Pages that said the Dashboard app performs no writes have been corrected.</strong> That was true of the app when it only rendered views, and it stopped being true the moment the retry moved onto the app's grant. The <a href="/privacy/">privacy policy</a>, <a href="/security/">security page</a>, <a href="/docs/connecting-stripe/">connecting Stripe</a>, the homepage and the pricing FAQ now all describe the same three permissions. The free <a href="/audit/">retry waste audit</a> is unaffected: it is still a separate Connect authorisation with read-only access and no stored token.</li>
+      </ul>
+    </div>    <div class="release">
       <p class="updated" style="margin-bottom:4px;">2026-08-12</p>
       <h2 style="margin-top:0;">A cap on the fee, and two things this site was getting wrong</h2>
       <ul>
@@ -267,7 +276,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
     <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>

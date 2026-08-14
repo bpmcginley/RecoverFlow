@@ -18,7 +18,7 @@ public class RetryExecutionServiceTests
     private readonly FakeRetryJobScheduler _scheduler = new();
 
     private RetryExecutionService Service(int maxAttempts = 4, int maxDays = 14) => new(
-        _db, _payer, _scheduler,
+        _db, _payer, TestTokens.Provider(_db), _scheduler,
         Options.Create(new RetryOptions { MaxRetryAttempts = maxAttempts, MaxDaysToRecover = maxDays }),
         NullLogger<RetryExecutionService>.Instance);
 
@@ -33,6 +33,7 @@ public class RetryExecutionServiceTests
             Email = "owner@acme.test",
             CompanyName = "Acme",
             StripeAccountId = "acct_123",
+            EncryptedStripeAccessToken = "app_access_token",
             CreatedAt = DateTime.UtcNow,
         };
         var payment = new FailedPayment
@@ -74,7 +75,23 @@ public class RetryExecutionServiceTests
         Assert.Empty(_scheduler.Scheduled);
 
         var call = Assert.Single(_payer.Calls);
-        Assert.Equal(("in_123", "acct_123", attempt.Id.ToString()), call);
+        // The merchant's app access token, not their account id: Stripe Apps has no Stripe-Account header.
+        Assert.Equal(("in_123", "app_access_token", attempt.Id.ToString()), call);
+    }
+
+    [Fact]
+    public async Task An_uninstalled_app_ends_the_attempt_rather_than_looping_the_job_forever()
+    {
+        var (payment, attempt) = Seed();
+        payment.Merchant.EncryptedStripeAccessToken = null; // merchant removed RecoverFlow
+        await _db.SaveChangesAsync();
+
+        await Service().ExecuteAsync(attempt.Id);
+
+        // Throwing here would leave Hangfire retrying a job that can never succeed.
+        Assert.Equal("skipped", attempt.Result);
+        Assert.Null(attempt.AttemptedAt);
+        Assert.Empty(_payer.Calls);
     }
 
     [Fact]

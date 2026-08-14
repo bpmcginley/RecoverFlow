@@ -373,7 +373,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     </ul>
 
     <h2>How the two fit together</h2>
-    <p>RecoverFlow is not a replacement for Stripe and does not turn Stripe's features off. Stripe still processes every charge and still holds every card. RecoverFlow connects through Stripe Connect with access you grant and can revoke from your own Stripe dashboard, and never sees card numbers.</p>
+    <p>RecoverFlow is not a replacement for Stripe and does not turn Stripe's features off. Stripe still processes every charge and still holds every card. RecoverFlow installs as a Stripe App with permissions you grant and can withdraw from your own Stripe dashboard, and never sees card numbers.</p>
     <p>The attribution point is the one that matters most for cost. Because Stripe recovers some payments on its own, and some customers pay on their own, a recovery tool that bills on results has to be careful about what it takes credit for. RecoverFlow only bills on recoveries it can attribute to a specific action it took. Anything that came back on its own is not billed. That is deliberately the conservative direction, and you can read the full detail on the <a href="/pricing/">pricing page</a>.</p>
 
     <h2 id="faq">Frequently asked questions</h2>
@@ -406,7 +406,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe Connect · Access you control, revoke anytime from your Stripe dashboard · No contracts, no lock-in</div>
+    <div class="footer-trust">Built on Stripe · Access you control, revoke anytime from your Stripe dashboard · No contracts, no lock-in</div>
     <div class="footer-trust"><a href="/tools/">Free tools</a> &middot; <a href="/recover-failed-stripe-payments/">Recovery guide</a> · <a href="/pricing/">Pricing</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a> &middot; <a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

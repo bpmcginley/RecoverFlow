@@ -2,7 +2,7 @@
   "$schema": "https://stripe.com/stripe-app.schema.json",
   "id": "com.recoverflow.dashboard",
   "name": "RecoverFlow",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "icon": "./icon.png",
   "ui_extension": {
     "views": [
@@ -39,6 +39,10 @@
     {
       "permission": "invoice_read",
       "purpose": "Identifies the invoice you are viewing so the app can show whether it has a RecoverFlow recovery case and how far it has progressed."
+    },
+    {
+      "permission": "invoice_write",
+      "purpose": "Retries an unpaid invoice at the moment RecoverFlow judges a retry can succeed. RecoverFlow only ever pays an invoice you already issued; it never creates invoices or charges of its own."
     }
   ],
   "post_install_action": {
@@ -49,5 +53,9 @@
     "API_BASE": "https://api.recoverflow.org/app/v1"
   },
   "distribution_type": "public",
+  "stripe_api_access_type": "oauth",
+  "allowed_redirect_uris": [
+    "https://api.recoverflow.org/connect/stripe/callback"
+  ],
   "sandbox_install_compatible": true
 }
