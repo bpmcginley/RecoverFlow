@@ -64,21 +64,50 @@ is most obviously generic, so it has the strictest personalisation rule.
 - **Anyone who has asked not to be contacted.** Log as `disqualified` immediately; the
   ledger is what makes that stick across sessions.
 
-## Sourcing recipe (Apollo)
+## Sourcing
 
-Budget is the binding constraint: **199 lead credits left in the cycle ending 10 September,
-and zero export credits.** No CSV dumps; pull contacts and add them to the ledger directly.
-That caps sourcing at roughly 200 a month, which happens to match what one person can send
-with real personalisation at 10 a day. Do not try to beat that number, it is not the
-bottleneck worth attacking.
+**Apollo does not work for this ICP on the current plan. Tested 14 August 2026, do not repeat
+it without checking the plan first.** What happens, in order:
 
-`apollo_mixed_people_api_search` with:
+1. `apollo_mixed_people_api_search` returns `API_INACCESSIBLE`. The search API is excluded
+   from the free plan entirely.
+2. Routing through `apollo_agent_find_prospects` gets past that, but the
+   `currently_using_any_of_technology_uids: ['stripe']` filter is itself paid-only. That is
+   the one filter that matters most here, because "uses Stripe" is most of the qualification.
+3. Without it the pool is 1.6M B2B SaaS companies of poor fit. Actual previews returned NEOM,
+   Il Sole 24 ORE and ConstructionPlacements: a Saudi megaproject, an Italian newspaper and a
+   jobs board.
+4. The agent falls back to AI research to qualify on Stripe. There are 25 free runs. **All 25
+   came back unqualified.** Going further means buying credits to research 300 companies on
+   the evidence of a 0/25 trial.
+5. `export_credit` is 0 regardless, so nothing can be pulled out in bulk even if it qualified.
 
-- `person_titles`: founder, co-founder, ceo, cto, head of growth, head of revenue
-- `organization_num_employees_ranges`: `2,50`
-- `q_organization_keyword_tags`: saas, subscription, b2b software
-- `technologies`: stripe
-- `contact_email_status`: verified
+So the credit balance was never the binding constraint. The plan is. Apollo Basic unlocks the
+technology filter and the search API; until someone decides to pay for that, Apollo is not the
+sourcing channel and this section is a record of why rather than an instruction.
+
+If the plan is upgraded, ask the agent for: titles founder / co-founder / ceo / cto; headcount
+2 to 50; keywords saas, subscription, b2b software; technology stripe; email status verified.
+
+## Sourcing by hand, which is what actually fits
+
+Worth being honest that this is not much of a downgrade. The binding constraint on this
+pipeline is not list size, it is the one true sentence per prospect at 10 sends a day. That is
+40 to 50 a week, and a list of 40 hand-picked companies where Stripe billing is visible on the
+pricing page beats 400 unqualified rows that still need the same sentence written.
+
+Places where Stripe-billed subscription SaaS in the $10k to $150k range actually congregate:
+
+- Indie Hackers products with revenue disclosed. MRR is stated, which resolves the whole
+  lower-bound question in one glance.
+- Product Hunt, filtered to subscription B2B tools rather than one-time or free.
+- MicroConf and similar bootstrapper communities, where the size range is the norm.
+- Competitor comparison traffic. Anyone publicly discussing Churnkey, Baremetrics Recover,
+  Paddle Retain or Stunning is a `competitor` track prospect who has already agreed the
+  category is worth money.
+
+Check Stripe by opening their checkout. It is visible from outside, and it is the same check
+the Apollo filter would have done, minus the plan gate.
 
 Then, before anything is added to the ledger, check by hand:
 
