@@ -77,10 +77,15 @@ on commercial email and only he can supply one.
 
 ## 3. Top up the queue
 
-If fewer than 20 prospects are in `sourced` or `t1_sent`, source more. Use the Apollo recipe
-in `icp.md` via `mcp__Apollo-io__apollo_mixed_people_api_search`. Budget is tight: check
-`apollo_usage_stats_credit_usage_stats` first, and there are no export credits, so add
-contacts to the ledger directly rather than trying to dump a CSV.
+If fewer than 20 prospects are in `sourced` or `t1_sent`, source more. **Do not reach for
+Apollo.** It was tested on 14 August 2026 and cannot serve this ICP on the current plan: the
+search API is plan-excluded, the Stripe technology filter is paid-only, and the AI-research
+fallback qualified 0 of 25. `icp.md` records the detail. Going further needs a plan upgrade,
+which is Bruce's call and not something to spend into unasked.
+
+Source by hand from the places listed in `icp.md`, verifying Stripe by opening the company's
+checkout. Forty good rows a week is the target and it is enough; the constraint is the
+personalisation sentence, not the list.
 
 Run the three hand checks from `icp.md` on every result. Roughly half should fail them. Then:
 
