@@ -1,5 +1,8 @@
+using Microsoft.Extensions.Logging.Abstractions;
 using RecoverFlow.Application.Backtest;
 using RecoverFlow.Application.Billing;
+using RecoverFlow.Application.Common;
+using RecoverFlow.Application.Connect;
 using RecoverFlow.Application.Recovery;
 
 namespace RecoverFlow.Tests.Unit;
@@ -8,15 +11,45 @@ internal sealed class FakeHistoricalInvoiceReader : IHistoricalInvoiceReader
 {
     public List<HistoricalFailedInvoice> Invoices { get; } = [];
     public Exception? Throw { get; set; }
-    public List<(string Account, DateTime Since, int Max)> Calls { get; } = [];
+    public List<(string AccessToken, DateTime Since, int Max)> Calls { get; } = [];
 
     public Task<IReadOnlyList<HistoricalFailedInvoice>> ListUncollectedInvoicesAsync(
-        string stripeAccountId, DateTime sinceUtc, int maxInvoices, CancellationToken ct = default)
+        string accessToken, DateTime sinceUtc, int maxInvoices, CancellationToken ct = default)
     {
-        Calls.Add((stripeAccountId, sinceUtc, maxInvoices));
+        Calls.Add((accessToken, sinceUtc, maxInvoices));
         if (Throw is not null) throw Throw;
         return Task.FromResult<IReadOnlyList<HistoricalFailedInvoice>>(Invoices);
     }
+}
+
+/// <summary>Round-trips plaintext, so a test asserting on a stored token reads what it seeded.</summary>
+internal sealed class PassThroughTokenEncryptor : ITokenEncryptor
+{
+    public string Encrypt(string plaintext) => plaintext;
+    public string Decrypt(string ciphertext) => ciphertext;
+}
+
+internal sealed class FakeStripeOAuthClient : IStripeOAuthClient
+{
+    public StripeOAuthTokenResult NextResult { get; set; } =
+        new("acct_123", "sk_refreshed", "rt_new", null, DateTime.UtcNow.AddHours(1));
+    public List<string> RefreshedWith { get; } = [];
+
+    public Task<StripeOAuthTokenResult> ExchangeCodeAsync(string code, CancellationToken ct = default) =>
+        Task.FromResult(NextResult);
+
+    public Task<StripeOAuthTokenResult> RefreshAsync(string refreshToken, CancellationToken ct = default)
+    {
+        RefreshedWith.Add(refreshToken);
+        return Task.FromResult(NextResult);
+    }
+}
+
+internal static class TestTokens
+{
+    public static MerchantStripeTokenProvider Provider(IAppDbContext db, IStripeOAuthClient? oauth = null) =>
+        new(db, oauth ?? new FakeStripeOAuthClient(), new PassThroughTokenEncryptor(),
+            NullLogger<MerchantStripeTokenProvider>.Instance);
 }
 
 internal sealed class FakeBacktestJobScheduler : IBacktestJobScheduler
@@ -28,12 +61,12 @@ internal sealed class FakeBacktestJobScheduler : IBacktestJobScheduler
 internal sealed class FakeInvoicePayer : IStripeInvoicePayer
 {
     public InvoicePayResult NextResult { get; set; } = InvoicePayResult.Success;
-    public List<(string InvoiceId, string Account, string IdempotencyKey)> Calls { get; } = [];
+    public List<(string InvoiceId, string AccessToken, string IdempotencyKey)> Calls { get; } = [];
 
     public Task<InvoicePayResult> PayInvoiceAsync(
-        string invoiceId, string stripeAccountId, string idempotencyKey, CancellationToken ct = default)
+        string invoiceId, string accessToken, string idempotencyKey, CancellationToken ct = default)
     {
-        Calls.Add((invoiceId, stripeAccountId, idempotencyKey));
+        Calls.Add((invoiceId, accessToken, idempotencyKey));
         return Task.FromResult(NextResult);
     }
 }

@@ -158,7 +158,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <div class="wrap">
     <p class="eyebrow">Legal</p>
     <h1>Privacy policy</h1>
-    <p class="updated">Last updated 13 August 2026</p>
+    <p class="updated">Last updated 14 August 2026</p>
 
     <div class="lawyer">
   <p><strong>Plain English, not a substitute for legal advice.</strong> RecoverFlow is run by one person and these documents were written to describe accurately what the software actually does, rather than copied from a generator. They have not been reviewed by a solicitor.</p>
@@ -194,7 +194,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <ul>
       <li>Your email address and company name</li>
       <li>Your Stripe account identifier</li>
-      <li>An <strong>encrypted</strong> Stripe access token, which is what lets us read your invoices and retry failed payments</li>
+      <li>An <strong>encrypted</strong> Stripe access token, and the encrypted refresh token that renews it, which together are what let us read your invoices and retry failed payments</li>
       <li>Your plan, your account settings, and the date you signed up</li>
       <li>Billing records for fees we have charged you, and a Stripe customer identifier for that billing</li>
     </ul>
@@ -230,11 +230,12 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>Your email address is used to deliver that one report, through the same email provider listed in the sub-processors section. It is not added to a mailing list and you will not receive anything else because of it. If you would like a copy of the report re-sent, we cannot do it from our records, because we do not have any: you would need to run the audit again.</p>
 
     <h3>The RecoverFlow app for the Stripe Dashboard</h3>
-    <p>There is also a <strong>RecoverFlow app that runs inside the Stripe Dashboard</strong>. It is a read-only window onto data RecoverFlow already holds for your account, and it creates no new records.</p>
+    <p>There is also a <strong>RecoverFlow app that runs inside the Stripe Dashboard</strong>. Its views are a window onto data RecoverFlow already holds for your account. Installing it is also how you authorise RecoverFlow to do the recovery work described in section 2, so the permissions below cover both.</p>
     <ul>
-      <li>It asks Stripe for two read permissions: the identity of the customer you are viewing and the identity of the invoice you are viewing. They are used to look up the matching recovery cases, and for nothing else.</li>
-      <li>When you open one of its views, a request signed by Stripe is sent to our API. It tells us which Stripe account it came from and which customer or invoice is on screen, and the reply is the recovery data we already hold for that account. If the account has never been connected to RecoverFlow, the reply is that there is nothing to show.</li>
-      <li>The app performs no writes. It cannot create, change or delete anything in your Stripe account or in RecoverFlow.</li>
+      <li>It asks Stripe for <strong>three permissions</strong>: read your customers, read your invoices, and pay an unpaid invoice. The two reads identify the customer or invoice you are looking at, so the app can find the matching recovery case, and they let us list the unpaid invoices a retry might apply to.</li>
+      <li>When you open one of its views, a request signed by Stripe is sent to our API. It tells us which Stripe account it came from and which customer or invoice is on screen, and the reply is the recovery data we already hold for that account. If the account has never been connected to RecoverFlow, the reply is that there is nothing to show. <strong>The views themselves make no changes at all</strong>, in your Stripe account or in ours.</li>
+      <li><strong>The single write is paying an invoice you already issued</strong>, which is what a retry is. RecoverFlow never creates invoices or charges of its own, and it cannot edit, void or delete anything in your Stripe account. Stripe enforces that boundary on its own side: the permissions screen you approve at install shows you exactly what was granted.</li>
+      <li>Uninstalling the app from your Stripe dashboard ends all of it at once, without contacting us.</li>
     </ul>
 
     <h2 id="never">4. What we never store</h2>
@@ -296,7 +297,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
     <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>

@@ -56,6 +56,10 @@ services:
         sync: false
       - key: Stripe__ClientId
         sync: false
+      # OAuth client ID of the published Stripe App. Distinct from Stripe__ClientId, which is
+      # the Connect ca_... id and still drives the free read-only audit.
+      - key: Stripe__AppClientId
+        sync: false
       - key: Stripe__WebhookSecret
         sync: false
       # Signing secret of the embedded Stripe Dashboard app (absec_...). Stripe only

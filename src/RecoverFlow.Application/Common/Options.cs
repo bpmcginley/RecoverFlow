@@ -10,6 +10,13 @@ public sealed class StripeOptions
     public string OAuthRedirectUri { get; set; } = "";
 
     /// <summary>
+    /// OAuth client ID of the published Stripe App, which is a different credential from the
+    /// Connect <see cref="ClientId"/> and is issued on the app's own Settings tab. The merchant
+    /// install flow uses this one; the free read-only audit still runs on Connect.
+    /// </summary>
+    public string AppClientId { get; set; } = "";
+
+    /// <summary>
     /// Redirect URI for the read-only Marketplace audit app. Separate from
     /// <see cref="OAuthRedirectUri"/> on purpose: the audit grants read_only and keeps nothing,
     /// and the two flows must never be able to land on each other's callback.

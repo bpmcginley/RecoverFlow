@@ -32,7 +32,7 @@ public class AccountBacktestServiceTests
     }
 
     private static AccountBacktestService Service(AppDbContext db, FakeHistoricalInvoiceReader reader) =>
-        new(db, reader,
+        new(db, reader, TestTokens.Provider(db),
             Options.Create(new BacktestOptions { WindowDays = 90, MaxInvoices = 200 }),
             Options.Create(new BillingOptions { FeeBasisPoints = 2500 }),
             NullLogger<AccountBacktestService>.Instance);

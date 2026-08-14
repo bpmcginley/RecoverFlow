@@ -25,8 +25,13 @@ public class StripeAuditControllerTests
         public Task<StripeOAuthTokenResult> ExchangeCodeAsync(string code, CancellationToken ct = default)
         {
             SeenCode = code;
-            return Task.FromResult(new StripeOAuthTokenResult(AccountId, "sk_live_SECRET_TOKEN", null, "read_only"));
+            // Connect tokens carry no expiry, which is why the audit never needed a refresh path.
+            return Task.FromResult(
+                new StripeOAuthTokenResult(AccountId, "sk_live_SECRET_TOKEN", null, "read_only", null));
         }
+
+        public Task<StripeOAuthTokenResult> RefreshAsync(string refreshToken, CancellationToken ct = default) =>
+            throw new NotSupportedException("The read-only audit exchanges a code once and keeps nothing.");
     }
 
     private sealed class FakeReader(params FailedChargeAttempt[] charges) : IRetryWasteReader

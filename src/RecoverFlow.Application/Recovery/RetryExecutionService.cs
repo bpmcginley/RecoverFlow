@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using RecoverFlow.Application.Common;
+using RecoverFlow.Application.Connect;
 using RecoverFlow.Domain;
 using RecoverFlow.Domain.Entities;
 using RecoverFlow.Domain.Services;
@@ -17,6 +18,7 @@ namespace RecoverFlow.Application.Recovery;
 public sealed class RetryExecutionService(
     IAppDbContext db,
     IStripeInvoicePayer stripe,
+    MerchantStripeTokenProvider tokens,
     IRetryJobScheduler retryJobs,
     IOptions<RetryOptions> retryOptions,
     ILogger<RetryExecutionService> log)
@@ -44,9 +46,25 @@ public sealed class RetryExecutionService(
             return;
         }
 
+        string accessToken;
+        try
+        {
+            accessToken = await tokens.GetAccessTokenAsync(payment.Merchant, ct);
+        }
+        catch (MerchantNotAuthorizedException ex)
+        {
+            // The merchant uninstalled the app, so we no longer have permission to pay their
+            // invoice. Rerunning the job cannot fix that, and letting it throw would leave
+            // Hangfire retrying a doomed attempt. Close it out instead.
+            log.LogWarning(ex, "Retry attempt {AttemptId} skipped: merchant is no longer authorized", attempt.Id);
+            attempt.Result = "skipped";
+            await db.SaveChangesAsync(ct);
+            return;
+        }
+
         attempt.AttemptedAt = DateTime.UtcNow;
         var result = await stripe.PayInvoiceAsync(
-            payment.StripeInvoiceId, payment.Merchant.StripeAccountId, attempt.Id.ToString(), ct);
+            payment.StripeInvoiceId, accessToken, attempt.Id.ToString(), ct);
 
         var next = result.Succeeded ? null : RecordFailure(payment, attempt, result);
         if (result.Succeeded)

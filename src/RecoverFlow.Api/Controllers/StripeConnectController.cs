@@ -11,8 +11,10 @@ using RecoverFlow.Application.Connect;
 namespace RecoverFlow.Api.Controllers;
 
 /// <summary>
-/// Standard Connect OAuth linking: a merchant authorizes RecoverFlow to read their
-/// existing Stripe account. RecoverFlow never creates or manages connected accounts.
+/// Stripe Apps OAuth 2.0 install: a merchant installs RecoverFlow onto their existing Stripe
+/// account from the App Marketplace listing. RecoverFlow never creates or manages connected
+/// accounts. The route keeps its /connect/stripe prefix because that URL is already registered
+/// with Stripe as an allowed redirect and is baked into live merchants' bookmarks.
 /// </summary>
 [ApiController]
 [Route("connect/stripe")]
@@ -42,10 +44,16 @@ public sealed class StripeConnectController(
         var state = new OAuthState(nonce, email, companyName, DateTime.UtcNow);
         var protectedState = protector.Protect(JsonSerializer.Serialize(state));
 
-        var authorizeUrl = "https://connect.stripe.com/oauth/authorize" +
-            $"?response_type=code" +
-            $"&client_id={Uri.EscapeDataString(stripeOptions.Value.ClientId)}" +
-            $"&scope=read_write" +
+        // Stripe Apps OAuth 2.0, not Connect OAuth. App review rejected v0.0.2 because a merchant
+        // arriving from the Marketplace listing was being sent to a Connect authorize URL, which
+        // is not an app install and shows "The provided OAuth link is invalid".
+        //
+        // This link takes no response_type and no scope. Under Stripe Apps the grant is whatever
+        // stripe-app.json declares, so the consent screen is driven by the manifest permissions
+        // and adding a scope here would do nothing. Widening access now means editing the
+        // manifest, in public, where merchants can read the purpose strings.
+        var authorizeUrl = "https://marketplace.stripe.com/oauth/v2/authorize" +
+            $"?client_id={Uri.EscapeDataString(stripeOptions.Value.AppClientId)}" +
             $"&redirect_uri={Uri.EscapeDataString(stripeOptions.Value.OAuthRedirectUri)}" +
             $"&state={Uri.EscapeDataString(protectedState)}";
 

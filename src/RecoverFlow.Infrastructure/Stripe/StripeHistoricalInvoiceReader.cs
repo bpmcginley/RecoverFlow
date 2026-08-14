@@ -4,7 +4,9 @@ using Stripe;
 namespace RecoverFlow.Infrastructure.Stripe;
 
 /// <summary>
-/// Reads a connected merchant's uncollected invoices (platform key + Stripe-Account header).
+/// Reads a merchant's uncollected invoices as the installed Stripe App, authenticating with
+/// the merchant's own OAuth access token. Not the platform key + Stripe-Account header: that
+/// is a Connect pattern, and under Stripe Apps there is no connected account to name.
 /// Two passes — "open" (still owed, past due) and "uncollectible" (Stripe gave up) — are the
 /// honest "lost / at-risk" buckets; paid and draft invoices are irrelevant to a recovery backtest.
 ///
@@ -19,10 +21,10 @@ public sealed class StripeHistoricalInvoiceReader : IHistoricalInvoiceReader
     private static readonly string[] LostStatuses = ["open", "uncollectible"];
 
     public async Task<IReadOnlyList<HistoricalFailedInvoice>> ListUncollectedInvoicesAsync(
-        string stripeAccountId, DateTime sinceUtc, int maxInvoices, CancellationToken ct = default)
+        string accessToken, DateTime sinceUtc, int maxInvoices, CancellationToken ct = default)
     {
         var service = new InvoiceService();
-        var request = new RequestOptions { StripeAccount = stripeAccountId };
+        var request = new RequestOptions { ApiKey = accessToken };
         var results = new List<HistoricalFailedInvoice>();
 
         foreach (var status in LostStatuses)
