@@ -33,7 +33,7 @@ public sealed class DunningEmailLiveTests(ITestOutputHelper output)
     public async Task Sends_a_real_dunning_email_to_admin_via_sendgrid()
     {
         var key = ResolveKey();
-        // Mirror SendGridEmailSender.IsConfigured: a real key is "SG." + length >= 50.
+        // Mirror SendGridEmailSender.HasApiKey: a real key is "SG." + length >= 50.
         if (string.IsNullOrWhiteSpace(key)
             || !key.StartsWith("SG.", StringComparison.Ordinal)
             || key.Length < 50)

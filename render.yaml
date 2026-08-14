@@ -66,6 +66,14 @@ services:
         sync: false
       - key: Email__ApiKey
         sync: false
+      # Not a secret, and not optional: SendGrid rejects a message with an empty From with a
+      # 400, so every dunning mail, audit report and sign-in link fails without it. Set here
+      # rather than prompted so a deploy cannot come up missing it. The address has to be one
+      # SendGrid has authenticated for recoverflow.org.
+      - key: Email__FromAddress
+        value: admin@recoverflow.org
+      - key: Email__FromName
+        value: RecoverFlow
       # Verification key of SendGrid's Signed Event Webhook (Settings > Mail Settings >
       # Event Webhook). Until it is set, /webhooks/sendgrid answers 503.
       - key: Email__WebhookVerificationKey
