@@ -50,7 +50,18 @@ try
     builder.Services.Configure<StripeOptions>(builder.Configuration.GetSection(StripeOptions.Section));
     builder.Services.Configure<RetryOptions>(builder.Configuration.GetSection(RetryOptions.Section));
     builder.Services.Configure<EncryptionOptions>(builder.Configuration.GetSection(EncryptionOptions.Section));
-    builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection(EmailOptions.Section));
+    // A real SendGrid key with no From address is the one mail misconfiguration that fails
+    // silently at send time rather than loudly at boot: SendGrid rejects every message and the
+    // sender can only log it, so the first sign of trouble is a customer who never got their
+    // dunning email. Refuse to start instead. Key-less environments still run mail-free.
+    builder.Services.AddOptions<EmailOptions>()
+        .Bind(builder.Configuration.GetSection(EmailOptions.Section))
+        .Validate(
+            e => !(e.ApiKey.StartsWith("SG.", StringComparison.Ordinal) && e.ApiKey.Length >= 50)
+                 || !string.IsNullOrWhiteSpace(e.FromAddress),
+            "Email:ApiKey is set but Email:FromAddress is empty. SendGrid rejects an empty sender, "
+            + "so dunning mail, audit reports and sign-in links would all fail silently.")
+        .ValidateOnStart();
     builder.Services.Configure<AppOptions>(builder.Configuration.GetSection(AppOptions.Section));
     builder.Services.Configure<BillingOptions>(builder.Configuration.GetSection(BillingOptions.Section));
     builder.Services.Configure<BacktestOptions>(builder.Configuration.GetSection(BacktestOptions.Section));
