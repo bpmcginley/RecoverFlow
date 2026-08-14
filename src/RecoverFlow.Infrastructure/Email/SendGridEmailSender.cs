@@ -17,15 +17,29 @@ public sealed class SendGridEmailSender(
     // prefix alone isn't enough to trust — the stock placeholder "SG.replace_me" clears
     // it and then 401s on every send, so also require a real-length key. Anything shorter
     // (empty, placeholder) means this environment has no mail capability and just skips.
-    private bool IsConfigured =>
+    private bool HasApiKey =>
         _email.ApiKey.StartsWith("SG.", StringComparison.Ordinal) && _email.ApiKey.Length >= 50;
+
+    // A real key with no FromAddress is a misconfigured deployment, not a mail-less
+    // environment, so it is worth its own message. SendGrid answers an empty From with a 400
+    // that the send path below only logs, which would leave dunning mail, audit reports and
+    // sign-in links all failing quietly with nothing thrown and nothing retried.
+    private bool HasSender => !string.IsNullOrWhiteSpace(_email.FromAddress);
 
     public async Task SendAsync(string to, string subject, string htmlBody, string plainTextBody,
         string? trackingId = null, CancellationToken ct = default)
     {
-        if (!IsConfigured)
+        if (!HasApiKey)
         {
             log.LogWarning("Email:ApiKey missing or placeholder — skipping \"{Subject}\" to {To}", subject, to);
+            return;
+        }
+
+        if (!HasSender)
+        {
+            log.LogError(
+                "Email:FromAddress is not set — skipping \"{Subject}\" to {To}. SendGrid rejects an empty " +
+                "sender, so every message would fail until this is configured.", subject, to);
             return;
         }
 
