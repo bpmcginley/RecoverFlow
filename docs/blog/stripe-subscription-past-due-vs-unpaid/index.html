@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,6 +27,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Stripe past_due vs unpaid vs canceled explained | RecoverFlow</title>
 <meta name="description" content="past_due means Stripe is still trying. unpaid means it stopped but kept the subscription. canceled is terminal. Which one you get is a setting you choose.">
@@ -42,7 +42,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -234,14 +233,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -250,7 +248,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <article class="wrap">
     <p class="eyebrow">Guide</p>
     <h1><code>past_due</code>, <code>unpaid</code>, <code>canceled</code>: what each Stripe subscription status means</h1>
-    <p class="updated">Last updated 28 July 2026 &middot; written by Bruce McGinley, who builds RecoverFlow</p>
+    <p class="updated">Last updated 4 August 2026 &middot; written by Bruce McGinley, who builds RecoverFlow</p>
 
     <div class="answer">
       <span class="label">Short answer</span>
@@ -273,7 +271,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="all">Every status, and what Stripe means by it</h2>
 
     <div class="table-scroll">
-      <div class="tscroll"><table>
+      <table>
         <thead><tr><th scope="col">Status</th><th scope="col">What it means</th></tr></thead>
         <tbody>
           <tr><th scope="row"><code>trialing</code></th><td>In a trial period. Safe to provision the product. Moves to <code>active</code> automatically on the first successful payment.</td></tr>
@@ -285,7 +283,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
           <tr><th scope="row"><code>canceled</code></th><td>Terminal. Automatic collection on unpaid invoices is switched off (<code>auto_advance=false</code>). This state cannot be changed.</td></tr>
           <tr><th scope="row"><code>paused</code></th><td>A trial ended with no payment method on file and your trial settings said pause rather than cancel. No further invoices are created.</td></tr>
         </tbody>
-      </table></div>
+      </table>
     </div>
     <p>The distinction that costs people money is <code>past_due</code> against <code>unpaid</code>. Both look like "they owe us". Only one of them still has Stripe working on your behalf.</p>
 
@@ -329,7 +327,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
     <div class="sources">
   <h2>Where this came from</h2>
-  <p style="margin-top:0;color:var(--text-dim);font-size:.93rem;">Checked against primary sources on 28 July 2026. If Stripe changes something and this page has not caught up, tell us and it gets fixed.</p>
+  <p style="margin-top:0;color:var(--text-dim);font-size:.93rem;">Checked against primary sources on 4 August 2026. If Stripe changes something and this page has not caught up, tell us and it gets fixed.</p>
   <ul>
       <li><a href="https://docs.stripe.com/billing/subscriptions/overview" rel="nofollow noopener" target="_blank">Stripe: Subscription lifecycle and statuses</a> &mdash; the source for every status definition quoted on this page.</li>
       <li><a href="https://docs.stripe.com/billing/revenue-recovery/smart-retries" rel="nofollow noopener" target="_blank">Stripe: Smart Retries</a> &mdash; the source for the 8 tries in 2 weeks default, the configurable window, and the nine code list.</li>
@@ -340,8 +338,9 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <div class="cta-band">
   <h2>If you would rather not build this yourself</h2>
   <p>RecoverFlow watches your Stripe account for failed subscription payments, stops retrying the ones that cannot succeed, and emails the customers whose card simply needs replacing. It charges 25% of what it can attribute to a specific action it took, with a $29 monthly floor and a $299 monthly ceiling, and the floor is waived for the first 30 days.</p>
-  <p style="color:var(--text-dim);">It is early. It is run by one person. If Stripe's own free retry settings are enough for you, use those instead, and there is a page on this site that says exactly when that is the right call.</p>
-  <a class="btn" href="/pricing/">See how the pricing works</a>
+  <p>Before any of that, you can find out whether it is worth doing at all. Answer three questions in a reply and I will send back what your failed payments are probably costing you, how much of it is genuinely recoverable, and whether Stripe's own free features already handle it. No Stripe connection, no account, no card.</p>
+  <p style="color:var(--text-dim);">It is early. It is run by one person. If Stripe's own free retry settings are enough for you, use those instead, and <a href="/pricing/">the pricing page</a> says exactly when that is the right call.</p>
+  <a class="btn" href="/audit/">Get the free audit</a>
 </div>
 
     <div class="related">
@@ -357,8 +356,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

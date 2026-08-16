@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,21 +27,21 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Terms of Service | RecoverFlow</title>
-<meta name="description" content="RecoverFlow's terms: what the service does, how the capped fee and attribution work, how billing runs, and how to stop at any time with no contract.">
+<meta name="description" content="RecoverFlow's terms: what the service does, how the 25% fee and attribution work, how billing runs, and how to stop at any time with no contract.">
 <link rel="canonical" href="https://recoverflow.org/terms/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="RecoverFlow">
 <meta property="og:title" content="Terms of Service | RecoverFlow">
-<meta property="og:description" content="RecoverFlow's terms: what the service does, how the capped fee and attribution work, how billing runs, and how to stop at any time with no contract.">
+<meta property="og:description" content="RecoverFlow's terms: what the service does, how the 25% fee and attribution work, how billing runs, and how to stop at any time with no contract.">
 <meta property="og:url" content="https://recoverflow.org/terms/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -142,14 +141,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -191,40 +189,26 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
     <h2 id="account">3. Your account and your Stripe connection</h2>
     <ul>
-      <li>You install RecoverFlow as a Stripe App using OAuth. You grant the permissions, and you can uninstall at any time from your own Stripe dashboard without asking us.</li>
+      <li>You connect through Stripe Connect using OAuth. You grant the access, and you can revoke it at any time from your own Stripe dashboard without asking us.</li>
       <li>You are responsible for keeping access to the email address you sign in with, because sign-in works by one-time link to that address.</li>
       <li>You must be authorised to connect the Stripe account you connect. Do not connect an account that is not yours to connect.</li>
     </ul>
 
     <h2 id="fees">4. Fees and how attribution works</h2>
-    <p><strong>25% of the failed payments RecoverFlow recovers, subject to a $29 per calendar month minimum that begins after your first 30 days and a $299 per calendar month maximum.</strong> Nothing is payable up front and no card is required to connect.</p>
+    <p><strong>25% of the failed payments RecoverFlow recovers, plus a $29 per month minimum that begins after your first 30 days.</strong> Nothing is payable up front and no card is required to connect.</p>
     <p>The word "recovers" is doing real work in that sentence, so here is exactly what it means:</p>
     <ul>
       <li>A recovery is billable only when it can be <strong>attributed</strong> to a specific action RecoverFlow took, being either a retry it scheduled or a card update email it sent that the customer acted on.</li>
       <li>Payments that come back on their own, or that Stripe's own retries recover, are recorded as unattributed and <strong>are not billed</strong>.</li>
       <li>Where attribution is ambiguous, the system is built to resolve it in your favour rather than ours.</li>
       <li>Fees are calculated in whole cents and rounded down.</li>
-      <li>The <strong>$299 monthly cap</strong> is an absolute ceiling. However much RecoverFlow recovers in a calendar month, no invoice for that month exceeds $299.</li>
-      <li>The cap can be lowered but will not be raised or removed for an account while it remains subscribed. A change to it applies only to accounts created after the change.</li>
     </ul>
     <p>During your first 30 days the monthly minimum does not apply at all. If nothing is recovered in that period, you owe nothing.</p>
-
-    <h3 id="reversals">Recoveries that are later refunded or charged back</h3>
-    <p>A payment that comes back and then goes out again was never recovered revenue for you, so RecoverFlow does not keep a fee on it. If a recovery is refunded or lost to a chargeback:</p>
-    <ul>
-      <li>If it had <strong>not yet been invoiced</strong>, the refunded amount is taken off the billable total before the 25% is applied. A recovery reversed in full is never billed at all.</li>
-      <li>If it had <strong>already been invoiced</strong>, the fee charged for it is credited back to you. The credit is the fee actually collected for that recovery, so if the $299 cap held your invoice down that month, the credit reflects the capped figure rather than an uncapped 25%.</li>
-      <li>Partial refunds are credited in proportion, and only the part that was actually invoiced is credited.</li>
-      <li>Credits are applied against your <strong>next invoice as a whole</strong>, the monthly minimum included, so a credit can reduce an invoice to nothing. A credit larger than one month's bill carries to the following month until it is used up.</li>
-      <li>If you close your account with credit outstanding, email <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a> and it is refunded. It is not written off.</li>
-    </ul>
-    <p>This is applied automatically from Stripe's refund and dispute notifications for the charge that settled the recovered invoice. If you refund a recovery outside Stripe, tell us and it is credited the same way.</p>
     <p>Fees are currently charged in US dollars. If your Stripe account operates in another currency, contact us before connecting so we can tell you honestly whether the service is ready for you.</p>
 
     <h2 id="billing">5. How and when you are billed</h2>
     <ul>
-      <li>Billing runs monthly. We total the attributed recoveries for the period, apply the 25%, add a top-up if that total is below the $29 minimum and your first 30 days have passed, reduce the result to $299 if it came out higher, and finally take off any credit owed for earlier recoveries since refunded or charged back.</li>
-      <li>If a credit covers the whole invoice, nothing is charged for that month and the unused remainder carries forward.</li>
+      <li>Billing runs monthly. We total the attributed recoveries for the period, apply the 25%, and add a top-up if that total is below the $29 minimum and your first 30 days have passed.</li>
       <li>You receive a Stripe invoice by email with a hosted payment page. Payment is due within 7 days.</li>
       <li>We do not hold a card on file for you and we do not auto-charge. You pay the invoice.</li>
       <li>Every invoice itemises which recoveries it is charging for, so you can check the arithmetic against your own Stripe data.</li>
@@ -269,8 +253,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,6 +27,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The 9 Stripe decline codes that stop retries | RecoverFlow</title>
 <meta name="description" content="Stripe will not retry nine specific decline codes until a new card is added. The exact list, what each one means, and what to do instead of retrying.">
@@ -42,7 +42,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -197,7 +196,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "name": "Does Stripe stop the retry schedule on these codes?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. Stripe keeps the schedule and keeps incrementing the attempt count. It just does not attempt the charge again until a new payment method is attached. The invoice looks like it is being retried when in practice nothing is being attempted."
+        "text": "No. Stripe keeps the schedule and keeps incrementing the attempt count. It just does not send the charge to the card network until a new payment method is attached. The invoice looks like it is being retried when in practice nothing is being attempted."
       }
     },
     {
@@ -234,14 +233,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -250,7 +248,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <article class="wrap">
     <p class="eyebrow">Guide</p>
     <h1>The nine Stripe decline codes that stop retries dead</h1>
-    <p class="updated">Last updated 28 July 2026 &middot; written by Bruce McGinley, who builds RecoverFlow</p>
+    <p class="updated">Last updated 4 August 2026 &middot; written by Bruce McGinley, who builds RecoverFlow</p>
 
     <div class="answer">
       <span class="label">Short answer</span>
@@ -273,7 +271,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
     <h2 id="list">The list</h2>
 <div class="table-scroll">
-  <div class="tscroll"><table>
+  <table>
     <thead><tr><th scope="col">Decline code</th><th scope="col">What it means and why waiting will not help</th></tr></thead>
     <tbody>
       <tr><th scope="row"><code>incorrect_number</code></th><td>The card number itself is wrong. No amount of waiting fixes a typo.</td></tr>
@@ -286,7 +284,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <tr><th scope="row"><code>highest_risk_level</code></th><td>Stripe Radar blocked it. Retrying does not lower the risk score.</td></tr>
       <tr><th scope="row"><code>transaction_not_allowed</code></th><td>The issuer does not permit this type of transaction on this card.</td></tr>
     </tbody>
-  </table></div>
+  </table>
 </div>
     <p>That is the complete list as documented by Stripe. Every other decline code is one Stripe will keep attempting on schedule.</p>
 
@@ -324,7 +322,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="faq">Questions people actually ask</h2>
 <div class="faq">
   <details><summary>Is insufficient_funds a hard decline?</summary><p>No. insufficient_funds is not on Stripe's list of codes that block retry execution, and it is one of the better codes to retry, because the underlying condition genuinely changes when the customer gets paid. A lot of articles list it as a hard decline. They are wrong.</p></details>
-  <details><summary>Does Stripe stop the retry schedule on these codes?</summary><p>No. Stripe keeps the schedule and keeps incrementing the attempt count. It just does not attempt the charge again until a new payment method is attached. The invoice looks like it is being retried when in practice nothing is being attempted.</p></details>
+  <details><summary>Does Stripe stop the retry schedule on these codes?</summary><p>No. Stripe keeps the schedule and keeps incrementing the attempt count. It just does not send the charge to the card network until a new payment method is attached. The invoice looks like it is being retried when in practice nothing is being attempted.</p></details>
   <details><summary>Is expired_card on this list?</summary><p>No, and that surprises people. expired_card is not one of the nine, so Stripe will genuinely retry it, even though an expired card does not become unexpired. Unless the issuer has pushed an updated card through the card account updater, those retries do nothing. It is an email problem wearing a retry problem's clothes.</p></details>
   <details><summary>Can I make Stripe retry these anyway?</summary><p>You can turn Smart Retries off and write your own retry logic, but you cannot make the issuer approve a stolen card. The block exists because the answer is already known. Spending attempts on it only delays the point at which you ask the customer for a new card.</p></details>
   <details><summary>How many decline codes does Stripe have in total?</summary><p>Stripe documents around 48 decline codes. Nine of them block retry execution. The rest are retryable to varying degrees of usefulness.</p></details>
@@ -332,7 +330,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
     <div class="sources">
   <h2>Where this came from</h2>
-  <p style="margin-top:0;color:var(--text-dim);font-size:.93rem;">Checked against primary sources on 28 July 2026. If Stripe changes something and this page has not caught up, tell us and it gets fixed.</p>
+  <p style="margin-top:0;color:var(--text-dim);font-size:.93rem;">Checked against primary sources on 4 August 2026. If Stripe changes something and this page has not caught up, tell us and it gets fixed.</p>
   <ul>
       <li><a href="https://docs.stripe.com/billing/revenue-recovery/smart-retries" rel="nofollow noopener" target="_blank">Stripe: Smart Retries</a> &mdash; the source for the 8 tries in 2 weeks default, the configurable window, and the nine code list.</li>
       <li><a href="https://docs.stripe.com/declines/codes" rel="nofollow noopener" target="_blank">Stripe: Decline codes reference</a></li>
@@ -343,8 +341,9 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <div class="cta-band">
   <h2>If you would rather not build this yourself</h2>
   <p>RecoverFlow watches your Stripe account for failed subscription payments, stops retrying the ones that cannot succeed, and emails the customers whose card simply needs replacing. It charges 25% of what it can attribute to a specific action it took, with a $29 monthly floor and a $299 monthly ceiling, and the floor is waived for the first 30 days.</p>
-  <p style="color:var(--text-dim);">It is early. It is run by one person. If Stripe's own free retry settings are enough for you, use those instead, and there is a page on this site that says exactly when that is the right call.</p>
-  <a class="btn" href="/pricing/">See how the pricing works</a>
+  <p>Before any of that, you can find out whether it is worth doing at all. Answer three questions in a reply and I will send back what your failed payments are probably costing you, how much of it is genuinely recoverable, and whether Stripe's own free features already handle it. No Stripe connection, no account, no card.</p>
+  <p style="color:var(--text-dim);">It is early. It is run by one person. If Stripe's own free retry settings are enough for you, use those instead, and <a href="/pricing/">the pricing page</a> says exactly when that is the right call.</p>
+  <a class="btn" href="/audit/">Get the free audit</a>
 </div>
 
     <div class="related">
@@ -360,8 +359,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

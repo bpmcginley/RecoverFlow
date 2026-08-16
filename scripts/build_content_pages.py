@@ -183,11 +183,23 @@ def related_html(items):
 </div>"""
 
 
+# The button here points at the free audit rather than at pricing, and that is deliberate.
+# Every one of these 26 guides is written for someone still working out whether they have a
+# failed-payment problem at all, which is a question the audit answers for nothing and the
+# pricing page cannot answer at any price. Sending that reader to a page that asks for money
+# skips the step they are actually on. Pricing stays linked in the prose below, and from the
+# nav and the related-links block, so nothing is lost by demoting it out of the button.
+#
+# The pricing sentence is worded to match /pricing/ word for word, and is the same sentence the 14
+# hand-written decline-code posts carry. It used to claim the product costs nothing in a month it
+# recovers nothing, which is false once the first 30 days are up: /pricing/ says a quiet month
+# costs $29. Do not reword it here without changing /pricing/ in the same commit.
 CTA = """<div class="cta-band">
   <h2>If you would rather not build this yourself</h2>
-  <p>RecoverFlow watches your Stripe account for failed subscription payments, stops retrying the ones that cannot succeed, and emails the customers whose card simply needs replacing. It charges 25% of what it actually recovers, with a $29 monthly floor, and nothing at all if it recovers nothing.</p>
-  <p style="color:var(--text-dim);">It is early. It is run by one person. If Stripe's own free retry settings are enough for you, use those instead, and there is a page on this site that says exactly when that is the right call.</p>
-  <a class="btn" href="/pricing/">See how the pricing works</a>
+  <p>RecoverFlow watches your Stripe account for failed subscription payments, stops retrying the ones that cannot succeed, and emails the customers whose card simply needs replacing. It charges 25% of what it can attribute to a specific action it took, with a $29 monthly floor and a $299 monthly ceiling, and the floor is waived for the first 30 days.</p>
+  <p>Before any of that, you can find out whether it is worth doing at all. Answer three questions in a reply and I will send back what your failed payments are probably costing you, how much of it is genuinely recoverable, and whether Stripe's own free features already handle it. No Stripe connection, no account, no card.</p>
+  <p style="color:var(--text-dim);">It is early. It is run by one person. If Stripe's own free retry settings are enough for you, use those instead, and <a href="/pricing/">the pricing page</a> says exactly when that is the right call.</p>
+  <a class="btn" href="/audit/">Get the free audit</a>
 </div>"""
 
 

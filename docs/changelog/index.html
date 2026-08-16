@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,6 +27,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Changelog | RecoverFlow</title>
 <meta name="description" content="What changed in RecoverFlow and when. Bug fixes that affected numbers shown to customers are listed as prominently as features.">
@@ -42,7 +42,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -173,14 +172,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -192,28 +190,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>Grouped by the day the work actually landed. Bug fixes that affected numbers shown to customers are listed as prominently as features, because those are the ones you would want to know about.</p>
 
     <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-08-14</p>
-      <h2 style="margin-top:0;">RecoverFlow is now a Stripe App, and the permission list is shorter</h2>
-      <ul>
-        <li><strong>The connection changed from Stripe Connect to a Stripe App install.</strong> Stripe refused the previous submission because the install link sent people arriving from the Marketplace to a Connect authorisation screen instead of the Marketplace one. Fixing that moved the whole merchant connection onto the app's own OAuth grant. The practical difference for you is that the permissions are now a fixed list declared in the app itself and shown to you on the approval screen, rather than a scope string chosen by our server.</li>
-        <li><strong>The list is three permissions: read your customers, read your invoices, and pay an unpaid invoice.</strong> The write is the retry, and there is no second write. The previous Connect authorisation asked for read and write access across the account, so this is narrower than what came before, not wider. A fourth permission to read charges was drafted and then removed, because nothing under this grant reads charges.</li>
-        <li><strong>Access tokens now expire after an hour and are renewed automatically.</strong> The refresh token is encrypted at rest the same way the access token already was. Accounts connected before this change keep working unchanged.</li>
-        <li><strong>Pages that said the Dashboard app performs no writes have been corrected.</strong> That was true of the app when it only rendered views, and it stopped being true the moment the retry moved onto the app's grant. The <a href="/privacy/">privacy policy</a>, <a href="/security/">security page</a>, <a href="/docs/connecting-stripe/">connecting Stripe</a>, the homepage and the pricing FAQ now all describe the same three permissions. The free <a href="/audit/">retry waste audit</a> is unaffected: it is still a separate Connect authorisation with read-only access and no stored token.</li>
-      </ul>
-    </div>    <div class="release">
-      <p class="updated" style="margin-bottom:4px;">2026-08-12</p>
-      <h2 style="margin-top:0;">A cap on the fee, and two things this site was getting wrong</h2>
-      <ul>
-        <li><strong>The fee is now capped at $299 a month.</strong> It was 25% of attributed recoveries with a $29 floor and no ceiling. It is now the same percentage between the same $29 floor and a $299 ceiling, so past roughly $1,196 of attributed recovery in a month the bill stops moving. An uncapped percentage means the vendor earns more as the customer's churn gets worse, and the <a href="/pricing/">pricing page</a> now says so in those words rather than waiting for someone to notice. The cap only ever lowers a bill, and it will not be raised or removed for an account that signed up under it.</li>
-        <li><strong>Corrected a false claim about Visa's reattempt rule.</strong> Five places on this site said Stripe blocks further retry attempts once a card passes Visa's ceiling of 15 reattempts in a rolling 30 days. Stripe's documented behaviour is discretionary: it says it blocks subsequent attempts only where it determines there is a low chance of a successful authorisation, and it does not undertake to keep a merchant inside Visa's limit. The page copy, the structured data, the browser tool and the command-line script now all say the same, correct thing. The <a href="/tools/retry-waste-calculator/">retry waste calculator</a> also now discloses that it counts attempts per card while Visa states the rule per payment, which makes its number a conservative upper bound rather than a compliance verdict.</li>
-        <li><strong>The retry waste report no longer leads with a dollar figure.</strong> Stripe does not reattempt hard declines without a new payment method, so no second charge is placed and no fee is incurred. Quoting a large dollar number for "wasted retries" implies an invoice that was never issued. The report now leads with how many customers were left sitting on an unusable card and how many days they sat there, and the money is shown second and labelled as revenue at risk rather than as a cost incurred.</li>
-        <li><strong>A claim about card networks was corrected across the site.</strong> Several pages said, in one wording or another, that Stripe never sends hard declines to the card network. What Stripe documents is that it does not <em>reattempt</em> those codes until a new payment method is attached. It says nothing about what happens at the network, and we had no way to check it. The observable behaviour is the same one the product acts on, so every one of those sentences now says only that. An earlier entry on this page carried the same wording and has been corrected in place rather than left standing, which is why it reads differently than it did.</li>
-        <li><strong>Recoveries that are later refunded or charged back are no longer billable.</strong> Until now a payment RecoverFlow recovered stayed recovered in its books even if the customer got the money back a week later, which meant a fee on revenue the merchant did not keep. Stripe's refund and dispute notifications for the settling charge are now handled: a reversal before invoicing comes off the billable total, and a reversal after invoicing is credited back on the next invoice at what was actually charged, so a month held down by the $299 cap credits the capped figure rather than an uncapped 25%. Credits apply to the whole invoice including the $29 minimum, carry forward if they outlast a month's bill, and are refunded on request if an account closes with credit outstanding. Written up in the <a href="/terms/#reversals">terms</a> and in <a href="/docs/attribution-and-billing/#reversals">attribution and billing</a>.</li>
-        <li><strong>Eight more decline code and webhook guides.</strong> New pages for <a href="/blog/stripe-lost-card-stolen-card-declines/">lost_card and stolen_card</a>, <a href="/blog/stripe-pickup-card-vs-restricted-card/">pickup_card vs restricted_card</a>, <a href="/blog/stripe-fraudulent-decline-code/">fraudulent</a>, <a href="/blog/stripe-incorrect-number-vs-invalid-number/">incorrect_number vs invalid_number</a>, <a href="/blog/stripe-currency-not-supported-decline/">currency_not_supported</a>, <a href="/blog/stripe-duplicate-transaction-decline/">duplicate_transaction</a> and <a href="/blog/stripe-transaction-not-allowed-decline/">transaction_not_allowed</a>, plus a guide to <a href="/blog/invoice-payment-failed-vs-payment-intent-payment-failed/">invoice.payment_failed vs payment_intent.payment_failed</a>. Every claim checked against Stripe's decline codes reference, card declines guide, Smart Retries and subscription webhooks documentation on 13 August 2026.</li>
-        <li><strong>Six new decline code guides.</strong> Dedicated pages for <a href="/blog/stripe-generic-decline-code/">generic_decline</a>, <a href="/blog/stripe-incorrect-cvc-decline/">incorrect_cvc</a>, <a href="/blog/stripe-processing-error-decline/">processing_error</a>, <a href="/blog/stripe-try-again-later-decline/">try_again_later</a>, <a href="/blog/stripe-card-velocity-exceeded/">card_velocity_exceeded</a> and <a href="/blog/stripe-call-issuer-decline/">call_issuer</a>, each built from the meaning and next steps Stripe documents in its decline codes reference, including the fact that the try_again_later decline code is now marked deprecated while the advice code of the same name is current.</li>
-        <li>Homepage rewritten to lead with the suppression argument, and the primary call to action is now the free browser-side audit rather than a Stripe connection. Also fixed a responsive bug that pushed the headline about 620px down the page on every screen narrower than 900px.</li>
-      </ul>
-    </div>    <div class="release">
       <p class="updated" style="margin-bottom:4px;">2026-07-28</p>
       <h2 style="margin-top:0;">Correctness pass on decline handling</h2>
       <ul>
@@ -266,18 +242,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     </div>
 
     <p style="margin-top:40px;color:var(--text-dim);">RecoverFlow started on 10 July 2026. Anything older than that does not exist.</p>
-      <div class="cta-box">
-      <h2>See what you're losing</h2>
-      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
-      <a class="btn" href="/">Run the free 90 day scan</a>
-    </div>
-</div>
+  </div>
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

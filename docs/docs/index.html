@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,6 +27,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>RecoverFlow docs | How the product actually behaves</title>
 <meta name="description" content="How RecoverFlow connects to Stripe, classifies declines, schedules retries, sends dunning emails, and decides what it is allowed to bill you for.">
@@ -42,7 +42,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -183,14 +182,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -199,7 +197,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <article class="wrap">
     <p class="eyebrow"><a href="/docs/">Docs</a></p>
     <h1>Documentation</h1>
-    <p class="updated">Reflects the code as of 28 July 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
+    <p class="updated">Reflects the code as of 4 August 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
 
     <p>These pages describe what the software does, not what it aspires to do. Where a behaviour is a default you can expect to change, it says so. Where something is missing, it says that too.</p>
 
@@ -218,18 +216,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>If you want the conceptual background rather than the implementation, the <a href="/blog/">guides</a> cover Stripe's own behaviour in more depth, with citations.</p>
 
     
-      <div class="cta-box">
-      <h2>See what you're losing</h2>
-      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
-      <a class="btn" href="/">Run the free 90 day scan</a>
-    </div>
-</article>
+  </article>
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

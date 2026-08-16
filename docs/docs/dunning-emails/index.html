@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,6 +27,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How RecoverFlow's dunning emails work | Docs</title>
 <meta name="description" content="The three-step sequence, when each step sends, what the emails deliberately never say, and what they do not do yet.">
@@ -42,7 +42,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -221,14 +220,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -237,20 +235,20 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <article class="wrap">
     <p class="eyebrow"><a href="/docs/">Docs</a></p>
     <h1>Dunning emails</h1>
-    <p class="updated">Reflects the code as of 28 July 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
+    <p class="updated">Reflects the code as of 4 August 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
 
     <p>Step 1 sends when the recovery case opens. Later steps follow the retry schedule, so the email cadence tracks the retry cadence rather than running on a separate clock.</p>
 
     <h2 id="sequence">The sequence</h2>
     <div class="table-scroll">
-      <div class="tscroll"><table>
+      <table>
         <thead><tr><th scope="col">Step</th><th scope="col">Tone</th><th scope="col">What it says</th></tr></thead>
         <tbody>
           <tr><th scope="row">1</th><td>Friendly reminder</td><td>The payment did not go through, this usually means a card needs updating, and no action is needed if they have already fixed it.</td></tr>
           <tr><th scope="row">2</th><td>Follow-up</td><td>Still outstanding, with the amount, asking them to update the card so the subscription is not interrupted.</td></tr>
           <tr><th scope="row">3</th><td>Final notice</td><td>Several attempts have failed, and this is the last reminder we will send.</td></tr>
         </tbody>
-      </table></div>
+      </table>
     </div>
     <p>Every email ships an HTML part and a plain-text alternative. Mail without a text part is a spam-filter signal, and dunning email that lands in spam is worth nothing.</p>
 
@@ -276,18 +274,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <details><summary>Do the emails tell customers why their card was declined?</summary><p>Not for lost, stolen or blocked cards. Stripe's guidance is that naming the reason gives useful information to whoever holds a card they should not have, so those emails ask for updated details without stating the cause.</p></details>
   <details><summary>Will the email tell my customer their subscription is being cancelled?</summary><p>No. Whether a subscription cancels after failed payments is your own Stripe setting, which RecoverFlow does not see or control, so the final email says only that it is the last reminder we will send.</p></details>
 </div>
-      <div class="cta-box">
-      <h2>See what you're losing</h2>
-      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
-      <a class="btn" href="/">Run the free 90 day scan</a>
-    </div>
-</article>
+  </article>
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

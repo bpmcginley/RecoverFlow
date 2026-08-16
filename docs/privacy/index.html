@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,6 +27,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Privacy Policy | RecoverFlow</title>
 <meta name="description" content="How RecoverFlow handles your data and your customers' data: exactly what is stored, what is never stored, sub-processors, retention, and your rights.">
@@ -42,7 +42,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -142,14 +141,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -158,7 +156,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <div class="wrap">
     <p class="eyebrow">Legal</p>
     <h1>Privacy policy</h1>
-    <p class="updated">Last updated 14 August 2026</p>
+    <p class="updated">Last updated 4 August 2026</p>
 
     <div class="lawyer">
   <p><strong>Plain English, not a substitute for legal advice.</strong> RecoverFlow is run by one person and these documents were written to describe accurately what the software actually does, rather than copied from a generator. They have not been reviewed by a solicitor.</p>
@@ -170,7 +168,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <ol>
         <li><a href="#roles">The two different roles we play</a></li>
         <li><a href="#collect">What we actually store</a></li>
-        <li><a href="#audit">The free audit and the Dashboard app</a></li>
+        <li><a href="#audit">The Marketplace audit, which stores nothing</a></li>
         <li><a href="#never">What we never store</a></li>
         <li><a href="#emails">Email tracking, stated plainly</a></li>
         <li><a href="#subprocessors">Sub-processors</a></li>
@@ -189,12 +187,12 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>If you are subject to the UK GDPR or the EU GDPR, that makes you the controller and RecoverFlow the processor for that data, and you are entitled to a Data Processing Agreement. Email us and you will get one.</p>
 
     <h2 id="collect">2. What we actually store</h2>
-    <p>This list is taken from the database schema rather than written from memory. It describes a full RecoverFlow account. If you only ran the free audit, almost none of it applies to you: see <a href="#audit">section 3</a>.</p>
+    <p>This list is taken from the database schema rather than written from memory. It describes a full RecoverFlow account. If you only ran the free Marketplace audit, almost none of it applies to you: see <a href="#audit">section 3</a>.</p>
     <h3>About you, the merchant</h3>
     <ul>
       <li>Your email address and company name</li>
       <li>Your Stripe account identifier</li>
-      <li>An <strong>encrypted</strong> Stripe access token, and the encrypted refresh token that renews it, which together are what let us read your invoices and retry failed payments</li>
+      <li>An <strong>encrypted</strong> Stripe access token, which is what lets us read your invoices and retry failed payments</li>
       <li>Your plan, your account settings, and the date you signed up</li>
       <li>Billing records for fees we have charged you, and a Stripe customer identifier for that billing</li>
     </ul>
@@ -214,8 +212,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <li>The results of the 90 day backward-looking scan we run when you first connect, which is a summary of what failed and what was estimated recoverable</li>
     </ul>
 
-    <h2 id="audit">3. The free audit and the Dashboard app</h2>
-    <p>The free <strong>retry waste audit</strong> you can run from recoverflow.org is a separate thing from the product described above, and it has a much shorter privacy story. Everything in section 2 describes what happens when you sign up for RecoverFlow. Almost none of it applies if you only ran the audit.</p>
+    <h2 id="audit">3. The Marketplace audit, which stores nothing</h2>
+    <p>The <strong>Retry Waste Audit</strong> on the Stripe Marketplace is a separate thing from the product described above, and it has a much shorter privacy story. Everything in section 2 describes what happens when you sign up for RecoverFlow. Almost none of it applies if you only ran the audit.</p>
     <div class="callout">
       <p><strong>The audit requests read access only, and we do not keep your Stripe access token.</strong> The authorisation code is exchanged solely to learn <em>which</em> Stripe account authorised the audit. Every read after that uses our own platform key with your account identifier in a request header, which means the access token is never written to our database at all.</p>
       <p><strong>Running the audit does not create an account.</strong> No merchant record, no password, no login. An audit is not a signup.</p>
@@ -228,15 +226,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h3>What the audit keeps</h3>
     <p>Nothing. The figures are calculated in memory, written into an email, and sent to you. The report is not stored, and neither are the charges it was calculated from.</p>
     <p>Your email address is used to deliver that one report, through the same email provider listed in the sub-processors section. It is not added to a mailing list and you will not receive anything else because of it. If you would like a copy of the report re-sent, we cannot do it from our records, because we do not have any: you would need to run the audit again.</p>
-
-    <h3>The RecoverFlow app for the Stripe Dashboard</h3>
-    <p>There is also a <strong>RecoverFlow app that runs inside the Stripe Dashboard</strong>. Its views are a window onto data RecoverFlow already holds for your account. Installing it is also how you authorise RecoverFlow to do the recovery work described in section 2, so the permissions below cover both.</p>
-    <ul>
-      <li>It asks Stripe for <strong>three permissions</strong>: read your customers, read your invoices, and pay an unpaid invoice. The two reads identify the customer or invoice you are looking at, so the app can find the matching recovery case, and they let us list the unpaid invoices a retry might apply to.</li>
-      <li>When you open one of its views, a request signed by Stripe is sent to our API. It tells us which Stripe account it came from and which customer or invoice is on screen, and the reply is the recovery data we already hold for that account. If the account has never been connected to RecoverFlow, the reply is that there is nothing to show. <strong>The views themselves make no changes at all</strong>, in your Stripe account or in ours.</li>
-      <li><strong>The single write is paying an invoice you already issued</strong>, which is what a retry is. RecoverFlow never creates invoices or charges of its own, and it cannot edit, void or delete anything in your Stripe account. Stripe enforces that boundary on its own side: the permissions screen you approve at install shows you exactly what was granted.</li>
-      <li>Uninstalling the app from your Stripe dashboard ends all of it at once, without contacting us.</li>
-    </ul>
 
     <h2 id="never">4. What we never store</h2>
     <div class="callout">
@@ -251,7 +240,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="subprocessors">6. Sub-processors</h2>
     <p>These are the third parties that touch data in order for the service to work.</p>
     <div class="table-scroll">
-  <div class="tscroll"><table>
+  <table>
     <thead><tr><th scope="col">Sub-processor</th><th scope="col">What it does</th><th scope="col">Data it touches</th></tr></thead>
     <tbody>
       <tr><th scope="row">Stripe</th><td>Payment processing, account connection, and all card handling</td><td>Payment and subscription data, cardholder data (held entirely by Stripe)</td></tr>
@@ -260,12 +249,11 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <tr><th scope="row">Cloudflare</th><td>DNS and proxying for the application subdomains</td><td>Request metadata in transit</td></tr>
       <tr><th scope="row">GitHub Pages</th><td>Hosting of the public marketing site only</td><td>No account or customer data</td></tr>
       <tr><th scope="row">Google Analytics</th><td>Marketing site traffic measurement only</td><td>Marketing site visitors, not application data</td></tr>
-      <tr><th scope="row">LinkedIn</th><td>Advertising measurement on the marketing site, except the free tools</td><td>Marketing site visitors, not application data</td></tr>
-      <tr><th scope="row">Google Fonts</th><td>Delivery of the web fonts used by the marketing site only</td><td>Visitor IP address and browser user agent, sent with the font request</td></tr>
+      <tr><th scope="row">LinkedIn</th><td>Advertising measurement on the marketing site only</td><td>Marketing site visitors, not application data</td></tr>
     </tbody>
-  </table></div>
+  </table>
 </div>
-    <p>Google Analytics and the LinkedIn tag run on the public marketing site only. They are not present in the application you log into, and they never see your account data or your customers' data. The LinkedIn tag is also not present on the free tools under <a href="/tools/">/tools/</a>, because those pages ask you to type in your own numbers and an advertising pixel has no business sitting next to that.</p>
+    <p>Google Analytics and the LinkedIn tag run on the public marketing site only. They are not present in the application you log into, and they never see your account data or your customers' data.</p>
 
     <h2 id="retention">7. How long we keep things</h2>
     <ul>
@@ -285,9 +273,9 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>The application and its database are hosted in the <strong>United States</strong>. If you or your customers are in the UK, the EU or elsewhere, using RecoverFlow means data is transferred to and processed in the US. If that is a problem for your compliance position, say so before you connect rather than after.</p>
 
     <h2 id="site">10. The marketing site</h2>
-    <p>The pages at recoverflow.org that you can read without logging in use Google Analytics to measure traffic, and most of them also carry the LinkedIn Insight Tag for advertising measurement. These set cookies.</p>
+    <p>The pages at recoverflow.org that you can read without logging in use Google Analytics and the LinkedIn Insight Tag to measure traffic and advertising. These set cookies.</p>
     <p>We do not currently show a cookie consent banner. That is a gap rather than a position, and it is on the list to fix. In the meantime, blocking third-party cookies or using an ad blocker prevents both, and nothing on the marketing site breaks if you do.</p>
-    <p>The free tools run entirely in your browser. Nothing you type into the estimator, the retry builder or the email generator is transmitted to us or stored anywhere. Those pages carry the Google Analytics pageview tag and nothing else. The LinkedIn advertising tag was removed from them, because a page that asks you to paste in your own revenue numbers should not also be building an ad audience out of your visit.</p>
+    <p>The free tools run entirely in your browser. Nothing you type into the estimator, the retry builder or the email generator is transmitted to us or stored anywhere.</p>
 
     <h2 id="changes">11. Changes and contact</h2>
     <p>If this policy changes in a way that materially affects you, we will email you rather than quietly editing the page. The date at the top always reflects the last change.</p>
@@ -297,8 +285,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

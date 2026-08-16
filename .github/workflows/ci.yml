@@ -38,3 +38,9 @@ jobs:
 
       - name: Test (Integration)
         run: dotnet test tests/RecoverFlow.Tests.Integration/RecoverFlow.Tests.Integration.csproj --configuration Release --logger "trx;LogFileName=integration.trx"
+
+      # docs/ is what recoverflow.org serves, and it is generated. Without this
+      # a bad rebuild ships broken links, drifted sitemap entries or pages that
+      # lost the design system, and nothing notices until someone looks.
+      - name: Validate site
+        run: python3 scripts/validate_site.py

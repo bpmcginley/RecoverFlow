@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,6 +27,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Security | RecoverFlow</title>
 <meta name="description" content="How RecoverFlow connects to Stripe, what it can and cannot see, how merchant data is isolated, and an honest list of the certifications it does not yet hold.">
@@ -42,7 +42,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -142,14 +141,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -158,23 +156,23 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <div class="wrap">
     <p class="eyebrow">Trust</p>
     <h1>Security</h1>
-    <p class="updated">Last updated 14 August 2026</p>
+    <p class="updated">Last updated 4 August 2026</p>
 
     <p>You are being asked to connect the system that takes your money. That deserves a straight account of how the connection works, what we can and cannot reach, and what protections we do <em>not</em> yet have. This page includes the last part, which most security pages leave out.</p>
 
     <h2>How the connection works</h2>
     <p>There are two, and they are not equally powerful. Which one you used decides what we can reach.</p>
     <ul>
-      <li><strong>The full product</strong> is installed as a <strong>Stripe App</strong> from Stripe's own permissions screen, not from a form we wrote.</li>
-      <li><strong>The free Retry Waste Audit</strong> uses <strong>Stripe Connect OAuth</strong> instead, and asks for read access only. Also Stripe's own screen. See below.</li>
+      <li>RecoverFlow connects through <strong>Stripe Connect OAuth</strong>. You authorise it from Stripe's own screen, not from a form we wrote.</li>
       <li>We never ask for, and never receive, your Stripe API keys.</li>
-      <li>The app asks for <strong>three permissions</strong>: read your customers, read your invoices, and pay an unpaid invoice. The write is there because retrying an invoice is a write, and there is no second write. The access token we receive is <strong>encrypted at rest</strong> in our database, expires after an hour, and is renewed with a refresh token that is encrypted at rest as well.</li>
-      <li><strong>You can end either in one click</strong> from your Stripe dashboard, at any time, without contacting us: uninstall the app, or revoke the audit's authorisation. That immediately ends our ability to read or act on your account.</li>
+      <li><strong>The full product</strong> requests read and write access, because retrying an invoice is a write. The access token we receive for it is <strong>encrypted at rest</strong> in our database.</li>
+      <li><strong>The free Retry Waste Audit</strong> requests <strong>read access only</strong>, and we keep no token for it at all. See below.</li>
+      <li><strong>You can revoke either in one click</strong> from your Stripe dashboard, at any time, without contacting us. That immediately ends our ability to read or act on your account.</li>
     </ul>
 
     <h2>The audit is read-only, and keeps nothing</h2>
     <div class="callout">
-      <p>The <strong>Retry Waste Audit</strong> requests read-only access and no write permission of any kind. Stripe enforces that on its own side, so it is not a promise you have to take on trust: the permissions screen shows you exactly what was granted.</p>
+      <p>The <strong>Retry Waste Audit</strong> requests three read permissions and no write permission of any kind. Stripe enforces that on its own side, so it is not a promise you have to take on trust: the permissions screen shows you exactly what was granted.</p>
       <p><strong>We do not store the access token.</strong> The authorisation code is exchanged only to learn which account authorised the audit; the reads themselves go through our platform key with your account identifier in a request header. The token is never written to our database.</p>
       <p><strong>Running the audit does not create an account.</strong> It reads, it calculates, it emails you the report, and it keeps nothing.</p>
     </div>
@@ -223,18 +221,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
     <h2>Related</h2>
     <p>The full list of sub-processors and exactly what data each one touches is in the <a href="/privacy/#subprocessors">privacy policy</a>. What we store, down to the field, is in <a href="/privacy/#collect">section 2</a> of the same document.</p>
-      <div class="cta-box">
-      <h2>See what you're losing</h2>
-      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
-      <a class="btn" href="/">Run the free 90 day scan</a>
-    </div>
-</div>
+  </div>
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

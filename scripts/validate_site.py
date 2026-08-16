@@ -45,6 +45,17 @@ for path, html in sorted(pages.items()):
     if "—" in html or "&mdash;" in html.split('class="sources"')[0]:
         note(path, "em dash in page body")
 
+    # The builders emit each page's inline <style> and stop there, so a content
+    # rebuild drops the v2 design system unless apply_design_system.py runs after
+    # it. That reverted 34 of 57 pages once already, silently.
+    if '<link rel="stylesheet" href="/assets/rf.css">' not in html.split("</head>")[0]:
+        note(path, "missing the v2 design system, run scripts/apply_design_system.py")
+    elif "Fraunces" not in html.split("</head>")[0]:
+        note(path, "loads rf.css without its fonts, run scripts/apply_design_system.py")
+
+    if re.search(r"fonts\.googleapis\.com/css2[^\"']*(?:Inter:|Space\+Grotesk)", html):
+        note(path, "requests a font rf.css does not use")
+
     if not re.search(r'<link rel="canonical"', html):
         note(path, "missing canonical")
     if not re.search(r'<meta name="description"', html):
