@@ -176,6 +176,9 @@
   .code-card .next { margin: 0; font-size: 0.9rem; color: var(--text-dim); }
   .code-card .note { margin: 8px 0 0; font-size: 0.88rem; color: var(--text-dim); border-top: 1px dashed var(--border); padding-top: 8px; }
   .empty { text-align: center; color: var(--text-mute); padding: 30px 0; }
+  #list [hidden] { display: none; }
+  .code-card .name a { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+  .code-card .name a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 
   .callout { background: var(--positive-bg); border: 1px solid color-mix(in srgb, var(--positive) 30%, transparent); border-radius: 12px; padding: 18px 20px; margin: 0 0 24px; }
   .callout p { margin: 0; } .callout p + p { margin-top: 10px; }
@@ -246,8 +249,58 @@
       <button class="chip" id="f-retry" aria-pressed="false">Retryable</button>
       <button class="chip" id="f-fraud" aria-pressed="false">Do not reveal to customer</button>
     </div>
-    <p class="count" id="count"></p>
-    <div id="list"></div>
+    <p class="count" id="count">48 of 48 codes</p>
+    <div id="list">
+      <div class="code-card"><div class="top"><span class="name">approve_with_id</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The payment could not be authorized.</p><p class="next"><strong>Next step:</strong> Attempt the payment again. If it keeps failing, the customer should contact their issuer.</p></div>
+      <div class="code-card blocked"><div class="top"><span class="name"><a href="/blog/stripe-authentication-required-recovery/">authentication_required</a></span><span class="pill no">Stripe will not retry</span></div><p class="meaning">The card was declined because the transaction requires authentication such as 3D Secure.</p><p class="next"><strong>Next step:</strong> Trigger an authentication flow. The customer can pay once authenticated.</p><p class="note">On a subscription this is awkward, because authentication needs the customer present. It usually means moving them to an on-session payment.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-call-issuer-decline/">call_issuer</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card was declined for an unknown reason.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p></div>
+      <div class="code-card"><div class="top"><span class="name">card_not_supported</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card does not support this type of purchase.</p><p class="next"><strong>Next step:</strong> The customer should contact their issuer to enable the purchase type.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-card-velocity-exceeded/">card_velocity_exceeded</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The customer has exceeded a balance, credit or transaction limit.</p><p class="next"><strong>Next step:</strong> The customer should contact their issuer or use a different payment method.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-currency-not-supported-decline/">currency_not_supported</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card does not support the specified currency.</p><p class="next"><strong>Next step:</strong> The customer should check with their issuer about currency support.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/do-not-honor-stripe-decline/">do_not_honor</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card was declined for an unknown reason.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p><p class="note">Common and frustratingly vague. Often temporary, so it is generally worth a spaced retry before giving up.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-duplicate-transaction-decline/">duplicate_transaction</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">A transaction with identical amount and card details was submitted very recently.</p><p class="next"><strong>Next step:</strong> Check whether a recent payment already succeeded before charging again.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/expired-card-stripe-retries/">expired_card</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card has expired.</p><p class="next"><strong>Next step:</strong> The customer needs to use a different card.</p><p class="note">Not on Stripe’s hard decline list, so retries keep firing pointlessly. Treat this as an email trigger, not a retry.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-fraudulent-decline-code/">fraudulent</a></span><span class="pill yes">Retry may execute</span><span class="pill quiet">Show generically</span></div><p class="meaning">Stripe suspects the payment is fraudulent.</p><p class="next"><strong>Next step:</strong> Present as a generic decline. Do not disclose the reason.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-generic-decline-code/">generic_decline</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card was declined for an unknown reason, or was blocked by Radar.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p></div>
+      <div class="code-card blocked"><div class="top"><span class="name">highest_risk_level</span><span class="pill no">Stripe will not retry</span><span class="pill quiet">Show generically</span></div><p class="meaning">Stripe blocked the payment as highest risk.</p><p class="next"><strong>Next step:</strong> Present as a generic decline. Do not disclose the reason.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-incorrect-cvc-decline/">incorrect_cvc</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The CVC number is incorrect.</p><p class="next"><strong>Next step:</strong> The customer should retry with the correct CVC.</p></div>
+      <div class="code-card blocked"><div class="top"><span class="name"><a href="/blog/stripe-incorrect-number-vs-invalid-number/">incorrect_number</a></span><span class="pill no">Stripe will not retry</span></div><p class="meaning">The card number is incorrect.</p><p class="next"><strong>Next step:</strong> The customer should retry with the correct card number.</p></div>
+      <div class="code-card"><div class="top"><span class="name">incorrect_pin</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The PIN is incorrect. Card reader payments only.</p><p class="next"><strong>Next step:</strong> The customer should retry with the correct PIN.</p></div>
+      <div class="code-card"><div class="top"><span class="name">incorrect_zip</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The postal code is incorrect.</p><p class="next"><strong>Next step:</strong> The customer should retry with the correct postal code.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/is-insufficient-funds-a-hard-decline/">insufficient_funds</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card does not have sufficient funds to complete the purchase.</p><p class="next"><strong>Next step:</strong> The customer should use an alternative payment method.</p><p class="note">Among the most recoverable declines. Retry when funds are likely present, around paydays, rather than a few hours later.</p></div>
+      <div class="code-card"><div class="top"><span class="name">invalid_account</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card or the account it is connected to is invalid.</p><p class="next"><strong>Next step:</strong> The customer should contact their issuer to check the card works.</p></div>
+      <div class="code-card"><div class="top"><span class="name">invalid_amount</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The payment amount is invalid or exceeds the amount permitted.</p><p class="next"><strong>Next step:</strong> The customer should check with their issuer about amount limits.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-incorrect-cvc-decline/">invalid_cvc</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The CVC number is incorrect.</p><p class="next"><strong>Next step:</strong> The customer should retry with the correct CVC.</p></div>
+      <div class="code-card"><div class="top"><span class="name">invalid_expiry_month</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The expiry month is invalid.</p><p class="next"><strong>Next step:</strong> The customer should retry with the correct expiry date.</p></div>
+      <div class="code-card"><div class="top"><span class="name">invalid_expiry_year</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The expiry year is invalid.</p><p class="next"><strong>Next step:</strong> The customer should retry with the correct expiry date.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-incorrect-number-vs-invalid-number/">invalid_number</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card number is incorrect.</p><p class="next"><strong>Next step:</strong> The customer should retry with the correct card number.</p></div>
+      <div class="code-card"><div class="top"><span class="name">invalid_pin</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The PIN is incorrect.</p><p class="next"><strong>Next step:</strong> The customer should retry with the correct PIN.</p></div>
+      <div class="code-card"><div class="top"><span class="name">issuer_not_available</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card issuer could not be reached, so the payment could not be authorized.</p><p class="next"><strong>Next step:</strong> Attempt again. If it persists the customer should contact their issuer.</p><p class="note">Genuinely transient. A short backoff and retry recovers a good share of these.</p></div>
+      <div class="code-card blocked"><div class="top"><span class="name"><a href="/blog/stripe-lost-card-stolen-card-declines/">lost_card</a></span><span class="pill no">Stripe will not retry</span><span class="pill quiet">Show generically</span></div><p class="meaning">The card was reported lost.</p><p class="next"><strong>Next step:</strong> Present as a generic decline. Do not disclose the reason.</p></div>
+      <div class="code-card"><div class="top"><span class="name">merchant_blacklist</span><span class="pill yes">Retry may execute</span><span class="pill quiet">Show generically</span></div><p class="meaning">The payment matches a value on your Radar block list.</p><p class="next"><strong>Next step:</strong> Present as a generic decline. Do not disclose the reason.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-automatic-card-updates/">new_account_information_available</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card or account it is connected to is invalid.</p><p class="next"><strong>Next step:</strong> The customer should contact their issuer.</p><p class="note">Often means updated card details exist. Stripe’s Card Account Updater may pick these up automatically.</p></div>
+      <div class="code-card"><div class="top"><span class="name">no_action_taken</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card was declined for an unknown reason.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p></div>
+      <div class="code-card"><div class="top"><span class="name">not_permitted</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The payment is not permitted.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p></div>
+      <div class="code-card"><div class="top"><span class="name">offline_pin_required</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card requires a PIN.</p><p class="next"><strong>Next step:</strong> The customer should insert the card and enter a PIN.</p></div>
+      <div class="code-card"><div class="top"><span class="name">online_or_offline_pin_required</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card requires a PIN.</p><p class="next"><strong>Next step:</strong> Prompt for an online PIN if supported, otherwise the customer inserts the card and enters a PIN.</p></div>
+      <div class="code-card blocked"><div class="top"><span class="name"><a href="/blog/stripe-pickup-card-vs-restricted-card/">pickup_card</a></span><span class="pill no">Stripe will not retry</span><span class="pill quiet">Show generically</span></div><p class="meaning">The card cannot be used, possibly because it was reported lost or stolen.</p><p class="next"><strong>Next step:</strong> Present as a generic decline. The customer should contact their issuer.</p></div>
+      <div class="code-card"><div class="top"><span class="name">pin_try_exceeded</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The allowable number of PIN attempts was exceeded.</p><p class="next"><strong>Next step:</strong> The customer should use a different card or payment method.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-processing-error-decline/">processing_error</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">An error occurred while processing the card.</p><p class="next"><strong>Next step:</strong> Attempt the payment again. If it persists, retry later.</p><p class="note">Transient by definition. Short backoff then retry.</p></div>
+      <div class="code-card"><div class="top"><span class="name">reenter_transaction</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The issuer could not process the payment for an unknown reason.</p><p class="next"><strong>Next step:</strong> Attempt the payment again. If it persists the customer should contact their issuer.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-pickup-card-vs-restricted-card/">restricted_card</a></span><span class="pill yes">Retry may execute</span><span class="pill quiet">Show generically</span></div><p class="meaning">The card cannot be used, possibly because it was reported lost or stolen.</p><p class="next"><strong>Next step:</strong> Present as a generic decline. The customer should contact their issuer.</p></div>
+      <div class="code-card blocked"><div class="top"><span class="name">revocation_of_all_authorizations</span><span class="pill no">Stripe will not retry</span></div><p class="meaning">The card was declined for an unknown reason.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p><p class="note">The customer has revoked all recurring authorizations. Retrying will not work, and continuing to try is a good way to attract a dispute.</p></div>
+      <div class="code-card blocked"><div class="top"><span class="name">revocation_of_authorization</span><span class="pill no">Stripe will not retry</span></div><p class="meaning">The card was declined for an unknown reason.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p><p class="note">The customer has revoked permission for this recurring charge specifically. Treat it as a cancellation signal, not a retry candidate.</p></div>
+      <div class="code-card"><div class="top"><span class="name">security_violation</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card was declined for an unknown reason.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p></div>
+      <div class="code-card"><div class="top"><span class="name">service_not_allowed</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card was declined for an unknown reason.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p></div>
+      <div class="code-card blocked"><div class="top"><span class="name"><a href="/blog/stripe-lost-card-stolen-card-declines/">stolen_card</a></span><span class="pill no">Stripe will not retry</span><span class="pill quiet">Show generically</span></div><p class="meaning">The card was reported stolen.</p><p class="next"><strong>Next step:</strong> Present as a generic decline. Do not disclose the reason.</p></div>
+      <div class="code-card"><div class="top"><span class="name">stop_payment_order</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card was declined for an unknown reason.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p><p class="note">The customer has instructed their bank to stop this payment. Functionally a cancellation.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-test-cards-for-failed-payments/">testmode_decline</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">A Stripe test card number was used.</p><p class="next"><strong>Next step:</strong> Use a real card.</p><p class="note">If you see this in live mode, something in your integration is still pointing at test data.</p></div>
+      <div class="code-card blocked"><div class="top"><span class="name"><a href="/blog/stripe-transaction-not-allowed-decline/">transaction_not_allowed</a></span><span class="pill no">Stripe will not retry</span></div><p class="meaning">The card was declined for an unknown reason.</p><p class="next"><strong>Next step:</strong> The customer needs to contact their card issuer.</p></div>
+      <div class="code-card"><div class="top"><span class="name"><a href="/blog/stripe-try-again-later-decline/">try_again_later</a></span><span class="pill yes">Retry may execute</span></div><p class="meaning">The card was declined for an unknown reason. Deprecated.</p><p class="next"><strong>Next step:</strong> Attempt the payment again. If it persists the customer should contact their issuer.</p></div>
+      <div class="code-card"><div class="top"><span class="name">withdrawal_count_limit_exceeded</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The customer has exceeded a balance or credit limit.</p><p class="next"><strong>Next step:</strong> The customer should use an alternative payment method.</p></div>
+      <div class="code-card"><div class="top"><span class="name">mobile_device_authentication_required</span><span class="pill yes">Retry may execute</span></div><p class="meaning">The transaction requires authentication on the customer’s mobile device.</p><p class="next"><strong>Next step:</strong> The customer needs to re-tap their device.</p></div>
+      <p class="empty" id="empty" hidden>No decline code matches that. Try a shorter search, for example <code>expired</code> or <code>cvc</code>.</p>
+    </div>
 
     <h2>The nine codes Stripe will not retry</h2>
     <p>This is the part most people get wrong, so it is worth stating precisely. Stripe documents a specific set of hard decline codes. When one of these comes back, Stripe <strong>still schedules retries and still increments <code>attempt_count</code></strong>, but the retry does not actually execute until a new payment method is attached.</p>
@@ -294,7 +347,7 @@
       <li>In the Stripe dashboard, open <strong>Payments</strong> and filter to <strong>Failed</strong>.</li>
       <li>Open any failed payment. The decline code is on the payment detail page.</li>
       <li>Through the API, read <code>decline_code</code> on the charge outcome. It is more specific than <code>failure_code</code>, which is the broader category.</li>
-      <li>For subscriptions specifically, listen for the <code>invoice.payment_failed</code> webhook and read the decline code off the attached charge.</li>
+      <li>For subscriptions specifically, listen for the <code>invoice.payment_failed</code> webhook and read the decline code off the attached charge. Stripe also emits <code>payment_intent.payment_failed</code> for the same failure, and <a href="/blog/invoice-payment-failed-vs-payment-intent-payment-failed/">the two events differ in what they carry</a>.</li>
     </ol>
     <p>What you are looking for is the <em>distribution</em>. If most of your failures are <code>insufficient_funds</code>, better retry timing will move real money. If most are <code>expired_card</code> or the hard codes, retry tuning will do nothing and your effort belongs in customer emails instead.</p>
 
@@ -339,68 +392,29 @@
 
 <script>
 (function () {
-  // Codes, meanings and next steps from Stripe's published decline code reference.
-  // `blocked` marks the nine codes Stripe documents as preventing an invoice retry
-  // from executing. `discreet` marks codes Stripe advises showing generically.
-  var CODES = [
-    {c:'approve_with_id', m:'The payment could not be authorized.', n:'Attempt the payment again. If it keeps failing, the customer should contact their issuer.'},
-    {c:'authentication_required', m:'The card was declined because the transaction requires authentication such as 3D Secure.', n:'Trigger an authentication flow. The customer can pay once authenticated.', blocked:true, note:'On a subscription this is awkward, because authentication needs the customer present. It usually means moving them to an on-session payment.'},
-    {c:'call_issuer', m:'The card was declined for an unknown reason.', n:'The customer needs to contact their card issuer.'},
-    {c:'card_not_supported', m:'The card does not support this type of purchase.', n:'The customer should contact their issuer to enable the purchase type.'},
-    {c:'card_velocity_exceeded', m:'The customer has exceeded a balance, credit or transaction limit.', n:'The customer should contact their issuer or use a different payment method.'},
-    {c:'currency_not_supported', m:'The card does not support the specified currency.', n:'The customer should check with their issuer about currency support.'},
-    {c:'do_not_honor', m:'The card was declined for an unknown reason.', n:'The customer needs to contact their card issuer.', note:'Common and frustratingly vague. Often temporary, so it is generally worth a spaced retry before giving up.'},
-    {c:'duplicate_transaction', m:'A transaction with identical amount and card details was submitted very recently.', n:'Check whether a recent payment already succeeded before charging again.'},
-    {c:'expired_card', m:'The card has expired.', n:'The customer needs to use a different card.', note:'Not on Stripe’s hard decline list, so retries keep firing pointlessly. Treat this as an email trigger, not a retry.'},
-    {c:'fraudulent', m:'Stripe suspects the payment is fraudulent.', n:'Present as a generic decline. Do not disclose the reason.', discreet:true},
-    {c:'generic_decline', m:'The card was declined for an unknown reason, or was blocked by Radar.', n:'The customer needs to contact their card issuer.'},
-    {c:'highest_risk_level', m:'Stripe blocked the payment as highest risk.', n:'Present as a generic decline. Do not disclose the reason.', blocked:true, discreet:true},
-    {c:'incorrect_cvc', m:'The CVC number is incorrect.', n:'The customer should retry with the correct CVC.'},
-    {c:'incorrect_number', m:'The card number is incorrect.', n:'The customer should retry with the correct card number.', blocked:true},
-    {c:'incorrect_pin', m:'The PIN is incorrect. Card reader payments only.', n:'The customer should retry with the correct PIN.'},
-    {c:'incorrect_zip', m:'The postal code is incorrect.', n:'The customer should retry with the correct postal code.'},
-    {c:'insufficient_funds', m:'The card does not have sufficient funds to complete the purchase.', n:'The customer should use an alternative payment method.', note:'Among the most recoverable declines. Retry when funds are likely present, around paydays, rather than a few hours later.'},
-    {c:'invalid_account', m:'The card or the account it is connected to is invalid.', n:'The customer should contact their issuer to check the card works.'},
-    {c:'invalid_amount', m:'The payment amount is invalid or exceeds the amount permitted.', n:'The customer should check with their issuer about amount limits.'},
-    {c:'invalid_cvc', m:'The CVC number is incorrect.', n:'The customer should retry with the correct CVC.'},
-    {c:'invalid_expiry_month', m:'The expiry month is invalid.', n:'The customer should retry with the correct expiry date.'},
-    {c:'invalid_expiry_year', m:'The expiry year is invalid.', n:'The customer should retry with the correct expiry date.'},
-    {c:'invalid_number', m:'The card number is incorrect.', n:'The customer should retry with the correct card number.'},
-    {c:'invalid_pin', m:'The PIN is incorrect.', n:'The customer should retry with the correct PIN.'},
-    {c:'issuer_not_available', m:'The card issuer could not be reached, so the payment could not be authorized.', n:'Attempt again. If it persists the customer should contact their issuer.', note:'Genuinely transient. A short backoff and retry recovers a good share of these.'},
-    {c:'lost_card', m:'The card was reported lost.', n:'Present as a generic decline. Do not disclose the reason.', blocked:true, discreet:true},
-    {c:'merchant_blacklist', m:'The payment matches a value on your Radar block list.', n:'Present as a generic decline. Do not disclose the reason.', discreet:true},
-    {c:'new_account_information_available', m:'The card or account it is connected to is invalid.', n:'The customer should contact their issuer.', note:'Often means updated card details exist. Stripe’s Card Account Updater may pick these up automatically.'},
-    {c:'no_action_taken', m:'The card was declined for an unknown reason.', n:'The customer needs to contact their card issuer.'},
-    {c:'not_permitted', m:'The payment is not permitted.', n:'The customer needs to contact their card issuer.'},
-    {c:'offline_pin_required', m:'The card requires a PIN.', n:'The customer should insert the card and enter a PIN.'},
-    {c:'online_or_offline_pin_required', m:'The card requires a PIN.', n:'Prompt for an online PIN if supported, otherwise the customer inserts the card and enters a PIN.'},
-    {c:'pickup_card', m:'The card cannot be used, possibly because it was reported lost or stolen.', n:'Present as a generic decline. The customer should contact their issuer.', blocked:true, discreet:true},
-    {c:'pin_try_exceeded', m:'The allowable number of PIN attempts was exceeded.', n:'The customer should use a different card or payment method.'},
-    {c:'processing_error', m:'An error occurred while processing the card.', n:'Attempt the payment again. If it persists, retry later.', note:'Transient by definition. Short backoff then retry.'},
-    {c:'reenter_transaction', m:'The issuer could not process the payment for an unknown reason.', n:'Attempt the payment again. If it persists the customer should contact their issuer.'},
-    {c:'restricted_card', m:'The card cannot be used, possibly because it was reported lost or stolen.', n:'Present as a generic decline. The customer should contact their issuer.', discreet:true},
-    {c:'revocation_of_all_authorizations', m:'The card was declined for an unknown reason.', n:'The customer needs to contact their card issuer.', blocked:true, note:'The customer has revoked all recurring authorizations. Retrying will not work, and continuing to try is a good way to attract a dispute.'},
-    {c:'revocation_of_authorization', m:'The card was declined for an unknown reason.', n:'The customer needs to contact their card issuer.', blocked:true, note:'The customer has revoked permission for this recurring charge specifically. Treat it as a cancellation signal, not a retry candidate.'},
-    {c:'security_violation', m:'The card was declined for an unknown reason.', n:'The customer needs to contact their card issuer.'},
-    {c:'service_not_allowed', m:'The card was declined for an unknown reason.', n:'The customer needs to contact their card issuer.'},
-    {c:'stolen_card', m:'The card was reported stolen.', n:'Present as a generic decline. Do not disclose the reason.', blocked:true, discreet:true},
-    {c:'stop_payment_order', m:'The card was declined for an unknown reason.', n:'The customer needs to contact their card issuer.', note:'The customer has instructed their bank to stop this payment. Functionally a cancellation.'},
-    {c:'testmode_decline', m:'A Stripe test card number was used.', n:'Use a real card.', note:'If you see this in live mode, something in your integration is still pointing at test data.'},
-    {c:'transaction_not_allowed', m:'The card was declined for an unknown reason.', n:'The customer needs to contact their card issuer.', blocked:true},
-    {c:'try_again_later', m:'The card was declined for an unknown reason. Deprecated.', n:'Attempt the payment again. If it persists the customer should contact their issuer.'},
-    {c:'withdrawal_count_limit_exceeded', m:'The customer has exceeded a balance or credit limit.', n:'The customer should use an alternative payment method.'},
-    {c:'mobile_device_authentication_required', m:'The transaction requires authentication on the customer’s mobile device.', n:'The customer needs to re-tap their device.'}
-  ];
-
+  // The 48 cards are rendered into the HTML above, so answer engines and search
+  // crawlers that never run JavaScript still get every code. Filtering only
+  // toggles `hidden` on nodes that already exist; nothing is re-rendered.
   var $ = function (id) { return document.getElementById(id); };
-  var listEl = $('list'), countEl = $('count'), qEl = $('q');
+  var listEl = $('list'), countEl = $('count'), qEl = $('q'), emptyEl = $('empty');
   var mode = 'all';
   var chips = { all: $('f-all'), blocked: $('f-blocked'), retry: $('f-retry'), fraud: $('f-fraud') };
 
-  function esc(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
+  var cards = [].slice.call(listEl.querySelectorAll('.code-card')).map(function (el) {
+    var note = el.querySelector('.note');
+    return {
+      el: el,
+      blocked: el.classList.contains('blocked'),
+      discreet: !!el.querySelector('.pill.quiet'),
+      // Same haystack the old renderer searched: code, meaning, next step, note.
+      text: [
+        el.querySelector('.name').textContent,
+        el.querySelector('.meaning').textContent,
+        el.querySelector('.next').textContent.replace(/^\s*Next step:\s*/, ''),
+        note ? note.textContent : ''
+      ].join(' ').toLowerCase()
+    };
+  });
 
   function matches(item) {
     if (mode === 'blocked' && !item.blocked) return false;
@@ -408,28 +422,18 @@
     if (mode === 'fraud' && !item.discreet) return false;
     var q = qEl.value.trim().toLowerCase();
     if (!q) return true;
-    return (item.c + ' ' + item.m + ' ' + item.n + ' ' + (item.note || '')).toLowerCase().indexOf(q) !== -1;
+    return item.text.indexOf(q) !== -1;
   }
 
   function render() {
-    var shown = CODES.filter(matches);
-    countEl.textContent = shown.length + ' of ' + CODES.length + ' codes';
-    if (!shown.length) {
-      listEl.innerHTML = '<p class="empty">No decline code matches that. Try a shorter search, for example <code>expired</code> or <code>cvc</code>.</p>';
-      return;
+    var shown = 0;
+    for (var i = 0; i < cards.length; i++) {
+      var ok = matches(cards[i]);
+      cards[i].el.hidden = !ok;
+      if (ok) shown++;
     }
-    listEl.innerHTML = shown.map(function (i) {
-      var pills = i.blocked
-        ? '<span class="pill no">Stripe will not retry</span>'
-        : '<span class="pill yes">Retry may execute</span>';
-      if (i.discreet) pills += '<span class="pill quiet">Show generically</span>';
-      return '<div class="code-card' + (i.blocked ? ' blocked' : '') + '">' +
-        '<div class="top"><span class="name">' + esc(i.c) + '</span>' + pills + '</div>' +
-        '<p class="meaning">' + esc(i.m) + '</p>' +
-        '<p class="next"><strong>Next step:</strong> ' + esc(i.n) + '</p>' +
-        (i.note ? '<p class="note">' + esc(i.note) + '</p>' : '') +
-        '</div>';
-    }).join('');
+    countEl.textContent = shown + ' of ' + cards.length + ' codes';
+    emptyEl.hidden = shown > 0;
   }
 
   Object.keys(chips).forEach(function (k) {
