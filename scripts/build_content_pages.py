@@ -117,15 +117,15 @@ def shell(title, desc, canonical, body, schema=None):
 """
 
 
-def article_schema(slug, h1, desc):
+def article_schema(slug, h1, desc, published="2026-07-28", modified="2026-07-28"):
     return {
         "@context": "https://schema.org",
         "@type": "Article",
         "headline": plain(h1),
         "description": desc,
         "url": f"{SITE}/blog/{slug}/",
-        "datePublished": "2026-07-28",
-        "dateModified": "2026-07-28",
+        "datePublished": published,
+        "dateModified": modified,
         "author": {"@type": "Person", "name": "Bruce McGinley"},
         "publisher": {"@type": "Organization", "name": "RecoverFlow", "url": SITE},
         "mainEntityOfPage": {"@type": "WebPage", "@id": f"{SITE}/blog/{slug}/"},
@@ -203,7 +203,14 @@ CTA = """<div class="cta-band">
 </div>"""
 
 
-def build_article(slug, title, h1, desc, answer, sections, faqs, sources, related):
+def build_article(slug, title, h1, desc, answer, sections, faqs, sources, related,
+                  updated=None, published="2026-07-28", modified="2026-07-28"):
+    # updated/published/modified are optional so a guide written later than the
+    # original batch can carry its own date instead of inheriting 28 July 2026.
+    # A page that says "last updated 4 August" above content written on the 16th
+    # is a small lie that a careful reader will find, and this site cannot afford
+    # to be caught in one.
+    updated = updated or UPDATED
     toc = "\n".join(f'        <li><a href="#{sid}">{head}</a></li>' for sid, head, _ in sections)
     body_sections = "\n\n".join(
         f'    <h2 id="{sid}">{head}</h2>\n{html}' for sid, head, html in sections
@@ -212,7 +219,7 @@ def build_article(slug, title, h1, desc, answer, sections, faqs, sources, relate
   <article class="wrap">
     <p class="eyebrow">Guide</p>
     <h1>{h1}</h1>
-    <p class="updated">Last updated {UPDATED} &middot; written by Bruce McGinley, who builds RecoverFlow</p>
+    <p class="updated">Last updated {updated} &middot; written by Bruce McGinley, who builds RecoverFlow</p>
 
     <div class="answer">
       <span class="label">Short answer</span>
@@ -238,7 +245,7 @@ def build_article(slug, title, h1, desc, answer, sections, faqs, sources, relate
     {related_html(related)}
   </article>
 </main>"""
-    schema = [article_schema(slug, h1, desc)]
+    schema = [article_schema(slug, h1, desc, published, modified)]
     if faqs:
         schema.append(faq_schema(faqs))
     return shell(title, desc, f"{SITE}/blog/{slug}/", body, schema)
@@ -276,6 +283,20 @@ SRC_INVOICE = ("Stripe: Invoice object, API reference", "https://docs.stripe.com
 SRC_TESTING = ("Stripe: Testing", "https://docs.stripe.com/testing", " &mdash; where every test card number here comes from.")
 SRC_CARDUPDATE = ("Stripe: Card payments overview", "https://docs.stripe.com/payments/cards/overview",
                   " &mdash; covers automatic card updates and network participation.")
+SRC_EXCESSIVE = ("Stripe Support: Payment blocked due to excessive retries",
+                 "https://support.stripe.com/questions/payment-blocked-due-to-excessive-retries",
+                 " &mdash; the source for the 15 in 30 calendar days figure, for what Stripe does after the 15th attempt, and for the blocked outcome fields.")
+SRC_VISA_RESUB = ("Visa: Updates to rules for declined transaction resubmission and use of authorization response codes",
+                  "https://usa.visa.com/dam/VCOM/global/support-legal/documents/updates-to-rules-for-declined-transaction-resubmission-and-use-of-authorization-response-codes.pdf",
+                  " &mdash; Visa's own document behind the reattempt rule and the response code categories.")
+SRC_VISA_CATS = ("CardPointe: Visa decline rules and responses",
+                 "https://support.cardpointe.com/compliance/visa-decline-rules-and-responses/",
+                 " &mdash; a processor's published summary of Visa's four response code categories, used here for the Category 1 definition and nothing else.")
+SRC_CONNECT_OAUTH = ("Stripe: Using OAuth with Standard accounts",
+                     "https://docs.stripe.com/connect/oauth-standard-accounts",
+                     " &mdash; the source for the account.application.deauthorized event.")
+SRC_INDIA = ("Stripe: India recurring payments", "https://docs.stripe.com/india-recurring-payments",
+             " &mdash; the RBI e-mandate rules behind Stripe not retrying India-issued cards.")
 
 
 # ---------------------------------------------------------------------------
@@ -301,7 +322,8 @@ ARTICLES.append(dict(
     <p>So an invoice can show several attempts against a stolen card without a single one of them ever having reached the issuer. If you are counting attempts as a measure of effort, you will overcount. If you are counting them as a measure of hope, you will overcount badly.</p>
     <div class="callout">
       <p><strong>The practical consequence:</strong> your retry configuration has no effect on these invoices. Widening the retry window from two weeks to two months does not give them more chances. It gives them a longer wait before Stripe gives up.</p>
-    </div>"""),
+    </div>
+    <p>Worth separating from a limit it is often confused with. This block is Stripe deciding not to send the charge. Visa separately caps how many attempts one payment may have at all, and that budget is drawn down by every attempt that does go out, from Stripe and from anything else retrying alongside it. <a href="/blog/visa-excessive-reattempts-rule/">The reattempt rule is its own page</a>, and if no retry is being scheduled in the first place, the <a href="/blog/stripe-not-retrying-failed-invoice/">nine reasons Stripe stops retrying</a> is the faster place to start.</p>"""),
         ("do-instead", "What to do instead", """
     <p>All nine resolve the same way: a new payment method. What differs is how you should ask for it.</p>
     <ul>
@@ -334,6 +356,8 @@ ARTICLES.append(dict(
     ],
     sources=[SRC_SMART, SRC_CODES, SRC_DECLINES],
     related=[
+        ("Stripe is not retrying your failed invoice", "/blog/stripe-not-retrying-failed-invoice/", "The nine reasons why, and the API field that proves each one."),
+        ("The Visa excessive reattempts rule", "/blog/visa-excessive-reattempts-rule/", "The other limit on retries, the one the card network imposes rather than Stripe."),
         ("Free decline code lookup", "/tools/decline-code-lookup/", "All 48 codes, searchable, with the nine flagged and guidance on what to say."),
         ("How Stripe Smart Retries actually work", "/blog/how-stripe-smart-retries-work/", "The default schedule, what you can configure, and what the ML is doing."),
         ("Why retrying an expired card rarely works", "/blog/expired-card-stripe-retries/", "The code Stripe will retry that it probably should not."),
@@ -385,7 +409,7 @@ ARTICLES.append(dict(
     <p>Turning Smart Retries off is a real option and Stripe supports it. You would do it if you have a genuine reason to control exact attempt times: a business where you know payday, a market where issuer behaviour is unusual, or an existing retry system you trust and want to keep.</p>
     <p>What you should not do is turn it off because you read that a fixed ladder is best practice. You will be replacing a model trained on Stripe's whole network with a guess. If your own data does not tell you the guess is better, it probably is not.</p>
     <div class="callout">
-      <p><strong>Worth saying plainly:</strong> if you have not yet switched Smart Retries on and configured the window deliberately, do that before you buy anything from anyone, including us. It is free and it is the largest single improvement available to most Stripe accounts.</p>
+      <p><strong>Worth saying plainly:</strong> if you have not yet switched Smart Retries on and configured the window deliberately, do that before you buy anything from anyone, including us. It is free and it is the largest single improvement available to most Stripe accounts. The rest of the free settings, with the exact Dashboard path for each, are in <a href="/blog/stripe-free-dunning-settings-checklist/">the settings checklist</a>.</p>
     </div>"""),
     ],
     faqs=[
@@ -402,6 +426,8 @@ ARTICLES.append(dict(
     ],
     sources=[SRC_SMART, SRC_DECLINES],
     related=[
+        ("Stripe is not retrying your failed invoice", "/blog/stripe-not-retrying-failed-invoice/", "The nine documented reasons no retry is scheduled, with the field to check for each."),
+        ("The free Stripe settings checklist", "/blog/stripe-free-dunning-settings-checklist/", "Every free retry and email setting, with the exact Dashboard path."),
         ("The nine codes that stop retries dead", "/blog/stripe-decline-codes-that-stop-retries/", "Where retry configuration stops mattering entirely."),
         ("Retry schedule builder", "/tools/retry-schedule-builder/", "Free tool. Tells you when a retry schedule is the wrong answer."),
         ("RecoverFlow vs Stripe's own features", "/compare/stripe-native/", "An honest account of what Stripe already does for free."),
@@ -524,6 +550,7 @@ ARTICLES.append(dict(
     ],
     sources=[SRC_EMAILS, SRC_SMART, SRC_CODES],
     related=[
+        ("The free Stripe settings checklist", "/blog/stripe-free-dunning-settings-checklist/", "Every email switch named exactly as Stripe labels it, and where to find it."),
         ("RecoverFlow vs Stripe's own features", "/compare/stripe-native/", "The honest version, including when to just use Stripe."),
         ("Free dunning email generator", "/tools/dunning-email-generator/", "Reason aware copy you can paste anywhere."),
         ("How Smart Retries work", "/blog/how-stripe-smart-retries-work/", "The other half of Stripe's free recovery stack."),
@@ -709,6 +736,7 @@ ARTICLES.append(dict(
     ],
     sources=[SRC_SUBS, SRC_SMART, SRC_INVOICE],
     related=[
+        ("Stripe is not retrying your failed invoice", "/blog/stripe-not-retrying-failed-invoice/", "Why a subscription in one of these statuses may never be charged again."),
         ("How Stripe Smart Retries actually work", "/blog/how-stripe-smart-retries-work/", "What sets the length of the window these statuses depend on."),
         ("Which Stripe webhooks tell you a payment failed", "/blog/stripe-failed-payment-webhooks/", "The events that fire on every transition above."),
         ("Retry schedule builder", "/tools/retry-schedule-builder/", "Free tool that builds a schedule and says when one will not help."),
@@ -776,6 +804,7 @@ ARTICLES.append(dict(
     ],
     sources=[SRC_WEBHOOKS, SRC_INVOICE, SRC_SUBS],
     related=[
+        ("Stripe is not retrying your failed invoice", "/blog/stripe-not-retrying-failed-invoice/", "When no further event is coming, and the field that tells you so."),
         ("The nine decline codes that stop retries dead", "/blog/stripe-decline-codes-that-stop-retries/", "Branch on these before you branch on attempt_count."),
         ("past_due vs unpaid vs canceled", "/blog/stripe-subscription-past-due-vs-unpaid/", "What the status transitions in these events actually mean."),
         ("Stripe test cards for failed payments", "/blog/stripe-test-cards-for-failed-payments/", "How to fire every one of these events on demand."),
@@ -1016,6 +1045,304 @@ ARTICLES.append(dict(
     ],
 ))
 
+# 13 -----------------------------------------------------------------------
+# Written 16 August 2026. Until this page existed the reattempt budget lived in
+# exactly one place on the site, inside the retry waste calculator, which is a
+# tool page and not something anyone links to as a reference. Every number here
+# is reconciled against that calculator on purpose: the calculator says 15 per
+# card per 30 days, Stripe's own support page says 15 retries of a single
+# payment over 30 calendar days, and the page below states both rather than
+# picking one and quietly contradicting the other tool on the same domain.
+#
+# No fee figure appears anywhere on this page. The per-attempt penalty amounts
+# are published by processors rather than by Visa or Stripe, and the calculator
+# does not quote them, so neither does this.
+ARTICLES.append(dict(
+    slug="visa-excessive-reattempts-rule",
+    title="Visa's excessive reattempts rule on Stripe | RecoverFlow",
+    h1="The Visa excessive reattempts rule: 15 tries per card, per 30 days",
+    desc="Visa prohibits more than 15 retries of one payment in 30 calendar days. What Stripe does at the limit, and the declines where the budget is zero.",
+    published="2026-08-16",
+    modified="2026-08-16",
+    updated="16 August 2026",
+    answer="""      <p>Visa's rules broadly prohibit more than 15 retries of a single payment over 30 calendar days. Because a subscription's retries all land on the same card for the same invoice, that is usually described as a budget of <strong>15 reattempts per card per rolling 30 days</strong>.</p>
+      <p>Stripe enforces it. After the 15th retry attempt on a Visa transaction, Stripe automatically blocks subsequent retry attempts where it determines there is a low chance of a successful authorization.</p>
+      <p>For one group of declines the budget is not 15. It is zero, and the first reattempt is already one too many.</p>""",
+    sections=[
+        ("rule", "The rule, in the fewest words possible", """
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">The limit</th><th scope="col">What it is</th><th scope="col">Where it comes from</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Reattempts of one failed payment</th><td>No more than 15 in 30 calendar days</td><td>Visa's rules, quoted directly by Stripe</td></tr>
+          <tr><th scope="row">Reattempts after a Category 1 response</th><td>None, using the same account information</td><td>Visa's authorization response code categories</td></tr>
+          <tr><th scope="row">What Stripe does at the limit</th><td>Blocks subsequent retry attempts after the 15th on a Visa transaction, where it judges a low chance of authorization</td><td>Stripe support documentation</td></tr>
+          <tr><th scope="row">How a blocked attempt looks in the API</th><td><code>outcome.type</code> of <code>blocked</code>, <code>outcome.reason</code> of <code>previously_declined_do_not_retry</code>, surfaced to you as <code>card_declined</code> with <code>generic_decline</code></td><td>Stripe support documentation</td></tr>
+          <tr><th scope="row">Stripe Smart Retries recommended default</th><td>8 tries within 2 weeks</td><td>Stripe Billing documentation</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Two things in that table are worth reading twice. The budget is counted over a rolling window, not a calendar month, so it does not reset on the 1st. And the last row is the interesting one: Stripe's own recommended default sits at roughly half the network ceiling, which is not an accident.</p>"""),
+        ("stripe-behaviour", "What Stripe does when you cross it", """
+    <p>You do not get a warning email. The attempt simply stops being an attempt.</p>
+    <p>Stripe's own description is that after the 15th retry attempt on a Visa transaction, it will automatically block subsequent retry attempts if it determines there is a low chance of a successful authorization for the given charge. The charge that comes back is not an issuer decline. It never reached the issuer. In the API it carries an <code>outcome.type</code> of <code>blocked</code> and an <code>outcome.reason</code> of <code>previously_declined_do_not_retry</code>, while the error your code sees is the ordinary <code>card_declined</code> with a <code>decline_code</code> of <code>generic_decline</code>.</p>
+    <div class="callout">
+      <p><strong>Why this matters for your reporting:</strong> a blocked attempt shows up in your failed payments as <code>generic_decline</code>, which is the least informative code Stripe has. If you are counting decline codes to decide what to do next, budget exhaustion hides inside your <code>generic_decline</code> bucket wearing a disguise. Check <code>outcome.reason</code> on the charge, not just the decline code.</p>
+    </div>
+    <p>Stripe describes a related behaviour on its declines page for accounts on interchange plus pricing, where Adaptive Acceptance blocks certain payments to help avoid unnecessary network costs, giving an <code>outcome.reason</code> of <code>low_probability_of_authorization</code> and an <code>advice_code</code> of <code>do_not_try_again</code>. Different mechanism, same lesson: an attempt that the network would rather you did not send can be stopped before it is sent.</p>"""),
+        ("category-one", "The declines where the budget is zero, not fifteen", """
+    <p>Visa sorts its authorization response codes into categories. Category 1 is defined as the issuer will never approve, and a transaction that receives one should not be resubmitted using the same account information. Categories 2 and 3 are the ones the 15 in 30 days allowance applies to.</p>
+    <p>Category 1 is where the account is gone rather than temporarily unable to pay: a card reported lost, a card reported stolen, a closed account, an account that does not exist. In Stripe's vocabulary those arrive as codes like <code>lost_card</code>, <code>stolen_card</code>, <code>pickup_card</code>, <code>incorrect_number</code> and <code>invalid_account</code>.</p>
+    <p>So the arithmetic changes shape. On an ordinary soft decline you have a budget of 15 and Stripe's default spends 8 of it. On a Category 1 response you have a budget of zero, and the very first reattempt is already excessive. Nothing about the retry configuration in your Dashboard knows the difference.</p>
+    <p>This is the same population as the <a href="/blog/stripe-decline-codes-that-stop-retries/">nine codes Stripe will not execute a retry for</a>, but the two lists are not identical and they exist for different reasons, which is the next section.</p>"""),
+        ("eight", "Why Stripe's default is 8 and not 15", """
+    <p>Smart Retries recommends 8 tries within 2 weeks. The network allows 15 over 30 days. Stripe is deliberately leaving room.</p>
+    <p>Part of that is the budget itself. Attempts are not free actions, and a schedule that spends the whole allowance leaves nothing for a manual retry, a customer-triggered payment from the hosted invoice page, or the attempt that follows once a new card is finally added. Part of it is that issuers watch attempt frequency: a card being hammered looks less like a subscription renewal and more like someone testing a stolen number, and the sensible issuer response to that is to decline more.</p>
+    <p>The practical read: 8 within 2 weeks is not a timid default you should raise to look thorough. It is a schedule that finishes with headroom, on purpose.</p>"""),
+        ("two-limits", "Two separate limits people keep merging into one", """
+    <p>This is the point almost every article on failed payments gets wrong, and it is worth being pedantic about because the two limits behave completely differently.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col"></th><th scope="col">The nine code suppression</th><th scope="col">The reattempt budget</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Who imposes it</th><td>Stripe</td><td>Visa</td></tr>
+          <tr><th scope="row">What it limits</th><td>Whether a scheduled retry is executed at all</td><td>How many executed attempts one payment may have</td></tr>
+          <tr><th scope="row">Does the attempt reach the issuer</th><td>No, and no Charge is created</td><td>Yes, until the budget runs out</td></tr>
+          <tr><th scope="row">What clears it</th><td>Attaching a new payment method</td><td>Time, as the rolling 30 day window moves</td></tr>
+          <tr><th scope="row">What you see</th><td><code>attempt_count</code> climbing with nothing happening</td><td>A blocked charge reported as <code>generic_decline</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>They are independent. An invoice can sit well inside its 15 and still be going nowhere because it is on one of the nine. Another can be clear of all nine and still be blocked because the budget is spent. Fixing one tells you nothing about the other.</p>
+    <p>The reason this gets expensive is that the two systems retrying your invoices cannot see each other's counters. Stripe's Smart Retries draw down the budget. A third-party recovery tool retrying on top of Stripe draws down the same budget. Your own manual retry from the Dashboard draws down the same budget. Nobody is keeping a running total on your behalf unless something is built to do it.</p>"""),
+        ("count", "How to see where you stand", """
+    <p>There is no dashboard number for this, which is the whole problem. You can get close from the API.</p>
+    <ul>
+      <li>On the invoice, <code>attempt_count</code> is the number of payment attempts from the perspective of the retry schedule. Stripe documents that it keeps incrementing even when a hard decline means the retry does not execute, so it is an upper bound on real network attempts rather than a count of them.</li>
+      <li>On each failed charge, <code>outcome.network_status</code> tells you whether the attempt actually went out. <code>declined_by_network</code> means it did. <code>not_sent_to_network</code> means it did not, and that one did not cost you budget.</li>
+      <li><code>outcome.reason</code> of <code>previously_declined_do_not_retry</code> is the marker that you have already crossed the line on that card.</li>
+    </ul>
+    <p>Count attempts per card rather than per invoice. A customer whose renewal failed in June and again in July is one card carrying two invoices worth of attempts inside the same rolling window, and the window does not care which invoice they belonged to.</p>
+    <p>If you want the money version of this rather than the count version, the <a href="/tools/retry-waste-calculator/">retry waste calculator</a> takes your decline code counts and returns what share of your failed revenue is sitting on cards that no attempt can collect from. It runs in the browser and uploads nothing.</p>"""),
+    ],
+    faqs=[
+        ("How many times can you retry a failed Visa payment?",
+         "Visa's rules broadly prohibit more than 15 retries of a single payment over 30 calendar days, and Stripe quotes that figure directly. In a subscription those retries all land on the same card for the same invoice, which is why the rule is usually described as 15 per card per 30 days. The window is rolling, so it does not reset at the start of a month."),
+        ("What happens after the 15th retry?",
+         "Stripe automatically blocks subsequent retry attempts on a Visa transaction where it determines there is a low chance of a successful authorization. The attempt never reaches the issuer. In the API the charge carries an outcome type of blocked with a reason of previously_declined_do_not_retry, and it surfaces to your code as card_declined with a decline_code of generic_decline."),
+        ("Do Stripe's own Smart Retries count towards the 15?",
+         "Every executed attempt on the card counts, whoever sent it. Stripe's scheduled retries, a manual retry you click in the Dashboard, and a third-party recovery tool's retries all draw on the same budget, and none of those systems can see the others' counters. That is why Stripe's recommended default of 8 tries in 2 weeks leaves room rather than filling the allowance."),
+        ("Are there declines where even one retry is too many?",
+         "Yes. Visa's Category 1 responses mean the issuer will never approve, and the transaction should not be resubmitted using the same account information. A card reported lost, a card reported stolen, a closed account and an account that never existed all sit in that group. The permitted number of reattempts there is zero, not 15."),
+        ("Is this the same thing as the nine codes Stripe will not retry?",
+         "No, and conflating them is the most common mistake in this area. The nine codes are a Stripe-side suppression: Stripe keeps the schedule running but does not send the charge until a new payment method exists. The reattempt rule is a network-side budget on attempts that do get sent. A payment can be well inside its 15 and still blocked by the nine, or clear of the nine and out of budget."),
+    ],
+    sources=[SRC_EXCESSIVE, SRC_VISA_RESUB, SRC_VISA_CATS, SRC_SMART, SRC_DECLINES],
+    related=[
+        ("Stripe is not retrying your failed invoice", "/blog/stripe-not-retrying-failed-invoice/", "The nine reasons, and the API field to check for each one."),
+        ("The nine codes that stop retries dead", "/blog/stripe-decline-codes-that-stop-retries/", "The other limit, the one Stripe imposes rather than Visa."),
+        ("Retry waste calculator", "/tools/retry-waste-calculator/", "Free tool. What share of your failed revenue no attempt can reach."),
+    ],
+))
+
+# 14 -----------------------------------------------------------------------
+# Every cause below was confirmed against a primary Stripe page before it was
+# written down. Four are stated outright by the Smart Retries page, four come
+# from documented field behaviour on the invoice object, and one from the local
+# payment method retry table on the same Smart Retries page. Nothing here is
+# inferred from how the product behaves in our own account.
+ARTICLES.append(dict(
+    slug="stripe-not-retrying-failed-invoice",
+    title="Stripe is not retrying your failed invoice: 9 reasons | RecoverFlow",
+    h1="Stripe is not retrying your failed invoice. Here are the nine reasons why.",
+    desc="A checklist for the moment a subscription invoice fails and no retry is scheduled. Nine documented causes, and the exact API field that proves each one.",
+    published="2026-08-16",
+    modified="2026-08-16",
+    updated="16 August 2026",
+    answer="""      <p>Stripe states four of these outright: it does not retry when no payment methods are available, when the issuer returned a hard decline code, when the card is India-issued, or when the Connect account has been disconnected.</p>
+      <p>The other five are configuration. The invoice is on <code>send_invoice</code>, <code>auto_advance</code> is off, the retry schedule is finished, the subscription already moved to <code>unpaid</code> or <code>canceled</code>, or the payment is a local payment method whose retries are off by default.</p>
+      <p>Read <code>next_payment_attempt</code> on the invoice first. It answers whether there is a retry coming, and everything below explains why there is not.</p>""",
+    sections=[
+        ("first", "Start with one field", """
+    <p>Pull the invoice and look at <code>next_payment_attempt</code>. Stripe documents it as the time at which payment will next be attempted, and as <code>null</code> for invoices where <code>collection_method=send_invoice</code>.</p>
+    <p>If it holds a timestamp, Stripe does intend to retry and your problem is timing, not configuration. Wait for that moment and check again. If it is <code>null</code>, one of the nine below is true.</p>
+    <p>While you are there, note <code>status</code> and <code>attempt_count</code>. An invoice that is <code>draft</code> is not being collected at all. An <code>attempt_count</code> that keeps rising while nothing appears in your payments list is the signature of cause 2.</p>"""),
+        ("documented", "The four Stripe states outright", """
+    <p>Stripe's Smart Retries page lists these as the conditions under which it does not retry payments. They are quoted, not inferred.</p>
+    <ol>
+      <li>
+        <p><strong>No payment methods are available.</strong> There is nothing to charge. Stripe retries against the first available payment method in a documented order: the subscription's <code>default_payment_method</code>, then the subscription's <code>default_source</code>, then the customer's <code>invoice_settings.default_payment_method</code>, then the legacy <code>customer.default_source</code>. Check all four, in that order.</p>
+        <p>There is a trap here worth knowing. Stripe says that when you update payment methods after a failed attempt, you should update the field where the previous payment failed. If the subscription has a <code>default_payment_method</code> and you only update <code>customer.invoice_settings.default_payment_method</code>, Stripe carries on retrying the subscription's one. Your customer added a working card and nothing changed.</p>
+      </li>
+      <li>
+        <p><strong>The issuer returned a hard decline code.</strong> Nine codes stop execution: <code>incorrect_number</code>, <code>lost_card</code>, <code>pickup_card</code>, <code>stolen_card</code>, <code>revocation_of_authorization</code>, <code>revocation_of_all_authorizations</code>, <code>authentication_required</code>, <code>highest_risk_level</code> and <code>transaction_not_allowed</code>. Read <code>last_payment_error.decline_code</code> on the failed PaymentIntent.</p>
+        <p>Stripe is precise about what happens next, and it is not what most people expect: retries continue to be scheduled and <code>attempt_count</code> continues to increment, but retries only execute after a new payment method is detected, and unexecuted retries do not create a new Charge. So the invoice looks busy while nothing is being attempted. <a href="/blog/stripe-decline-codes-that-stop-retries/">Full breakdown of the nine</a>.</p>
+      </li>
+      <li>
+        <p><strong>The payment card is India-issued.</strong> Check <code>card.country</code> on the payment method for <code>IN</code>. Recurring payments on India-issued cards run under the Reserve Bank of India's e-mandate rules, which require a registered mandate authenticated by the cardholder, a pre-debit notification at least 24 hours before each charge, and fresh authentication above 15,000 INR. Stripe cannot satisfy that with a silent background retry. Watch for <code>payment_intent_mandate_invalid</code> and <code>india_recurring_payment_mandate_canceled</code> on the PaymentIntent.</p>
+      </li>
+      <li>
+        <p><strong>The Stripe Connect account has been disconnected.</strong> If you are a platform, the merchant may have revoked you. Stripe sends <code>account.application.deauthorized</code> when a user disconnects your platform from their account. If you are the merchant and an app was retrying on your behalf, the same event is why it stopped.</p>
+      </li>
+    </ol>"""),
+        ("config", "The five that are your own configuration", """
+    <p>None of these are failures. They are settings doing exactly what they say, usually set months ago by someone else.</p>
+    <ol start="5">
+      <li>
+        <p><strong><code>collection_method</code> is <code>send_invoice</code>.</strong> Stripe documents the two values plainly: with <code>charge_automatically</code> it attempts payment using the default source attached to the customer, and with <code>send_invoice</code> it emails the invoice to the customer with payment instructions. There is no card charge to retry, which is why <code>next_payment_attempt</code> is documented as <code>null</code> for these. What you want instead is the unpaid invoice reminder, which is a separate setting and is covered in the <a href="/blog/stripe-free-dunning-settings-checklist/">free settings checklist</a>.</p>
+      </li>
+      <li>
+        <p><strong><code>auto_advance</code> is <code>false</code>.</strong> Documented as controlling whether Stripe performs automatic collection of the invoice, and if false, the invoice's state does not automatically advance without an explicit action. An invoice created by your own code with <code>auto_advance</code> off will sit there indefinitely, correctly, forever.</p>
+      </li>
+      <li>
+        <p><strong>The retry schedule is finished.</strong> Stripe's wording is that after the final payment attempt, no further payment attempts are made, and that changing your subscription settings only affects future retries. Widening the window today does not give an already-exhausted invoice more chances. Check the configured schedule at <strong>Billing</strong> &gt; <strong>Revenue recovery</strong> &gt; <strong>Retries</strong> and compare it with <code>attempt_count</code>.</p>
+      </li>
+      <li>
+        <p><strong>The subscription already moved on.</strong> When recovery fails, the subscription transitions according to your setting: cancel it, mark it <code>unpaid</code>, or leave it <code>past_due</code>. The <code>unpaid</code> branch is the one that confuses people, because Stripe documents that invoices continue to be generated and stay in a draft state. New invoices keep appearing and none of them are collected, which looks exactly like a broken retry engine. Read <code>subscription.status</code> and <code>invoice.status</code> together.</p>
+      </li>
+      <li>
+        <p><strong>It is a local payment method and retries are off.</strong> Stripe is explicit that by default it does not automatically retry failed payments made with local payment methods. ACH Direct Debit, ACSS, Bacs, SEPA and both Australian and New Zealand BECS all need the <strong>Local payment methods</strong> section turned on. Even switched on, the allowances are small and the only retryable failure is insufficient funds.</p>
+      </li>
+    </ol>"""),
+        ("table", "The whole checklist in one table", """
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">#</th><th scope="col">Cause</th><th scope="col">Field or setting to read</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1</th><td>No payment method available</td><td><code>subscription.default_payment_method</code>, <code>subscription.default_source</code>, <code>customer.invoice_settings.default_payment_method</code>, <code>customer.default_source</code></td></tr>
+          <tr><th scope="row">2</th><td>Hard decline code</td><td><code>last_payment_error.decline_code</code>, against the nine</td></tr>
+          <tr><th scope="row">3</th><td>India-issued card</td><td><code>card.country</code> equal to <code>IN</code>, plus mandate status</td></tr>
+          <tr><th scope="row">4</th><td>Connect account disconnected</td><td>the <code>account.application.deauthorized</code> event</td></tr>
+          <tr><th scope="row">5</th><td>Manual collection</td><td><code>invoice.collection_method</code> equal to <code>send_invoice</code></td></tr>
+          <tr><th scope="row">6</th><td>Automatic advancement off</td><td><code>invoice.auto_advance</code> equal to <code>false</code></td></tr>
+          <tr><th scope="row">7</th><td>Schedule exhausted</td><td><code>invoice.attempt_count</code> against your configured retry policy</td></tr>
+          <tr><th scope="row">8</th><td>Subscription already unpaid or canceled</td><td><code>subscription.status</code>, and <code>invoice.status</code> of <code>draft</code></td></tr>
+          <tr><th scope="row">9</th><td>Local payment method with retries off</td><td>the Local payment methods retry setting</td></tr>
+        </tbody>
+      </table>
+    </div>"""),
+        ("not-this", "One more thing that looks identical and is not on the list", """
+    <p>If you have ruled out all nine and attempts are still coming back failed without ever reaching the bank, check whether the attempt was blocked rather than declined.</p>
+    <p>Visa's rules broadly prohibit more than 15 retries of a single payment over 30 calendar days, and Stripe blocks subsequent retry attempts after the 15th on a Visa transaction where it judges a low chance of authorization. That charge reports an <code>outcome.type</code> of <code>blocked</code> with an <code>outcome.reason</code> of <code>previously_declined_do_not_retry</code>, while the error your code sees is a plain <code>generic_decline</code>. It is a different failure from every cause above, because here Stripe did schedule the retry and did try to send it.</p>
+    <p>This is easy to miss because it hides inside your most boring decline code. There is <a href="/blog/visa-excessive-reattempts-rule/">a full page on the reattempt budget</a>, including why it is a separate limit from the nine codes.</p>"""),
+    ],
+    faqs=[
+        ("Why is next_payment_attempt null on my invoice?",
+         "Stripe documents it as null for invoices where collection_method is send_invoice. On an automatically collected invoice, null means no further attempt is scheduled: the retry schedule is finished, the invoice is no longer open, auto_advance is off, or the subscription has already moved to unpaid or canceled."),
+        ("Does attempt_count going up mean Stripe is really charging the card?",
+         "No. Stripe documents that when a failure returns a non-retryable code, retries continue to be scheduled and attempt_count continues to increment, but retries only execute once a new payment method is obtained, and unexecuted retries do not create a new Charge. If attempt_count is climbing and no new charges appear, that is the reason."),
+        ("Does Stripe retry failed ACH and SEPA payments?",
+         "It can, but not by default. Stripe states that by default it does not automatically retry failed payments made with local payment methods, and you turn it on in the Local payment methods section. The only retryable failure is insufficient funds, and the allowances are small: ACH Direct Debit is 2 retries over 40 days, SEPA, Bacs and Australia BECS are 2 retries over 30 days, and ACSS and New Zealand BECS are 1 retry over 30 days."),
+        ("Why does Stripe not retry India-issued cards?",
+         "Stripe lists India-issued cards among the cases where it does not retry. Recurring charges on those cards fall under the Reserve Bank of India's e-mandate rules, which require a mandate the cardholder has authenticated, a pre-debit notification at least 24 hours before each charge, and fresh authentication above 15,000 INR. A silent background retry cannot satisfy any of that."),
+        ("My subscription is unpaid and new invoices are not being charged. Is that a bug?",
+         "No. If your end-of-retry setting marks the subscription unpaid, Stripe documents that invoices continue to be generated and stay in a draft state. A draft invoice is never collected. That is the configured behaviour, and the fix is a decision about what you want to happen at the end of dunning rather than a change to the retry schedule."),
+    ],
+    sources=[SRC_SMART, SRC_INVOICE, SRC_SUBS, SRC_INDIA, SRC_CONNECT_OAUTH],
+    related=[
+        ("The Visa excessive reattempts rule", "/blog/visa-excessive-reattempts-rule/", "The limit that blocks attempts Stripe did schedule and did send."),
+        ("The nine codes that stop retries dead", "/blog/stripe-decline-codes-that-stop-retries/", "Cause 2 in full, and what to do instead of retrying."),
+        ("past_due, unpaid, canceled: what each status means", "/blog/stripe-subscription-past-due-vs-unpaid/", "Cause 8, and how to choose your end-of-retry setting."),
+    ],
+))
+
+# 15 -----------------------------------------------------------------------
+# The last section of this page tells the reader not to buy anything, including
+# from us, when Stripe's free settings already cover their failure mix. That is
+# not a rhetorical flourish and it is not to be softened in a later edit. It is
+# the only claim on this site that costs us something to make, which is exactly
+# why it is worth more than the rest of the site put together.
+ARTICLES.append(dict(
+    slug="stripe-free-dunning-settings-checklist",
+    title="The free Stripe dunning settings checklist | RecoverFlow",
+    h1="The free Stripe settings to switch on before you pay anyone",
+    desc="Every free retry and customer email setting in Stripe Billing, with the exact Dashboard path for each, and an honest note on when that is all you need.",
+    published="2026-08-16",
+    modified="2026-08-16",
+    updated="16 August 2026",
+    answer="""      <p>Stripe Billing already includes retry scheduling and a set of customer emails, at no extra charge. A surprising number of accounts have some of it switched off.</p>
+      <p>This is the list, with the exact Dashboard path for each setting so you can work through it in one sitting.</p>
+      <p>It ends with the part no vendor writes down: how to tell when this is genuinely all you need.</p>""",
+    sections=[
+        ("retries", "1. Turn on and tune Smart Retries", """
+    <p>Go to <strong>Billing</strong> &gt; <strong>Revenue recovery</strong> &gt; <strong>Retries</strong>. For one-time invoice retries, the setting is under <strong>Advanced invoicing features</strong> in <strong>Settings</strong> &gt; <strong>Billing</strong> &gt; <strong>Invoices</strong>.</p>
+    <p>Smart Retries picks retry times with a model rather than a fixed ladder. You choose the number of retries and the maximum duration, from 1 week, 2 weeks, 3 weeks, 1 month or 2 months. Stripe's recommended default is 8 tries within 2 weeks.</p>
+    <p>Leave it at the default unless your own decline mix argues otherwise. Longer windows help when your failures are <code>insufficient_funds</code>, because what you are waiting for is payday. They do not help when the card needs replacing, they only delay the moment you find out. There is <a href="/blog/how-stripe-smart-retries-work/">a longer piece on choosing the window</a>.</p>
+    <p>You can also disable Smart Retries and define your own rules, up to three retries each set a number of days after the previous attempt. Do that only if you have a specific reason, not because a fixed schedule feels more controlled.</p>"""),
+        ("emails", "2. Turn on the emails Stripe will send for you", """
+    <p>Most of these live under <strong>Email notifications and customer management</strong> in your subscriptions and emails settings, and the two revenue recovery ones live on the revenue recovery emails page.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Setting, exactly as Stripe labels it</th><th scope="col">Where</th><th scope="col">What it does</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Send emails when card payments fail</th><td>Revenue recovery settings</td><td>Emails the customer after each failed payment, with a link to update the payment method</td></tr>
+          <tr><th scope="row">Send emails about expiring cards</th><td>Revenue recovery settings</td><td>Sends 1 month before a card on file expires, where it is the default payment method or default source</td></tr>
+          <tr><th scope="row">Send reminders if a recurring invoice hasn't been paid</th><td>Billing settings, under Manage invoices sent to customers</td><td>Reminders for recurring invoices whose collection method is <code>send_invoice</code></td></tr>
+          <tr><th scope="row">Send a Stripe-hosted link for customers to confirm their payments when required</th><td>Email notifications and customer management</td><td>Covers payments that need customer action, such as 3D Secure</td></tr>
+          <tr><th scope="row">Send reminders if payment confirmation isn't completed</th><td>Email notifications and customer management</td><td>Keeps reminding until the customer confirms or the payment expires</td></tr>
+          <tr><th scope="row">Send emails about upcoming renewals</th><td>Email notifications and customer management</td><td>Timing comes from Prevent failed payments &gt; Upcoming renewal events</td></tr>
+          <tr><th scope="row">Send a reminder email 7 days before a free trial ends</th><td>Email notifications and customer management</td><td>Gives trialists a chance to add a working card before the first charge</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The first two are the ones that recover money. The rest prevent failures rather than chase them, which is cheaper and less annoying for everybody.</p>"""),
+        ("branding", "3. Make them look like you, and give them somewhere to go", """
+    <p>All of these emails and hosted pages use your branding settings, so fill those in. An unbranded email asking for card details is indistinguishable from a phishing attempt, and your customers are right to treat it that way.</p>
+    <p>Payment confirmation, failed payment, trial ending, renewal and expiring card emails all include a link where the customer can update their payment method. You choose the destination: a Stripe-hosted page, or your own subscription management page. If you pick <strong>Link to a Stripe-hosted page</strong>, Stripe generates a secure private URL where the customer can update the payment method and pay any outstanding invoices.</p>
+    <p>Know the expiry rules on that link. It stops working once 30 days have passed since a trial ending email, once the subscription becomes <code>cancelled</code>, <code>incomplete_expired</code> or <code>unpaid</code>, once the trial has ended and a payment method was already provided, or once the renewal period has expired. A dunning sequence that runs longer than the link it points at will send people to a dead page.</p>
+    <p>Two more things worth knowing while you are in here. Email logs on the <strong>Customers</strong> page cover the last 60 days only, they update daily, and they exclude the current date. And in a sandbox Stripe does not automatically send customer emails, so to test you need an address on your verified email domain or an active team member's address.</p>"""),
+        ("endings", "4. Decide what happens when the retries run out", """
+    <p>This is a setting, not a default you have to accept, and most people have never looked at it. When recovery fails, the subscription transitions one of three ways.</p>
+    <ul>
+      <li><strong>Cancel the subscription.</strong> It changes to <code>canceled</code> after the maximum number of days in your retry schedule.</li>
+      <li><strong>Mark the subscription as unpaid.</strong> It changes to <code>unpaid</code>, and invoices continue to be generated and stay in a draft state.</li>
+      <li><strong>Leave the subscription past-due.</strong> It stays <code>past_due</code>, invoices continue to be generated, and the customer keeps being charged based on your retry settings.</li>
+    </ul>
+    <p>Pick deliberately, because the choice decides whether a customer who comes back in three weeks still has an account. <a href="/blog/stripe-subscription-past-due-vs-unpaid/">What each status means</a> goes through the trade-offs.</p>"""),
+        ("local", "5. If you take direct debit, this one is off by default", """
+    <p>Stripe does not automatically retry failed payments made with local payment methods unless you turn it on, in the <strong>Local payment methods</strong> section for recurring subscription invoices, one-off invoices, or both.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">Method</th><th scope="col">Retryable failure</th><th scope="col">Maximum retries</th><th scope="col">Maximum period</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">ACH Direct Debit</th><td>Insufficient funds</td><td>2</td><td>40 days</td></tr>
+          <tr><th scope="row">ACSS Direct Debit</th><td>Insufficient funds</td><td>1</td><td>30 days</td></tr>
+          <tr><th scope="row">Australia BECS Direct Debit</th><td>Insufficient funds</td><td>2</td><td>30 days</td></tr>
+          <tr><th scope="row">Bacs Direct Debit</th><td>Insufficient funds</td><td>2</td><td>30 days</td></tr>
+          <tr><th scope="row">New Zealand BECS Direct Debit</th><td>Insufficient funds</td><td>1</td><td>30 days</td></tr>
+          <tr><th scope="row">SEPA Direct Debit</th><td>Insufficient funds</td><td>2</td><td>30 days</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Each has its own mandate requirements, and Stripe notes that enabling this does not make it responsible for losses if a local payment method retry does not happen.</p>"""),
+        ("stop", "6. When to stop here and buy nothing", """
+    <p>Work through the list above and then look at your actual decline codes. In the Dashboard, filter Payments to failed, or filter Invoices to unpaid and open the latest attempt on each. Twenty is enough to see the shape.</p>
+    <p>Sort them into two piles. One pile is failures where the money exists and the timing was wrong: <code>insufficient_funds</code> above all, plus <code>processing_error</code> and <code>try_again_later</code>. The other pile is cards that are gone: lost, stolen, revoked, blocked, or expired with no updated card pushed through the network.</p>
+    <p>If the first pile is most of your volume, the honest conclusion follows: retry timing is your lever, Stripe's model is better at retry timing than a rule you would write, the emails above already ask the few customers who need to act, and it is all free.</p>
+    <div class="callout">
+      <p><strong>Said plainly, because it is the point of this page:</strong> if you have those settings switched on and your failures are mostly <code>insufficient_funds</code>, Stripe has you covered. Do not buy a payment recovery tool. That includes RecoverFlow. Come back if your decline mix changes or if you need attribution, sequence control or history that outlives Stripe's 60 day email log, and until then keep the money.</p>
+    </div>"""),
+    ],
+    faqs=[
+        ("Does Stripe charge extra for Smart Retries or dunning emails?",
+         "No. Both are part of Stripe Billing rather than separate paid products. Anyone selling you payment recovery should be adding something on top of them, not selling you what your account already does."),
+        ("Where is the setting for failed payment emails?",
+         "Enable Send emails when card payments fail on the revenue recovery settings page, under Billing then Revenue recovery. The expiring card email, Send emails about expiring cards, lives in the same place and sends 1 month before a card on file expires."),
+        ("How long does Stripe keep a record of the emails it sent?",
+         "Logs for emails sent in the last 60 days are on the Customers page in the Dashboard. They are updated daily and do not include emails from the current date. If you need a longer history than that, you need to keep it yourself."),
+        ("Will Stripe email my customers while I am testing?",
+         "In a sandbox Stripe does not automatically send customer emails. To test the configuration, use an address belonging to your verified email domain or to an active team member. Stripe then sends failed payment notifications, upcoming invoice reminders, trial ending reminders and card expiring reminders in the sandbox."),
+        ("Should I change the retry window from 2 weeks?",
+         "Only if your decline mix says so. A longer window helps when failures are insufficient_funds, because the thing you are waiting for is payday, and two weeks catches one pay cycle while a month catches two. It does not help when the card itself needs replacing, and stretching to two months mainly stretches your reporting lag."),
+    ],
+    sources=[SRC_EMAILS, SRC_SMART, SRC_SUBS],
+    related=[
+        ("How Stripe Smart Retries actually work", "/blog/how-stripe-smart-retries-work/", "Choosing the window, and when turning it off is defensible."),
+        ("Stripe's dunning emails: what you control", "/blog/stripe-dunning-emails-what-you-control/", "What those settings can and cannot be made to say."),
+        ("RecoverFlow vs Stripe's own features", "/compare/stripe-native/", "Where Stripe's free features stop, written by the people selling the alternative."),
+    ],
+))
+
 
 # ---------------------------------------------------------------------------
 # /blog hub
@@ -1161,6 +1488,9 @@ if __name__ == "__main__":
     for a in ARTICLES:
         write("blog/" + a["slug"], build_article(
             a["slug"], a["title"], a["h1"], a["desc"], a["answer"],
-            a["sections"], a["faqs"], a["sources"], a["related"]))
+            a["sections"], a["faqs"], a["sources"], a["related"],
+            updated=a.get("updated"),
+            published=a.get("published", "2026-07-28"),
+            modified=a.get("modified", "2026-07-28")))
 
     print(f"\n{len(ARTICLES)} articles, hub, about, contact")

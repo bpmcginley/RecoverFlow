@@ -313,7 +313,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>Turning Smart Retries off is a real option and Stripe supports it. You would do it if you have a genuine reason to control exact attempt times: a business where you know payday, a market where issuer behaviour is unusual, or an existing retry system you trust and want to keep.</p>
     <p>What you should not do is turn it off because you read that a fixed ladder is best practice. You will be replacing a model trained on Stripe's whole network with a guess. If your own data does not tell you the guess is better, it probably is not.</p>
     <div class="callout">
-      <p><strong>Worth saying plainly:</strong> if you have not yet switched Smart Retries on and configured the window deliberately, do that before you buy anything from anyone, including us. It is free and it is the largest single improvement available to most Stripe accounts.</p>
+      <p><strong>Worth saying plainly:</strong> if you have not yet switched Smart Retries on and configured the window deliberately, do that before you buy anything from anyone, including us. It is free and it is the largest single improvement available to most Stripe accounts. The rest of the free settings, with the exact Dashboard path for each, are in <a href="/blog/stripe-free-dunning-settings-checklist/">the settings checklist</a>.</p>
     </div>
 
     <h2 id="faq">Questions people actually ask</h2>
@@ -345,6 +345,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <div class="related">
   <h2>Related</h2>
   <div class="card-grid">
+    <div class="card"><h3><a href="/blog/stripe-not-retrying-failed-invoice/">Stripe is not retrying your failed invoice</a></h3><p>The nine documented reasons no retry is scheduled, with the field to check for each.</p></div>
+    <div class="card"><h3><a href="/blog/stripe-free-dunning-settings-checklist/">The free Stripe settings checklist</a></h3><p>Every free retry and email setting, with the exact Dashboard path.</p></div>
     <div class="card"><h3><a href="/blog/stripe-decline-codes-that-stop-retries/">The nine codes that stop retries dead</a></h3><p>Where retry configuration stops mattering entirely.</p></div>
     <div class="card"><h3><a href="/tools/retry-schedule-builder/">Retry schedule builder</a></h3><p>Free tool. Tells you when a retry schedule is the wrong answer.</p></div>
     <div class="card"><h3><a href="/compare/stripe-native/">RecoverFlow vs Stripe's own features</a></h3><p>An honest account of what Stripe already does for free.</p></div>
