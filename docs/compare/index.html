@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -27,7 +28,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Failed Payment Recovery Tools Compared (Verified Pricing)</title>
 <meta name="description" content="RecoverFlow compared against Churnkey, Baremetrics Recover, Stunning, Paddle Retain and Stripe's free built-in recovery. Every price read from the vendor's own page.">
@@ -50,7 +50,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         {
           "@type": "Question",
           "name": "Which failed payment recovery tool is cheapest?",
-          "acceptedAnswer": { "@type": "Answer", "text": "It depends entirely on how much you recover each month. Flat fee tools such as Stunning at around $120 per month, Baremetrics Recover at $129 per month on top of a base plan, and Churnkey at $250 per month on Starter become cheaper than a percentage once your recovered volume is high enough. RecoverFlow charges 25% of what it recovers with a $29 per month minimum, which is cheaper at lower volumes. Each comparison page shows the exact crossover point." }
+          "acceptedAnswer": { "@type": "Answer", "text": "It depends entirely on how much you recover each month. Flat fee tools such as Stunning at around $120 per month, Baremetrics Recover at $129 per month on top of a base plan, and Churnkey at $250 per month on Starter become cheaper than a percentage once your recovered volume is high enough. RecoverFlow charges 25% of what it recovers, with a $29 per month minimum after the first 30 days and a $299 per month ceiling, so it is cheaper at lower volumes and never bills more than $299 whatever it recovers. Each comparison page shows the exact crossover point." }
         },
         {
           "@type": "Question",
@@ -270,12 +270,12 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
     <h2>The short version</h2>
     <p>Failed payment recovery tools price one of two ways. Most charge a <strong>flat monthly fee</strong>, often
-    banded by your MRR or ARR. RecoverFlow charges a <strong>percentage of what it actually recovers</strong>, with a
-    small monthly minimum.</p>
+    banded by your MRR or ARR. RecoverFlow charges a <strong>percentage of what it actually recovers</strong>: 25%,
+    with a $29 per month floor that starts after your first 30 days and a $299 per month ceiling.</p>
     <p>Neither is better in the abstract. A percentage is cheaper when your recovery volume is modest, because you are
-    not paying a subscription in the months when little failed. A flat fee is cheaper once volume is high, because the
-    percentage keeps growing and the fee does not. Every comparison page below shows the exact figure where that
-    crossover happens.</p>
+    not paying a subscription in the months when little failed. A flat fee under $299 is cheaper once volume is high,
+    because the percentage keeps growing until it hits our ceiling and their fee never moves. Every comparison page
+    below shows the exact figure where that crossover happens.</p>
 
     <div class="callout">
       <p><strong>Before any of this, check Stripe's own settings.</strong> Stripe includes machine learning timed
@@ -342,7 +342,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="faq">Frequently asked questions</h2>
     <div class="faq">
       <h3>Which failed payment recovery tool is cheapest?</h3>
-      <p>It depends entirely on how much you recover each month. Flat fee tools such as Stunning at around $120 per month, Baremetrics Recover at $129 per month on top of a base plan, and Churnkey at $250 per month on Starter become cheaper than a percentage once your recovered volume is high enough. RecoverFlow charges 25% of what it recovers with a $29 per month minimum, which is cheaper at lower volumes. Each comparison page shows the exact crossover point.</p>
+      <p>It depends entirely on how much you recover each month. Flat fee tools such as Stunning at around $120 per month, Baremetrics Recover at $129 per month on top of a base plan, and Churnkey at $250 per month on Starter become cheaper than a percentage once your recovered volume is high enough. RecoverFlow charges 25% of what it recovers, with a $29 per month minimum after the first 30 days and a $299 per month ceiling, so it is cheaper at lower volumes and never bills more than $299 whatever it recovers. Each comparison page shows the exact crossover point.</p>
 
       <h3>Do I need a recovery tool at all if I use Stripe?</h3>
       <p>Not necessarily. Stripe's own Smart Retries are machine learning timed and Stripe can send failed payment and card expiry emails using your branding, all at no cost. Turn those on first. A paid tool is only worth it if you want control over the dunning sequence and sender, attribution of which recovery came from which action, or history beyond Stripe's 60 day email log retention.</p>

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -27,7 +28,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Changelog | RecoverFlow</title>
 <meta name="description" content="What changed in RecoverFlow and when. Bug fixes that affected numbers shown to customers are listed as prominently as features.">
@@ -190,6 +190,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>Grouped by the day the work actually landed. Bug fixes that affected numbers shown to customers are listed as prominently as features, because those are the ones you would want to know about.</p>
 
     <div class="release">
+      <p class="updated" style="margin-bottom:4px;">2026-08-12</p>
+      <h2 style="margin-top:0;">A ceiling on the fee, and no billing for money handed back</h2>
+      <ul>
+        <li>The performance fee is now capped at $299 a month. Past roughly $1,196 of attributed recovery in a month the bill stops rising, however much more is recovered. The cap applies from the first day of the account, not only after the free 30 days.</li>
+        <li>Recoveries that are later refunded or charged back are no longer billed. A fully reversed case drops out of billing entirely, a partly reversed one bills only on what the merchant kept, and a reversal found after the invoice went out comes off the next one as a credit.</li>
+      </ul>
+    </div>    <div class="release">
       <p class="updated" style="margin-bottom:4px;">2026-07-28</p>
       <h2 style="margin-top:0;">Correctness pass on decline handling</h2>
       <ul>

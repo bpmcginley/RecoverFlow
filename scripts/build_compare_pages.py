@@ -15,6 +15,9 @@ DOCS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 VERIFIED_ON = "27 July 2026"
 FEE_RATE = 0.25
 FLOOR = 29
+# The fee is capped, so the cost table has to be capped too or it overstates
+# our own price. Mirrors MerchantBillingService.cs.
+CEILING = 299
 
 # --------------------------------------------------------------------------
 # Verified competitor data. `flat_monthly` is the cheapest realistic monthly
@@ -376,8 +379,8 @@ def shell(title, meta_desc, canonical, og_type, schema_blocks, body):
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-{TRACKING}
 <meta charset="UTF-8">
+{TRACKING}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(meta_desc)}">
@@ -420,7 +423,7 @@ def crossover_table(c):
     """Monthly cost of each option across recovery volumes."""
     rows = []
     for rec in (0, 250, 500, 1000, 2500):
-        ours = max(FLOOR, round(rec * FEE_RATE))
+        ours = min(CEILING, max(FLOOR, round(rec * FEE_RATE)))
         if c["flat_monthly"] is None:
             theirs = "Not published"
             winner = "Cannot compare without their price"
@@ -470,13 +473,22 @@ def build_competitor(c):
             f'{c["name"]} does not publish standalone pricing, and we are not going to invent a number or repeat '
             f'a third party guess as if it were fact. Ask them for a quote and compare it against the table above.</p></div>'
         )
+    elif c["flat_monthly"] >= CEILING:
+        crossover_note = (
+            f'<div class="warn-box"><p><strong>There is no crossover against {c["name"]}.</strong> '
+            f'Our fee stops rising at ${CEILING:,} a month, which is at or below their flat fee, so however much '
+            f'you recover we do not become the more expensive of the two. Check their current price before you '
+            f'decide, because that conclusion is entirely a function of it.</p></div>'
+        )
     else:
         cross = round(c["flat_monthly"] / FEE_RATE)
+        gap = CEILING - c["flat_monthly"]
         crossover_note = (
             f'<div class="warn-box"><p><strong>The crossover is about ${cross:,} per month of recovered revenue.</strong> '
             f'Below that, our percentage costs you less than {c["name"]}. Above it, their flat fee is the cheaper '
-            f'structure and we would be the more expensive choice. That is simply how percentage pricing works, and '
-            f'you should do this arithmetic before you buy from either of us.</p></div>'
+            f'structure and we would be the more expensive choice. Our fee stops rising at the ${CEILING:,} monthly '
+            f'ceiling, so the most we can ever cost you over {c["name"]} is ${gap:,} a month, but cheaper is cheaper '
+            f'and you should do this arithmetic before you buy from either of us.</p></div>'
         )
 
     body = f"""<article>
@@ -510,7 +522,7 @@ def build_competitor(c):
         </tbody>
       </table>
     </div>
-    <p><strong>RecoverFlow:</strong> 25% of what it recovers, with a $29 per month minimum after the first 30 days.
+    <p><strong>RecoverFlow:</strong> 25% of what it recovers, with a $29 per month minimum after the first 30 days and a $299 per month ceiling.
     <strong>{esc(c['name'])}:</strong> {c['flat_label']}.</p>
 
     {crossover_note}
@@ -577,7 +589,7 @@ def build_index():
 
     faq = [
         ("Which failed payment recovery tool is cheapest?",
-         "It depends entirely on how much you recover each month. Flat fee tools such as Stunning at around $120 per month, Baremetrics Recover at $129 per month on top of a base plan, and Churnkey at $250 per month on Starter become cheaper than a percentage once your recovered volume is high enough. RecoverFlow charges 25% of what it recovers with a $29 per month minimum, which is cheaper at lower volumes. Each comparison page shows the exact crossover point."),
+         "It depends entirely on how much you recover each month. Flat fee tools such as Stunning at around $120 per month, Baremetrics Recover at $129 per month on top of a base plan, and Churnkey at $250 per month on Starter become cheaper than a percentage once your recovered volume is high enough. RecoverFlow charges 25% of what it recovers, with a $29 per month minimum after the first 30 days and a $299 per month ceiling, so it is cheaper at lower volumes and never bills more than $299 whatever it recovers. Each comparison page shows the exact crossover point."),
         ("Do I need a recovery tool at all if I use Stripe?",
          "Not necessarily. Stripe's own Smart Retries are machine learning timed and Stripe can send failed payment and card expiry emails using your branding, all at no cost. Turn those on first. A paid tool is only worth it if you want control over the dunning sequence and sender, attribution of which recovery came from which action, or history beyond Stripe's 60 day email log retention."),
         ("How were these prices verified?",
@@ -602,12 +614,12 @@ def build_index():
 
     <h2>The short version</h2>
     <p>Failed payment recovery tools price one of two ways. Most charge a <strong>flat monthly fee</strong>, often
-    banded by your MRR or ARR. RecoverFlow charges a <strong>percentage of what it actually recovers</strong>, with a
-    small monthly minimum.</p>
+    banded by your MRR or ARR. RecoverFlow charges a <strong>percentage of what it actually recovers</strong>: 25%,
+    with a $29 per month floor that starts after your first 30 days and a $299 per month ceiling.</p>
     <p>Neither is better in the abstract. A percentage is cheaper when your recovery volume is modest, because you are
-    not paying a subscription in the months when little failed. A flat fee is cheaper once volume is high, because the
-    percentage keeps growing and the fee does not. Every comparison page below shows the exact figure where that
-    crossover happens.</p>
+    not paying a subscription in the months when little failed. A flat fee under $299 is cheaper once volume is high,
+    because the percentage keeps growing until it hits our ceiling and their fee never moves. Every comparison page
+    below shows the exact figure where that crossover happens.</p>
 
     <div class="callout">
       <p><strong>Before any of this, check Stripe's own settings.</strong> Stripe includes machine learning timed
