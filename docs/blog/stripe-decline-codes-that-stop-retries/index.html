@@ -295,6 +295,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <div class="callout">
       <p><strong>The practical consequence:</strong> your retry configuration has no effect on these invoices. Widening the retry window from two weeks to two months does not give them more chances. It gives them a longer wait before Stripe gives up.</p>
     </div>
+    <p>Worth separating from a limit it is often confused with. This block is Stripe deciding not to send the charge. Visa separately caps how many attempts one payment may have at all, and that budget is drawn down by every attempt that does go out, from Stripe and from anything else retrying alongside it. <a href="/blog/visa-excessive-reattempts-rule/">The reattempt rule is its own page</a>, and if no retry is being scheduled in the first place, the <a href="/blog/stripe-not-retrying-failed-invoice/">nine reasons Stripe stops retrying</a> is the faster place to start.</p>
 
     <h2 id="do-instead">What to do instead</h2>
 
@@ -349,6 +350,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <div class="related">
   <h2>Related</h2>
   <div class="card-grid">
+    <div class="card"><h3><a href="/blog/stripe-not-retrying-failed-invoice/">Stripe is not retrying your failed invoice</a></h3><p>The nine reasons why, and the API field that proves each one.</p></div>
+    <div class="card"><h3><a href="/blog/visa-excessive-reattempts-rule/">The Visa excessive reattempts rule</a></h3><p>The other limit on retries, the one the card network imposes rather than Stripe.</p></div>
     <div class="card"><h3><a href="/tools/decline-code-lookup/">Free decline code lookup</a></h3><p>All 48 codes, searchable, with the nine flagged and guidance on what to say.</p></div>
     <div class="card"><h3><a href="/blog/how-stripe-smart-retries-work/">How Stripe Smart Retries actually work</a></h3><p>The default schedule, what you can configure, and what the ML is doing.</p></div>
     <div class="card"><h3><a href="/blog/expired-card-stripe-retries/">Why retrying an expired card rarely works</a></h3><p>The code Stripe will retry that it probably should not.</p></div>

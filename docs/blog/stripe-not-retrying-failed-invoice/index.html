@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-XNWPM9VELB');
+</script>
+<!-- LinkedIn Insight Tag -->
+<script type="text/javascript">
+_linkedin_partner_id = "9673204";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script><script type="text/javascript">
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
+</noscript>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stripe is not retrying your failed invoice: 9 reasons | RecoverFlow</title>
+<meta name="description" content="A checklist for the moment a subscription invoice fails and no retry is scheduled. Nine documented causes, and the exact API field that proves each one.">
+<link rel="canonical" href="https://recoverflow.org/blog/stripe-not-retrying-failed-invoice/">
+<link rel="icon" type="image/png" href="/assets/logo-mark.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="RecoverFlow">
+<meta property="og:title" content="Stripe is not retrying your failed invoice: 9 reasons | RecoverFlow">
+<meta property="og:description" content="A checklist for the moment a subscription invoice fails and no retry is scheduled. Nine documented causes, and the exact API field that proves each one.">
+<meta property="og:url" content="https://recoverflow.org/blog/stripe-not-retrying-failed-invoice/">
+<meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  :root {
+    --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    --bg: #ffffff; --bg-alt: #f5f6fc; --bg-elevated: #ffffff;
+    --text: #0f1222; --text-dim: #4b5266; --text-mute: #8a92a6;
+    --border: #e6e8f0; --border-strong: #d3d7e3;
+    --accent: #6366f1; --accent-2: #8b5cf6; --accent-3: #a855f7; --accent-ink: #ffffff;
+    --accent-grad: linear-gradient(135deg, #6366f1 0%, #8b5cf6 55%, #a855f7 100%);
+    --positive: #0e9f6e; --positive-bg: #e7f7f0; --warn: #b7791f; --danger: #d64545;
+    --card-bg: #ffffff; --radius: 14px;
+    --shadow-sm: 0 1px 3px rgba(17,20,45,.06), 0 1px 2px rgba(17,20,45,.04);
+    --shadow-lg: 0 24px 60px -24px rgba(60,50,160,.35);
+    --ring: rgba(99,102,241,.35);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0a0b11; --bg-alt: #111320; --bg-elevated: #151827;
+      --text: #eef0f7; --text-dim: #a3abbf; --text-mute: #6f778c;
+      --border: #232637; --border-strong: #2f3346;
+      --accent: #818cf8; --accent-2: #a78bfa; --accent-3: #c084fc; --accent-ink: #ffffff;
+      --accent-grad: linear-gradient(135deg, #818cf8 0%, #a78bfa 55%, #c084fc 100%);
+      --positive: #34d399; --positive-bg: #0f2a20; --warn: #f0c070; --danger: #f87171;
+      --card-bg: #131623;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,.4);
+      --shadow-lg: 0 24px 60px -24px rgba(0,0,0,.6);
+      --ring: rgba(129,140,248,.4);
+    }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  html, body {
+    margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: var(--font-body); font-size: 16px; line-height: 1.68;
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  img { max-width: 100%; height: auto; }
+  a { color: var(--accent); }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+  header {
+    padding: 18px 0; border-bottom: 1px solid var(--border);
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    -webkit-backdrop-filter: saturate(180%) blur(12px); backdrop-filter: saturate(180%) blur(12px);
+    position: sticky; top: 0; z-index: 50;
+  }
+  header .wrap { max-width: 1080px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .logo { display: flex; align-items: center; gap: 10px; font-family: var(--font-display); font-weight: 700; font-size: 1.2rem; letter-spacing: -0.02em; text-decoration: none; color: var(--text); }
+  .logo span { background: var(--accent-grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .logo img { height: 30px; width: 30px; border-radius: 8px; box-shadow: var(--shadow-sm); }
+  nav a { color: var(--text-dim); text-decoration: none; margin-left: 22px; font-size: 0.95rem; font-weight: 500; }
+  nav a:hover { color: var(--text); }
+  nav a.nav-cta { border: 1px solid var(--border-strong); border-radius: 10px; padding: 8px 16px; color: var(--text); font-weight: 600; }
+  nav a.nav-cta:hover { border-color: var(--accent); color: var(--accent); }
+  main { padding: 52px 0 40px; }
+  .eyebrow { color: var(--accent); font-weight: 600; font-size: 0.9rem; letter-spacing: 0.02em; margin: 0 0 12px; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: clamp(1.9rem, 4.4vw, 2.6rem); line-height: 1.14; letter-spacing: -0.03em; margin: 0 0 12px; }
+  .updated { color: var(--text-mute); font-size: 0.9rem; margin: 0 0 30px; }
+  h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.38rem; letter-spacing: -0.02em; margin: 44px 0 12px; }
+  h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.06rem; margin: 26px 0 8px; }
+  p { margin: 0 0 16px; }
+  ul, ol { margin: 0 0 16px; padding-left: 24px; }
+  li { margin-bottom: 8px; }
+  code { font-family: var(--font-mono); font-size: 0.88em; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; }
+  .lawyer {
+    background: var(--bg-alt); border: 1px solid var(--border); border-left: 3px solid var(--warn);
+    border-radius: 12px; padding: 18px 20px; margin: 0 0 30px;
+  }
+  .lawyer p { margin: 0; font-size: 0.95rem; }
+  .lawyer p + p { margin-top: 10px; }
+  .callout { background: var(--positive-bg); border: 1px solid color-mix(in srgb, var(--positive) 30%, transparent); border-radius: 12px; padding: 18px 20px; margin: 0 0 22px; }
+  .callout p { margin: 0; } .callout p + p { margin-top: 10px; }
+  .table-scroll { overflow-x: auto; margin: 0 0 20px; -webkit-overflow-scrolling: touch; }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 11px 13px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  thead th { font-family: var(--font-display); font-weight: 600; font-size: 0.87rem; color: var(--text-dim); border-bottom: 1px solid var(--border-strong); }
+  tbody th { font-weight: 600; }
+  .toc { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 18px 22px; margin: 0 0 34px; }
+  .toc p { margin: 0 0 8px; font-weight: 600; font-size: 0.92rem; }
+  .toc ol { margin: 0; padding-left: 20px; font-size: 0.94rem; }
+  .toc li { margin-bottom: 5px; }
+  footer { border-top: 1px solid var(--border); padding: 36px 0; text-align: center; color: var(--text-mute); font-size: 0.88rem; }
+  footer a { color: var(--text-dim); text-decoration: none; }
+  footer a:hover { color: var(--accent); }
+  .footer-trust { margin-bottom: 10px; font-size: 0.85rem; color: var(--text-dim); }
+  @media (max-width: 640px) {
+    .wrap { padding: 0 18px; }
+    nav a:not(.nav-cta) { display: none; }
+  }
+
+  .answer { border-left: 4px solid var(--accent); background: var(--bg-alt); padding: 20px 24px; border-radius: 0 var(--radius) var(--radius) 0; margin: 28px 0 34px; }
+  .answer .label { font-family: var(--font-display); font-size: .72rem; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); font-weight: 700; display: block; margin-bottom: 8px; }
+  .answer p { margin: 0 0 10px; font-size: 1.06rem; }
+  .answer p:last-child { margin-bottom: 0; }
+  .faq { margin-top: 12px; }
+  .faq details { border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; margin-bottom: 10px; background: var(--card-bg); }
+  .faq summary { font-family: var(--font-display); font-weight: 600; cursor: pointer; }
+  .faq details p { margin: 12px 0 2px; color: var(--text-dim); }
+  .sources { border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; margin-top: 40px; background: var(--bg-alt); }
+  .sources h2 { margin-top: 0; font-size: 1.05rem; }
+  .sources ul { margin: 0; padding-left: 20px; }
+  .sources li { margin-bottom: 7px; color: var(--text-dim); font-size: .93rem; }
+  .related { margin-top: 40px; }
+  .card-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); margin-top: 18px; }
+  .card { border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; background: var(--card-bg); }
+  .card h3 { margin: 0 0 8px; font-size: 1.02rem; }
+  .card h3 a { text-decoration: none; }
+  .card p { margin: 0; color: var(--text-dim); font-size: .93rem; }
+  .meta { color: var(--text-mute); font-size: .88rem; margin-bottom: 4px; }
+  .cta-band { border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 24px; margin-top: 44px; background: var(--bg-alt); }
+  .cta-band h2 { margin-top: 0; }
+  .cta-band .btn { display: inline-block; background: var(--accent-grad); color: var(--accent-ink); padding: 11px 22px; border-radius: 10px; text-decoration: none; font-weight: 600; font-family: var(--font-display); margin-top: 6px; }
+  code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt); padding: 2px 6px; border-radius: 5px; }
+</style>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Stripe is not retrying your failed invoice. Here are the nine reasons why.",
+  "description": "A checklist for the moment a subscription invoice fails and no retry is scheduled. Nine documented causes, and the exact API field that proves each one.",
+  "url": "https://recoverflow.org/blog/stripe-not-retrying-failed-invoice/",
+  "datePublished": "2026-08-16",
+  "dateModified": "2026-08-16",
+  "author": {
+    "@type": "Person",
+    "name": "Bruce McGinley"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "RecoverFlow",
+    "url": "https://recoverflow.org"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://recoverflow.org/blog/stripe-not-retrying-failed-invoice/"
+  }
+}</script>
+<script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Why is next_payment_attempt null on my invoice?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Stripe documents it as null for invoices where collection_method is send_invoice. On an automatically collected invoice, null means no further attempt is scheduled: the retry schedule is finished, the invoice is no longer open, auto_advance is off, or the subscription has already moved to unpaid or canceled."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does attempt_count going up mean Stripe is really charging the card?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. Stripe documents that when a failure returns a non-retryable code, retries continue to be scheduled and attempt_count continues to increment, but retries only execute once a new payment method is obtained, and unexecuted retries do not create a new Charge. If attempt_count is climbing and no new charges appear, that is the reason."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does Stripe retry failed ACH and SEPA payments?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "It can, but not by default. Stripe states that by default it does not automatically retry failed payments made with local payment methods, and you turn it on in the Local payment methods section. The only retryable failure is insufficient funds, and the allowances are small: ACH Direct Debit is 2 retries over 40 days, SEPA, Bacs and Australia BECS are 2 retries over 30 days, and ACSS and New Zealand BECS are 1 retry over 30 days."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does Stripe not retry India-issued cards?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Stripe lists India-issued cards among the cases where it does not retry. Recurring charges on those cards fall under the Reserve Bank of India's e-mandate rules, which require a mandate the cardholder has authenticated, a pre-debit notification at least 24 hours before each charge, and fresh authentication above 15,000 INR. A silent background retry cannot satisfy any of that."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "My subscription is unpaid and new invoices are not being charged. Is that a bug?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. If your end-of-retry setting marks the subscription unpaid, Stripe documents that invoices continue to be generated and stay in a draft state. A draft invoice is never collected. That is the configured behaviour, and the fix is a decision about what you want to happen at the end of dunning rather than a change to the retry schedule."
+      }
+    }
+  ]
+}</script>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/rf.css">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
+    <nav>
+      <a href="/pricing/">Pricing</a>
+      <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
+      <a href="/docs/">Docs</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="wrap">
+    <p class="eyebrow">Guide</p>
+    <h1>Stripe is not retrying your failed invoice. Here are the nine reasons why.</h1>
+    <p class="updated">Last updated 16 August 2026 &middot; written by Bruce McGinley, who builds RecoverFlow</p>
+
+    <div class="answer">
+      <span class="label">Short answer</span>
+      <p>Stripe states four of these outright: it does not retry when no payment methods are available, when the issuer returned a hard decline code, when the card is India-issued, or when the Connect account has been disconnected.</p>
+      <p>The other five are configuration. The invoice is on <code>send_invoice</code>, <code>auto_advance</code> is off, the retry schedule is finished, the subscription already moved to <code>unpaid</code> or <code>canceled</code>, or the payment is a local payment method whose retries are off by default.</p>
+      <p>Read <code>next_payment_attempt</code> on the invoice first. It answers whether there is a retry coming, and everything below explains why there is not.</p>
+    </div>
+
+    <div class="toc">
+      <p>On this page</p>
+      <ol>
+        <li><a href="#first">Start with one field</a></li>
+        <li><a href="#documented">The four Stripe states outright</a></li>
+        <li><a href="#config">The five that are your own configuration</a></li>
+        <li><a href="#table">The whole checklist in one table</a></li>
+        <li><a href="#not-this">One more thing that looks identical and is not on the list</a></li>
+        <li><a href="#faq">Questions people actually ask</a></li>
+      </ol>
+    </div>
+
+    <h2 id="first">Start with one field</h2>
+
+    <p>Pull the invoice and look at <code>next_payment_attempt</code>. Stripe documents it as the time at which payment will next be attempted, and as <code>null</code> for invoices where <code>collection_method=send_invoice</code>.</p>
+    <p>If it holds a timestamp, Stripe does intend to retry and your problem is timing, not configuration. Wait for that moment and check again. If it is <code>null</code>, one of the nine below is true.</p>
+    <p>While you are there, note <code>status</code> and <code>attempt_count</code>. An invoice that is <code>draft</code> is not being collected at all. An <code>attempt_count</code> that keeps rising while nothing appears in your payments list is the signature of cause 2.</p>
+
+    <h2 id="documented">The four Stripe states outright</h2>
+
+    <p>Stripe's Smart Retries page lists these as the conditions under which it does not retry payments. They are quoted, not inferred.</p>
+    <ol>
+      <li>
+        <p><strong>No payment methods are available.</strong> There is nothing to charge. Stripe retries against the first available payment method in a documented order: the subscription's <code>default_payment_method</code>, then the subscription's <code>default_source</code>, then the customer's <code>invoice_settings.default_payment_method</code>, then the legacy <code>customer.default_source</code>. Check all four, in that order.</p>
+        <p>There is a trap here worth knowing. Stripe says that when you update payment methods after a failed attempt, you should update the field where the previous payment failed. If the subscription has a <code>default_payment_method</code> and you only update <code>customer.invoice_settings.default_payment_method</code>, Stripe carries on retrying the subscription's one. Your customer added a working card and nothing changed.</p>
+      </li>
+      <li>
+        <p><strong>The issuer returned a hard decline code.</strong> Nine codes stop execution: <code>incorrect_number</code>, <code>lost_card</code>, <code>pickup_card</code>, <code>stolen_card</code>, <code>revocation_of_authorization</code>, <code>revocation_of_all_authorizations</code>, <code>authentication_required</code>, <code>highest_risk_level</code> and <code>transaction_not_allowed</code>. Read <code>last_payment_error.decline_code</code> on the failed PaymentIntent.</p>
+        <p>Stripe is precise about what happens next, and it is not what most people expect: retries continue to be scheduled and <code>attempt_count</code> continues to increment, but retries only execute after a new payment method is detected, and unexecuted retries do not create a new Charge. So the invoice looks busy while nothing is being attempted. <a href="/blog/stripe-decline-codes-that-stop-retries/">Full breakdown of the nine</a>.</p>
+      </li>
+      <li>
+        <p><strong>The payment card is India-issued.</strong> Check <code>card.country</code> on the payment method for <code>IN</code>. Recurring payments on India-issued cards run under the Reserve Bank of India's e-mandate rules, which require a registered mandate authenticated by the cardholder, a pre-debit notification at least 24 hours before each charge, and fresh authentication above 15,000 INR. Stripe cannot satisfy that with a silent background retry. Watch for <code>payment_intent_mandate_invalid</code> and <code>india_recurring_payment_mandate_canceled</code> on the PaymentIntent.</p>
+      </li>
+      <li>
+        <p><strong>The Stripe Connect account has been disconnected.</strong> If you are a platform, the merchant may have revoked you. Stripe sends <code>account.application.deauthorized</code> when a user disconnects your platform from their account. If you are the merchant and an app was retrying on your behalf, the same event is why it stopped.</p>
+      </li>
+    </ol>
+
+    <h2 id="config">The five that are your own configuration</h2>
+
+    <p>None of these are failures. They are settings doing exactly what they say, usually set months ago by someone else.</p>
+    <ol start="5">
+      <li>
+        <p><strong><code>collection_method</code> is <code>send_invoice</code>.</strong> Stripe documents the two values plainly: with <code>charge_automatically</code> it attempts payment using the default source attached to the customer, and with <code>send_invoice</code> it emails the invoice to the customer with payment instructions. There is no card charge to retry, which is why <code>next_payment_attempt</code> is documented as <code>null</code> for these. What you want instead is the unpaid invoice reminder, which is a separate setting and is covered in the <a href="/blog/stripe-free-dunning-settings-checklist/">free settings checklist</a>.</p>
+      </li>
+      <li>
+        <p><strong><code>auto_advance</code> is <code>false</code>.</strong> Documented as controlling whether Stripe performs automatic collection of the invoice, and if false, the invoice's state does not automatically advance without an explicit action. An invoice created by your own code with <code>auto_advance</code> off will sit there indefinitely, correctly, forever.</p>
+      </li>
+      <li>
+        <p><strong>The retry schedule is finished.</strong> Stripe's wording is that after the final payment attempt, no further payment attempts are made, and that changing your subscription settings only affects future retries. Widening the window today does not give an already-exhausted invoice more chances. Check the configured schedule at <strong>Billing</strong> &gt; <strong>Revenue recovery</strong> &gt; <strong>Retries</strong> and compare it with <code>attempt_count</code>.</p>
+      </li>
+      <li>
+        <p><strong>The subscription already moved on.</strong> When recovery fails, the subscription transitions according to your setting: cancel it, mark it <code>unpaid</code>, or leave it <code>past_due</code>. The <code>unpaid</code> branch is the one that confuses people, because Stripe documents that invoices continue to be generated and stay in a draft state. New invoices keep appearing and none of them are collected, which looks exactly like a broken retry engine. Read <code>subscription.status</code> and <code>invoice.status</code> together.</p>
+      </li>
+      <li>
+        <p><strong>It is a local payment method and retries are off.</strong> Stripe is explicit that by default it does not automatically retry failed payments made with local payment methods. ACH Direct Debit, ACSS, Bacs, SEPA and both Australian and New Zealand BECS all need the <strong>Local payment methods</strong> section turned on. Even switched on, the allowances are small and the only retryable failure is insufficient funds.</p>
+      </li>
+    </ol>
+
+    <h2 id="table">The whole checklist in one table</h2>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th scope="col">#</th><th scope="col">Cause</th><th scope="col">Field or setting to read</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">1</th><td>No payment method available</td><td><code>subscription.default_payment_method</code>, <code>subscription.default_source</code>, <code>customer.invoice_settings.default_payment_method</code>, <code>customer.default_source</code></td></tr>
+          <tr><th scope="row">2</th><td>Hard decline code</td><td><code>last_payment_error.decline_code</code>, against the nine</td></tr>
+          <tr><th scope="row">3</th><td>India-issued card</td><td><code>card.country</code> equal to <code>IN</code>, plus mandate status</td></tr>
+          <tr><th scope="row">4</th><td>Connect account disconnected</td><td>the <code>account.application.deauthorized</code> event</td></tr>
+          <tr><th scope="row">5</th><td>Manual collection</td><td><code>invoice.collection_method</code> equal to <code>send_invoice</code></td></tr>
+          <tr><th scope="row">6</th><td>Automatic advancement off</td><td><code>invoice.auto_advance</code> equal to <code>false</code></td></tr>
+          <tr><th scope="row">7</th><td>Schedule exhausted</td><td><code>invoice.attempt_count</code> against your configured retry policy</td></tr>
+          <tr><th scope="row">8</th><td>Subscription already unpaid or canceled</td><td><code>subscription.status</code>, and <code>invoice.status</code> of <code>draft</code></td></tr>
+          <tr><th scope="row">9</th><td>Local payment method with retries off</td><td>the Local payment methods retry setting</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="not-this">One more thing that looks identical and is not on the list</h2>
+
+    <p>If you have ruled out all nine and attempts are still coming back failed without ever reaching the bank, check whether the attempt was blocked rather than declined.</p>
+    <p>Visa's rules broadly prohibit more than 15 retries of a single payment over 30 calendar days, and Stripe blocks subsequent retry attempts after the 15th on a Visa transaction where it judges a low chance of authorization. That charge reports an <code>outcome.type</code> of <code>blocked</code> with an <code>outcome.reason</code> of <code>previously_declined_do_not_retry</code>, while the error your code sees is a plain <code>generic_decline</code>. It is a different failure from every cause above, because here Stripe did schedule the retry and did try to send it.</p>
+    <p>This is easy to miss because it hides inside your most boring decline code. There is <a href="/blog/visa-excessive-reattempts-rule/">a full page on the reattempt budget</a>, including why it is a separate limit from the nine codes.</p>
+
+    <h2 id="faq">Questions people actually ask</h2>
+<div class="faq">
+  <details><summary>Why is next_payment_attempt null on my invoice?</summary><p>Stripe documents it as null for invoices where collection_method is send_invoice. On an automatically collected invoice, null means no further attempt is scheduled: the retry schedule is finished, the invoice is no longer open, auto_advance is off, or the subscription has already moved to unpaid or canceled.</p></details>
+  <details><summary>Does attempt_count going up mean Stripe is really charging the card?</summary><p>No. Stripe documents that when a failure returns a non-retryable code, retries continue to be scheduled and attempt_count continues to increment, but retries only execute once a new payment method is obtained, and unexecuted retries do not create a new Charge. If attempt_count is climbing and no new charges appear, that is the reason.</p></details>
+  <details><summary>Does Stripe retry failed ACH and SEPA payments?</summary><p>It can, but not by default. Stripe states that by default it does not automatically retry failed payments made with local payment methods, and you turn it on in the Local payment methods section. The only retryable failure is insufficient funds, and the allowances are small: ACH Direct Debit is 2 retries over 40 days, SEPA, Bacs and Australia BECS are 2 retries over 30 days, and ACSS and New Zealand BECS are 1 retry over 30 days.</p></details>
+  <details><summary>Why does Stripe not retry India-issued cards?</summary><p>Stripe lists India-issued cards among the cases where it does not retry. Recurring charges on those cards fall under the Reserve Bank of India's e-mandate rules, which require a mandate the cardholder has authenticated, a pre-debit notification at least 24 hours before each charge, and fresh authentication above 15,000 INR. A silent background retry cannot satisfy any of that.</p></details>
+  <details><summary>My subscription is unpaid and new invoices are not being charged. Is that a bug?</summary><p>No. If your end-of-retry setting marks the subscription unpaid, Stripe documents that invoices continue to be generated and stay in a draft state. A draft invoice is never collected. That is the configured behaviour, and the fix is a decision about what you want to happen at the end of dunning rather than a change to the retry schedule.</p></details>
+</div>
+
+    <div class="sources">
+  <h2>Where this came from</h2>
+  <p style="margin-top:0;color:var(--text-dim);font-size:.93rem;">Checked against primary sources on 4 August 2026. If Stripe changes something and this page has not caught up, tell us and it gets fixed.</p>
+  <ul>
+      <li><a href="https://docs.stripe.com/billing/revenue-recovery/smart-retries" rel="nofollow noopener" target="_blank">Stripe: Smart Retries</a> &mdash; the source for the 8 tries in 2 weeks default, the configurable window, and the nine code list.</li>
+      <li><a href="https://docs.stripe.com/api/invoices/object" rel="nofollow noopener" target="_blank">Stripe: Invoice object, API reference</a> &mdash; the field definitions for attempt_count, next_payment_attempt, attempted and billing_reason.</li>
+      <li><a href="https://docs.stripe.com/billing/subscriptions/overview" rel="nofollow noopener" target="_blank">Stripe: Subscription lifecycle and statuses</a> &mdash; the source for every status definition quoted on this page.</li>
+      <li><a href="https://docs.stripe.com/india-recurring-payments" rel="nofollow noopener" target="_blank">Stripe: India recurring payments</a> &mdash; the RBI e-mandate rules behind Stripe not retrying India-issued cards.</li>
+      <li><a href="https://docs.stripe.com/connect/oauth-standard-accounts" rel="nofollow noopener" target="_blank">Stripe: Using OAuth with Standard accounts</a> &mdash; the source for the account.application.deauthorized event.</li>
+  </ul>
+</div>
+
+    <div class="cta-band">
+  <h2>If you would rather not build this yourself</h2>
+  <p>RecoverFlow watches your Stripe account for failed subscription payments, stops retrying the ones that cannot succeed, and emails the customers whose card simply needs replacing. It charges 25% of what it can attribute to a specific action it took, with a $29 monthly floor and a $299 monthly ceiling, and the floor is waived for the first 30 days.</p>
+  <p>Before any of that, you can find out whether it is worth doing at all. Answer three questions in a reply and I will send back what your failed payments are probably costing you, how much of it is genuinely recoverable, and whether Stripe's own free features already handle it. No Stripe connection, no account, no card.</p>
+  <p style="color:var(--text-dim);">It is early. It is run by one person. If Stripe's own free retry settings are enough for you, use those instead, and <a href="/pricing/">the pricing page</a> says exactly when that is the right call.</p>
+  <a class="btn" href="/audit/">Get the free audit</a>
+</div>
+
+    <div class="related">
+  <h2>Related</h2>
+  <div class="card-grid">
+    <div class="card"><h3><a href="/blog/visa-excessive-reattempts-rule/">The Visa excessive reattempts rule</a></h3><p>The limit that blocks attempts Stripe did schedule and did send.</p></div>
+    <div class="card"><h3><a href="/blog/stripe-decline-codes-that-stop-retries/">The nine codes that stop retries dead</a></h3><p>Cause 2 in full, and what to do instead of retrying.</p></div>
+    <div class="card"><h3><a href="/blog/stripe-subscription-past-due-vs-unpaid/">past_due, unpaid, canceled: what each status means</a></h3><p>Cause 8, and how to choose your end-of-retry setting.</p></div>
+  </div>
+</div>
+  </article>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
+    RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -277,6 +277,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="retries">What happens to retries</h2>
 <p><code>lost_card</code> and <code>stolen_card</code> are both on the nine code list in Stripe's Smart Retries documentation. Stripe's wording is precise: for these failures the scheduled retries continue, but the payment only executes if you obtain a new payment method, and unexecuted retries do not create a new charge.</p>
 <p>That produces the counter behaviour that trips up home built recovery logic: <code>attempt_count</code> on the invoice keeps climbing while nothing is actually being sent to the issuer. If your escalation logic branches on attempt count, branch on the decline code first. The <a href="/blog/stripe-failed-payment-webhooks/">webhook guide</a> covers this trap in detail.</p>
+<p>There is a second reason not to spend attempts here. Visa sorts its authorization responses into categories, and a card reported lost or stolen falls in the group where the issuer will never approve and the transaction should not be resubmitted with the same account information. The ordinary allowance of 15 reattempts per card per 30 days does not apply, because on this code the permitted number is zero. <a href="/blog/visa-excessive-reattempts-rule/">How the reattempt budget works</a> goes through it.</p>
 
     <h2 id="recover">The only path back is a new payment method</h2>
 <p>Since no retry will execute, the recovery channel is the customer adding a card, which makes the email the whole game. One reason-blind message with an update link, and patience.</p>
@@ -312,6 +313,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <div class="related">
   <h2>Related</h2>
   <div class="card-grid">
+    <div class="card"><h3><a href="/blog/visa-excessive-reattempts-rule/">The Visa excessive reattempts rule</a></h3><p>Lost and stolen sit in the category where the permitted number of reattempts is zero, not fifteen.</p></div>
     <div class="card"><h3><a href="/blog/stripe-decline-codes-that-stop-retries/">The nine codes that stop retries</a></h3><p>What each one means and what to do instead of retrying.</p></div>
     <div class="card"><h3><a href="/blog/stripe-dunning-emails-what-you-control/">Dunning emails: what you control</a></h3><p>What Stripe sends for you, and what only your own emails can do.</p></div>
     <div class="card"><h3><a href="/tools/decline-code-lookup/">Free decline code lookup</a></h3><p>48 codes, searchable, filterable by whether Stripe will retry.</p></div>
