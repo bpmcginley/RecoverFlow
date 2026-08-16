@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -10,6 +9,25 @@
   gtag('js', new Date());
   gtag('config', 'G-XNWPM9VELB');
 </script>
+<!-- LinkedIn Insight Tag -->
+<script type="text/javascript">
+_linkedin_partner_id = "9673204";
+window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+</script><script type="text/javascript">
+(function(l) {
+if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+window.lintrk.q=[]}
+var s = document.getElementsByTagName("script")[0];
+var b = document.createElement("script");
+b.type = "text/javascript";b.async = true;
+b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
+</noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How many of your Stripe retries are wasted? | Free calculator</title>
 <meta name="description" content="Free browser calculator. Enter your decline codes and see how much failed revenue sits on cards no retry can ever collect. Nothing uploaded.">
@@ -24,7 +42,6 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -138,27 +155,7 @@
   .cta-band { border: 1px solid var(--border-strong); border-radius: var(--radius); padding: 24px; margin-top: 44px; background: var(--bg-alt); }
   .cta-band h2 { margin-top: 0; }
   .cta-band .btn { display: inline-block; background: var(--accent-grad); color: var(--accent-ink); padding: 11px 22px; border-radius: 10px; text-decoration: none; font-weight: 600; font-family: var(--font-display); margin-top: 6px; }
-    /* ---- CSV audit ---- */
-  .drop { border: 2px dashed var(--border-strong); border-radius: var(--radius); background: var(--bg-alt); padding: 32px 20px; text-align: center; transition: border-color .15s, background .15s; }
-  .drop.over { border-color: var(--accent); background: var(--positive-bg); }
-  .drop-main { margin: 0 0 8px; }
-  .drop-sub { margin: 0; color: var(--text-mute); font-size: .92rem; }
-  .local-note { font-size: .92rem; color: var(--text-dim); background: var(--bg-alt); border-left: 3px solid var(--positive); border-radius: 0 8px 8px 0; padding: 12px 16px; margin: 16px 0 0; }
-  .rep { margin-top: 28px; }
-  .rep h3 { margin: 26px 0 6px; font-size: 1.05rem; }
-  .rep .hero { background: var(--bg-alt); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 22px; margin: 0 0 8px; }
-  .rep .big { font-size: 2rem; font-weight: 700; line-height: 1.15; font-family: var(--font-display); }
-  .rep table { width: 100%; border-collapse: collapse; font-size: .94rem; margin: 8px 0; }
-  .rep th, .rep td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--border); }
-  .rep td.n, .rep th.n { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
-  .rep .over { color: var(--danger); font-weight: 600; }
-  .verdict { border-radius: var(--radius); padding: 18px 20px; margin: 22px 0 0; border: 1px solid var(--border); }
-  .verdict.high { background: var(--positive-bg); border-color: var(--positive); }
-  .verdict.low { background: var(--bg-alt); }
-  .err { background: var(--bg-alt); border-left: 3px solid var(--danger); border-radius: 0 8px 8px 0; padding: 14px 16px; font-size: .94rem; }
-  .err ul { margin: 6px 0 0; padding-left: 20px; }
-  .matched { font-size: .88rem; color: var(--text-mute); margin: 10px 0 0; }
-code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt); padding: 2px 6px; border-radius: 5px; }
+  code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt); padding: 2px 6px; border-radius: 5px; }
 </style>
 <script type="application/ld+json">{
   "@context": "https://schema.org",
@@ -188,26 +185,10 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
     },
     {
       "@type": "Question",
-      "name": "How do I get the export?",
+      "name": "Where do I find my decline codes?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Stripe Dashboard, Payments, filter Status is Failed, set a date range, then Export. In the column picker the only one this genuinely needs is Decline Code (some exports label it Failure Code). Adding Amount, Created, and Card ID or Customer ID gets you the money figures and the Visa budget section as well. Ninety days is plenty."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What if I cannot export right now?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Use the manual entry further up the page. It asks for counts per decline code and one average invoice amount, so it gives you the same percentages but a rougher money figure. The export is better because it uses your real amounts rather than one average across every failure."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Where do I find decline codes one at a time?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "In the Stripe Dashboard, filter Payments to failed, or filter Invoices to unpaid and open the latest payment attempt on each. The decline code sits on the failed PaymentIntent as last_payment_error.decline_code."
+        "text": "In the Stripe Dashboard, filter Payments to failed, or filter Invoices to unpaid and open the latest payment attempt on each. The decline code sits on the failed PaymentIntent as last_payment_error.decline_code. Twenty invoices is enough for a useful picture."
       }
     },
     {
@@ -215,23 +196,15 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
       "name": "Is there really a cap on retries?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "Visa's Excessive Reattempts Rule caps reattempts at 15 in a rolling 30 day window. Stripe cites that rule and says it will automatically block subsequent retry attempts, but only where it determines there is a low chance of a successful authorisation. So it is discretionary, and Stripe does not say it keeps you compliant on your behalf. This report counts attempts per card while Visa states the rule per payment, which makes the count a conservative upper bound rather than a compliance verdict. Most recovery tools do not show you where you stand against it at all."
+        "text": "Yes. Visa's Excessive Reattempts Rule limits reattempts to 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you pass it. Mastercard raised its excessive-authorisation fees in January 2026. Most recovery tools do not show you where you stand against that budget."
       }
     },
     {
       "@type": "Question",
-      "name": "Does my export get uploaded anywhere?",
+      "name": "Does this send my data anywhere?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. The file is read by this page's JavaScript using the browser's FileReader and the arithmetic runs on your own machine. There is no upload, no server, no account and no form to submit. You do not have to take my word for it: open your browser's developer tools, switch to the Network tab, and run the audit. The audit itself makes no request. The only traffic on this page is the same analytics tags the rest of the site loads, and nothing from your file is in them. You can also disconnect from the internet after the page loads and the audit will still work."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Why is a vendor telling me I might not need the product?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Because the number is only worth anything if it is not a sales tool. If most of your failures are ordinary retryable declines, more retries genuinely is the right answer and Stripe already does that for free. Saying so costs one sale and is the only reason to believe the report when it comes back high."
+        "text": "No. The calculation runs in your browser. Nothing is uploaded, stored or logged, and there is no form to submit."
       }
     }
   ]
@@ -244,14 +217,13 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -264,31 +236,11 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
     <div class="answer">
       <span class="label">The short version</span>
       <p>Every failed payment tool on the market sells you more retries. Some of your declines cannot succeed on any attempt, ever, because the card is gone rather than temporarily short.</p>
-      <p>This tells you how much of your failed revenue is in that group. It reads your own Stripe export, in your own browser. Nothing is uploaded.</p>
+      <p>Put in the counts from your last twenty or so failed invoices and this tells you how much of your failed revenue is in that group. Nothing is uploaded.</p>
     </div>
 
-    <h2 id="upload">Drop in your Stripe export</h2>
-    <p>Stripe Dashboard &rarr; <strong>Payments</strong> &rarr; filter <strong>Status is Failed</strong> &rarr; <strong>Export</strong>. Ninety days is plenty. The only column that actually matters is the decline code.</p>
-
-    <div class="drop" id="drop">
-      <input type="file" id="file" accept=".csv,text/csv" hidden>
-      <p class="drop-main"><label class="btn" for="file">Choose your CSV</label></p>
-      <p class="drop-sub">or drag it anywhere onto this box</p>
-    </div>
-
-    <p class="local-note">
-      <strong>This file never leaves your computer.</strong> The parsing and the arithmetic run
-      in this page's JavaScript. There is no upload, no server involved and no account to make.
-      You can confirm it: open your browser's developer tools, switch to the Network tab, and
-      run the audit. The audit itself sends nothing. The only requests on this page are the
-      same analytics tags the rest of the site loads, and they never see your file. You can
-      even load the page, go offline, and run the audit disconnected.
-    </p>
-
-    <div id="fileOut" hidden></div>
-
-    <h2 id="calc">No export handy? Enter the counts by hand</h2>
-    <p>Counts from your Stripe Dashboard. Leave anything at zero if you did not see it. The export above is better, because it uses your real amounts rather than one average.</p>
+    <h2 id="calc">Enter your decline codes</h2>
+    <p>Counts from your Stripe Dashboard. Leave anything at zero if you did not see it.</p>
 
     <div class="calc" id="calc">
       <div class="grid" id="codeGrid"></div>
@@ -305,28 +257,22 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
     <p>The other group is a card that is gone. Reported lost or stolen, reissued, expired, revoked, or blocked for this merchant. <strong>No retry schedule can collect from a card that no longer exists.</strong> Stripe will not even send nine of those codes to the network. It keeps incrementing the attempt counter while nothing is attempted.</p>
     <p>If most of your failed revenue is in the second group, buying a tool that retries harder is buying a solution to the wrong half of your problem. That is worth knowing before you spend anything, including with us.</p>
 
-    <p><strong>One thing this report will not do is inflate the number.</strong> Because Stripe does not reattempt those nine codes without a new payment method, there is no second charge to pay a fee on. Anyone selling you a big dollar figure for "wasted retries" is selling you an invoice that was never issued. The money in this report is revenue at risk from the declines themselves, which is real but which a retry schedule was never going to collect either. The thing the wasted retries genuinely cost you is time: days your customer sits on a dead card while a scheduler works through attempts that cannot land. That is why the report leads with elapsed days and affected customers, and puts the money second.</p>
-
     <h2 id="cap">There is also a ceiling you may be hitting</h2>
-    <p>Visa's Excessive Reattempts Rule caps reattempts at 15 in a rolling 30 day window. Stripe cites that rule, and says it will automatically block subsequent retry attempts, but only where it determines there is a low chance of a successful authorisation. That is Stripe using its judgement, not Stripe promising to keep you inside Visa's limit. Stripe does not say it enforces the rule on your behalf.</p>
-    <p>Which is the actual reason to count it yourself. This report counts attempts <strong>per card</strong>, while Visa states the rule per payment, so treat the number as a conservative upper bound on your exposure rather than a compliance verdict. A third-party recovery tool retrying on top of Stripe's own retries draws down the same budget, and neither system can see the other's count.</p>
+    <p>Visa's Excessive Reattempts Rule caps reattempts at 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you cross it. Mastercard increased its excessive-authorisation fees in January 2026.</p>
+    <p>A third-party recovery tool retrying on top of Stripe's own retries draws down the same budget, and neither system can see the other's count. More attempts is not a free action.</p>
 
     <div class="cta-band">
-      <h2>Got a number you did not expect?</h2>
-      <p>Send me the percentage and I will tell you what I would do about it, including when the answer is nothing. You do not need to send the file, the data, or your company name. The number on its own is enough to have a useful conversation.</p>
-      <p>If it came out low, that is a real result and worth keeping. Stripe's free Smart Retries handle the ordinary retryable declines well, and most of the tools in this category, including mine, would be selling you a fix for a problem you do not have.</p>
-      <p style="color:var(--text-dim);">Written by a person, not a sequence. There is no call to book.</p>
-      <a class="btn" href="/contact/">Send me your number</a>
+      <h2>Want this run against your real data?</h2>
+      <p>Send your rough MRR, roughly how many payments fail a month, and what happens today when one does. I will send back a written breakdown with the arithmetic shown. No Stripe access, no signup, no call.</p>
+      <p style="color:var(--text-dim);">Sometimes the answer is that Stripe's free settings already cover you, and I will say so.</p>
+      <a class="btn" href="/audit/">See what the free audit covers</a>
     </div>
   <h2 id="faq">Common questions</h2>
 <div class="faq">
   <details><summary>What counts as a wasted retry?</summary><p>An attempt against a decline code that cannot succeed no matter how many times you try. Nine codes block execution at Stripe entirely until a new card is attached, and four more (expired card, incorrect CVC, invalid expiry) do get retried but cannot succeed until the customer replaces the card. Attempts against those are spent, not invested.</p></details>
-  <details><summary>How do I get the export?</summary><p>Stripe Dashboard, Payments, filter Status is Failed, set a date range, then Export. In the column picker the only one this genuinely needs is Decline Code (some exports label it Failure Code). Adding Amount, Created, and Card ID or Customer ID gets you the money figures and the Visa budget section as well. Ninety days is plenty.</p></details>
-  <details><summary>What if I cannot export right now?</summary><p>Use the manual entry further up the page. It asks for counts per decline code and one average invoice amount, so it gives you the same percentages but a rougher money figure. The export is better because it uses your real amounts rather than one average across every failure.</p></details>
-  <details><summary>Where do I find decline codes one at a time?</summary><p>In the Stripe Dashboard, filter Payments to failed, or filter Invoices to unpaid and open the latest payment attempt on each. The decline code sits on the failed PaymentIntent as last_payment_error.decline_code.</p></details>
-  <details><summary>Is there really a cap on retries?</summary><p>Visa's Excessive Reattempts Rule caps reattempts at 15 in a rolling 30 day window. Stripe cites that rule and says it will automatically block subsequent retry attempts, but only where it determines there is a low chance of a successful authorisation. So it is discretionary, and Stripe does not say it keeps you compliant on your behalf. This report counts attempts per card while Visa states the rule per payment, which makes the count a conservative upper bound rather than a compliance verdict. Most recovery tools do not show you where you stand against it at all.</p></details>
-  <details><summary>Does my export get uploaded anywhere?</summary><p>No. The file is read by this page's JavaScript using the browser's FileReader and the arithmetic runs on your own machine. There is no upload, no server, no account and no form to submit. You do not have to take my word for it: open your browser's developer tools, switch to the Network tab, and run the audit. The audit itself makes no request. The only traffic on this page is the same analytics tags the rest of the site loads, and nothing from your file is in them. You can also disconnect from the internet after the page loads and the audit will still work.</p></details>
-  <details><summary>Why is a vendor telling me I might not need the product?</summary><p>Because the number is only worth anything if it is not a sales tool. If most of your failures are ordinary retryable declines, more retries genuinely is the right answer and Stripe already does that for free. Saying so costs one sale and is the only reason to believe the report when it comes back high.</p></details>
+  <details><summary>Where do I find my decline codes?</summary><p>In the Stripe Dashboard, filter Payments to failed, or filter Invoices to unpaid and open the latest payment attempt on each. The decline code sits on the failed PaymentIntent as last_payment_error.decline_code. Twenty invoices is enough for a useful picture.</p></details>
+  <details><summary>Is there really a cap on retries?</summary><p>Yes. Visa's Excessive Reattempts Rule limits reattempts to 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you pass it. Mastercard raised its excessive-authorisation fees in January 2026. Most recovery tools do not show you where you stand against that budget.</p></details>
+  <details><summary>Does this send my data anywhere?</summary><p>No. The calculation runs in your browser. Nothing is uploaded, stored or logged, and there is no form to submit.</p></details>
 </div>
   </div>
 </main>
@@ -418,481 +364,12 @@ code { font-family: var(--font-mono); font-size: .92em; background: var(--bg-alt
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>
 </footer>
 
-<script>
-/* Retry waste audit, in the browser.
-   Ported from scripts/retry_waste_audit.py so the two agree line for line. The
-   file is read with FileReader and never sent anywhere, which is the entire
-   reason this exists rather than asking people to email a CSV to a stranger. */
-(function () {
-  "use strict";
-
-  // Stripe keeps the retry schedule running on these and keeps incrementing
-  // attempt_count, but never puts the charge on the wire until a new payment
-  // method is attached. Verified 28 July 2026 against
-  // https://docs.stripe.com/billing/revenue-recovery/smart-retries
-  var BLOCKED = ["incorrect_number", "lost_card", "pickup_card", "stolen_card",
-    "revocation_of_authorization", "revocation_of_all_authorizations",
-    "authentication_required", "highest_risk_level", "transaction_not_allowed"];
-  // Stripe does retry these, so they burn attempts, but the card cannot succeed
-  // until the customer replaces it.
-  var NEEDS_NEW_CARD = ["expired_card", "incorrect_cvc", "invalid_expiry_month", "invalid_expiry_year"];
-
-  // Visa Excessive Reattempts Rule: 15 reattempts in a rolling 30 day window.
-  // Stripe cites the rule and blocks subsequent attempts only where it judges a low
-  // chance of authorisation, so the ceiling is discretionary, not guaranteed. We
-  // group per card, while Visa states the rule per payment: a conservative proxy.
-  var VISA_CAP = 15, VISA_WINDOW_MS = 30 * 864e5, VISA_WATCH = 10;
-
-  var ALIASES = {
-    decline: ["decline_code", "Decline Code", "failure_code", "Failure Code",
-              "decline_reason", "Decline Reason", "outcome_reason"],
-    status:  ["status", "Status"],
-    created: ["created", "Created", "Created (UTC)", "created_at", "Date"],
-    amount:  ["amount", "Amount", "Amount Captured", "amount_captured", "Converted Amount"],
-    customer:["customer", "Customer", "customer_id", "Customer ID", "CustomerID"],
-    card:    ["card_id", "Card ID", "payment_method", "PaymentMethod ID", "source_id",
-              "card_fingerprint", "Card Fingerprint"],
-    brand:   ["card_brand", "Card Brand", "brand", "Card Type"],
-    currency:["currency", "Currency"]
-  };
-
-  // Currencies Stripe stores without a minor unit. An amount of "500" in JPY is
-  // 500 yen, not 5.00. Getting this wrong would inflate or deflate every figure.
-  var ZERO_DECIMAL = ["bif","clp","djf","gnf","jpy","kmf","krw","mga","pyg","rwf",
-                      "ugx","vnd","vuv","xaf","xof","xpf"];
-
-  var BLOCKED_SET = new Set(BLOCKED), NEWCARD_SET = new Set(NEEDS_NEW_CARD);
-
-  /* --- CSV parsing -------------------------------------------------------
-     Stripe exports quote any field containing a comma, and descriptions do.
-     A split(",") would silently shift every column after the first such row,
-     so this is a real RFC 4180 reader: quoted fields, "" escapes, CRLF, and
-     newlines inside quotes. */
-  function parseCsv(text) {
-    if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1); // strip BOM
-    var rows = [], row = [], field = "", inQ = false, i = 0, c;
-    for (; i < text.length; i++) {
-      c = text[i];
-      if (inQ) {
-        if (c === '"') {
-          if (text[i + 1] === '"') { field += '"'; i++; } else inQ = false;
-        } else field += c;
-      } else if (c === '"') inQ = true;
-      else if (c === ",") { row.push(field); field = ""; }
-      else if (c === "\n" || c === "\r") {
-        if (c === "\r" && text[i + 1] === "\n") i++;
-        row.push(field); field = "";
-        if (row.length > 1 || row[0] !== "") rows.push(row);
-        row = [];
-      } else field += c;
-    }
-    if (field !== "" || row.length) { row.push(field); rows.push(row); }
-    return rows;
-  }
-
-  function pick(headers, key) {
-    var want = ALIASES[key];
-    for (var i = 0; i < want.length; i++) {
-      var idx = headers.indexOf(want[i]);
-      if (idx !== -1) return { name: want[i], idx: idx };
-    }
-    // Fall back to a case-insensitive match so lightly-renamed exports still work.
-    var lower = headers.map(function (h) { return h.trim().toLowerCase(); });
-    for (var j = 0; j < want.length; j++) {
-      var k = lower.indexOf(want[j].toLowerCase());
-      if (k !== -1) return { name: headers[k], idx: k };
-    }
-    return null;
-  }
-
-  function parseDate(v) {
-    if (!v) return null;
-    var s = String(v).trim();
-    // ISO-ish first: "2026-07-14 09:12:00" / "2026-07-14T09:12:00Z"
-    var m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (m) return new Date(+m[1], +m[2] - 1, +m[3]);
-    m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); // US export format
-    if (m) return new Date(+m[3], +m[1] - 1, +m[2]);
-    var d = new Date(s);
-    return isNaN(d.getTime()) ? null : d;
-  }
-
-  /* CSV exports carry amounts in MAJOR units ("20.00"), unlike the API which
-     uses minor units. The python original guessed from the presence of a
-     decimal point, which reads a whole-dollar "20" as 20 cents. Exports are
-     always major units, so convert unconditionally and special-case the
-     zero-decimal currencies. */
-  function parseAmount(raw, currency) {
-    if (raw == null) return 0;
-    var s = String(raw).replace(/[^0-9.\-]/g, "");
-    if (!s || s === "-" || s === ".") return 0;
-    var n = parseFloat(s);
-    if (isNaN(n)) return 0;
-    return ZERO_DECIMAL.indexOf((currency || "usd").toLowerCase()) !== -1
-      ? Math.round(n) : Math.round(n * 100);
-  }
-
-  function money(minor, cur) {
-    cur = (cur || "usd").toUpperCase();
-    var zero = ZERO_DECIMAL.indexOf(cur.toLowerCase()) !== -1;
-    var v = zero ? minor : minor / 100;
-    try {
-      return new Intl.NumberFormat(undefined, {
-        style: "currency", currency: cur, maximumFractionDigits: 0
-      }).format(v);
-    } catch (e) {
-      return Math.round(v).toLocaleString() + " " + cur;
-    }
-  }
-
-  function load(text) {
-    var rows = parseCsv(text);
-    if (!rows.length) return { error: "empty" };
-    var headers = rows[0].map(function (h) { return h.trim(); });
-    var cols = {};
-    Object.keys(ALIASES).forEach(function (k) { cols[k] = pick(headers, k); });
-    if (!cols.decline) return { error: "nodecline", headers: headers };
-
-    var out = [];
-    for (var i = 1; i < rows.length; i++) {
-      var r = rows[i];
-      if (!r.length) continue;
-      var get = function (c) { return c && r[c.idx] != null ? String(r[c.idx]).trim() : ""; };
-
-      var status = get(cols.status).toLowerCase();
-      if (status && (status === "succeeded" || status === "paid" || status === "available")) continue;
-      var code = get(cols.decline).toLowerCase();
-      if (!code) continue;
-
-      var currency = (get(cols.currency) || "usd").toLowerCase();
-      out.push({
-        code: code,
-        amount: parseAmount(get(cols.amount), currency),
-        when: cols.created ? parseDate(get(cols.created)) : null,
-        customer: get(cols.customer),
-        card: get(cols.card),
-        currency: currency
-      });
-    }
-    return { rows: out, cols: cols, headers: headers };
-  }
-
-  /* Peak attempts against one card inside any rolling 30-day window.
-     The python version rescanned the tail for every element, which is O(k^2)
-     per card. Sorted dates let a two-pointer window do it in one pass. */
-  function visaExposure(rows) {
-    var perCard = new Map();
-    rows.forEach(function (r) {
-      var key = r.card || r.customer;
-      if (!key || !r.when) return;
-      if (!perCard.has(key)) perCard.set(key, []);
-      perCard.get(key).push(r.when.getTime());
-    });
-    var worst = [];
-    perCard.forEach(function (times, key) {
-      times.sort(function (a, b) { return a - b; });
-      var lo = 0, peak = 0;
-      for (var hi = 0; hi < times.length; hi++) {
-        while (times[hi] - times[lo] > VISA_WINDOW_MS) lo++;
-        if (hi - lo + 1 > peak) peak = hi - lo + 1;
-      }
-      if (peak >= VISA_WATCH) worst.push({ key: key, peak: peak });
-    });
-    return worst.sort(function (a, b) { return b.peak - a.peak; });
-  }
-
-  function esc(s) {
-    return String(s).replace(/[&<>"]/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
-    });
-  }
-  function pct(n, d) { return d ? Math.round(n / d * 100) : 0; }
-
-  function report(data) {
-    var rows = data.rows, cols = data.cols;
-    var cur = (function () {
-      var tally = {}, best = "usd", bestN = 0;
-      rows.forEach(function (r) {
-        tally[r.currency] = (tally[r.currency] || 0) + 1;
-        if (tally[r.currency] > bestN) { bestN = tally[r.currency]; best = r.currency; }
-      });
-      return best;
-    })();
-
-    var total = rows.length;
-    var totalAmt = rows.reduce(function (s, r) { return s + r.amount; }, 0);
-    var blocked = rows.filter(function (r) { return BLOCKED_SET.has(r.code); });
-    var newcard = rows.filter(function (r) { return NEWCARD_SET.has(r.code); });
-    var bAmt = blocked.reduce(function (s, r) { return s + r.amount; }, 0);
-    var nAmt = newcard.reduce(function (s, r) { return s + r.amount; }, 0);
-    var reach = total - blocked.length - newcard.length;
-    var wasteN = blocked.length + newcard.length, wasteAmt = bAmt + nAmt;
-    var wastePct = pct(wasteN, total);
-    var hasAmounts = totalAmt > 0;
-
-    /* The dollars here are real revenue at risk, but they are NOT what the retrying cost.
-       Stripe documents that it does not reattempt these codes until a new payment method is
-       attached, so no second charge is actually placed and there is no per-attempt cost to
-       quote. What they cost is elapsed time and customers left sitting in a failed state, so
-       count that and lead with it. Quoting a big dollar figure as though retries burned it
-       would be the exact overclaim this tool exists to argue against.
-       https://docs.stripe.com/billing/revenue-recovery/smart-retries */
-    var wasteRows = blocked.concat(newcard);
-    var stuck = {}, stuckN = 0;
-    wasteRows.forEach(function (r) {
-      var k = r.customer || r.card;
-      if (!k) return;
-      if (!stuck[k]) { stuck[k] = { min: r.when, max: r.when }; stuckN++; }
-      if (!r.when) return;
-      var s = stuck[k];
-      if (!s.min || r.when < s.min) s.min = r.when;
-      if (!s.max || r.when > s.max) s.max = r.when;
-    });
-    var spans = [];
-    Object.keys(stuck).forEach(function (k) {
-      var s = stuck[k];
-      if (s.min && s.max) spans.push(Math.round((s.max - s.min) / 864e5));
-    });
-    spans.sort(function (a, b) { return a - b; });
-    var medianDays = spans.length ? spans[Math.floor(spans.length / 2)] : null;
-    var longestDays = spans.length ? spans[spans.length - 1] : null;
-
-    var h = ['<div class="rep">'];
-    h.push('<div class="hero"><div class="big">' + wastePct + '% of your failed payments'
-      + '</div><p style="margin:8px 0 0">'
-      + wasteN.toLocaleString() + ' of ' + total.toLocaleString() + ' failed charges sat on cards '
-      + 'that needed replacing rather than retrying'
-      + (stuckN ? ', across ' + stuckN.toLocaleString() + ' customer' + (stuckN === 1 ? '' : 's') : '')
-      + '.</p>'
-      + (medianDays !== null && longestDays > 0
-          ? '<p style="margin:6px 0 0">Those customers stayed in a failed state for a median of '
-            + medianDays + ' day' + (medianDays === 1 ? '' : 's')
-            + (longestDays > medianDays ? ', and the worst of them for ' + longestDays : '')
-            + '. That elapsed time is the real cost here.</p>'
-          : '')
-      + (hasAmounts
-          ? '<p style="margin:6px 0 0">' + money(wasteAmt, cur) + ' of ' + money(totalAmt, cur)
-            + ' in failed invoices sits behind those cards. Read that as revenue at risk, not as '
-            + 'a fee you paid. Stripe does not reattempt these codes without a new payment '
-            + 'method, so no further charge is placed and none is billed for.</p>'
-          : '')
-      + '</div>');
-
-    h.push('<h3>What could never have worked</h3>');
-    h.push('<p>' + blocked.length.toLocaleString() + ' charges (' + pct(blocked.length, total)
-      + '%) are on the nine codes Stripe will not reattempt at all without a new '
-      + 'payment method' + (hasAmounts ? ', worth ' + money(bAmt, cur) : '')
-      + '. The retry schedule keeps running and the attempt counter keeps rising, but no attempt '
-      + 'is actually made.</p>');
-    if (blocked.length) {
-      var byCode = {};
-      blocked.forEach(function (r) {
-        byCode[r.code] = byCode[r.code] || { n: 0, amt: 0 };
-        byCode[r.code].n++; byCode[r.code].amt += r.amount;
-      });
-      var codes = Object.keys(byCode).sort(function (a, b) { return byCode[b].n - byCode[a].n; });
-      h.push('<table><thead><tr><th>Decline code</th><th class="n">Charges</th>'
-        + (hasAmounts ? '<th class="n">Amount</th>' : '') + '</tr></thead><tbody>');
-      codes.forEach(function (c) {
-        h.push('<tr><td><code>' + esc(c) + '</code></td><td class="n">' + byCode[c].n.toLocaleString()
-          + '</td>' + (hasAmounts ? '<td class="n">' + money(byCode[c].amt, cur) + '</td>' : '') + '</tr>');
-      });
-      h.push('</tbody></table>');
-    }
-
-    h.push('<h3>What needed a new card, not another attempt</h3>');
-    h.push('<p>' + newcard.length.toLocaleString() + ' charges (' + pct(newcard.length, total) + '%)'
-      + (hasAmounts ? ', ' + money(nAmt, cur) : '')
-      + '. Stripe does retry these, so they burn attempts, but the card cannot succeed until the '
-      + 'customer replaces it.</p>');
-
-    h.push('<h3>What was actually reachable by retrying</h3>');
-    h.push('<p>' + reach.toLocaleString() + ' charges (' + pct(reach, total)
-      + '%). Everything else needed a conversation, not a schedule.</p>');
-
-    h.push('<h3>Visa reattempt budget</h3>');
-    if (!cols.card && !cols.customer) {
-      h.push('<p>Skipped: the export had no card or customer column, so attempts cannot be grouped '
-        + 'per card. Re-export including <code>Card ID</code> or <code>Customer ID</code> to see this.</p>');
-    } else if (!cols.created) {
-      h.push('<p>Skipped: the export had no date column, so the 30 day window cannot be measured.</p>');
-    } else {
-      var exp = visaExposure(rows);
-      var over = exp.filter(function (x) { return x.peak >= VISA_CAP; });
-      if (!exp.length) {
-        h.push('<p>No card reached ' + VISA_WATCH + ' failed attempts inside a 30 day window. '
-          + 'Comfortable against Visa\'s ceiling of ' + VISA_CAP + ' in a rolling 30 days.</p>');
-      } else {
-        h.push('<p>' + exp.length + ' card' + (exp.length === 1 ? '' : 's') + ' reached '
-          + VISA_WATCH + ' or more attempts in a 30 day window, against Visa\'s ceiling of '
-          + VISA_CAP
-          + (over.length ? '. <strong>' + over.length + (over.length === 1 ? ' of them is' : ' of them are')
-              + ' at or over it.</strong>' : '.')
-          + ' Stripe may block further attempts here, but only where it judges a low chance of '
-          + 'authorisation, so nobody is guaranteeing you stay under the ceiling. Counted per '
-          + 'card, which is stricter than Visa\'s per payment wording.</p>');
-        h.push('<table><thead><tr><th>Card or customer</th><th class="n">Peak attempts / 30d</th>'
-          + '</tr></thead><tbody>');
-        exp.slice(0, 10).forEach(function (x) {
-          h.push('<tr><td><code>' + esc(x.key.slice(0, 42)) + '</code></td><td class="n'
-            + (x.peak >= VISA_CAP ? ' over' : '') + '">' + x.peak
-            + (x.peak >= VISA_CAP ? ' &nbsp;at or over cap' : '') + '</td></tr>');
-        });
-        h.push('</tbody></table>');
-      }
-    }
-
-    /* The verdict deliberately tells low-waste accounts to buy nothing, including
-       from us. That is the site's editorial line and the reason the number is
-       worth trusting at all. */
-    if (wastePct >= 35) {
-      h.push('<div class="verdict high"><p style="margin:0"><strong>' + wastePct + '% of your failed '
-        + 'payments' + (stuckN ? ', held by ' + stuckN.toLocaleString() + ' customer'
-            + (stuckN === 1 ? '' : 's') : '') + ', sat on cards that needed replacing, not '
-        + 'retrying.</strong> Any tool that answers this with more retry attempts is solving the '
-        + 'wrong half of the problem. What that group needs is a request for a new card, sent '
-        + 'sooner than '
-        + (medianDays !== null && longestDays > 0 ? 'the ' + medianDays + ' day median above'
-            : 'a retry schedule will get to it')
-        + ', and it needs to stop consuming reattempts in the meantime.</p></div>');
-    } else {
-      h.push('<div class="verdict low"><p style="margin:0"><strong>Most of your failures are the '
-        + 'ordinary retryable kind.</strong> Stripe\'s own free Smart Retries already cover this '
-        + 'reasonably well. On these numbers I would not buy a recovery tool, mine included. The '
-        + 'honest opportunity here is smaller than the category\'s marketing suggests.</p></div>');
-    }
-
-    var matched = Object.keys(ALIASES).filter(function (k) { return cols[k]; })
-      .map(function (k) { return k + ' &rarr; ' + esc(cols[k].name); }).join(' &middot; ');
-    h.push('<p class="matched">Columns matched: ' + matched + '. '
-      + total.toLocaleString() + ' failed rows read'
-      + (hasAmounts ? '' : '. No usable amount column was found, so this report counts charges rather than money')
-      + '.</p>');
-
-    h.push('<p style="margin-top:18px"><button class="btn" type="button" id="dl">Download this report</button></p>');
-    h.push('</div>');
-    return { html: h.join(""), text: plain(rows, cur, total, totalAmt, blocked, newcard, bAmt, nAmt, reach, wastePct, wasteAmt, hasAmounts, stuckN, medianDays, longestDays) };
-  }
-
-  // A plain-text copy so the number survives outside this tab.
-  function plain(rows, cur, total, totalAmt, blocked, newcard, bAmt, nAmt, reach, wastePct, wasteAmt, hasAmounts, stuckN, medianDays, longestDays) {
-    var L = [], line = new Array(63).join("=");
-    L.push("RETRY WASTE AUDIT");
-    L.push(line);
-    L.push("");
-    L.push(total.toLocaleString() + " failed charges"
-      + (stuckN ? ", " + stuckN.toLocaleString() + " customer" + (stuckN === 1 ? "" : "s")
-          + " left on an unusable card" : ""));
-    if (medianDays !== null && longestDays > 0) {
-      L.push("Median " + medianDays + " day" + (medianDays === 1 ? "" : "s")
-        + " in a failed state, worst case " + longestDays + ".");
-    }
-    if (hasAmounts) {
-      L.push(money(totalAmt, cur) + " of invoices failed, " + money(wasteAmt, cur)
-        + " of it behind cards that");
-      L.push("needed replacing. That is revenue at risk, not a fee you paid: Stripe");
-      L.push("does not reattempt these codes without a new payment method.");
-    }
-    L.push("");
-    L.push("WHAT COULD NEVER HAVE WORKED");
-    L.push("  " + blocked.length.toLocaleString() + " charges (" + pct(blocked.length, total) + "%)"
-      + (hasAmounts ? ", " + money(bAmt, cur) : "")
-      + " on the nine codes Stripe will not");
-    L.push("  send to the network without a new payment method.");
-    L.push("");
-    L.push("WHAT NEEDED A NEW CARD, NOT ANOTHER ATTEMPT");
-    L.push("  " + newcard.length.toLocaleString() + " charges (" + pct(newcard.length, total) + "%)"
-      + (hasAmounts ? ", " + money(nAmt, cur) : "") + ".");
-    L.push("");
-    L.push("WHAT WAS ACTUALLY REACHABLE BY RETRYING");
-    L.push("  " + reach.toLocaleString() + " charges (" + pct(reach, total) + "%).");
-    L.push("");
-    L.push("THE ONE SENTENCE VERSION");
-    L.push("  " + wastePct + "% of failed payments"
-      + (stuckN ? ", held by " + stuckN.toLocaleString() + " customer" + (stuckN === 1 ? "" : "s") : "")
-      + ", sat on cards that");
-    L.push("  needed replacing, not retrying.");
-    L.push("");
-    L.push("Every figure above is arithmetic on your own export. No recovery rate,");
-    L.push("benchmark or estimate appears anywhere in it.");
-    L.push("Produced locally by https://recoverflow.org/tools/retry-waste-calculator/");
-    return L.join("\n");
-  }
-
-  var drop = document.getElementById("drop");
-  var input = document.getElementById("file");
-  var out = document.getElementById("fileOut");
-  if (!drop || !input || !out) return;
-
-  function fail(html) {
-    out.hidden = false;
-    out.innerHTML = '<div class="err">' + html + '</div>';
-  }
-
-  function handle(file) {
-    if (!file) return;
-    if (file.size > 25 * 1024 * 1024) {
-      return fail("<strong>That file is larger than 25 MB.</strong> Re-export a narrower date "
-        + "range; ninety days is plenty for this.");
-    }
-    var reader = new FileReader();
-    reader.onerror = function () { fail("<strong>The file could not be read.</strong>"); };
-    reader.onload = function (e) {
-      var data;
-      try { data = load(String(e.target.result)); }
-      catch (err) { return fail("<strong>That file could not be parsed as CSV.</strong>"); }
-
-      if (data.error === "empty") return fail("<strong>That file is empty.</strong>");
-      if (data.error === "nodecline") {
-        return fail("<strong>No decline-code column found.</strong> This report cannot be produced "
-          + "without one. Looked for: <code>" + ALIASES.decline.join("</code>, <code>") + "</code>."
-          + "<br>Columns present in your file:<ul><li>"
-          + data.headers.slice(0, 40).map(esc).join("</li><li>") + "</li></ul>"
-          + "In the Stripe export column picker, tick <strong>Decline Code</strong> and export again.");
-      }
-      if (!data.rows.length) {
-        return fail("<strong>No failed charges with decline codes were found in that file.</strong> "
-          + "If you exported all payments rather than only failed ones, the successful rows are "
-          + "skipped and there may be nothing left. Filter to <strong>Status is Failed</strong> "
-          + "before exporting.");
-      }
-
-      var r = report(data);
-      out.hidden = false;
-      out.innerHTML = r.html;
-      var dl = document.getElementById("dl");
-      if (dl) dl.addEventListener("click", function () {
-        var blob = new Blob([r.text], { type: "text/plain" });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement("a");
-        a.href = url; a.download = "retry-waste-audit.txt";
-        document.body.appendChild(a); a.click(); document.body.removeChild(a);
-        setTimeout(function () { URL.revokeObjectURL(url); }, 0);
-      });
-      out.scrollIntoView({ behavior: "smooth", block: "start" });
-    };
-    reader.readAsText(file);
-  }
-
-  input.addEventListener("change", function () { handle(input.files && input.files[0]); });
-  ["dragenter", "dragover"].forEach(function (ev) {
-    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add("over"); });
-  });
-  ["dragleave", "drop"].forEach(function (ev) {
-    drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove("over"); });
-  });
-  drop.addEventListener("drop", function (e) {
-    var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
-    handle(f);
-  });
-})();
-</script>
 </body>
 </html>

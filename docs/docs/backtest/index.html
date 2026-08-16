@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,6 +27,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>The 90-day backtest | RecoverFlow docs</title>
 <meta name="description" content="What the connect-time scan reads, how the estimate is built from decline classification, and why it is a range rather than a number.">
@@ -42,7 +42,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -221,14 +220,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -237,7 +235,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <article class="wrap">
     <p class="eyebrow"><a href="/docs/">Docs</a></p>
     <h1>The 90-day backtest</h1>
-    <p class="updated">Reflects the code as of 28 July 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
+    <p class="updated">Reflects the code as of 4 August 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
 
     <p>The moment you connect Stripe, a one-off scan reads your recent history and shows you what already failed and what a recovery process might have won back. It is the fastest honest answer to "is this worth anything to me".</p>
 
@@ -252,14 +250,14 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="estimate">How the estimate is built</h2>
     <p>Each failed invoice is classified by decline code, and each classification carries a recovery range rather than a single figure:</p>
     <div class="table-scroll">
-      <div class="tscroll"><table>
+      <table>
         <thead><tr><th scope="col">Classification</th><th scope="col">Assumed recovery range</th></tr></thead>
         <tbody>
           <tr><th scope="row">Soft decline</th><td>30% to 50%</td></tr>
           <tr><th scope="row">Unrecognised code</th><td>15% to 30%</td></tr>
           <tr><th scope="row">Hard decline</th><td>0% to 5%</td></tr>
         </tbody>
-      </table></div>
+      </table>
     </div>
 
     <h2 id="honest">What those percentages are, and are not</h2>
@@ -276,18 +274,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <details><summary>Why is the backtest limited to 200 invoices?</summary><p>So a large account cannot stall the scan or exhaust Stripe API rate limits. If you have more failed invoices than that in 90 days, the result is a sample rather than a complete audit.</p></details>
   <details><summary>Does connecting Stripe for a backtest commit me to anything?</summary><p>No. The scan is read-only, there is no card required to start, and you revoke access from your own Stripe dashboard whenever you like.</p></details>
 </div>
-      <div class="cta-box">
-      <h2>See what you're losing</h2>
-      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
-      <a class="btn" href="/">Run the free 90 day scan</a>
-    </div>
-</article>
+  </article>
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

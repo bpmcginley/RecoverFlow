@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,6 +27,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Failed Payment Recovery Tools Compared (Verified Pricing)</title>
 <meta name="description" content="RecoverFlow compared against Churnkey, Baremetrics Recover, Stunning, Paddle Retain and Stripe's free built-in recovery. Every price read from the vendor's own page.">
@@ -50,7 +50,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
         {
           "@type": "Question",
           "name": "Which failed payment recovery tool is cheapest?",
-          "acceptedAnswer": { "@type": "Answer", "text": "It depends entirely on how much you recover each month. Flat fee tools such as Stunning at around $120 per month, Baremetrics Recover at $129 per month on top of a base plan, and Churnkey at $250 per month on Starter become cheaper than a percentage once your recovered volume is high enough. RecoverFlow charges 25% of what it recovers, with a $29 per month floor and a $299 per month ceiling, which is cheaper at lower volumes and bounded at high ones. Each comparison page shows the exact crossover point." }
+          "acceptedAnswer": { "@type": "Answer", "text": "It depends entirely on how much you recover each month. Flat fee tools such as Stunning at around $120 per month, Baremetrics Recover at $129 per month on top of a base plan, and Churnkey at $250 per month on Starter become cheaper than a percentage once your recovered volume is high enough. RecoverFlow charges 25% of what it recovers with a $29 per month minimum, which is cheaper at lower volumes. Each comparison page shows the exact crossover point." }
         },
         {
           "@type": "Question",
@@ -69,7 +69,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -222,14 +221,15 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
+    <nav>
       <a href="/#how-it-works">How it works</a>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a href="/#faq">FAQ</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -285,13 +285,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     </div>
 
     <h2>The rest of the market, as of 30 July 2026</h2>
-    <p>The five pages above are the tools most people shortlist. They are not the whole market: the Stripe App
-    Marketplace carries a good many more, and we have not counted them precisely enough to quote a figure. Every price
-    below was read from the vendor's own pricing page or their marketplace listing on 30 July 2026. Where a vendor does
-    not publish a number, this says so rather than estimating one.</p>
+    <p>The five pages above are the tools most people shortlist. They are not the whole market. There are around
+    twenty-five live failed-payment recovery apps on the Stripe App Marketplace alone. Every price below was read from
+    the vendor's own pricing page or their marketplace listing on 30 July 2026. Where a vendor does not publish a
+    number, this says so rather than estimating one.</p>
 
     <div class="table-scroll">
-      <div class="tscroll"><table>
+      <table>
         <thead><tr><th scope="col">Tool</th><th scope="col">Published price</th><th scope="col">Worth knowing</th></tr></thead>
         <tbody>
           <tr><th scope="row">Churn Buster</th><td>From $149/mo, banded by MRR. Advisory from $1,000 one-off.</td>
@@ -317,7 +317,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
           <tr><th scope="row">Vindicia Retain</th><td>Not published.</td>
               <td>You submit transactions you have already written off. Deliberately no customer contact at all.</td></tr>
         </tbody>
-      </table></div>
+      </table>
     </div>
 
     <div class="callout">
@@ -334,7 +334,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
     <h2>Before you buy any of them</h2>
     <p>A share of your failed payments cannot be recovered by any tool on this page, because the card is gone rather
-    than temporarily short. On nine of its decline codes Stripe will not even reattempt the charge. Working out how
+    than temporarily short. Stripe will not even send nine of its decline codes to the card network. Working out how
     big that share is for you changes which of these tools is worth paying for, and sometimes whether any of them is.
     The <a href="/tools/retry-waste-calculator/">retry waste calculator</a> does that in your browser in a couple of
     minutes.</p>
@@ -342,7 +342,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <h2 id="faq">Frequently asked questions</h2>
     <div class="faq">
       <h3>Which failed payment recovery tool is cheapest?</h3>
-      <p>It depends entirely on how much you recover each month. Flat fee tools such as Stunning at around $120 per month, Baremetrics Recover at $129 per month on top of a base plan, and Churnkey at $250 per month on Starter become cheaper than a percentage once your recovered volume is high enough. RecoverFlow charges 25% of what it recovers, with a $29 per month floor and a $299 per month ceiling, which is cheaper at lower volumes and bounded at high ones. Each comparison page shows the exact crossover point.</p>
+      <p>It depends entirely on how much you recover each month. Flat fee tools such as Stunning at around $120 per month, Baremetrics Recover at $129 per month on top of a base plan, and Churnkey at $250 per month on Starter become cheaper than a percentage once your recovered volume is high enough. RecoverFlow charges 25% of what it recovers with a $29 per month minimum, which is cheaper at lower volumes. Each comparison page shows the exact crossover point.</p>
 
       <h3>Do I need a recovery tool at all if I use Stripe?</h3>
       <p>Not necessarily. Stripe's own Smart Retries are machine learning timed and Stripe can send failed payment and card expiry emails using your branding, all at no cost. Turn those on first. A paid tool is only worth it if you want control over the dunning sequence and sender, attribution of which recovery came from which action, or history beyond Stripe's 60 day email log retention.</p>
@@ -363,8 +363,8 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/compare/">All comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/recover-failed-stripe-payments/">Recovery guide</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a> &middot; <a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/compare/">All comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/recover-failed-stripe-payments/">Recovery guide</a> &middot; <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a> &middot; <a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>
 </footer>

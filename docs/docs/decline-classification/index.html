@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,6 +27,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How RecoverFlow classifies declines | Docs</title>
 <meta name="description" content="The exact codes RecoverFlow retries and refuses to retry, including the nine Stripe will not execute without a new card.">
@@ -42,7 +42,6 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -221,14 +220,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -237,14 +235,14 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <article class="wrap">
     <p class="eyebrow"><a href="/docs/">Docs</a></p>
     <h1>Decline classification</h1>
-    <p class="updated">Reflects the code as of 28 July 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
+    <p class="updated">Reflects the code as of 4 August 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
 
     <p>Every failed payment is sorted into one of three buckets, and that decision drives everything downstream: whether a retry is scheduled, which email goes out, and what the backtest estimates you could recover.</p>
 
     <h2 id="blocked">Never retried: the nine Stripe will not execute</h2>
-    <p>For these, Stripe keeps the retry schedule running and keeps incrementing <code>attempt_count</code>, but does not attempt the charge again until a new payment method is attached. Scheduling our own retry against them would add delay and nothing else.</p>
+    <p>For these, Stripe keeps the retry schedule running and keeps incrementing <code>attempt_count</code>, but never sends the charge to the card network until a new payment method is attached. Scheduling our own retry against them would add delay and nothing else.</p>
 <div class="table-scroll">
-  <div class="tscroll"><table>
+  <table>
     <thead><tr><th scope="col">Decline code</th><th scope="col">Why we do not retry it</th></tr></thead>
     <tbody>
       <tr><th scope="row"><code>incorrect_number</code></th><td>The card number itself is wrong. No amount of waiting fixes a typo.</td></tr>
@@ -257,7 +255,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <tr><th scope="row"><code>highest_risk_level</code></th><td>Stripe Radar blocked it. Retrying does not lower the risk score.</td></tr>
       <tr><th scope="row"><code>transaction_not_allowed</code></th><td>The issuer does not permit this type of transaction on this card.</td></tr>
     </tbody>
-  </table></div>
+  </table>
 </div>
     <p>This list is held in one place in the source and is checked against <a href="https://docs.stripe.com/billing/revenue-recovery/smart-retries" rel="nofollow noopener" target="_blank">Stripe's Smart Retries documentation</a>. It was last verified on 28 July 2026.</p>
 
@@ -284,18 +282,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <details><summary>What happens with a decline code RecoverFlow does not recognise?</summary><p>It is treated as recoverable and retried on the default schedule. Abandoning revenue because Stripe added a code we had not seen would be the worse mistake.</p></details>
   <details><summary>Is expired_card retried?</summary><p>No retry is scheduled for it, even though it is classified as a soft decline. An expired card needs new details, not another attempt, so it goes to the card-update path instead.</p></details>
 </div>
-      <div class="cta-box">
-      <h2>See what you're losing</h2>
-      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
-      <a class="btn" href="/">Run the free 90 day scan</a>
-    </div>
-</article>
+  </article>
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>

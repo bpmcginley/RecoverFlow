@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
 <script>
@@ -28,21 +27,21 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <noscript>
 <img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=9673204&fmt=gif" />
 </noscript>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How RecoverFlow attributes recoveries and bills | Docs</title>
-<meta name="description" content="How a recovered payment is credited, the cases where you are not billed at all, and the exact numbers behind the capped 25% fee.">
+<meta name="description" content="How a recovered payment is credited, the cases where you are not billed at all, and the exact numbers behind the 25% fee.">
 <link rel="canonical" href="https://recoverflow.org/docs/attribution-and-billing/">
 <link rel="icon" type="image/png" href="/assets/logo-mark.png">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="RecoverFlow">
 <meta property="og:title" content="How RecoverFlow attributes recoveries and bills | Docs">
-<meta property="og:description" content="How a recovered payment is credited, the cases where you are not billed at all, and the exact numbers behind the capped 25% fee.">
+<meta property="og:description" content="How a recovered payment is credited, the cases where you are not billed at all, and the exact numbers behind the 25% fee.">
 <meta property="og:url" content="https://recoverflow.org/docs/attribution-and-billing/">
 <meta property="og:image" content="https://recoverflow.org/assets/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <style>
   :root {
     --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
@@ -162,7 +161,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   "@context": "https://schema.org",
   "@type": "TechArticle",
   "headline": "Attribution and billing",
-  "description": "How a recovered payment is credited, the cases where you are not billed at all, and the exact numbers behind the capped 25% fee.",
+  "description": "How a recovered payment is credited, the cases where you are not billed at all, and the exact numbers behind the 25% fee.",
   "url": "https://recoverflow.org/docs/attribution-and-billing/",
   "dateModified": "2026-07-28",
   "author": {
@@ -200,15 +199,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "name": "What does RecoverFlow cost?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "25% of attributably-recovered revenue, with a $29 monthly minimum that is waived for the first 30 days and a $299 monthly maximum that is never waived. The percentage applies during those 30 days; only the minimum is waived. Invoices are issued monthly through Stripe with 7 day terms."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "What happens if a recovered payment is refunded or charged back?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "It stops being billable. If it had not been invoiced yet, the reversed amount comes off the billable total before the percentage is applied. If it had already been invoiced, the fee we collected for it is credited back on your next invoice, against the whole invoice including the monthly minimum, and any unused credit carries forward."
+        "text": "25% of attributably-recovered revenue, with a $29 monthly minimum that is waived for the first 30 days. The percentage applies during those 30 days; only the minimum is waived. Invoices are issued monthly through Stripe with 7 day terms."
       }
     },
     {
@@ -229,14 +220,13 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <header>
   <div class="wrap">
     <a class="logo" href="/"><img src="/assets/logo-mark.png" alt="">Recover<span>Flow</span></a>
-    <nav aria-label="Primary">
-      <a href="/#how-it-works">How it works</a>
+    <nav>
       <a href="/pricing/">Pricing</a>
       <a href="/compare/">Compare</a>
+      <a href="/tools/">Tools</a>
+      <a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a>
       <a href="/docs/">Docs</a>
-      <a href="/blog/">Guides</a>
-      <a class="nav-signin" href="https://app.recoverflow.org/app/">Sign in</a>
-      <a class="nav-cta" href="/#start">See your backtest</a>
+      <a class="nav-cta" href="https://app.recoverflow.org/app/">Sign in</a>
     </nav>
   </div>
 </header>
@@ -245,9 +235,9 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
   <article class="wrap">
     <p class="eyebrow"><a href="/docs/">Docs</a></p>
     <h1>Attribution and billing</h1>
-    <p class="updated">Reflects the code as of 28 July 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
+    <p class="updated">Reflects the code as of 4 August 2026. If the product changes and this page does not, that is a bug worth emailing about.</p>
 
-    <p>RecoverFlow charges 25% of what it recovers, floored at $29 a month and capped at $299. That only works if "what it recovered" is decided honestly, so this page describes the rule precisely enough to argue with.</p>
+    <p>RecoverFlow charges 25% of what it recovers. That only works if "what it recovered" is decided honestly, so this page describes the rule precisely enough to argue with.</p>
 
     <h2 id="order">How a recovery is attributed</h2>
     <p>When an invoice we were working on gets paid, the cause is assigned in this order:</p>
@@ -264,53 +254,35 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 
     <h2 id="numbers">The numbers</h2>
     <div class="table-scroll">
-      <div class="tscroll"><table>
+      <table>
         <tbody>
           <tr><th scope="row">Performance fee</th><td>25% of attributably-recovered revenue</td></tr>
           <tr><th scope="row">Monthly minimum</th><td>$29, waived for the first 30 days after signup</td></tr>
-          <tr><th scope="row">Monthly maximum</th><td>$299, an absolute ceiling on the invoice however much is recovered</td></tr>
           <tr><th scope="row">During those 30 days</th><td>The percentage still applies. The minimum does not.</td></tr>
           <tr><th scope="row">Invoice terms</th><td>Billed monthly through Stripe, 7 days to pay</td></tr>
-          <tr><th scope="row">Refunds and chargebacks</th><td>A recovery that is later refunded or charged back is not billed, and if it was already billed the fee is credited back</td></tr>
           <tr><th scope="row">Very small totals</th><td>Stripe will not collect under $0.50, so amounts below that roll into the next month rather than being written off or rounded up</td></tr>
           <tr><th scope="row">Contract</th><td>None. No minimum term, no exit fee.</td></tr>
         </tbody>
-      </table></div>
+      </table>
     </div>
 
-    <h2 id="reversals">When a recovery does not stay recovered</h2>
-    <p>A recovered payment can still go back out: the customer asks for a refund, or disputes the charge and wins. Either way the money is not yours, so the fee on it is not ours. Stripe tells us when the charge that settled a recovered invoice is refunded or disputed, and the case is marked from that notification without you doing anything.</p>
-    <p>What happens next depends on whether we had already billed for it:</p>
-    <ul>
-      <li><strong>Not yet invoiced.</strong> The reversed amount comes off the billable total before the percentage is applied, so a recovery reversed in full is never billed at all.</li>
-      <li><strong>Already invoiced.</strong> The fee we collected for that recovery is credited back on your next invoice. The credit is what we actually charged, which matters after a capped month: if the $299 ceiling held your bill down, the credit follows the capped figure rather than an uncapped 25%, because a bigger credit would be handing back money we never took.</li>
-    </ul>
-    <p>Credits come off the whole invoice, minimum included, so a month can come to nothing. Anything left over carries forward until it is used. If you close the account with credit outstanding it is refunded on request rather than written off, and the <a href="/terms/#reversals">terms</a> say so in those words.</p>
-    <p>One limitation worth stating: this depends on the reversal reaching us from Stripe for the charge that settled the invoice. A refund issued outside Stripe is invisible to us, so tell us and it is credited the same way.</p>
-
-    <h2 id="when-not">Why the fee is capped</h2>
-    <p>An uncapped percentage means the vendor earns more as your churn gets worse, which is a real objection to this pricing model rather than a hypothetical one. The $299 ceiling bounds it: past about $1,196 of attributed recovery in a month your bill stops moving. It does not fix the alignment problem below that line, and the <a href="/pricing/">pricing page</a> says so plainly rather than claiming otherwise. The <a href="/tools/recovery-estimator/">recovery estimator</a> will still tell you, using your own numbers, when a competitor is cheaper.</p>
+    <h2 id="when-not">When 25% is the wrong deal</h2>
+    <p>At high recovery volumes a percentage costs more than a flat monthly fee, and at that point you should be paying someone else or nobody. The <a href="/pricing/">pricing page</a> works through where that crossover sits, and the <a href="/tools/recovery-estimator/">recovery estimator</a> will tell you, using your own numbers, when a competitor is cheaper.</p>
 
     <h2 id="faq">Common questions</h2>
 <div class="faq">
   <details><summary>Does RecoverFlow charge for payments that would have recovered anyway?</summary><p>Not when we can tell. If no retry ran, no card update completed through our flow, and no email had been sent, the recovery is recorded as happening without our involvement and is not billable.</p></details>
   <details><summary>How does RecoverFlow decide a recovery was caused by its email?</summary><p>Only when no retry attempt ran and no card update completed through our flow, but at least one sequence email had been sent. This is the weakest link in the attribution chain and the one most worth disputing if it looks wrong to you.</p></details>
-  <details><summary>What does RecoverFlow cost?</summary><p>25% of attributably-recovered revenue, with a $29 monthly minimum that is waived for the first 30 days and a $299 monthly maximum that is never waived. The percentage applies during those 30 days; only the minimum is waived. Invoices are issued monthly through Stripe with 7 day terms.</p></details>
-  <details><summary>What happens if a recovered payment is refunded or charged back?</summary><p>It stops being billable. If it had not been invoiced yet, the reversed amount comes off the billable total before the percentage is applied. If it had already been invoiced, the fee we collected for it is credited back on your next invoice, against the whole invoice including the monthly minimum, and any unused credit carries forward.</p></details>
+  <details><summary>What does RecoverFlow cost?</summary><p>25% of attributably-recovered revenue, with a $29 monthly minimum that is waived for the first 30 days. The percentage applies during those 30 days; only the minimum is waived. Invoices are issued monthly through Stripe with 7 day terms.</p></details>
   <details><summary>Is there a contract?</summary><p>No minimum term and no exit fee. You revoke access from your own Stripe dashboard and nothing further is billed beyond recoveries already attributed.</p></details>
 </div>
-      <div class="cta-box">
-      <h2>See what you're losing</h2>
-      <p>Connect your Stripe account and RecoverFlow reads your real last 90 days of failed invoices: what failed, why, and what was recoverable. Free, no card, one click to disconnect.</p>
-      <a class="btn" href="/">Run the free 90 day scan</a>
-    </div>
-</article>
+  </article>
 </main>
 
 <footer>
   <div class="wrap">
-    <div class="footer-trust">Built on Stripe &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
-    <div class="footer-trust"><a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
+    <div class="footer-trust">Built on Stripe Connect &middot; Access you control, revoke anytime from your Stripe dashboard &middot; No contracts, no lock-in</div>
+    <div class="footer-trust"><a href="/audit/">Free audit</a> &middot; <a href="/blog/">Guides</a> &middot; <a href="/docs/">Docs</a> &middot; <a href="/tools/">Free tools</a> &middot; <a href="/compare/">Comparisons</a> &middot; <a href="/pricing/">Pricing</a> &middot; <a href="/changelog/">Changelog</a> &middot; <a href="/about/">About</a> &middot; <a href="/contact/">Contact</a></div>
     <div class="footer-trust"><a href="/security/">Security</a> &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/terms/">Terms</a></div>
     RecoverFlow. Subscription payment recovery for Stripe. <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a>
   </div>
