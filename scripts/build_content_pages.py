@@ -85,8 +85,8 @@ def shell(title, desc, canonical, body, schema=None):
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-{TRACKING}
 <meta charset="UTF-8">
+{TRACKING}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
 <meta name="description" content="{desc}">
@@ -1091,7 +1091,7 @@ ABOUT = """<main>
     <p>What it does not have is a long list of logos to show you. I am not going to invent one. Everything on this site that looks like a statistic is either arithmetic you can check or a figure from Stripe's own documentation with a link to it.</p>
 
     <h2>How it makes money</h2>
-    <p>25% of what it actually recovers, with a $29 monthly floor. If it recovers nothing beyond the floor, that is the whole bill. There is no contract and access is revoked from your own Stripe dashboard in two clicks, without asking me.</p>
+    <p>25% of what it actually recovers, with a $29 monthly floor and a $299 monthly ceiling, and the floor is waived for the first 30 days. If it recovers nothing beyond the floor, that is the whole bill. If it has a very good month, the bill still stops at $299. There is no contract and access is revoked from your own Stripe dashboard in two clicks, without asking me.</p>
     <p>The <a href="/pricing/">pricing page</a> includes a section explaining when 25% is a bad deal for you and what to do instead, because at high recovery volumes it genuinely is.</p>
 
     <h2>The rules this site is written under</h2>

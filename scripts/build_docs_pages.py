@@ -17,22 +17,25 @@ from build_content_pages import shell, plain, HARD_CODES  # noqa: E402
 SITE = "https://recoverflow.org"
 
 
-def doc_schema(slug, h1, desc):
+def doc_schema(slug, h1, desc, iso_modified="2026-07-28"):
     return {
         "@context": "https://schema.org",
         "@type": "TechArticle",
         "headline": plain(h1),
         "description": desc,
         "url": f"{SITE}/docs/{slug}/" if slug else f"{SITE}/docs/",
-        "dateModified": "2026-07-28",
+        "dateModified": iso_modified,
         "author": {"@type": "Person", "name": "Bruce McGinley"},
         "publisher": {"@type": "Organization", "name": "RecoverFlow", "url": SITE},
     }
 
 
-def build_doc(slug, title, h1, desc, body_html, faqs=None):
+def build_doc(slug, title, h1, desc, body_html, faqs=None, updated=None, iso_modified="2026-07-28"):
+    # A page that describes a later change has to say so, otherwise the "as of"
+    # line quietly contradicts the page under it.
+    updated = updated or UPDATED
     faq_block = ""
-    schema = [doc_schema(slug, h1, desc)]
+    schema = [doc_schema(slug, h1, desc, iso_modified)]
     if faqs:
         faq_block = "\n".join(
             ['<h2 id="faq">Common questions</h2>', '<div class="faq">']
@@ -51,7 +54,7 @@ def build_doc(slug, title, h1, desc, body_html, faqs=None):
   <article class="wrap">
     <p class="eyebrow"><a href="/docs/">Docs</a></p>
     <h1>{h1}</h1>
-    <p class="updated">Reflects the code as of {UPDATED}. If the product changes and this page does not, that is a bug worth emailing about.</p>
+    <p class="updated">Reflects the code as of {updated}. If the product changes and this page does not, that is a bug worth emailing about.</p>
 
 {body_html}
 
@@ -324,7 +327,11 @@ PAGES.append(dict(
     title="How RecoverFlow attributes recoveries and bills | Docs",
     h1="Attribution and billing",
     desc="How a recovered payment is credited, the cases where you are not billed at all, and the exact numbers behind the 25% fee.",
-    body="""    <p>RecoverFlow charges 25% of what it recovers. That only works if "what it recovered" is decided honestly, so this page describes the rule precisely enough to argue with.</p>
+    # The ceiling and the reversal handling shipped on 12 August, later than the
+    # rest of the docs, so this page carries its own date.
+    updated="12 August 2026",
+    iso_modified="2026-08-12",
+    body="""    <p>RecoverFlow charges 25% of what it recovers, with a $29 monthly floor after the first 30 days and a $299 monthly ceiling. That only works if "what it recovered" is decided honestly, so this page describes the rule precisely enough to argue with.</p>
 
     <h2 id="order">How a recovery is attributed</h2>
     <p>When an invoice we were working on gets paid, the cause is assigned in this order:</p>
@@ -345,6 +352,7 @@ PAGES.append(dict(
         <tbody>
           <tr><th scope="row">Performance fee</th><td>25% of attributably-recovered revenue</td></tr>
           <tr><th scope="row">Monthly minimum</th><td>$29, waived for the first 30 days after signup</td></tr>
+          <tr><th scope="row">Monthly maximum</th><td>$299, however much is recovered. It applies from day one, including during the first 30 days.</td></tr>
           <tr><th scope="row">During those 30 days</th><td>The percentage still applies. The minimum does not.</td></tr>
           <tr><th scope="row">Invoice terms</th><td>Billed monthly through Stripe, 7 days to pay</td></tr>
           <tr><th scope="row">Very small totals</th><td>Stripe will not collect under $0.50, so amounts below that roll into the next month rather than being written off or rounded up</td></tr>
@@ -354,14 +362,14 @@ PAGES.append(dict(
     </div>
 
     <h2 id="when-not">When 25% is the wrong deal</h2>
-    <p>At high recovery volumes a percentage costs more than a flat monthly fee, and at that point you should be paying someone else or nobody. The <a href="/pricing/">pricing page</a> works through where that crossover sits, and the <a href="/tools/recovery-estimator/">recovery estimator</a> will tell you, using your own numbers, when a competitor is cheaper.</p>""",
+    <p>At high recovery volumes a percentage costs more than a flat monthly fee, and at that point you should be paying someone else or nobody. The ceiling limits how far that goes: past about $1,196 of attributed recovery in a month the fee stops rising at $299, so the most we can cost you is $299 and only a flat fee below that beats us. The <a href="/pricing/">pricing page</a> works through where that crossover sits, and the <a href="/tools/recovery-estimator/">recovery estimator</a> will tell you, using your own numbers, when a competitor is cheaper.</p>""",
     faqs=[
         ("Does RecoverFlow charge for payments that would have recovered anyway?",
          "Not when we can tell. If no retry ran, no card update completed through our flow, and no email had been sent, the recovery is recorded as happening without our involvement and is not billable."),
         ("How does RecoverFlow decide a recovery was caused by its email?",
          "Only when no retry attempt ran and no card update completed through our flow, but at least one sequence email had been sent. This is the weakest link in the attribution chain and the one most worth disputing if it looks wrong to you."),
         ("What does RecoverFlow cost?",
-         "25% of attributably-recovered revenue, with a $29 monthly minimum that is waived for the first 30 days. The percentage applies during those 30 days; only the minimum is waived. Invoices are issued monthly through Stripe with 7 day terms."),
+         "25% of attributably-recovered revenue, with a $29 monthly minimum that is waived for the first 30 days and a $299 monthly maximum that always applies. The percentage applies during those 30 days; only the minimum is waived. Invoices are issued monthly through Stripe with 7 day terms."),
         ("Is there a contract?",
          "No minimum term and no exit fee. You revoke access from your own Stripe dashboard and nothing further is billed beyond recoveries already attributed."),
     ]))
@@ -418,6 +426,10 @@ PAGES.append(dict(
 # ---------------------------------------------------------------------------
 
 RELEASES = [
+    ("2026-08-12", "A ceiling on the fee, and no billing for money handed back", [
+        "The performance fee is now capped at $299 a month. Past roughly $1,196 of attributed recovery in a month the bill stops rising, however much more is recovered. The cap applies from the first day of the account, not only after the free 30 days.",
+        "Recoveries that are later refunded or charged back are no longer billed. A fully reversed case drops out of billing entirely, a partly reversed one bills only on what the merchant kept, and a reversal found after the invoice went out comes off the next one as a credit.",
+    ]),
     ("2026-07-28", "Correctness pass on decline handling", [
         "Fixed six Stripe decline codes being treated as retryable when Stripe will not execute a retry for them without a new payment method: incorrect_number, transaction_not_allowed, revocation_of_authorization, revocation_of_all_authorizations, authentication_required and highest_risk_level. This also inflated the connect-time backtest estimate for accounts holding those failures.",
         "Lost, stolen and retained cards now route to the card-update flow instead of being written off. A reissue is the most recoverable failure there is, because the customer usually already has the new card.",
@@ -710,7 +722,8 @@ def write(path_slug, html):
 if __name__ == "__main__":
     for p in PAGES:
         slug = f"docs/{p['slug']}" if p["slug"] else "docs"
-        write(slug, build_doc(p["slug"], p["title"], p["h1"], p["desc"], p["body"], p.get("faqs")))
+        write(slug, build_doc(p["slug"], p["title"], p["h1"], p["desc"], p["body"], p.get("faqs"),
+                              p.get("updated"), p.get("iso_modified", "2026-07-28")))
     write("changelog", build_changelog())
 
     audit_schema = [{

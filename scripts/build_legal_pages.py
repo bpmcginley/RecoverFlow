@@ -18,6 +18,9 @@ import os
 
 DOCS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs")
 UPDATED = "4 August 2026"
+# The fee clause changed after that, so the terms carry their own revision date
+# rather than borrowing the privacy and security one.
+TERMS_UPDATED = "16 August 2026"
 
 TRACKING = """<!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-XNWPM9VELB"></script>
@@ -186,8 +189,8 @@ def shell(title, desc, canonical, body):
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-{TRACKING}
 <meta charset="UTF-8">
+{TRACKING}
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
 <meta name="description" content="{desc}">
@@ -338,7 +341,7 @@ TERMS = f"""<main>
   <div class="wrap">
     <p class="eyebrow">Legal</p>
     <h1>Terms of service</h1>
-    <p class="updated">Last updated {UPDATED}</p>
+    <p class="updated">Last updated {TERMS_UPDATED}</p>
 
     {LAWYER_NOTE}
 
@@ -374,7 +377,7 @@ TERMS = f"""<main>
     </ul>
 
     <h2 id="fees">4. Fees and how attribution works</h2>
-    <p><strong>25% of the failed payments RecoverFlow recovers, plus a $29 per month minimum that begins after your first 30 days.</strong> Nothing is payable up front and no card is required to connect.</p>
+    <p><strong>25% of the failed payments RecoverFlow recovers, subject to a minimum of $29 per month that begins after your first 30 days and a maximum of $299 per month.</strong> Nothing is payable up front and no card is required to connect.</p>
     <p>The word "recovers" is doing real work in that sentence, so here is exactly what it means:</p>
     <ul>
       <li>A recovery is billable only when it can be <strong>attributed</strong> to a specific action RecoverFlow took, being either a retry it scheduled or a card update email it sent that the customer acted on.</li>
@@ -387,7 +390,7 @@ TERMS = f"""<main>
 
     <h2 id="billing">5. How and when you are billed</h2>
     <ul>
-      <li>Billing runs monthly. We total the attributed recoveries for the period, apply the 25%, and add a top-up if that total is below the $29 minimum and your first 30 days have passed.</li>
+      <li>Billing runs monthly. We total the attributed recoveries for the period, apply the 25%, add a top-up if that total is below the $29 minimum and your first 30 days have passed, and reduce it to $299 if it comes out above the maximum.</li>
       <li>You receive a Stripe invoice by email with a hosted payment page. Payment is due within 7 days.</li>
       <li>We do not hold a card on file for you and we do not auto-charge. You pay the invoice.</li>
       <li>Every invoice itemises which recoveries it is charging for, so you can check the arithmetic against your own Stripe data.</li>
