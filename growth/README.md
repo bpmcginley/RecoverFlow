@@ -5,9 +5,14 @@ delivered, none bounced, none replied, and none were followed up. That is the fa
 this directory exists to prevent: outbound as an event that happens when someone remembers,
 instead of a queue that says what is owed today.
 
-**The ledger is the only source of truth.** `pipeline.csv` is committed to the repo, so the
-state of the pipeline survives closed laptops, new sessions and lost context. Nothing here
-depends on anyone remembering where it was left.
+**The ledger is the only source of truth.** `pipeline.csv` holds the state of the pipeline, so
+it survives closed laptops, new sessions and lost context. Nothing here depends on anyone
+remembering where it was left.
+
+It used to be committed for that durability, which published 22 people's names and work
+emails on a public repo for anyone who found the raw URL. It is gitignored now. The repo
+lives under OneDrive, so the file is still backed up and nothing is lost by keeping it out of
+git. **Do not re-add it**, and the same goes for `sequences/` and `sender.txt`.
 
 ## The daily loop, about ten minutes
 
@@ -117,7 +122,7 @@ is what most of it rests on, so it needs to be there.
 
 | | |
 |---|---|
-| `pipeline.csv` | The ledger. Source of truth. Commit every change. |
+| `pipeline.csv` | The ledger. Source of truth. Local only, gitignored. |
 | `scripts/pipeline.py` | The queue. Stdlib only, no install. |
 | `sequences/*.txt` | The copy. Edit freely, no code changes needed. |
 | `sender.txt` | Signature, postal address and opt-out, shared by every template. |
