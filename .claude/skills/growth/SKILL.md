@@ -110,13 +110,17 @@ Before suggesting the copy is underperforming, apply the arithmetic in `README.m
 roughly 60 sends, silence carries no signal, and rewriting copy on that basis destroys the
 only comparison worth having. Say so if asked to change copy too early.
 
-## 5. Commit
+## 5. Do not commit the ledger
 
-The ledger is state. Commit it every time it changes, or the next session starts from a
-stale picture:
+`growth/pipeline.csv`, `growth/sequences/` and `growth/sender.txt` are gitignored. They were
+tracked until 16 August 2026, which published 22 prospects' names and work emails on a public
+repo. The repo sits under OneDrive, so the ledger is backed up without git.
+
+Never `git add -f` them back. If a growth change touches something that *is* tracked, such as
+`icp.md` or the scripts, commit only that:
 
 ```
-git add growth/ && git commit -m "growth: <what changed>"
+git add growth/icp.md growth/scripts && git commit -m "growth: <what changed>"
 ```
 
 ## Guardrails
