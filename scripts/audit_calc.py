@@ -17,7 +17,9 @@ assumptions rather than results.
 import argparse
 import sys
 
-# Verified 28 July 2026 against Stripe's Smart Retries documentation.
+# Verified 28 July 2026 against Stripe's Smart Retries documentation, re-checked
+# 16 August 2026 and unchanged. build_decline_dataset.py imports these two sets and
+# fails if they stop agreeing with DeclineCodeClassifier.cs.
 BLOCKED = {
     "incorrect_number", "lost_card", "pickup_card", "stolen_card",
     "revocation_of_authorization", "revocation_of_all_authorizations",

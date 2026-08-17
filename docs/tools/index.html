@@ -177,7 +177,7 @@
   <div class="wrap">
     <p class="eyebrow">Free tools</p>
     <h1>Tools for failed Stripe payments</h1>
-    <p class="lede">Five free tools for working out what your failed subscription payments are costing you and what to do about them. No signup, no email wall, and nothing you type is stored or sent anywhere.</p>
+    <p class="lede">Six free tools for working out what your failed subscription payments are costing you and what to do about them, plus the decline code dataset behind them. No signup, no email wall, and nothing you type is stored or sent anywhere.</p>
 
     <div class="tool-grid">
       <a class="tool-card" href="/tools/retry-waste-calculator/">
@@ -185,6 +185,13 @@
         <h3>Retry waste calculator</h3>
         <p>Every recovery tool sells you more retries. This counts the ones that were never going to work. Enter your decline codes and see how much of your failed revenue sits on cards that needed replacing, not retrying.</p>
         <span class="go">Work out your waste &rarr;</span>
+      </a>
+
+      <a class="tool-card" href="/tools/visa-retry-budget/">
+        <span class="ico" aria-hidden="true">&#9878;</span>
+        <h3>Visa retry budget checker</h3>
+        <p>Visa allows 15 reattempts per card per rolling 30 days and Stripe blocks the rest. Paste one attempt per line and see each card's peak in any 30 day window, and the date an over-cap card frees up again.</p>
+        <span class="go">Check your budget &rarr;</span>
       </a>
 
       <a class="tool-card" href="/tools/decline-code-lookup/">
@@ -215,6 +222,10 @@
         <span class="go">Run the numbers &rarr;</span>
       </a>
     </div>
+
+    <h2>The decline code dataset</h2>
+    <p>The classification behind these tools is published as data as well as prose: <a href="/data/stripe-decline-codes.json">stripe-decline-codes.json</a> and <a href="/data/stripe-decline-codes.csv">stripe-decline-codes.csv</a>. One record per decline code, with whether Stripe will execute a retry for it, whether it needs a new card, Stripe's recommended next step, the test card where Stripe publishes one, and the date the entry was last checked against Stripe's documentation.</p>
+    <p>It is generated from the same classifier that runs in the product, and a unit test fails the build if the two ever disagree. Free to use for anything, no attribution required.</p>
 
     <div class="callout">
       <p><strong>Start with Stripe's own settings.</strong> Before any of these, check that Smart Retries and failed payment emails are switched on in your Stripe dashboard. They are free, they are genuinely capable, and for plenty of businesses they close most of the gap. The <a href="/compare/stripe-native/">Stripe comparison page</a> covers exactly what you already have.</p>

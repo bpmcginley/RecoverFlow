@@ -33,7 +33,9 @@ for path, html in sorted(pages.items()):
     # Internal links must resolve to a page we actually built.
     for href in re.findall(r'href="(/[^"#?]*)"', html):
         target = href if href.endswith("/") else href + "/"
-        if target not in pages and not re.search(r"\.(xml|txt|ico|png|svg|css|js)$", href):
+        # json and csv are here for the published datasets under /data/, which are
+        # real files with no index.html and so are not "pages".
+        if target not in pages and not re.search(r"\.(xml|txt|ico|png|svg|css|js|json|csv)$", href):
             note(path, f"broken internal link -> {href}")
 
     for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', html, re.S):
