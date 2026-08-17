@@ -23,6 +23,7 @@ Run from the repo root:  python scripts/build_content_pages.py
 
 import os
 import sys
+import glob
 import json
 import re
 
@@ -1348,14 +1349,69 @@ ARTICLES.append(dict(
 # /blog hub
 # ---------------------------------------------------------------------------
 
+def read_page(path):
+    """Pull the heading and meta description back out of a page we did not build.
+
+    Half the blog is hand written and has no entry in ARTICLES, so the only place
+    its title lives is the page itself.
+    """
+    with open(path, encoding="utf-8") as f:
+        html = f.read()
+    h1 = re.search(r"<h1[^>]*>(.*?)</h1>", html, re.S)
+    desc = re.search(r'<meta name="description" content="([^"]*)"', html)
+    if not h1 or not desc:
+        return None
+    return plain(h1.group(1)).strip(), desc.group(1).strip()
+
+
+def discover(section, skip=()):
+    """Every built page under docs/<section>/, so the hub cannot silently omit one.
+
+    Listing the hub from ARTICLES alone left 14 of 29 guides reachable only by
+    sitemap. They were in llms.txt and in the sitemap, so search engines had them,
+    but a person who clicked Blog could not get to half the blog.
+    """
+    out = []
+    for path in sorted(glob.glob(os.path.join(DOCS, section, "*", "index.html"))):
+        slug = os.path.basename(os.path.dirname(path))
+        if slug in skip:
+            continue
+        page = read_page(path)
+        if page:
+            out.append((slug, *page))
+    return out
+
+
+def first_sentence(text):
+    """Enough of a meta description to be a card. Some open on a throwaway
+    fragment ("Free browser calculator."), so keep taking sentences until the
+    line actually says something."""
+    taken = []
+    for part in text.split(". "):
+        taken.append(part.rstrip("."))
+        if len(". ".join(taken)) >= 60:
+            break
+    return ". ".join(taken) + "."
+
+
 def build_hub():
+    def card(slug, heading, desc, meta="Guide"):
+        return (f'    <div class="card">\n'
+                f'      <p class="meta">{meta}</p>\n'
+                f'      <h3><a href="/blog/{slug}/">{heading}</a></h3>\n'
+                f"      <p>{desc}</p>\n"
+                f"    </div>")
+
+    extras = discover("blog", skip={a["slug"] for a in ARTICLES})
     cards = "\n".join(
-        f"""    <div class="card">
-      <p class="meta">Guide</p>
-      <h3><a href="/blog/{a['slug']}/">{a['h1']}</a></h3>
-      <p>{a['desc']}</p>
-    </div>"""
-        for a in ARTICLES
+        [card(a["slug"], a["h1"], a["desc"]) for a in ARTICLES]
+        + [card(slug, heading, desc, "Decline code") for slug, heading, desc in extras]
+    )
+    tools = discover("tools")
+    tool_cards = "\n".join(
+        f'      <div class="card"><h3><a href="/tools/{slug}/">{heading}</a></h3>'
+        f"<p>{first_sentence(desc)}</p></div>"
+        for slug, heading, desc in tools
     )
     body = f"""<main>
   <div class="wrap">
@@ -1373,12 +1429,9 @@ def build_hub():
     </div>
 
     <h2 style="margin-top:48px;">Free tools</h2>
-    <p>Four calculators and lookups that need no signup and no email address.</p>
+    <p>{len(tools)} calculators and lookups that need no signup and no email address.</p>
     <div class="card-grid">
-      <div class="card"><h3><a href="/tools/decline-code-lookup/">Decline code lookup</a></h3><p>48 Stripe decline codes, searchable, with the nine that block retries flagged.</p></div>
-      <div class="card"><h3><a href="/tools/recovery-estimator/">Recovery estimator</a></h3><p>What failed payments cost you, against real competitor pricing at your scale.</p></div>
-      <div class="card"><h3><a href="/tools/retry-schedule-builder/">Retry schedule builder</a></h3><p>Builds a schedule, and tells you when a schedule is the wrong answer.</p></div>
-      <div class="card"><h3><a href="/tools/dunning-email-generator/">Dunning email generator</a></h3><p>Reason aware copy, including the reasons you should never name.</p></div>
+{tool_cards}
     </div>
   </div>
 </main>"""
@@ -1391,6 +1444,9 @@ def build_hub():
         "hasPart": [
             {"@type": "Article", "headline": plain(a["h1"]), "url": f"{SITE}/blog/{a['slug']}/", "description": a["desc"]}
             for a in ARTICLES
+        ] + [
+            {"@type": "Article", "headline": heading, "url": f"{SITE}/blog/{slug}/", "description": desc}
+            for slug, heading, desc in extras
         ],
     }]
     return shell("Guides to failed payments on Stripe | RecoverFlow",
