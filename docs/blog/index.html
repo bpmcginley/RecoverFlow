@@ -253,6 +253,90 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "headline": "The free Stripe settings to switch on before you pay anyone",
       "url": "https://recoverflow.org/blog/stripe-free-dunning-settings-checklist/",
       "description": "Every free retry and customer email setting in Stripe Billing, with the exact Dashboard path for each, and an honest note on when that is all you need."
+    },
+    {
+      "@type": "Article",
+      "headline": "invoice.payment_failed vs payment_intent.payment_failed",
+      "url": "https://recoverflow.org/blog/invoice-payment-failed-vs-payment-intent-payment-failed/",
+      "description": "Both events report a failed payment, from different layers of Stripe. For subscription dunning, one of them carries the retry state you need. Here is how to choose."
+    },
+    {
+      "@type": "Article",
+      "headline": "call_issuer on Stripe: what it means when the bank says call us",
+      "url": "https://recoverflow.org/blog/stripe-call-issuer-decline/",
+      "description": "Stripe documents call_issuer as a decline for an unknown reason where the customer needs to contact their card issuer. How it differs from do_not_honor: barely."
+    },
+    {
+      "@type": "Article",
+      "headline": "card_velocity_exceeded on Stripe: the customer hit a limit",
+      "url": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "description": "Stripe documents it as the customer exceeding the balance, credit limit, or transaction amount limit on their card. Which limit, only the issuer knows."
+    },
+    {
+      "@type": "Article",
+      "headline": "currency_not_supported on Stripe: the card cannot pay in that currency",
+      "url": "https://recoverflow.org/blog/stripe-currency-not-supported-decline/",
+      "description": "Stripe documents currency_not_supported as the card not supporting the specified currency, with the customer needing to check with their issuer. What to do next."
+    },
+    {
+      "@type": "Article",
+      "headline": "duplicate_transaction on Stripe: check your records before you do anything",
+      "url": "https://recoverflow.org/blog/stripe-duplicate-transaction-decline/",
+      "description": "Stripe documents this decline as an identical transaction submitted very recently. The next step is aimed at you, not the customer: check for a recent payment."
+    },
+    {
+      "@type": "Article",
+      "headline": "The fraudulent decline code on Stripe: who suspects what, and what to say",
+      "url": "https://recoverflow.org/blog/stripe-fraudulent-decline-code/",
+      "description": "Stripe documents fraudulent as a payment declined because Stripe suspects it is fraudulent, and instructs you to present it to the customer as a generic decline."
+    },
+    {
+      "@type": "Article",
+      "headline": "What does generic_decline mean on Stripe?",
+      "url": "https://recoverflow.org/blog/stripe-generic-decline-code/",
+      "description": "Stripe's docs say it plainly: declined for an unknown reason, or blocked by Radar. Here is how to tell which one you got, and what to do about each."
+    },
+    {
+      "@type": "Article",
+      "headline": "incorrect_cvc on Stripe: what it means and what actually fixes it",
+      "url": "https://recoverflow.org/blog/stripe-incorrect-cvc-decline/",
+      "description": "The CVC the customer entered is wrong, and Stripe's documented fix is the customer trying again with the right one. Retries alone cannot type a security code."
+    },
+    {
+      "@type": "Article",
+      "headline": "incorrect_number vs invalid_number on Stripe",
+      "url": "https://recoverflow.org/blog/stripe-incorrect-number-vs-invalid-number/",
+      "description": "Stripe documents both codes as the card number being incorrect. Only one is on the list that stops retries, and either way no retry can type a card number."
+    },
+    {
+      "@type": "Article",
+      "headline": "lost_card and stolen_card on Stripe: what to do, and what never to say",
+      "url": "https://recoverflow.org/blog/stripe-lost-card-stolen-card-declines/",
+      "description": "Both codes sit on Stripe's hard decline list, and both carry the same documented instruction: do not tell the customer the specific reason. Here is the playbook."
+    },
+    {
+      "@type": "Article",
+      "headline": "pickup_card vs restricted_card on Stripe: same words, opposite retry treatment",
+      "url": "https://recoverflow.org/blog/stripe-pickup-card-vs-restricted-card/",
+      "description": "Stripe documents both codes with the same description, yet one is on the hard decline list and the other gets retried. The difference decides your next move."
+    },
+    {
+      "@type": "Article",
+      "headline": "processing_error on Stripe: the decline you should simply retry",
+      "url": "https://recoverflow.org/blog/stripe-processing-error-decline/",
+      "description": "Stripe's documented next step for processing_error is unusually direct: attempt the payment again, and if it still fails, try again later. Here is why."
+    },
+    {
+      "@type": "Article",
+      "headline": "transaction_not_allowed on Stripe: the unknown-reason decline that stops retries",
+      "url": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "description": "Stripe documents transaction_not_allowed as a decline for an unknown reason, yet it sits on the hard decline list. That combination changes how you handle it."
+    },
+    {
+      "@type": "Article",
+      "headline": "try_again_later on Stripe: one deprecated code, one live one",
+      "url": "https://recoverflow.org/blog/stripe-try-again-later-decline/",
+      "description": "Stripe's reference now marks the try_again_later decline code as deprecated, but an advice code with the same name is alive and means something different."
     }
   ]
 }</script>
@@ -358,6 +442,76 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       <p>Every free retry and customer email setting in Stripe Billing, with the exact Dashboard path for each, and an honest note on when that is all you need.</p>
     </div>
     <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/invoice-payment-failed-vs-payment-intent-payment-failed/">invoice.payment_failed vs payment_intent.payment_failed</a></h3>
+      <p>Both events report a failed payment, from different layers of Stripe. For subscription dunning, one of them carries the retry state you need. Here is how to choose.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-call-issuer-decline/">call_issuer on Stripe: what it means when the bank says call us</a></h3>
+      <p>Stripe documents call_issuer as a decline for an unknown reason where the customer needs to contact their card issuer. How it differs from do_not_honor: barely.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-card-velocity-exceeded/">card_velocity_exceeded on Stripe: the customer hit a limit</a></h3>
+      <p>Stripe documents it as the customer exceeding the balance, credit limit, or transaction amount limit on their card. Which limit, only the issuer knows.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-currency-not-supported-decline/">currency_not_supported on Stripe: the card cannot pay in that currency</a></h3>
+      <p>Stripe documents currency_not_supported as the card not supporting the specified currency, with the customer needing to check with their issuer. What to do next.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-duplicate-transaction-decline/">duplicate_transaction on Stripe: check your records before you do anything</a></h3>
+      <p>Stripe documents this decline as an identical transaction submitted very recently. The next step is aimed at you, not the customer: check for a recent payment.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-fraudulent-decline-code/">The fraudulent decline code on Stripe: who suspects what, and what to say</a></h3>
+      <p>Stripe documents fraudulent as a payment declined because Stripe suspects it is fraudulent, and instructs you to present it to the customer as a generic decline.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-generic-decline-code/">What does generic_decline mean on Stripe?</a></h3>
+      <p>Stripe's docs say it plainly: declined for an unknown reason, or blocked by Radar. Here is how to tell which one you got, and what to do about each.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-incorrect-cvc-decline/">incorrect_cvc on Stripe: what it means and what actually fixes it</a></h3>
+      <p>The CVC the customer entered is wrong, and Stripe's documented fix is the customer trying again with the right one. Retries alone cannot type a security code.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-incorrect-number-vs-invalid-number/">incorrect_number vs invalid_number on Stripe</a></h3>
+      <p>Stripe documents both codes as the card number being incorrect. Only one is on the list that stops retries, and either way no retry can type a card number.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-lost-card-stolen-card-declines/">lost_card and stolen_card on Stripe: what to do, and what never to say</a></h3>
+      <p>Both codes sit on Stripe's hard decline list, and both carry the same documented instruction: do not tell the customer the specific reason. Here is the playbook.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-pickup-card-vs-restricted-card/">pickup_card vs restricted_card on Stripe: same words, opposite retry treatment</a></h3>
+      <p>Stripe documents both codes with the same description, yet one is on the hard decline list and the other gets retried. The difference decides your next move.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-processing-error-decline/">processing_error on Stripe: the decline you should simply retry</a></h3>
+      <p>Stripe's documented next step for processing_error is unusually direct: attempt the payment again, and if it still fails, try again later. Here is why.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-transaction-not-allowed-decline/">transaction_not_allowed on Stripe: the unknown-reason decline that stops retries</a></h3>
+      <p>Stripe documents transaction_not_allowed as a decline for an unknown reason, yet it sits on the hard decline list. That combination changes how you handle it.</p>
+    </div>
+    <div class="card">
+      <p class="meta">Decline code</p>
+      <h3><a href="/blog/stripe-try-again-later-decline/">try_again_later on Stripe: one deprecated code, one live one</a></h3>
+      <p>Stripe's reference now marks the try_again_later decline code as deprecated, but an advice code with the same name is alive and means something different.</p>
+    </div>
+    <div class="card">
       <p class="meta">Pillar</p>
       <h3><a href="/recover-failed-stripe-payments/">How to recover failed Stripe payments</a></h3>
       <p>The overview: what fails, what can be retried, what needs an email, and where the free options run out.</p>
@@ -365,12 +519,14 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     </div>
 
     <h2 style="margin-top:48px;">Free tools</h2>
-    <p>Four calculators and lookups that need no signup and no email address.</p>
+    <p>6 calculators and lookups that need no signup and no email address.</p>
     <div class="card-grid">
-      <div class="card"><h3><a href="/tools/decline-code-lookup/">Decline code lookup</a></h3><p>48 Stripe decline codes, searchable, with the nine that block retries flagged.</p></div>
-      <div class="card"><h3><a href="/tools/recovery-estimator/">Recovery estimator</a></h3><p>What failed payments cost you, against real competitor pricing at your scale.</p></div>
-      <div class="card"><h3><a href="/tools/retry-schedule-builder/">Retry schedule builder</a></h3><p>Builds a schedule, and tells you when a schedule is the wrong answer.</p></div>
-      <div class="card"><h3><a href="/tools/dunning-email-generator/">Dunning email generator</a></h3><p>Reason aware copy, including the reasons you should never name.</p></div>
+      <div class="card"><h3><a href="/tools/decline-code-lookup/">Stripe decline codes explained</a></h3><p>Every Stripe card decline code, what it means, what to do, and which nine Stripe will not retry.</p></div>
+      <div class="card"><h3><a href="/tools/dunning-email-generator/">Dunning email generator</a></h3><p>Generate a failed payment email by decline reason and sequence position.</p></div>
+      <div class="card"><h3><a href="/tools/recovery-estimator/">Failed payment recovery estimator</a></h3><p>Free calculator: how much failed subscription revenue you lose monthly, how much is recoverable, and what each recovery tool would cost you at that volume.</p></div>
+      <div class="card"><h3><a href="/tools/retry-schedule-builder/">Payment retry schedule builder</a></h3><p>Build a retry schedule for failed Stripe payments by decline reason.</p></div>
+      <div class="card"><h3><a href="/tools/retry-waste-calculator/">How many of your Stripe retries were never going to work?</a></h3><p>Free browser calculator. Enter your decline codes and see how much failed revenue sits on cards no retry can ever collect.</p></div>
+      <div class="card"><h3><a href="/tools/visa-retry-budget/">How close is each card to Visa's 15 attempt ceiling?</a></h3><p>Paste one attempt per line as a card fingerprint and a date. See each card's peak in any rolling 30 day window against Visa's cap of 15.</p></div>
     </div>
   </div>
 </main>
