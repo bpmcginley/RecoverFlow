@@ -27,8 +27,20 @@ Five screenshots, one per view, to capture once the views are built and running 
 
 The merchant-level recovery overview: cases by status, recovered revenue (net of
 reversals), amount still at risk, and recovery rate, for all time and the last 30
-days. Seed the account so every stat is non-zero and the recovery rate is a
-believable mid-range number, not 0% or 100%.
+days.
+
+**Do not seed a recovery rate for this shot, and do not show one.** The earlier
+version of this line asked for a rate that was "believable" and mid-range, which
+means picking a number for how persuasive it looks. RecoverFlow has no customers
+and no recovery rate, so any figure here is invented, and a gallery image carries
+no caption the way the homepage hero does: the number travels alone. Reviewers
+score this listing on Trust.
+
+Shoot the cases-by-status pane instead, or blank the recovered-revenue and
+recovery-rate tiles. Cases by status shows the same thing the drawer is for,
+which is that the app tracks each failed invoice through to an outcome, and it
+says nothing about how often that outcome is good. Non-zero case counts are fine.
+Seeded synthetic amounts on individual cases are fine. An aggregate rate is not.
 
 <!-- Data shown must match what the stats endpoint actually returns: DashboardStats
      (CasesByStatus, AmountRecoveredCents, AmountAtRiskCents, RecoveryRate,
