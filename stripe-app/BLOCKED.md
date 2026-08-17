@@ -1,6 +1,16 @@
-# The Marketplace listing is blocked, and why
+# Why this app was not published, and what replaced it
 
-**Status as of 4 August 2026: cannot be published from this Stripe account.**
+**Superseded.** This file is about `com.recoverflow.retry-waste-audit` v0.0.1, the audit app in
+this directory, and it stopped describing the current state on 4 August 2026. It is kept because
+the reasoning below is still the reason the code looks the way it does, not because the
+conclusion still holds.
+
+The app that RecoverFlow is actually taking to the Marketplace is `com.recoverflow.dashboard`,
+in `stripe-dashboard-app/`. It reaches a merchant's data through the Stripe App install grant
+rather than Connect OAuth, which is what the blocker below was about. See commit `2a96255`.
+
+**Read the rest as history.** For anything about the current listing, read
+`stripe-dashboard-app/` and nothing in this directory.
 
 ## What happened
 
