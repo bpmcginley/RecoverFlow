@@ -576,7 +576,7 @@ WASTE_FAQS = [
     ("Where do I find my decline codes?",
      "In the Stripe Dashboard, filter Payments to failed, or filter Invoices to unpaid and open the latest payment attempt on each. The decline code sits on the failed PaymentIntent as last_payment_error.decline_code. Twenty invoices is enough for a useful picture."),
     ("Is there really a cap on retries?",
-     "Yes. Visa's Excessive Reattempts Rule limits reattempts to 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you pass it. Mastercard raised its excessive-authorisation fees in January 2026. Most recovery tools do not show you where you stand against that budget."),
+     "Yes. Visa's Excessive Reattempts Rule limits reattempts to 15 per card per 30 days, effective 17 April 2021 per Visa's own bulletin. Stripe blocks further attempts once you pass it. Mastercard runs a separate excessive-authorisation fee with a different threshold and a different window, repriced periodically, so a Visa-shaped budget does not describe it. Most recovery tools do not show you where you stand against either."),
     ("Does this send my data anywhere?",
      "No. The calculation runs in your browser. Nothing is uploaded, stored or logged, and there is no form to submit."),
 ]
@@ -611,7 +611,8 @@ WASTE_BODY = """<main>
     <p>If most of your failed revenue is in the second group, buying a tool that retries harder is buying a solution to the wrong half of your problem. That is worth knowing before you spend anything, including with us.</p>
 
     <h2 id="cap">There is also a ceiling you may be hitting</h2>
-    <p>Visa's Excessive Reattempts Rule caps reattempts at 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you cross it. Mastercard increased its excessive-authorisation fees in January 2026.</p>
+    <p>Visa's Excessive Reattempts Rule caps reattempts at 15 per card per 30 days. It took effect on 17 April 2021, a date worth stating precisely because April 2022 is repeated everywhere and belongs to a later fee phase rather than to the rule. Stripe blocks further attempts once you cross it. The <a href="/blog/visa-excessive-reattempts-rule/">full rule is its own page</a>, and you can <a href="/tools/visa-retry-budget/">check your own peak against the cap</a>.</p>
+    <p>Mastercard operates its own excessive-authorisation fee, and it is not the same shape: a different attempt threshold, a shorter window, and a schedule the network reprices periodically. <strong>This calculator does not model it.</strong> Published third-party figures for the Mastercard threshold and the per-attempt amount disagree with each other, and this site does not print a number it cannot put a primary source behind, so treat the Visa budget as a floor on your exposure rather than the whole of it.</p>
     <p>A third-party recovery tool retrying on top of Stripe's own retries draws down the same budget, and neither system can see the other's count. More attempts is not a free action.</p>
 
     <div class="cta-band">

@@ -1083,7 +1083,11 @@ ARTICLES.append(dict(
         </tbody>
       </table>
     </div>
-    <p>Two things in that table are worth reading twice. The budget is counted over a rolling window, not a calendar month, so it does not reset on the 1st. And the last row is the interesting one: Stripe's own recommended default sits at roughly half the network ceiling, which is not an accident.</p>"""),
+    <p>Two things in that table are worth reading twice. The budget is counted over a rolling window, not a calendar month, so it does not reset on the 1st. And the last row is the interesting one: Stripe's own recommended default sits at roughly half the network ceiling, which is not an accident.</p>
+
+    <h3>When it started, since the date is reported wrong constantly</h3>
+    <p>The rule takes effect <strong>17 April 2021</strong>. That date is in Visa's own bulletin, article AI10325, which says in its overview: "Effective 17 April 2021, Visa will update its rules for declined transaction resubmission and the use of authorization response codes." The same document is where the 15-in-30 figure comes from, in the passage moving four response codes into Category 2 "to allow merchants to reattempt up to 15 times in 30 days".</p>
+    <p>April 2022 is widely repeated as the start date and it refers to something else: a later phase of the associated fee schedule, not the reattempt cap. If you are reconciling a statement line, the fee timeline and the rule timeline are two different things.</p>"""),
         ("stripe-behaviour", "What Stripe does when you cross it", """
     <p>You do not get a warning email. The attempt simply stops being an attempt.</p>
     <p>Stripe's own description is that after the 15th retry attempt on a Visa transaction, it will automatically block subsequent retry attempts if it determines there is a low chance of a successful authorization for the given charge. The charge that comes back is not an issuer decline. It never reached the issuer. In the API it carries an <code>outcome.type</code> of <code>blocked</code> and an <code>outcome.reason</code> of <code>previously_declined_do_not_retry</code>, while the error your code sees is the ordinary <code>card_declined</code> with a <code>decline_code</code> of <code>generic_decline</code>.</p>
