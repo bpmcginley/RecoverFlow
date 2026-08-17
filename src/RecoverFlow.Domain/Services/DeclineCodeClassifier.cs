@@ -8,6 +8,9 @@ public static class DeclineCodeClassifier
     /// never reaches the card network, so scheduling our own retry buys nothing but delay.
     /// Verified 28 July 2026 against
     /// https://docs.stripe.com/billing/revenue-recovery/smart-retries
+    /// Re-checked 16 August 2026 against the same page: unchanged, still these nine.
+    /// This set is also published as data at /data/stripe-decline-codes.json by
+    /// scripts/build_decline_dataset.py, which reads it by name from this file.
     /// </summary>
     private static readonly HashSet<string> RetryBlockedByStripe =
     [

@@ -257,9 +257,10 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <p>The other group is a card that is gone. Reported lost or stolen, reissued, expired, revoked, or blocked for this merchant. <strong>No retry schedule can collect from a card that no longer exists.</strong> Stripe will not even send nine of those codes to the network. It keeps incrementing the attempt counter while nothing is attempted.</p>
     <p>If most of your failed revenue is in the second group, buying a tool that retries harder is buying a solution to the wrong half of your problem. That is worth knowing before you spend anything, including with us.</p>
 
-    <h2 id="cap">There is also a ceiling you may be hitting</h2>
+    <h2 id="cap"><a href="/tools/visa-retry-budget/">There is also a ceiling you may be hitting</a></h2>
     <p>Visa's Excessive Reattempts Rule caps reattempts at 15 per card per 30 days and has been enforced since April 2022. Stripe blocks further attempts once you cross it. Mastercard increased its excessive-authorisation fees in January 2026.</p>
     <p>A third-party recovery tool retrying on top of Stripe's own retries draws down the same budget, and neither system can see the other's count. More attempts is not a free action.</p>
+    <p>The <a href="/tools/visa-retry-budget/">Visa retry budget checker</a> counts where each of your cards actually stands. Paste one attempt per line and it returns the peak in any rolling 30 day window, which is the number the rule is measured on.</p>
 
     <div class="cta-band">
       <h2>Want this run against your real data?</h2>
