@@ -9,7 +9,9 @@ against Stripe's publishing guide on 12 August 2026.
      Recorded in the research file tasks/wwruapqlo.output, "publishing" findings. -->
 
 > Copy for the Dashboard listing form. Character counts are measured, not estimated.
-> Submission itself is gated on the Connect-platform publishing blocker; see REVIEW_PREP.md.
+> Nothing gates submission any more: the publish flow ran end to end for 0.0.4 on
+> 17 August 2026 and stopped only at the Submit button, which is where the founder
+> accepts the two Stripe agreements.
 
 ---
 
@@ -212,3 +214,170 @@ English
 ## Company website (optional)
 
 `https://recoverflow.org/`
+
+---
+
+# Submit for review (publish step 2)
+
+Everything above is publish step 1, the listing itself. Step 2 is the review submission and
+step 3 is the release notes. Both are recorded here because the Stripe draft is the only
+other copy, and a lost draft would otherwise mean rewriting them from memory.
+
+## App version
+
+`0.0.4`
+
+<!-- Selected on 17 August 2026. The publish flow warned "Version 0.0.3 is currently in
+     review for Marketplace. Submitting this version will replace it and restart the review
+     process", which is the intent: 0.0.3 is the version review rejected. Steps 1 and 2 of
+     the form carried over from the 0.0.3 draft unchanged and were re-checked field by
+     field; only the release notes below are new. -->
+
+## Marketplace install option
+
+`Redirect to your website`
+
+"Install from listing" is disabled for this app. Stripe's own help text on the step reads
+"For OAuth apps, this is required for authorization", and `stripe-app.json` sets
+`stripe_api_access_type: oauth`.
+
+## Marketplace install URL
+
+`https://recoverflow.org/#start`
+
+<!-- The install has to start on our side because /connect/stripe/authorize refuses a request
+     without both email and companyName (StripeConnectController.Authorize returns
+     BadRequest), and it is the homepage form that collects them:
+     docs/index.html line 809, `<form id="start" ... action=".../connect/stripe/authorize">`.
+     That form then redirects to marketplace.stripe.com/oauth/v2/authorize, which is the
+     actual app install. -->
+
+## Call to action
+
+`Install from partner`
+
+## Testing credentials
+
+Checked: **This app doesn't require users to sign in**.
+
+<!-- True for the reviewed surface: the four Dashboard views authenticate with the signed
+     app request (StripeAppAuthMiddleware), not a password. The install collects an email and
+     company name, which is not a sign-in, and the separate web app at app.recoverflow.org
+     uses an emailed link rather than a password. -->
+
+## User journey 1
+
+**Title:** `Install RecoverFlow and connect a Stripe account`
+
+**Instructions:**
+
+> RecoverFlow has no password login, so there are no test credentials to supply. Installing
+> the app and connecting the account are one flow: the listing sends you to recoverflow.org,
+> and approving the Stripe consent screen installs the app. Please follow these steps with
+> the Stripe account you want to review with, including a sandbox or test account.
+>
+> 1. Click Install on this listing. You are redirected to https://recoverflow.org/#start, the
+>    "Connect your Stripe account" form. Enter any company name and an email address you can
+>    receive mail at. No card is required.
+> 2. Submit the form. You are taken to Stripe's app authorization page at
+>    marketplace.stripe.com, which lists the permissions RecoverFlow asks for: read your
+>    customers, read your invoices, and pay an unpaid invoice. Approve it for the Stripe
+>    account you are reviewing with.
+> 3. You are returned to RecoverFlow, which reads the last 90 days of that account's failed
+>    payments and shows what it found. That scan is free. To return later, go to
+>    https://app.recoverflow.org and request a sign-in link by email.
+> 4. In the Stripe Dashboard for that same account, open Apps, then RecoverFlow, then the App
+>    settings tab. It confirms "This Stripe account is connected to RecoverFlow" and shows
+>    recovered revenue and recovery rate.
+>
+> Important: the app reads recovery data for the Stripe account it is installed in. If step 2
+> is skipped, every view reads "This Stripe account is not connected to RecoverFlow yet, so
+> there is no recovery data to show." That message is expected behaviour, not a failure.
+>
+> If you would prefer us to pre-connect an account for you, email admin@recoverflow.org and
+> we will set one up.
+
+<!-- Rewritten on 14 August 2026. The version carried over from the 0.0.2 draft said the
+     account "is linked through Stripe Connect OAuth" and sent the reviewer to
+     connect.stripe.com, then listed the app install as a separate later step. All three
+     became false in 0.0.3 when the merchant connection moved onto the Stripe Apps grant
+     (commit 2a96255); that stale install link is what Stripe rejected 0.0.2 for.
+     Verification of the surviving claims: the settings text is AppSettings.tsx
+     ("This Stripe account is connected to RecoverFlow", recovered revenue, recovery rate);
+     the not-connected text is States.tsx line 17; the 90 day window is
+     BacktestOptions.WindowDays. -->
+
+## User journey 2
+
+**Title:** `Check recovery status and dunning progress for a failed payment`
+
+Carried over unchanged from the 0.0.2 draft. Re-verified against the shipped views on
+14 August 2026: the status badges (Recovering, Recovered, Lost, Cancelled) are
+CaseStatusBadge.tsx; the email badges (Sent, Opened, Clicked, Led to recovery) are
+DunningSection.tsx lines 11-14; the drawer's Recovered (net) / At risk / Recovery rate and
+case counts for Last 30 days and All time are AppOverview.tsx, as is the all-currencies-in-USD
+caption and the "Open RecoverFlow" external link; "No recovery activity for this customer" is
+CustomerDetail.tsx line 70.
+
+## Contact information
+
+Follow up email: `admin@recoverflow.org`
+Security incident email: `admin@recoverflow.org`
+Security phone number: left blank (optional).
+
+# Release notes (publish step 3)
+
+For version 0.0.4, entered in the form and saved as a draft on 17 August 2026:
+
+> Fixes the Stripe account connection. Installing RecoverFlow from the Marketplace listing
+> now completes and returns you to RecoverFlow. In the previous version the install itself
+> succeeded on Stripe's side, but the final step of the connection could fail and leave the
+> account unconnected.
+>
+> Access tokens are now refreshed on schedule, so recovery keeps running on a connected
+> account rather than stopping an hour after the install.
+>
+> No change to the permissions RecoverFlow asks for: read your customers, read your invoices,
+> and pay an unpaid invoice you already issued. It never creates invoices or charges.
+
+<!-- These are merchant-facing, so they describe the symptom rather than the cause. The cause
+     was that the app install's ac_ code was being exchanged against connect.stripe.com
+     instead of api.stripe.com/v1/oauth/token, which is what app review saw as an HTTP 500:
+     src/RecoverFlow.Infrastructure/Stripe/StripeOAuthClient.cs, fixed in commit f491685.
+     The second paragraph covers a bug review did not report and could not have seen in a
+     four-day window: the Apps token response carries no expires_in, so every token was
+     stored with a null expiry, MerchantStripeTokenProvider.IsExpired read null as "never
+     expires", and nothing would ever have refreshed. Both are covered by
+     tests/RecoverFlow.Tests.Unit/StripeOAuthClientTests.cs. -->
+
+For version 0.0.3:
+
+> RecoverFlow now connects your Stripe account through a Stripe App install instead of a
+> separate Stripe Connect authorization, so installing from the Marketplace is what connects
+> the account.
+>
+> This version adds one write permission, invoice_write. RecoverFlow uses it only to pay an
+> unpaid invoice you already issued, at the moment a retry is due. It never creates invoices
+> or charges.
+>
+> The app icon is now the RecoverFlow brand mark.
+
+Step 3 is also where Stripe attaches the Developer Agreement and Marketplace Agreement to the
+Submit button. Accepting those is the founder's decision, so the draft is left saved at this
+step rather than submitted.
+
+# Open discrepancy, unresolved
+
+The listing preview in the publish flow renders the permission block as **Customers:
+Read-only** and **Invoices: Read-only**, with no write permission, and reports **"Sandbox
+testing not available"**. Both contradict the shipped manifest, which declares `invoice_write`
+alongside the two reads and sets `sandbox_install_compatible: true`. Checked on 14 August
+2026: version 0.0.3 is the version selected in the form, it is the one Stripe shows as
+uploaded and Approved, and it was uploaded after the commit that added `invoice_write`, so a
+stale upload does not explain it. A full page reload reproduced it. No Stripe documentation
+was found that explains either line, so the cause is genuinely unknown rather than assumed.
+
+The listing copy describes the three permissions the manifest asks for, because that is the
+claim the repository can back. If Stripe's consent screen turns out to grant only the two
+reads, the retry write in StripeInvoicePayer would fail at run time and both the copy and the
+manifest would need revisiting.
