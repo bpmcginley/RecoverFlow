@@ -2,7 +2,7 @@
   "$schema": "https://stripe.com/stripe-app.schema.json",
   "id": "com.recoverflow.dashboard",
   "name": "RecoverFlow",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "icon": "./icon.png",
   "ui_extension": {
     "views": [
@@ -52,10 +52,10 @@
   "constants": {
     "API_BASE": "https://api.recoverflow.org/app/v1"
   },
-  "distribution_type": "public",
-  "stripe_api_access_type": "oauth",
   "allowed_redirect_uris": [
     "https://api.recoverflow.org/connect/stripe/callback"
   ],
+  "distribution_type": "public",
+  "stripe_api_access_type": "oauth",
   "sandbox_install_compatible": true
 }
