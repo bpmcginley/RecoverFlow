@@ -1,5 +1,6 @@
 using System.Web;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -23,34 +24,40 @@ public class StripeConnectControllerTests : IDisposable
 {
     private readonly SqliteConnection _connection;
     private readonly StripeConnectController _controller;
+    private readonly AppDbContext _db;
+    private readonly EphemeralDataProtectionProvider _protection = new();
 
     public StripeConnectControllerTests()
     {
         _connection = new SqliteConnection("DataSource=:memory:");
         _connection.Open();
         var options = new DbContextOptionsBuilder<AppDbContext>().UseSqlite(_connection).Options;
-        var db = new AppDbContext(options);
-        db.Database.EnsureCreated();
+        _db = new AppDbContext(options);
+        _db.Database.EnsureCreated();
 
+        _controller = Build(new UnusedOAuth());
+    }
+
+    private StripeConnectController Build(IStripeOAuthClient oauth)
+    {
         var stripe = Options.Create(new StripeOptions
         {
             ClientId = "ca_CONNECT_ONLY",
             AppClientId = "ca_app_TEST",
             OAuthRedirectUri = "https://api.recoverflow.org/connect/stripe/callback",
         });
-        var protection = new EphemeralDataProtectionProvider();
         var tokens = new MerchantStripeTokenProvider(
-            db, new UnusedOAuth(), new UnusedEncryptor(),
+            _db, new UnusedOAuth(), new UnusedEncryptor(),
             NullLogger<MerchantStripeTokenProvider>.Instance);
 
-        _controller = new StripeConnectController(
-            stripe, protection,
-            new StripeConnectService(db, new UnusedOAuth(), new UnusedEncryptor()),
+        return new StripeConnectController(
+            stripe, _protection,
+            new StripeConnectService(_db, oauth, new UnusedEncryptor()),
             new AccountBacktestService(
-                db, new UnusedInvoiceReader(), tokens,
+                _db, new UnusedInvoiceReader(), tokens,
                 Options.Create(new BacktestOptions()), Options.Create(new BillingOptions()),
                 NullLogger<AccountBacktestService>.Instance),
-            new UnusedJobScheduler(), db,
+            new UnusedJobScheduler(), _db,
             NullLogger<StripeConnectController>.Instance);
     }
 
@@ -96,6 +103,24 @@ public class StripeConnectControllerTests : IDisposable
         Assert.IsType<BadRequestObjectResult>(_controller.Authorize("a@b.com", " "));
     }
 
+    /// <summary>
+    /// App review's actual complaint about v0.0.3: the install succeeded on Stripe's side and
+    /// then the callback answered HTTP 500. A failed exchange is still a failure, but it has to
+    /// arrive as a handled status with something a merchant can act on, not as a stack trace.
+    /// </summary>
+    [Fact]
+    public async Task A_failed_token_exchange_does_not_escape_the_callback_as_a_500()
+    {
+        var controller = Build(new RefusingOAuth());
+        var state = Query(controller.Authorize("a@b.com", "Acme"))["state"]!;
+
+        var result = await controller.Callback("ac_123", state, CancellationToken.None);
+
+        var status = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(StatusCodes.Status502BadGateway, status.StatusCode);
+        Assert.NotEqual(StatusCodes.Status500InternalServerError, status.StatusCode);
+    }
+
     private static System.Collections.Specialized.NameValueCollection Query(IActionResult r) =>
         HttpUtility.ParseQueryString(new Uri(Assert.IsType<RedirectResult>(r).Url).Query);
 
@@ -106,6 +131,17 @@ public class StripeConnectControllerTests : IDisposable
     {
         public Task<StripeOAuthTokenResult> ExchangeAppInstallCodeAsync(string code, CancellationToken ct = default) =>
             throw new NotSupportedException();
+        public Task<StripeOAuthTokenResult> ExchangeAuditCodeAsync(string code, CancellationToken ct = default) =>
+            throw new NotSupportedException();
+        public Task<StripeOAuthTokenResult> RefreshAsync(string refreshToken, CancellationToken ct = default) =>
+            throw new NotSupportedException();
+    }
+
+    /// <summary>Stands in for Stripe refusing the exchange, the way an expired ac_ code does.</summary>
+    private sealed class RefusingOAuth : IStripeOAuthClient
+    {
+        public Task<StripeOAuthTokenResult> ExchangeAppInstallCodeAsync(string code, CancellationToken ct = default) =>
+            throw new StripeOAuthException("Stripe rejected the app OAuth token exchange with 401.");
         public Task<StripeOAuthTokenResult> ExchangeAuditCodeAsync(string code, CancellationToken ct = default) =>
             throw new NotSupportedException();
         public Task<StripeOAuthTokenResult> RefreshAsync(string refreshToken, CancellationToken ct = default) =>

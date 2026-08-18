@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using RecoverFlow.Application.Audit;
 using RecoverFlow.Application.Backtest;
 using RecoverFlow.Application.Billing;
@@ -51,7 +52,10 @@ public static class DependencyInjection
         services.AddScoped<IRetryWasteReader, StripeRetryWasteReader>();
 
         services.AddSingleton<ITokenEncryptor, TokenEncryptor>();
-        services.AddScoped<IStripeOAuthClient, StripeOAuthClient>();
+        // Registered by hand because StripeOAuthClient takes an optional HttpClient that only
+        // tests supply; letting the container pick a constructor would be a silent coin toss.
+        services.AddScoped<IStripeOAuthClient>(sp =>
+            new StripeOAuthClient(sp.GetRequiredService<IOptions<StripeOptions>>()));
         services.AddScoped<StripeConnectService>();
         services.AddScoped<MerchantStripeTokenProvider>();
 

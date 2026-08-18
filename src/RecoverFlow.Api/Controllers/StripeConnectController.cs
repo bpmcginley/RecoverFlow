@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using RecoverFlow.Application.Backtest;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Application.Connect;
+using RecoverFlow.Domain.Entities;
 
 namespace RecoverFlow.Api.Controllers;
 
@@ -84,8 +85,24 @@ public sealed class StripeConnectController(
             return BadRequest("State expired, please restart the connection.");
         }
 
-        var merchant = await connectService.CompleteConnectionAsync(
-            code, oauthState.Email, oauthState.CompanyName, ct);
+        Merchant merchant;
+        try
+        {
+            merchant = await connectService.CompleteConnectionAsync(
+                code, oauthState.Email, oauthState.CompanyName, ct);
+        }
+        catch (StripeOAuthException e)
+        {
+            // The install itself already succeeded on Stripe's side; only our exchange failed.
+            // Letting this escape gave app review a bare HTTP 500 with nothing to act on, so
+            // log why and tell the merchant the one thing that can fix it. The code is spent
+            // either way, so there is nothing to retry here.
+            log.LogError(e, "Stripe app install callback failed the token exchange for {Email}",
+                oauthState.Email);
+            return StatusCode(StatusCodes.Status502BadGateway,
+                "Stripe could not complete the install. Please try installing again from the " +
+                "app listing, and contact support@recoverflow.org if it happens twice.");
+        }
 
         log.LogInformation("Connected merchant {MerchantId} to Stripe account {StripeAccountId}",
             merchant.Id, merchant.StripeAccountId);

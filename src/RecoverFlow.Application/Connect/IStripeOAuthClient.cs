@@ -1,5 +1,14 @@
 namespace RecoverFlow.Application.Connect;
 
+/// <summary>
+/// Raised when Stripe refuses an OAuth token exchange, or answers with something we cannot read.
+/// Separate from Stripe.net's StripeException because the OAuth endpoints return a different
+/// error shape from the rest of the API, and because a failed exchange is a dead end for that
+/// install: the code is one-time use, so there is nothing to retry.
+/// </summary>
+public sealed class StripeOAuthException(string message, Exception? inner = null)
+    : Exception(message, inner);
+
 /// <param name="ExpiresAtUtc">
 /// Null when Stripe returned no expiry, which is the Connect OAuth case: those tokens live
 /// until the merchant revokes them. Stripe Apps tokens always carry one (an hour out).
@@ -12,10 +21,11 @@ public sealed record StripeOAuthTokenResult(
     DateTime? ExpiresAtUtc);
 
 /// <remarks>
-/// The two exchange methods hit the same Stripe endpoint but are not interchangeable: they
-/// authenticate with different secret keys, because the Stripe App and the Connect platform are
-/// separate accounts. Calling the wrong one fails at Stripe with a permissions error, so the
-/// flows are named rather than sharing one method with a flag.
+/// The two exchange methods are not interchangeable, and not only because they authenticate with
+/// different secret keys. They post to different hosts: the app install to api.stripe.com and the
+/// Connect audit to connect.stripe.com. Sending an app's <c>ac_</c> code to the Connect endpoint
+/// is what made app review v0.0.3 fail, so the flows are named rather than sharing one method
+/// with a flag.
 /// </remarks>
 public interface IStripeOAuthClient
 {
