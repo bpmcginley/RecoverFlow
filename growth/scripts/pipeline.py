@@ -28,8 +28,15 @@ SEQUENCES = ROOT / "growth" / "sequences"
 
 FIELDS = [
     "email", "first_name", "company", "domain", "track", "source", "status",
-    "t1_date", "t2_date", "t3_date", "reply_date", "outcome", "thread_id", "notes",
+    "t1_date", "t2_date", "t3_date", "reply_date", "outcome", "thread_id", "transport",
+    "notes",
 ]
+
+# Which mailbox carries a prospect's sequence. Outbound moved to Outlook on
+# admin@recoverflow.org on 19 August 2026; everything contacted before that is on Gmail and
+# has a Gmail thread id, which Outlook cannot reply into.
+TRANSPORTS = ["outlook", "gmail"]
+DEFAULT_TRANSPORT = "outlook"
 
 # Business days to wait before the next touch. Short enough to stay in memory,
 # long enough not to read as pestering.
@@ -139,6 +146,31 @@ def compliance_problem():
         return (f"{path} still says TODO-POSTAL-ADDRESS. A PO box or registered-agent "
                 "address satisfies the requirement; a home address is not required.")
     return None
+
+
+def transport_of(row):
+    """Which mailbox this prospect's sequence belongs to.
+
+    An empty column on an already-contacted row means the sequence started before outbound
+    moved to Outlook, so it is a Gmail thread. Those finish where they started: a follow-up
+    sent from admin@recoverflow.org would arrive from a stranger, on a new thread, quoting
+    nothing the recipient has ever seen.
+    """
+    explicit = (row.get("transport") or "").strip().lower()
+    if explicit:
+        return explicit
+    return "gmail" if row["status"].strip() in CONTACTED else DEFAULT_TRANSPORT
+
+
+def thread_looks_like_gmail(thread_id):
+    """Gmail thread ids are 16 hex digits; Outlook's are long base64url strings.
+
+    Only used to catch one specific mistake: flipping a prospect to Outlook without clearing
+    the Gmail thread it was going to reply into, which fails at send time with an opaque id
+    error rather than anything a report could explain.
+    """
+    t = (thread_id or "").strip()
+    return len(t) == 16 and all(c in "0123456789abcdefABCDEF" for c in t)
 
 
 def sent_today(rows, on):
@@ -265,6 +297,20 @@ def cmd_preflight(args):
         if touch != "t1" and not (r.get("thread_id") or "").strip():
             failures.append(f"{r['email']} is owed {touch} but has no thread_id, so the "
                             "follow-up would start a new thread instead of replying.")
+        if (transport_of(r) == "outlook" and touch != "t1"
+                and thread_looks_like_gmail(r.get("thread_id"))):
+            failures.append(f"{r['email']} is set to outlook but its thread_id is a Gmail "
+                            "thread. Outlook cannot reply into it. Finish the sequence on "
+                            "gmail, or clear thread_id to start a fresh Outlook thread.")
+
+    by_transport = {}
+    for _, touch, r in items:
+        by_transport.setdefault(transport_of(r), []).append(touch)
+    for name, touches in sorted(by_transport.items()):
+        notes.append(f"{len(touches)} via {name} ({', '.join(sorted(touches))}).")
+    unknown = set(by_transport) - set(TRANSPORTS)
+    if unknown:
+        failures.append(f"Unknown transport(s) {sorted(unknown)}; expected {TRANSPORTS}.")
 
     if on.weekday() >= 5:
         failures.append(f"{on} is a {on.strftime('%A')}. Cold sends go Monday to Thursday.")
@@ -296,6 +342,8 @@ def cmd_log(args):
         # would then refuse the T2 for want of a thread_id and the sequence would stall.
         if args.thread_id:
             row["thread_id"] = args.thread_id.strip()
+        if args.transport:
+            row["transport"] = args.transport
     elif event == "replied":
         row["reply_date"] = when
         row["status"] = "replied"
@@ -320,7 +368,8 @@ def cmd_add(args):
         "company": args.company, "domain": args.domain or args.email.split("@")[-1],
         "track": args.track, "source": args.source, "status": "sourced",
         "t1_date": "", "t2_date": "", "t3_date": "", "reply_date": "",
-        "outcome": "", "thread_id": "", "notes": args.note or "",
+        "outcome": "", "thread_id": "", "transport": args.transport,
+        "notes": args.note or "",
     })
     save(rows)
     print(f"Added {args.email} ({args.company}) as sourced.")
@@ -430,6 +479,8 @@ def main():
     l.add_argument("--thread-id", dest="thread_id",
                    help="thread the send opened; record it on t1_sent so follow-ups reply "
                         "on the same thread")
+    l.add_argument("--transport", choices=TRANSPORTS,
+                   help="move this prospect's sequence to another mailbox")
     l.add_argument("--outcome", help="free text, e.g. positive / not-now / no")
     l.add_argument("--note")
     l.set_defaults(func=cmd_log)
@@ -442,6 +493,8 @@ def main():
     a.add_argument("--track", default="prospect",
                    choices=["prospect", "peer", "competitor"])
     a.add_argument("--source", default="apollo")
+    a.add_argument("--transport", default=DEFAULT_TRANSPORT, choices=TRANSPORTS,
+                   help=f"mailbox to run the sequence from (default {DEFAULT_TRANSPORT})")
     a.add_argument("--note")
     a.set_defaults(func=cmd_add)
 

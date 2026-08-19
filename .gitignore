@@ -37,6 +37,8 @@ VALIDATION.md
 growth/pipeline.csv
 growth/sequences/
 growth/sender.txt
+# Run history from run_outbound.py. Names who was mailed, so it belongs with the ledger.
+growth/outbound.log
 
 # Channel research, drafted posts, partner and prospect research. Same reason as
 # COMPETITIVE.md: it names real firms and real people, and it reads as a playbook

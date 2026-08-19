@@ -83,14 +83,34 @@ python3 growth/scripts/pipeline.py render --email <email>
 ```
 
 The first line of the output is a subject instruction, not a subject line; strip it from the
-body. Then send, and log immediately:
+body.
 
-- **T1** opens a new thread — `mcp__Gmail__send_message(to=[<email>], subject=…, body=…)`.
-  Capture the thread id it returns and record it, or every later touch strands:
-  `pipeline.py log --email <email> --event t1_sent --thread-id <id>`
-- **T2 and T3** reply on the existing thread and must never start a new one —
-  `mcp__Gmail__reply(messageId=<thread_id>, body=…)`, then
+**Send from the mailbox the prospect's `transport` names, which `preflight` prints.** New
+prospects default to `outlook`, which sends as `admin@recoverflow.org`. Anything contacted
+before 19 August 2026 is `gmail` and stays there: it has a Gmail thread Outlook cannot reply
+into, and a follow-up from a different address on a new thread reads as a stranger quoting
+nothing. Finish those where they started. `preflight` fails rather than let the two mix.
+
+**Outlook** (`transport: outlook`) — draft, send, then log:
+
+- **T1** — `mcp__Microsoft-365__outlook_create_draft(to=[<email>], subject=…, body=…,
+  bodyType="html")`, then `outlook_send_draft(messageId=<draft id>)`.
+  Sending moves the message to Sent Items and the draft id does not reliably survive it, so
+  find the sent copy before logging:
+  `outlook_email_search(folderName="Sent Items", query="<subject>", limit=5)` and record
+  *that* id — it is what T2 replies into:
+  `pipeline.py log --email <email> --event t1_sent --thread-id <sent id>`
+- **T2 and T3** — `outlook_create_reply_draft(messageId=<thread_id>, body=…,
+  bodyType="html")`, then `outlook_send_draft(messageId=<draft id>)`, then
   `pipeline.py log --email <email> --event t2_sent`
+
+Bodies must be HTML built from the allowlist: paragraphs in `<p>`, breaks as `<br>`, links as
+`<a>`. Images, `<span>`, `<style>` and comments are **rejected outright**, not stripped, so a
+send fails on them rather than going out mangled.
+
+**Gmail** (`transport: gmail`, legacy sequences only) — `mcp__Gmail__send_message` for T1
+capturing the thread id, `mcp__Gmail__reply(messageId=<thread_id>, body=…)` for T2 and T3,
+then log the same way.
 
 **Log each send before the next send, not at the end of the batch.** On 18 August five
 prospects each received the same T2 twice, four minutes apart, because a batch went out and
@@ -165,7 +185,11 @@ git add growth/icp.md growth/scripts && git commit -m "growth: <what changed>"
 - 10 sends a day maximum, one mailbox, counted per day and not per run.
 - Log every send before making the next one.
 - No true personalisation sentence, no send.
-- Never send cold mail from `admin@recoverflow.org`; it carries audits, support and the
-  product's own dunning mail.
+- Cold mail now goes from `admin@recoverflow.org` via Outlook, by Bruce's decision on
+  19 August 2026, overriding the rule that used to forbid exactly this. **Watch the
+  deliverability of that address**, because `render.yaml` sets `Email__FromAddress` to it
+  too: the product's dunning mail, audit reports and sign-in links leave from the same
+  address the cold campaign now does. If dunning starts landing in spam, or SendGrid
+  reputation drops, this is the first thing to suspect and outbound moves off it.
 - One opt-out request ends contact permanently.
 - Never fabricate a prospect's details, funding, headcount or tooling to fill a template.

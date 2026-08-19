@@ -43,6 +43,41 @@ Events: `t1_sent` `t2_sent` `t3_sent` `replied` `bounced` `disqualified` `closed
 `connected` `customer`. `connected` means they linked Stripe. `customer` means they are
 paying.
 
+## Running it unattended
+
+`run_outbound.py` is the daily loop without the ten minutes. It checks whether anything is
+due, runs `preflight`, and only then hands the cycle to Claude:
+
+```
+python3 growth/scripts/run_outbound.py --dry-run   # decide and report, send nothing
+python3 growth/scripts/run_outbound.py             # decide and run
+```
+
+Nothing due exits 0 without waking Claude. A failed preflight exits 1 with the reason and
+sends nothing. Run history appends to `growth/outbound.log`, which is gitignored because it
+names who was mailed.
+
+**It only runs where the ledger is**, which is this machine and not a fresh clone: a cloud or
+CI session has no `pipeline.csv`, no templates and no `sender.txt`, so the script says so and
+stops rather than improvising.
+
+Schedule it Monday to Thursday, mid-morning. `preflight` refuses weekends anyway, so a
+weekday-only schedule is belt and braces rather than the actual guard.
+
+```
+# macOS / Linux, crontab -e — 09:30 Mon-Thu
+30 9 * * 1-4 cd /path/to/RecoverFlow && /usr/bin/python3 growth/scripts/run_outbound.py
+
+# Windows, PowerShell as the same user Claude Code is signed in as
+schtasks /create /tn "RecoverFlow outbound" /sc weekly /d MON,TUE,WED,THU /st 09:30 ^
+  /tr "python C:\path\to\RecoverFlow\growth\scripts\run_outbound.py"
+```
+
+Set `CLAUDE_BIN` if `claude` is not on the scheduler's PATH, which on Windows it usually is
+not. The scheduled task runs as a specific user and reaches Claude Code's MCP connections
+through that user's config, so it has to be the account signed in to Outlook as
+`admin@recoverflow.org`. A task running as SYSTEM will not have that mailbox.
+
 ## The weekly loop, about thirty minutes
 
 Top the queue back up so the daily loop has something to do:
@@ -92,14 +127,25 @@ capped by personalisation, and personalisation is what makes the replies happen.
 
 ## Guardrails
 
-- **10 sends a day, hard.** One Gmail mailbox sending cold. Past that, deliverability drops
+- **10 sends a day, hard.** One mailbox sending cold. Past that, deliverability drops
   and personalisation quality drops faster. The script flags it.
 - **No true sentence, no send.** Drop the prospect instead. A generic middle paragraph costs
   a real reply and burns the address for any future attempt.
 - **One opt-out request ends it forever.** `log --event disqualified` the moment it arrives.
-- **Never send from `admin@recoverflow.org`.** That address handles audits, support and
-  billing. Cold volume on it puts transactional and dunning mail at risk, which is the
-  actual product.
+- **Cold mail goes from `admin@recoverflow.org` via Outlook.** Bruce decided this on
+  19 August 2026. The rule here used to say the opposite, and the reason it did has not gone
+  away, so it is written down rather than deleted: `render.yaml` sets `Email__FromAddress` to
+  that same address, so every dunning mail, audit report and sign-in link the product sends
+  leaves from the address the cold campaign now uses. Cold mail draws spam complaints at
+  rates transactional mail never does, and reputation is tracked per From address, so the
+  downside is not a full inbox — it is merchants' recovery rates falling because dunning
+  stopped landing. That is the product.
+
+  **So watch it.** If dunning starts hitting spam or SendGrid reputation drops, move outbound
+  off this address first and ask questions after. Moving it is cheap: give outreach its own
+  mailbox (`bruce@` or an `outreach.recoverflow.org` subdomain with its own DKIM), point the
+  ledger's `transport` at it, and the product's address goes back to carrying only
+  transactional mail.
 
 ## Compliance, currently incomplete
 
