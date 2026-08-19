@@ -117,6 +117,39 @@ def signature():
     return path.read_text(encoding="utf-8").rstrip() if path.exists() else ""
 
 
+def compliance_problem():
+    """Why the rendered footer is unfit to send, or None if it is fine.
+
+    CAN-SPAM requires a valid physical postal address and a working opt-out on every
+    commercial email, and both live in sender.txt. A missing file used to fail open:
+    signature() returned "", render() substituted nothing, and the TODO check could not
+    match an empty string, so the mail went out carrying neither and said nothing about it.
+    That was survivable while a human read every draft before sending. It is not survivable
+    now that the loop can send on its own, so the states are named and returned instead.
+    """
+    path = ROOT / "growth" / "sender.txt"
+    if not path.exists():
+        return (f"{path} does not exist, so every rendered email would carry no postal "
+                "address and no opt-out at all.")
+    sig = signature()
+    if not sig.strip():
+        return (f"{path} is empty, so every rendered email would carry no postal address "
+                "and no opt-out at all.")
+    if "TODO-POSTAL-ADDRESS" in sig:
+        return (f"{path} still says TODO-POSTAL-ADDRESS. A PO box or registered-agent "
+                "address satisfies the requirement; a home address is not required.")
+    return None
+
+
+def sent_today(rows, on):
+    """How many touches already went out on `on`.
+
+    The cap is per day, not per run. Without this a second run on the same day starts its
+    count again from zero and sends another full batch on top of the first.
+    """
+    return sum(1 for r in rows for n in (1, 2, 3) if parse_date(r[f"t{n}_date"]) == on)
+
+
 def render(row, touch):
     track = (row.get("track") or "prospect").strip()
     candidates = [SEQUENCES / f"{touch}-{track}.txt", SEQUENCES / f"{touch}.txt"]
@@ -189,11 +222,62 @@ def cmd_render(args):
     if touch == "close":
         sys.exit(f"{args.email} is owed a close, not a send. Use: log --event closed")
     print(render(row, touch))
-    if "TODO-POSTAL-ADDRESS" in signature():
-        print("\n  ! growth/sender.txt still says TODO-POSTAL-ADDRESS. CAN-SPAM requires a "
-              "valid physical postal address on commercial email.\n"
-              "    Fill it in before sending; a PO box or registered-agent address counts.",
-              file=sys.stderr)
+    problem = compliance_problem()
+    if problem:
+        print(f"\n  ! Not fit to send. {problem}\n"
+              "    CAN-SPAM requires a valid physical postal address and a working opt-out "
+              "on commercial email.", file=sys.stderr)
+
+
+def cmd_preflight(args):
+    """Everything that has to be true before an unattended run may send anything.
+
+    Each check here used to be a warning that a person was trusted to read on their way to
+    the send button. Unattended, a warning nobody reads is the same as no check at all, so
+    these exit non-zero and the caller sends nothing.
+    """
+    on = parse_date(args.date) if args.date else today()
+    rows = load()
+    failures, notes = [], []
+
+    problem = compliance_problem()
+    if problem:
+        failures.append(f"CAN-SPAM: {problem}")
+    else:
+        notes.append("Footer carries a postal address and an opt-out.")
+
+    already = sent_today(rows, on)
+    budget = SEND_CAP_PER_DAY - already
+    if already:
+        notes.append(f"{already} already sent today; {max(budget, 0)} left of the "
+                     f"{SEND_CAP_PER_DAY}/day cap.")
+    if budget <= 0:
+        failures.append(f"The {SEND_CAP_PER_DAY}/day cap is already spent ({already} sent "
+                        f"on {on}). Nothing more may go out today.")
+
+    items = due_items(rows, on)[:max(budget, 0)]
+    for _, touch, r in items:
+        track = (r.get("track") or "prospect").strip()
+        if not any((SEQUENCES / n).exists()
+                   for n in (f"{touch}-{track}.txt", f"{touch}.txt")):
+            failures.append(f"No {touch} template for track={track} ({r['email']}) "
+                            f"in {SEQUENCES}.")
+        if touch != "t1" and not (r.get("thread_id") or "").strip():
+            failures.append(f"{r['email']} is owed {touch} but has no thread_id, so the "
+                            "follow-up would start a new thread instead of replying.")
+
+    if on.weekday() >= 5:
+        failures.append(f"{on} is a {on.strftime('%A')}. Cold sends go Monday to Thursday.")
+
+    for n in notes:
+        print(f"  ok    {n}")
+    print(f"  ok    {len(items)} to send on {on}." if items and not failures
+          else f"  --    {len(items)} due on {on}.")
+    for f in failures:
+        print(f"  FAIL  {f}", file=sys.stderr)
+    if failures:
+        sys.exit(f"\nPreflight failed on {len(failures)} check(s). Send nothing.")
+    print("\nPreflight passed. Send one at a time, logging each before the next.")
 
 
 def cmd_log(args):
@@ -207,6 +291,11 @@ def cmd_log(args):
     if event in ("t1_sent", "t2_sent", "t3_sent"):
         row[f"t{event[1]}_date"] = when
         row["status"] = event
+        # T1 opens the thread every later touch has to reply on. Nothing could write this
+        # before, so an automatically sent T1 would strand its own follow-ups: preflight
+        # would then refuse the T2 for want of a thread_id and the sequence would stall.
+        if args.thread_id:
+            row["thread_id"] = args.thread_id.strip()
     elif event == "replied":
         row["reply_date"] = when
         row["status"] = "replied"
@@ -323,6 +412,10 @@ def main():
     d.add_argument("--date", help="YYYY-MM-DD, defaults to today")
     d.set_defaults(func=cmd_due)
 
+    pf = sub.add_parser("preflight", help="gate an unattended run before it sends")
+    pf.add_argument("--date", help="YYYY-MM-DD, defaults to today")
+    pf.set_defaults(func=cmd_preflight)
+
     r = sub.add_parser("render", help="print the copy for a prospect's next touch")
     r.add_argument("--email", required=True)
     r.add_argument("--touch", choices=["t1", "t2", "t3"])
@@ -334,6 +427,9 @@ def main():
                    choices=["t1_sent", "t2_sent", "t3_sent", "replied", "bounced",
                             "disqualified", "closed", "connected", "customer"])
     l.add_argument("--date", help="YYYY-MM-DD, defaults to today")
+    l.add_argument("--thread-id", dest="thread_id",
+                   help="thread the send opened; record it on t1_sent so follow-ups reply "
+                        "on the same thread")
     l.add_argument("--outcome", help="free text, e.g. positive / not-now / no")
     l.add_argument("--note")
     l.set_defaults(func=cmd_log)

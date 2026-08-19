@@ -11,6 +11,22 @@ duplicate what those files say into a reply; act on them.
 
 All commands run from the repo root.
 
+## Where this can run
+
+**This cycle only works where the ledger is, which today means Bruce's own machine.**
+`pipeline.csv`, `sequences/` and `sender.txt` are gitignored — deliberately, after they
+published 22 prospects' names and work emails on a public repo — and they live under OneDrive
+instead. A Claude Code web or scheduled cloud session is a fresh clone of the repo and gets
+none of them, so `due` exits with `No ledger`, there are no templates to render, and there is
+no postal address to sign with.
+
+If that is where you are: **stop at step 1 and say so.** Do not reconstruct the ledger from
+the inbox, and never `git add -f` it to make the cloud copy work — that re-publishes the exact
+PII the gitignore exists to keep off the internet. Report the funnel from what you can see and
+leave the sending to a local run. Nothing here is fixable from inside the container; giving a
+scheduled cloud run real outbound reach needs the ledger in a private store both machines can
+reach, which is Bruce's call to make.
+
 ## 1. Log replies before anything else
 
 Always do this first. Following up someone who already replied is the one unrecoverable
@@ -42,38 +58,53 @@ mcp__Gmail__search_threads(query="newer_than:7d (from:mailer-daemon OR subject:\
 ```
 python3 growth/scripts/pipeline.py validate
 python3 growth/scripts/pipeline.py due
+python3 growth/scripts/pipeline.py preflight
 ```
 
 If nothing is due, say so plainly and skip to step 3. Do not invent work by sending early;
 the cadence is deliberate.
 
-For each due prospect:
+**`preflight` decides whether anything may go out.** It exits non-zero on a missing or
+placeholder postal address, a missing template, a follow-up with no thread to reply on, a
+weekend, or a day whose send cap is already spent. If it fails, **send nothing**, fix what it
+names or report it, and go to step 3. Do not talk yourself past a failed check: every one of
+them was a warning a human used to read on the way to the send button, and there is no human
+in this loop now.
+
+### Sending
+
+Bruce authorised this loop to send on its own on 19 August 2026, standing until he says
+otherwise. It replaces the old draft-and-wait posture.
+
+Work **one prospect at a time**, and never start the next before the current one is logged:
 
 ```
 python3 growth/scripts/pipeline.py render --email <email>
 ```
 
-The first line of the output is a subject instruction, not a subject line. Follow-ups reply
-on the existing thread and must not start a new one. Create the draft with `thread_id` as
-the reply target, and strip that first instruction line from the body:
+The first line of the output is a subject instruction, not a subject line; strip it from the
+body. Then send, and log immediately:
 
-```
-mcp__Gmail__create_draft(replyToMessageId=<thread_id>, to=[<email>], body=<rendered body>)
-```
+- **T1** opens a new thread — `mcp__Gmail__send_message(to=[<email>], subject=…, body=…)`.
+  Capture the thread id it returns and record it, or every later touch strands:
+  `pipeline.py log --email <email> --event t1_sent --thread-id <id>`
+- **T2 and T3** reply on the existing thread and must never start a new one —
+  `mcp__Gmail__reply(messageId=<thread_id>, body=…)`, then
+  `pipeline.py log --email <email> --event t2_sent`
 
-**Create drafts. Do not send.** Sending cold email from Bruce's mailbox is outward-facing
-and irreversible; he reviews and sends. Ask for explicit confirmation if he wants that
-changed, and treat approval as covering that batch only.
+**Log each send before the next send, not at the end of the batch.** On 18 August five
+prospects each received the same T2 twice, four minutes apart, because a batch went out and
+was replayed before the ledger caught up. `due` reads status, so a logged send is invisible to
+the next run and an unlogged one is not: the gap between sending and logging is the entire
+window in which a person gets mailed twice. Keep it at one send wide.
 
-Once he confirms a batch went out:
+Stop the batch and report if a send errors. Do not retry a send whose outcome you cannot
+determine — a duplicate costs more than a missed touch, and the prospect stays due tomorrow.
 
-```
-python3 growth/scripts/pipeline.py log --email <email> --event t2_sent
-```
-
-Refuse to draft anything while `growth/sender.txt` still reads `TODO-POSTAL-ADDRESS`, unless
-Bruce has been told and says to proceed anyway. CAN-SPAM requires a physical postal address
-on commercial email and only he can supply one.
+Two things still stop a send outright, no matter what preflight says: **no true
+personalisation sentence** (drop the prospect and say why), and **any address on an opt-out**.
+If Bruce wants to eyeball a batch first, `mcp__Gmail__create_draft` instead of sending and
+leave the ledger unlogged — an unlogged prospect is simply still due.
 
 ## 3. Top up the queue
 
@@ -103,8 +134,13 @@ sending a generic paragraph, and say in your report that you dropped it and why.
 python3 growth/scripts/pipeline.py stats
 ```
 
-Report what changed, not what exists: replies logged, drafts created, prospects added,
-anything dropped and why. Include the funnel numbers only when they moved.
+Report what changed, not what exists: replies logged, **who was mailed and at which touch**,
+prospects added, anything dropped and why, and any preflight failure that held the batch.
+Include the funnel numbers only when they moved.
+
+When this runs unattended, the reply is written into a session nobody reads, so a run that
+sent mail or was blocked from sending has to reach Bruce through `PushNotification`. A quiet
+run that sent nothing and found nothing does not.
 
 Before suggesting the copy is underperforming, apply the arithmetic in `README.md`: under
 roughly 60 sends, silence carries no signal, and rewriting copy on that basis destroys the
@@ -125,7 +161,9 @@ git add growth/icp.md growth/scripts && git commit -m "growth: <what changed>"
 
 ## Guardrails
 
-- 10 sends a day maximum, one mailbox.
+- `preflight` is the gate, not advice. Non-zero means send nothing.
+- 10 sends a day maximum, one mailbox, counted per day and not per run.
+- Log every send before making the next one.
 - No true personalisation sentence, no send.
 - Never send cold mail from `admin@recoverflow.org`; it carries audits, support and the
   product's own dunning mail.
