@@ -122,8 +122,21 @@ Roughly half of any Apollo pull dies at those three checks. That is the filter w
 ## Channel note
 
 Average revenue per customer sits between $29 and $299 a month, so lifetime value is low
-hundreds to low thousands. Paid acquisition does not clear that bar at this ACV. Cold email
-and SEO are the only two channels whose economics work, and the Stripe App Marketplace,
-which would have been the third, is closed off: Stripe will not grant public distribution to
-a Connect platform account, which is what RecoverFlow has to be to read merchant data. See
-`stripe-app/BLOCKED.md`. Plan around two channels, not three.
+hundreds to low thousands. Paid acquisition does not clear that bar at this ACV, so it is
+off the table. That leaves three channels whose economics work: cold email, SEO, and the
+Stripe App Marketplace.
+
+The Marketplace was written off once and is back. The original blocker was that Stripe will
+not grant public distribution to a Connect platform account, which is what RecoverFlow's main
+product has to be to read merchant data — so `stripe-app/BLOCKED.md` concluded there were only
+two channels. That was superseded on 4 August 2026. The listing now goes through a separate
+standalone Stripe App, `com.recoverflow.dashboard` in `stripe-dashboard-app/`, which reaches a
+merchant through the Stripe App *install grant* instead of Connect OAuth and so is not bound by
+the platform-account restriction. Read `stripe-dashboard-app/`, not `stripe-app/BLOCKED.md`,
+for the live picture.
+
+That app is in review, not yet published: v0.0.3 was rejected on the OAuth callback, v0.0.4
+shipped the fix and is awaiting Stripe's verdict. Until it is approved and publicly listed,
+cold email and SEO are still the only channels actually turning, so keep working them. But the
+Marketplace is a live, in-flight third channel now — the highest-leverage of the three once it
+lands, because it borrows Stripe's directory and trust — not a closed door. Plan for three.
