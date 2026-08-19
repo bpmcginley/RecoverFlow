@@ -45,7 +45,37 @@ paying.
 
 ## Running it unattended
 
-`run_outbound.py` is the daily loop without the ten minutes. It checks whether anything is
+Two mechanisms exist and they are not interchangeable. The difference is not convenience, it
+is whether the run can see the ledger at all.
+
+### A Claude routine, once the ledger can be reached
+
+A routine is a prompt Claude fires on a schedule, set up where the daily business-review
+routine already is. The prompt is one line, because the skill holds the procedure:
+
+```
+Run the growth skill's outbound cycle for today: log replies, send what preflight
+clears, top up the queue, and push me a summary of what went out.
+```
+
+**This does not work yet, and the reason is not the scheduler.** Routines fire in a fresh
+clone of the repo, and `pipeline.csv`, `sequences/` and `sender.txt` are gitignored and live
+only on Bruce's machine. A routine firing today finds no ledger, sends nothing, and says so.
+Committing them to fix it is not an option: that is exactly what put 22 prospects' names and
+work emails on a public repo in August.
+
+What unblocks it is moving the ledger somewhere both a laptop and a scheduled run can reach
+privately. **HubSpot is the obvious candidate and is already most of the way there** — it
+holds the same prospects, and `notes_last_contacted` already tracks sends. Finishing it means
+custom properties for the fields HubSpot has no home for (`status`, `t1_date`/`t2_date`/
+`t3_date`, `thread_id`, `transport`) and teaching `pipeline.py` to read and write there
+instead of a CSV. That is a real change to where the pipeline's truth lives, so it is Bruce's
+call, not a thing to do quietly.
+
+### An OS scheduler, which works today
+
+Until then this is the only automation that can actually send, because it runs on the machine
+the ledger is on. `run_outbound.py` checks whether anything is
 due, runs `preflight`, and only then hands the cycle to Claude:
 
 ```

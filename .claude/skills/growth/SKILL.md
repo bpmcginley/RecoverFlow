@@ -23,9 +23,15 @@ no postal address to sign with.
 If that is where you are: **stop at step 1 and say so.** Do not reconstruct the ledger from
 the inbox, and never `git add -f` it to make the cloud copy work — that re-publishes the exact
 PII the gitignore exists to keep off the internet. Report the funnel from what you can see and
-leave the sending to a local run. Nothing here is fixable from inside the container; giving a
-scheduled cloud run real outbound reach needs the ledger in a private store both machines can
-reach, which is Bruce's call to make.
+leave the sending to a local run.
+
+This is also why a **Claude routine** cannot yet run this cycle: routines fire in a fresh
+clone, so they land in exactly this state. Nothing here is fixable from inside the container.
+Giving a routine real outbound reach means moving the ledger into a private store both a
+laptop and a scheduled run can reach — HubSpot already holds these prospects and their
+last-contacted dates, so it is the short path — and that is Bruce's call to make, not
+something to start unasked. If a routine fires here, say that in one line and push it; do not
+re-derive the whole argument each time.
 
 ## 1. Log replies before anything else
 
