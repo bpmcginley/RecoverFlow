@@ -55,11 +55,21 @@ python3 growth/scripts/pipeline.py render --email <email>
 
 The first line of the output is a subject instruction, not a subject line. Follow-ups reply
 on the existing thread and must not start a new one. Create the draft with `thread_id` as
-the reply target, and strip that first instruction line from the body:
+the reply target, and strip that first instruction line from the body.
+
+**Which mailbox.** Since 19 August 2026 new cold sequences go from `admin@recoverflow.org`
+in Outlook. Threads opened before that date live in Gmail and their follow-ups stay there,
+because a T2 sent from a different mailbox starts a fresh thread and discards the T1:
 
 ```
-mcp__Gmail__create_draft(replyToMessageId=<thread_id>, to=[<email>], body=<rendered body>)
+mcp__Outlook__outlook_create_draft(to=[<email>], subject=…, body=<rendered body>)   # new sequences
+mcp__Gmail__create_draft(replyToMessageId=<thread_id>, to=[<email>], body=<body>)   # in-flight threads
 ```
+
+The Outlook connector's `to` is an array and it validates strictly. If the connector exposes
+no parameter schema, the array arrives as a string and every call fails with
+`expected array, received string`. That is a session-level tooling problem, not a bad
+argument — say so and hand Bruce the rendered bodies rather than retrying.
 
 **Create drafts. Do not send.** Sending cold email from Bruce's mailbox is outward-facing
 and irreversible; he reviews and sends. Ask for explicit confirmation if he wants that
@@ -127,7 +137,10 @@ git add growth/icp.md growth/scripts && git commit -m "growth: <what changed>"
 
 - 10 sends a day maximum, one mailbox.
 - No true personalisation sentence, no send.
-- Never send cold mail from `admin@recoverflow.org`; it carries audits, support and the
-  product's own dunning mail.
+- New sequences send from `admin@recoverflow.org` in Outlook, in-flight threads from Gmail.
+  Bruce chose this on 19 August 2026, overriding the rule that had forbidden it. He was
+  told first that the address carries audits, support and the product's own dunning mail,
+  and that cold volume on it risks their deliverability. Do not re-argue it; `growth/README.md`
+  keeps the replaced rule and its reasoning.
 - One opt-out request ends contact permanently.
 - Never fabricate a prospect's details, funding, headcount or tooling to fill a template.

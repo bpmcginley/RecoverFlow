@@ -19,7 +19,9 @@ Stdlib only, no install step.
 import argparse
 import csv
 import datetime as dt
+import re
 import sys
+import textwrap
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -29,6 +31,7 @@ SEQUENCES = ROOT / "growth" / "sequences"
 FIELDS = [
     "email", "first_name", "company", "domain", "track", "source", "status",
     "t1_date", "t2_date", "t3_date", "reply_date", "outcome", "thread_id", "notes",
+    "true_sentence",
 ]
 
 # Business days to wait before the next touch. Short enough to stay in memory,
@@ -112,6 +115,17 @@ def due_items(rows, on):
     return out
 
 
+def missing_postal_address():
+    """True when sender.txt carries no physical postal address.
+
+    CAN-SPAM requires one on commercial email. Bruce supplied a street address on
+    17 August 2026, so this normally passes. The check stays because sender.txt is
+    hand-edited and shared by every template: an address that quietly goes missing
+    takes the compliance of every send with it, silently.
+    """
+    return not re.search(r"(?im)^.*(p\.?\s?o\.?\s?box|\b[A-Z]{2}\s+\d{5}\b)", signature())
+
+
 def signature():
     path = ROOT / "growth" / "sender.txt"
     return path.read_text(encoding="utf-8").rstrip() if path.exists() else ""
@@ -129,7 +143,27 @@ def render(row, touch):
     body = body.replace("{signature}", signature())
     for key in ("first_name", "company", "domain"):
         body = body.replace("{" + key + "}", row.get(key, "") or "")
-    return body
+    return fill_sentence(body, row)
+
+
+def fill_sentence(body, row):
+    """Swap the >> placeholder block for this prospect's one true sentence.
+
+    The sentence lives per prospect in the ledger rather than in the template.
+    Editing the shared template between sends is how a sentence written for one
+    company ends up in another company's email, which is the single failure the
+    >> block exists to prevent.
+    """
+    sentence = (row.get("true_sentence") or "").strip()
+    lines = body.split(chr(10))
+    block = [i for i, l in enumerate(lines) if l.startswith(">>")]
+    if not block:
+        return body
+    if not sentence:
+        return body
+    start, end = block[0], block[-1]
+    wrapped = textwrap.wrap(sentence, width=85) or [sentence]
+    return chr(10).join(lines[:start] + wrapped + lines[end + 1:])
 
 
 def scheduled_dates(rows):
@@ -189,11 +223,15 @@ def cmd_render(args):
     if touch == "close":
         sys.exit(f"{args.email} is owed a close, not a send. Use: log --event closed")
     print(render(row, touch))
-    if "TODO-POSTAL-ADDRESS" in signature():
-        print("\n  ! growth/sender.txt still says TODO-POSTAL-ADDRESS. CAN-SPAM requires a "
-              "valid physical postal address on commercial email.\n"
-              "    Fill it in before sending; a PO box or registered-agent address counts.",
-              file=sys.stderr)
+    if touch == "t1" and not (row.get("true_sentence") or "").strip():
+        print(chr(10) + "  ! No true sentence on file, so the >> block is still in the body."
+              + chr(10) + "    Store one:  pipeline.py sentence --email "
+              + row["email"] + " --text \"...\""
+              + chr(10) + "    If you cannot write one truthfully, drop them instead: "
+              "log --event disqualified", file=sys.stderr)
+    if missing_postal_address():
+        print(chr(10) + "  ! No postal address in sender.txt. CAN-SPAM requires one; "
+              "sending without it was accepted on 17 Aug 2026.", file=sys.stderr)
 
 
 def cmd_log(args):
@@ -222,6 +260,16 @@ def cmd_log(args):
     print(f"{args.email} -> {row['status']}" + (f" ({row['outcome']})" if row["outcome"] else ""))
 
 
+def cmd_sentence(args):
+    rows = load()
+    row = find(rows, args.email)
+    if not row:
+        sys.exit(f"{args.email} is not in the ledger.")
+    row["true_sentence"] = args.text.strip()
+    save(rows)
+    print(f"{args.email} sentence stored ({len(row['true_sentence'])} chars)")
+
+
 def cmd_add(args):
     rows = load()
     if find(rows, args.email):
@@ -243,7 +291,10 @@ def cmd_stats(args):
     for r in rows:
         by_status[r["status"]] = by_status.get(r["status"], 0) + 1
 
-    contacted = [r for r in rows if r["status"] in CONTACTED]
+    # A prospect disqualified before the first touch never received mail, so counting
+    # them here would pad the denominator and quietly depress the reply rate. The
+    # 60-send threshold in README.md is read off this number, so it has to mean sends.
+    contacted = [r for r in rows if r["status"] in CONTACTED and r["t1_date"].strip()]
     replied = [r for r in rows if r["reply_date"].strip()]
     connected = [r for r in rows if r["status"] in ("connected", "customer")]
 
@@ -302,8 +353,8 @@ def cmd_validate(args):
         if r["status"] in ("t1_sent", "t2_sent", "t3_sent") and not r.get("thread_id", "").strip():
             warnings.append(f"{who}: contacted but no thread_id, follow-ups cannot reply in thread")
 
-    if "TODO-POSTAL-ADDRESS" in signature():
-        warnings.append("sender.txt has no postal address; CAN-SPAM requires one on every send")
+    if missing_postal_address():
+        warnings.append("no postal address in sender.txt; CAN-SPAM requires one, accepted 17 Aug 2026")
 
     if problems:
         print(f"{len(problems)} problem(s):")
@@ -337,6 +388,11 @@ def main():
     l.add_argument("--outcome", help="free text, e.g. positive / not-now / no")
     l.add_argument("--note")
     l.set_defaults(func=cmd_log)
+
+    sen = sub.add_parser("sentence", help="store the one true sentence for a prospect")
+    sen.add_argument("--email", required=True)
+    sen.add_argument("--text", required=True)
+    sen.set_defaults(func=cmd_sentence)
 
     a = sub.add_parser("add", help="add a sourced prospect")
     a.add_argument("--email", required=True)
