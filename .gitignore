@@ -37,6 +37,10 @@ VALIDATION.md
 growth/pipeline.csv
 growth/sequences/
 growth/sender.txt
+# Deny every ledger-shaped file, not just the one we knew about. The 1-19 Aug
+# Outlook cohort was reconstructed into a second .csv on 24 Aug 2026 and would
+# not have been caught by naming pipeline.csv alone.
+growth/*.csv
 
 # Channel research, drafted posts, partner and prospect research. Same reason as
 # COMPETITIVE.md: it names real firms and real people, and it reads as a playbook
