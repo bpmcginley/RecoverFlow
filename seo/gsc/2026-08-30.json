@@ -1,17 +1,17 @@
 {
   "site": "sc-domain:recoverflow.org",
-  "source": "csv",
+  "source": "api",
   "range": {
-    "start": null,
-    "end": null
+    "start": "2026-07-31",
+    "end": "2026-08-27"
   },
   "queries": [
     {
       "query": "recoverflow",
-      "clicks": 3,
-      "impressions": 23,
-      "ctr": 0.1304,
-      "position": 7.7
+      "clicks": 1,
+      "impressions": 14,
+      "ctr": 0.0714,
+      "position": 7.36
     },
     {
       "query": "stripe past due",
@@ -21,1668 +21,3559 @@
       "position": 6.75
     },
     {
-      "query": "ai10325",
-      "clicks": 0,
-      "impressions": 111,
-      "ctr": 0.0,
-      "position": 4.09
-    },
-    {
-      "query": "card velocity exceeded meaning",
-      "clicks": 0,
-      "impressions": 42,
-      "ctr": 0.0,
-      "position": 8.29
-    },
-    {
-      "query": "decline recovery",
-      "clicks": 0,
-      "impressions": 31,
-      "ctr": 0.0,
-      "position": 82.06
-    },
-    {
-      "query": "smart retries",
-      "clicks": 0,
-      "impressions": 29,
-      "ctr": 0.0,
-      "position": 59.17
-    },
-    {
-      "query": "card_velocity_exceeded",
-      "clicks": 0,
-      "impressions": 28,
-      "ctr": 0.0,
-      "position": 32.32
-    },
-    {
-      "query": "failed payment recovery",
-      "clicks": 0,
-      "impressions": 27,
-      "ctr": 0.0,
-      "position": 95.04
-    },
-    {
-      "query": "card_velocity_exceeded.",
-      "clicks": 0,
-      "impressions": 21,
-      "ctr": 0.0,
-      "position": 37.57
-    },
-    {
-      "query": "transaction_not_allowed",
-      "clicks": 0,
-      "impressions": 18,
-      "ctr": 0.0,
-      "position": 37.39
-    },
-    {
-      "query": "recover failed payments",
-      "clicks": 0,
-      "impressions": 18,
-      "ctr": 0.0,
-      "position": 96
-    },
-    {
-      "query": "card velocity exceeded",
-      "clicks": 0,
-      "impressions": 16,
-      "ctr": 0.0,
-      "position": 12.38
-    },
-    {
-      "query": "smart payment retries",
-      "clicks": 0,
-      "impressions": 16,
-      "ctr": 0.0,
-      "position": 76.31
-    },
-    {
-      "query": "what does card velocity exceeded mean",
-      "clicks": 0,
-      "impressions": 15,
-      "ctr": 0.0,
-      "position": 9.33
-    },
-    {
-      "query": "generic_decline",
-      "clicks": 0,
-      "impressions": 15,
-      "ctr": 0.0,
-      "position": 44.53
-    },
-    {
-      "query": "the bank returned the decline code do_not_honor",
-      "clicks": 0,
-      "impressions": 14,
-      "ctr": 0.0,
-      "position": 80.07
-    },
-    {
-      "query": "past_due",
-      "clicks": 0,
-      "impressions": 11,
-      "ctr": 0.0,
-      "position": 20.64
-    },
-    {
-      "query": "do not honor",
-      "clicks": 0,
-      "impressions": 10,
-      "ctr": 0.0,
-      "position": 78.4
-    },
-    {
-      "query": "do_not_honor decline code",
-      "clicks": 0,
-      "impressions": 9,
-      "ctr": 0.0,
-      "position": 74.22
-    },
-    {
-      "query": "previously_declined_do_not_retry",
-      "clicks": 0,
-      "impressions": 8,
-      "ctr": 0.0,
-      "position": 24.12
-    },
-    {
-      "query": "stripe decline codes",
-      "clicks": 0,
-      "impressions": 8,
-      "ctr": 0.0,
-      "position": 66.38
-    },
-    {
-      "query": "subscription payment recovery",
-      "clicks": 0,
-      "impressions": 8,
-      "ctr": 0.0,
-      "position": 91.75
-    },
-    {
-      "query": "do_not_honor",
-      "clicks": 0,
-      "impressions": 7,
-      "ctr": 0.0,
-      "position": 40
-    },
-    {
-      "query": "monthly recurring payment recovery",
-      "clicks": 0,
-      "impressions": 7,
-      "ctr": 0.0,
-      "position": 87.14
-    },
-    {
-      "query": "payment_intent.payment_failed",
-      "clicks": 0,
-      "impressions": 6,
-      "ctr": 0.0,
-      "position": 11.67
-    },
-    {
-      "query": "invoice.payment_failed",
-      "clicks": 0,
-      "impressions": 6,
-      "ctr": 0.0,
-      "position": 20.67
-    },
-    {
-      "query": "card_error authentication_required",
-      "clicks": 0,
-      "impressions": 6,
-      "ctr": 0.0,
-      "position": 58.33
-    },
-    {
-      "query": "do not honour",
-      "clicks": 0,
-      "impressions": 6,
-      "ctr": 0.0,
-      "position": 84
-    },
-    {
-      "query": "best tools to recover missed payments from patients?",
-      "clicks": 0,
-      "impressions": 6,
-      "ctr": 0.0,
-      "position": 85.5
-    },
-    {
-      "query": "payment failed do not honor",
-      "clicks": 0,
-      "impressions": 5,
-      "ctr": 0.0,
-      "position": 69.8
-    },
-    {
-      "query": "do not honor debit card",
-      "clicks": 0,
-      "impressions": 5,
-      "ctr": 0.0,
-      "position": 83.6
-    },
-    {
-      "query": "declined do not honor",
-      "clicks": 0,
-      "impressions": 5,
-      "ctr": 0.0,
-      "position": 84.6
-    },
-    {
-      "query": "recover failed payment",
-      "clicks": 0,
-      "impressions": 5,
-      "ctr": 0.0,
-      "position": 95.4
-    },
-    {
-      "query": "recover failed card payments",
-      "clicks": 0,
-      "impressions": 5,
-      "ctr": 0.0,
-      "position": 95.8
-    },
-    {
-      "query": "card velocity exceeded stripe meaning",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 7.75
-    },
-    {
-      "query": "past_due stripe",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 8.25
-    },
-    {
-      "query": "authentication_required",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 11.25
-    },
-    {
-      "query": "stripe card_velocity_exceeded",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 22.75
-    },
-    {
-      "query": "card velocity exceeded stripe",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 23
-    },
-    {
-      "query": "profitwell retain",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 29.25
-    },
-    {
-      "query": "generic decline meaning",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 60
-    },
-    {
-      "query": "smart retry",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 70.25
-    },
-    {
-      "query": "do not honor code",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 78.5
-    },
-    {
-      "query": "recurring payment recovery",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 81
-    },
-    {
-      "query": "managing failed payments",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 94
-    },
-    {
       "query": "4000000000000341",
       "clicks": 0,
       "impressions": 3,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 8
-    },
-    {
-      "query": "stripe past_due",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 8.67
-    },
-    {
-      "query": "processing_error",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 10.33
-    },
-    {
-      "query": "stripe do not honor",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 41
-    },
-    {
-      "query": "smart retry stripe",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 45.67
-    },
-    {
-      "query": "vindicia retain smart retries",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 53
-    },
-    {
-      "query": "stripe failure codes",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 59.67
-    },
-    {
-      "query": "do not honor card",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 62
-    },
-    {
-      "query": "stripe network decline code 51",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 62.33
-    },
-    {
-      "query": "stripe smart retries",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 68
-    },
-    {
-      "query": "stripe retries",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 69.67
-    },
-    {
-      "query": "smart retry logic payments",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 74.33
-    },
-    {
-      "query": "stripe smart retries documentation",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 77.33
-    },
-    {
-      "query": "why does my debit card say do not honor",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 80.67
-    },
-    {
-      "query": "card do not honor",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 84
-    },
-    {
-      "query": "subscription payment retries",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 87.67
-    },
-    {
-      "query": "failed payment recovery for membership and subscription services",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 89.67
-    },
-    {
-      "query": "decline retry",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 94.67
-    },
-    {
-      "query": "how do i recover failed payments",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 98.67
-    },
-    {
-      "query": "stripe unpaid subscription",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 8.5
-    },
-    {
-      "query": "card_velocity_exceeded meaning",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 29
-    },
-    {
-      "query": "stripe card velocity exceeded",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 31
-    },
-    {
-      "query": "stripe failed payment test",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 42.5
-    },
-    {
-      "query": "do not honor stripe",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 43
-    },
-    {
-      "query": "stripe test declined card",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 43.5
-    },
-    {
-      "query": "what are smart retries",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 49
-    },
-    {
-      "query": "your card was declined this transaction requires authentication stripe",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 51
-    },
-    {
-      "query": "what does generic decline mean",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 53.5
-    },
-    {
-      "query": "the bank returned the decline code `do_not_honor`.",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 54.5
-    },
-    {
-      "query": "decline code do_not_honor",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 57.5
-    },
-    {
-      "query": "stripe generic decline",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 57.5
-    },
-    {
-      "query": "stripe do not honor code",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 59
-    },
-    {
-      "query": "churnkey alternative",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 60
-    },
-    {
-      "query": "the bank returned the decline code card_velocity_exceeded.",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 60
-    },
-    {
-      "query": "what is a generic decline",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 61.5
-    },
-    {
-      "query": "generic decline stripe",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 62
-    },
-    {
-      "query": "stripe card_declined",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 62
-    },
-    {
-      "query": "your card was declined stripe",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 63
-    },
-    {
-      "query": "your card was declined for making repeated attempts too frequently stripe",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 66
-    },
-    {
-      "query": "churnkey alternatives",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 68
-    },
-    {
-      "query": "payment recovery platform",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 70
-    },
-    {
-      "query": "what does do not honor mean",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 73
-    },
-    {
-      "query": "stripe retry payment",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 74
-    },
-    {
-      "query": "do not honor meaning",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 81
-    },
-    {
-      "query": "do not honor card error",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 82.5
-    },
-    {
-      "query": "what is the meaning of do not honor in credit card",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 84
-    },
-    {
-      "query": "failed recurring payment recovery",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 88
-    },
-    {
-      "query": "i doubt it",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 1
-    },
-    {
-      "query": "processing_error stripe",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 5
-    },
-    {
-      "query": "pickup_card",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 6
-    },
-    {
-      "query": "recover flow",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 6
-    },
-    {
-      "query": "your subscription has a failed or incomplete payment. complete the latest \ninvoice to continue usage.",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 7
-    },
-    {
-      "query": "call issuer meaning",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 8
-    },
-    {
-      "query": "past due stripe",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 8
-    },
-    {
-      "query": "stripe subscription status values incomplete incomplete_expired trialing \nactive past_due canceled unpaid paused",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 8
-    },
-    {
-      "query": "incorrect cvc",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 11
-    },
-    {
-      "query": "stripe incomplete_expired",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 15
-    },
-    {
-      "query": "how to cancel invoice in stripe",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 23
-    },
-    {
-      "query": "stripe test cards for failed payment",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 28
-    },
-    {
-      "query": "how to void invoice on stripe",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 30
-    },
-    {
-      "query": "stripe account recovery form",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 30
-    },
-    {
-      "query": "stripe failed card",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 30
-    },
-    {
-      "query": "stripe insufficient funds test card",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 36
-    },
-    {
-      "query": "stripe do_not_honor",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 39
-    },
-    {
-      "query": "stripe test cards declined",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 41
-    },
-    {
-      "query": "stripe authentication failed",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 42
-    },
-    {
-      "query": "stripe dunning",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 43
-    },
-    {
-      "query": "smart retries stripe",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 49
-    },
-    {
-      "query": "card limit exceeded",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 51
-    },
-    {
-      "query": "generic decline",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 51
-    },
-    {
-      "query": "restoreflow",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 51
-    },
-    {
-      "query": "stripe recover",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 51
-    },
-    {
-      "query": "stripe decline code do_not_honor",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 53
-    },
-    {
-      "query": "stripe decline reasons",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 53
-    },
-    {
-      "query": "stripe recovery",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 53
-    },
-    {
-      "query": "decline velocity",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 54
-    },
-    {
-      "query": "velocity exceeded meaning",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 54
-    },
-    {
-      "query": "stripe retry",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 55
-    },
-    {
-      "query": "stripe subscription payment failed",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 57
-    },
-    {
-      "query": "transaction_not_allowed stripe",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 57
-    },
-    {
-      "query": "smartretry",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 58
-    },
-    {
-      "query": "stripe your card was declined.",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 58
-    },
-    {
-      "query": "transaction not allowed stripe",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 58
-    },
-    {
-      "query": "what is a decline velocity",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 58
-    },
-    {
-      "query": "card declined stripe",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 59
-    },
-    {
-      "query": "payment declined do not honor",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 59
-    },
-    {
-      "query": "your card has been declined stripe",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 59
-    },
-    {
-      "query": "stripe your card has been declined.",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 60
-    },
-    {
-      "query": "stripe error code",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 61
-    },
-    {
-      "query": "stripe network decline code 83",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 61
-    },
-    {
-      "query": "stripe card declined error",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 62
-    },
-    {
-      "query": "stripe decline card",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 63
-    },
-    {
-      "query": "stripe card declined",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 64
-    },
-    {
-      "query": "stripe your card was declined for making repeated attempts too frequently",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 64
-    },
-    {
-      "query": "what does declined do not honor mean",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 64
     },
     {
       "query": "530 do not honor",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 65
     },
     {
-      "query": "stripe pickup_card",
+      "query": "ai10325",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 65
+      "impressions": 94,
+      "ctr": 0,
+      "position": 4.22
     },
     {
-      "query": "the bank returned the decline code card_velocity_exceeded",
+      "query": "authentication_required",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 65
+      "impressions": 4,
+      "ctr": 0,
+      "position": 11.25
     },
     {
-      "query": "decline velocity meaning",
+      "query": "best tools to recover missed payments from patients",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 67
+      "ctr": 0,
+      "position": 86
     },
     {
-      "query": "do not honor card meaning",
+      "query": "best tools to recover missed payments from patients?",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 67
+      "impressions": 5,
+      "ctr": 0,
+      "position": 85.4
     },
     {
-      "query": "do not honor decline",
+      "query": "call issuer meaning",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 68
+      "ctr": 0,
+      "position": 8
     },
     {
-      "query": "stripe network decline code 59",
+      "query": "card declined stripe",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
+      "position": 59
+    },
+    {
+      "query": "card do not honor",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "card do not honor means",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 77
+    },
+    {
+      "query": "card limit exceeded",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 51
+    },
+    {
+      "query": "card velocity exceeded",
+      "clicks": 0,
+      "impressions": 16,
+      "ctr": 0,
+      "position": 12.38
+    },
+    {
+      "query": "card velocity exceeded meaning",
+      "clicks": 0,
+      "impressions": 42,
+      "ctr": 0,
+      "position": 8.29
+    },
+    {
+      "query": "card velocity exceeded stripe",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 23
+    },
+    {
+      "query": "card velocity exceeded stripe meaning",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 7.75
+    },
+    {
+      "query": "card_error authentication_required",
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 58.33
+    },
+    {
+      "query": "card_velocity_exceeded",
+      "clicks": 0,
+      "impressions": 28,
+      "ctr": 0,
+      "position": 32.32
+    },
+    {
+      "query": "card_velocity_exceeded meaning",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 29
+    },
+    {
+      "query": "card_velocity_exceeded.",
+      "clicks": 0,
+      "impressions": 20,
+      "ctr": 0,
+      "position": 37.2
+    },
+    {
+      "query": "churnkey alternative",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 60
+    },
+    {
+      "query": "churnkey alternatives",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
       "position": 68
     },
     {
       "query": "debit card do not honor means",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 69
+    },
+    {
+      "query": "decline code do_not_honor",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 57.5
     },
     {
       "query": "decline do not honor",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 70
     },
     {
-      "query": "stripe network decline code 82",
+      "query": "decline recovery",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 70
+      "impressions": 31,
+      "ctr": 0,
+      "position": 82.06
     },
     {
-      "query": "reason do not honor",
+      "query": "decline retry",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 71
+      "impressions": 3,
+      "ctr": 0,
+      "position": 94.67
     },
     {
-      "query": "stripe invalid account error",
+      "query": "decline velocity",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 71
+      "ctr": 0,
+      "position": 54
     },
     {
-      "query": "what is smart retry",
+      "query": "decline velocity meaning",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 74
+      "ctr": 0,
+      "position": 67
+    },
+    {
+      "query": "declined 12",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "declined do not honor",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 84.6
+    },
+    {
+      "query": "do not honor",
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 78.4
     },
     {
       "query": "do not honor (100) declined",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 76
     },
     {
-      "query": "pick up card-sf",
+      "query": "do not honor bank code",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 76
+      "ctr": 0,
+      "position": 89
     },
     {
-      "query": "software subscription payment recovery",
+      "query": "do not honor card",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 76
+      "ctr": 0,
+      "position": 64
     },
     {
-      "query": "what are intelligent retries",
+      "query": "do not honor card error",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 76
+      "impressions": 2,
+      "ctr": 0,
+      "position": 82.5
     },
     {
-      "query": "card do not honor means",
+      "query": "do not honor card meaning",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 77
+      "ctr": 0,
+      "position": 67
+    },
+    {
+      "query": "do not honor code",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 78.5
+    },
+    {
+      "query": "do not honor credit card",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 87
+    },
+    {
+      "query": "do not honor debit card",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 83.6
+    },
+    {
+      "query": "do not honor debit card meaning",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 90
+    },
+    {
+      "query": "do not honor decline",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 68
+    },
+    {
+      "query": "do not honor decline code",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 82
+    },
+    {
+      "query": "do not honor meaning",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 79
+    },
+    {
+      "query": "do not honor means",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 85
+    },
+    {
+      "query": "do not honor stripe",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 66
+    },
+    {
+      "query": "do not honour",
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "do not honour decline",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 83
+    },
+    {
+      "query": "do not honour means",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 87
+    },
+    {
+      "query": "do_not_honor",
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 40
+    },
+    {
+      "query": "do_not_honor decline code",
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 75.5
+    },
+    {
+      "query": "failed payment recovery",
+      "clicks": 0,
+      "impressions": 25,
+      "ctr": 0,
+      "position": 95.12
+    },
+    {
+      "query": "failed payment recovery for membership and subscription services",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 89.67
+    },
+    {
+      "query": "failed recurring payment recovery",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 88
+    },
+    {
+      "query": "generic decline",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 51
+    },
+    {
+      "query": "generic decline meaning",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 60
+    },
+    {
+      "query": "generic decline stripe",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 62
+    },
+    {
+      "query": "generic_decline",
+      "clicks": 0,
+      "impressions": 15,
+      "ctr": 0,
+      "position": 44.53
+    },
+    {
+      "query": "how do i recover failed payments",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 98.67
+    },
+    {
+      "query": "how to cancel invoice in stripe",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 23
     },
     {
       "query": "how to retry a failed payment in stripe",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 77
-    },
-    {
-      "query": "restore flow",
-      "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 77
     },
     {
       "query": "how to retry payment on stripe",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 78
+    },
+    {
+      "query": "how to void invoice on stripe",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 30
+    },
+    {
+      "query": "i doubt it",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "query": "incorrect cvc",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "query": "intelligent failed payment recovery",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 99
+    },
+    {
+      "query": "invoice.payment_failed",
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 20.67
+    },
+    {
+      "query": "managing failed payments",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 95.33
+    },
+    {
+      "query": "meaning of do not honor",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 89
+    },
+    {
+      "query": "monthly recurring payment recovery",
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 87.14
     },
     {
       "query": "network decline code 83",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 79
     },
     {
-      "query": "stripe retry failed payment",
+      "query": "past due stripe",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 81
+      "ctr": 0,
+      "position": 8
     },
     {
-      "query": "do not honor decline code",
+      "query": "past_due",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 82
+      "impressions": 11,
+      "ctr": 0,
+      "position": 20.64
     },
     {
-      "query": "stripe failed payment retry",
+      "query": "past_due stripe",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 82
+      "impressions": 4,
+      "ctr": 0,
+      "position": 8.25
     },
     {
-      "query": "do not honour decline",
+      "query": "payment declined do not honor",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 83
+      "ctr": 0,
+      "position": 59
     },
     {
-      "query": "what do not honor means",
+      "query": "payment failed do not honor",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 83
+      "impressions": 5,
+      "ctr": 0,
+      "position": 69.8
     },
     {
-      "query": "declined 12",
+      "query": "payment recovery platform",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 84
+      "ctr": 0,
+      "position": 68
     },
     {
-      "query": "transaction declined do not honor",
+      "query": "payment_intent.payment_failed",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 84
+      "impressions": 6,
+      "ctr": 0,
+      "position": 11.67
     },
     {
-      "query": "what is the meaning of do not honor",
+      "query": "pick up card-sf",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 84
+      "ctr": 0,
+      "position": 76
     },
     {
-      "query": "do not honor means",
+      "query": "pickup_card",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 85
+      "ctr": 0,
+      "position": 6
     },
     {
-      "query": "what does it mean do not honor credit card",
+      "query": "previously_declined_do_not_retry",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 85
+      "impressions": 8,
+      "ctr": 0,
+      "position": 24.12
     },
     {
-      "query": "best tools to recover missed payments from patients",
+      "query": "processing_error",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 86
+      "impressions": 2,
+      "ctr": 0,
+      "position": 10
     },
     {
-      "query": "do not honor credit card",
+      "query": "processing_error stripe",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 87
+      "ctr": 0,
+      "position": 5
     },
     {
-      "query": "do not honour means",
+      "query": "profitwell retain",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 29.25
+    },
+    {
+      "query": "reason do not honor",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 87
+      "ctr": 0,
+      "position": 71
+    },
+    {
+      "query": "recover failed card payments",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 95.8
+    },
+    {
+      "query": "recover failed payment",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 95.4
+    },
+    {
+      "query": "recover failed payments",
+      "clicks": 0,
+      "impressions": 17,
+      "ctr": 0,
+      "position": 96.06
     },
     {
       "query": "recover failed subscription payments",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 87
     },
     {
       "query": "recovery payable",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 88
     },
     {
-      "query": "do not honor bank code",
+      "query": "recurring payment recovery",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 89
+      "impressions": 4,
+      "ctr": 0,
+      "position": 81
     },
     {
-      "query": "meaning of do not honor",
+      "query": "restore flow",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 89
+      "ctr": 0,
+      "position": 77
     },
     {
-      "query": "do not honor debit card meaning",
+      "query": "restoreflow",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 90
+      "ctr": 0,
+      "position": 51
     },
     {
-      "query": "subscription billing retries",
+      "query": "smart payment retries",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 91
+      "impressions": 16,
+      "ctr": 0,
+      "position": 76.31
     },
     {
       "query": "smart payment retry strategies",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 92
+    },
+    {
+      "query": "smart retries",
+      "clicks": 0,
+      "impressions": 29,
+      "ctr": 0,
+      "position": 59.17
+    },
+    {
+      "query": "smart retries stripe",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 49
+    },
+    {
+      "query": "smart retry",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 70.25
+    },
+    {
+      "query": "smart retry logic payments",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 74.33
+    },
+    {
+      "query": "smart retry stripe",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 45.67
+    },
+    {
+      "query": "smartretry",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "stripe account recovery form",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 30
+    },
+    {
+      "query": "stripe authentication failed",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 42
+    },
+    {
+      "query": "stripe card declined",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "query": "stripe card declined error",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 62
+    },
+    {
+      "query": "stripe card velocity exceeded",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 31
+    },
+    {
+      "query": "stripe card_declined",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 62
+    },
+    {
+      "query": "stripe card_velocity_exceeded",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 22.75
+    },
+    {
+      "query": "stripe decline card",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 63
+    },
+    {
+      "query": "stripe decline code do_not_honor",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 53
+    },
+    {
+      "query": "stripe decline codes",
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 66.38
+    },
+    {
+      "query": "stripe decline reasons",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 53
+    },
+    {
+      "query": "stripe do not honor",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 41
+    },
+    {
+      "query": "stripe do not honor code",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 59
+    },
+    {
+      "query": "stripe do_not_honor",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 39
+    },
+    {
+      "query": "stripe dunning",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 43
+    },
+    {
+      "query": "stripe error code",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 61
+    },
+    {
+      "query": "stripe failed card",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 30
+    },
+    {
+      "query": "stripe failed payment retry",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 82
+    },
+    {
+      "query": "stripe failed payment test",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 42.5
+    },
+    {
+      "query": "stripe failure codes",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 59.67
+    },
+    {
+      "query": "stripe generic decline",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 57.5
+    },
+    {
+      "query": "stripe incomplete_expired",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 15
+    },
+    {
+      "query": "stripe insufficient funds test card",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 36
+    },
+    {
+      "query": "stripe invalid account error",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 71
+    },
+    {
+      "query": "stripe network decline code 51",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 62.33
+    },
+    {
+      "query": "stripe network decline code 59",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 68
+    },
+    {
+      "query": "stripe network decline code 82",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 70
+    },
+    {
+      "query": "stripe network decline code 83",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 61
+    },
+    {
+      "query": "stripe past_due",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 9.5
+    },
+    {
+      "query": "stripe pickup_card",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 65
+    },
+    {
+      "query": "stripe recover",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 51
+    },
+    {
+      "query": "stripe recovery",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 53
+    },
+    {
+      "query": "stripe retries",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 69.67
+    },
+    {
+      "query": "stripe retry",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 55
+    },
+    {
+      "query": "stripe retry failed payment",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 81
+    },
+    {
+      "query": "stripe retry payment",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 74
+    },
+    {
+      "query": "stripe smart retries",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 68
+    },
+    {
+      "query": "stripe smart retries documentation",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 77.33
+    },
+    {
+      "query": "stripe subscription payment failed",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 57
+    },
+    {
+      "query": "stripe subscription status values incomplete incomplete_expired trialing active past_due canceled unpaid paused",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "query": "stripe test cards declined",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 41
+    },
+    {
+      "query": "stripe test cards for failed payment",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 28
+    },
+    {
+      "query": "stripe test declined card",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 43.5
+    },
+    {
+      "query": "stripe unpaid subscription",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 8.5
+    },
+    {
+      "query": "stripe your card has been declined.",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 60
+    },
+    {
+      "query": "stripe your card was declined for making repeated attempts too frequently",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "query": "stripe your card was declined.",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "subscription billing retries",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 91
+    },
+    {
+      "query": "subscription payment recovery",
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 91.75
+    },
+    {
+      "query": "subscription payment retries",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 87.67
+    },
+    {
+      "query": "the bank returned the decline code `do_not_honor`.",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 79
+    },
+    {
+      "query": "the bank returned the decline code card_velocity_exceeded",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 65
+    },
+    {
+      "query": "the bank returned the decline code card_velocity_exceeded.",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 60
+    },
+    {
+      "query": "the bank returned the decline code do_not_honor",
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 79.7
+    },
+    {
+      "query": "transaction declined do not honor",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "transaction not allowed stripe",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "transaction_not_allowed",
+      "clicks": 0,
+      "impressions": 18,
+      "ctr": 0,
+      "position": 37.39
+    },
+    {
+      "query": "transaction_not_allowed stripe",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 57
+    },
+    {
+      "query": "velocity exceeded meaning",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 54
+    },
+    {
+      "query": "vindicia retain smart retries",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 53
+    },
+    {
+      "query": "what are intelligent retries",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 76
+    },
+    {
+      "query": "what are smart retries",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 49
+    },
+    {
+      "query": "what do not honor means",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 83
+    },
+    {
+      "query": "what does card velocity exceeded mean",
+      "clicks": 0,
+      "impressions": 15,
+      "ctr": 0,
+      "position": 9.33
+    },
+    {
+      "query": "what does declined do not honor mean",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "query": "what does do not honor mean",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 73
     },
     {
       "query": "what does do not honor mean on a credit card transaction",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 92
     },
     {
       "query": "what does do not honor mean on credit card",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 96
     },
     {
-      "query": "intelligent failed payment recovery",
+      "query": "what does generic decline mean",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 99
+      "impressions": 2,
+      "ctr": 0,
+      "position": 53.5
     },
     {
-      "query": "streaming payment recovery",
+      "query": "what does it mean do not honor credit card",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 99
+      "ctr": 0,
+      "position": 85
+    },
+    {
+      "query": "what is a decline velocity",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "what is a generic decline",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 61.5
+    },
+    {
+      "query": "what is smart retry",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 74
+    },
+    {
+      "query": "what is the meaning of do not honor",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "what is the meaning of do not honor in credit card",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "why does my debit card say do not honor",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 80.67
+    },
+    {
+      "query": "your card has been declined stripe",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 59
+    },
+    {
+      "query": "your card was declined for making repeated attempts too frequently stripe",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 66
+    },
+    {
+      "query": "your card was declined stripe",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 63
+    },
+    {
+      "query": "your card was declined this transaction requires authentication stripe",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 51
+    },
+    {
+      "query": "your subscription has a failed or incomplete payment. complete the latest invoice to continue usage.",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
     }
   ],
   "pages": [
     {
       "page": "https://recoverflow.org/",
-      "clicks": 5,
-      "impressions": 81,
-      "ctr": 0.0617,
-      "position": 14.93
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
-      "clicks": 2,
-      "impressions": 208,
-      "ctr": 0.0096,
-      "position": 28.01
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
       "clicks": 1,
-      "impressions": 473,
-      "ctr": 0.0021,
-      "position": 19.03
+      "impressions": 34,
+      "ctr": 0.0294,
+      "position": 21.53
     },
     {
       "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
       "clicks": 1,
-      "impressions": 133,
-      "ctr": 0.0075,
-      "position": 63.28
+      "impressions": 121,
+      "ctr": 0.0083,
+      "position": 64.63
     },
     {
       "page": "https://recoverflow.org/blog/stripe-not-retrying-failed-invoice/",
       "clicks": 1,
-      "impressions": 74,
-      "ctr": 0.0135,
-      "position": 53.39
+      "impressions": 71,
+      "ctr": 0.0141,
+      "position": 55.34
     },
     {
       "page": "https://recoverflow.org/blog/stripe-processing-error-decline/",
       "clicks": 1,
-      "impressions": 34,
-      "ctr": 0.0294,
-      "position": 41.47
+      "impressions": 31,
+      "ctr": 0.0323,
+      "position": 42.52
     },
     {
-      "page": "https://recoverflow.org/tools/decline-code-lookup/",
-      "clicks": 0,
-      "impressions": 554,
-      "ctr": 0.0,
-      "position": 63.65
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 1,
+      "impressions": 466,
+      "ctr": 0.0021,
+      "position": 18.98
     },
     {
-      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
-      "clicks": 0,
-      "impressions": 391,
-      "ctr": 0.0,
-      "position": 75.53
-    },
-    {
-      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
-      "clicks": 0,
-      "impressions": 150,
-      "ctr": 0.0,
-      "position": 58.85
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
-      "clicks": 0,
-      "impressions": 149,
-      "ctr": 0.0,
-      "position": 20.03
-    },
-    {
-      "page": "https://recoverflow.org/blog/visa-excessive-reattempts-rule/",
-      "clicks": 0,
-      "impressions": 125,
-      "ctr": 0.0,
-      "position": 4.3
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
-      "clicks": 0,
-      "impressions": 88,
-      "ctr": 0.0,
-      "position": 61.05
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-try-again-later-decline/",
-      "clicks": 0,
-      "impressions": 72,
-      "ctr": 0.0,
-      "position": 47.14
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-automatic-card-updates/",
-      "clicks": 0,
-      "impressions": 60,
-      "ctr": 0.0,
-      "position": 13.72
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-generic-decline-code/",
-      "clicks": 0,
-      "impressions": 60,
-      "ctr": 0.0,
-      "position": 60.78
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-incorrect-number-vs-invalid-number/",
-      "clicks": 0,
-      "impressions": 56,
-      "ctr": 0.0,
-      "position": 68.79
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-failed-payment-webhooks/",
-      "clicks": 0,
-      "impressions": 55,
-      "ctr": 0.0,
-      "position": 18.85
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
-      "clicks": 0,
-      "impressions": 50,
-      "ctr": 0.0,
-      "position": 45.34
-    },
-    {
-      "page": "https://recoverflow.org/docs/decline-classification/",
-      "clicks": 0,
-      "impressions": 33,
-      "ctr": 0.0,
-      "position": 81.3
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-currency-not-supported-decline/",
-      "clicks": 0,
-      "impressions": 25,
-      "ctr": 0.0,
-      "position": 67.4
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-decline-codes-that-stop-retries/",
-      "clicks": 0,
-      "impressions": 23,
-      "ctr": 0.0,
-      "position": 41.26
-    },
-    {
-      "page": "https://recoverflow.org/tools/retry-waste-calculator/",
-      "clicks": 0,
-      "impressions": 20,
-      "ctr": 0.0,
-      "position": 79.25
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-pickup-card-vs-restricted-card/",
-      "clicks": 0,
-      "impressions": 19,
-      "ctr": 0.0,
-      "position": 52.05
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-fraudulent-decline-code/",
-      "clicks": 0,
-      "impressions": 19,
-      "ctr": 0.0,
-      "position": 67.37
-    },
-    {
-      "page": "https://recoverflow.org/blog/invoice-payment-failed-vs-payment-intent-payment-failed/",
-      "clicks": 0,
-      "impressions": 18,
-      "ctr": 0.0,
-      "position": 18.22
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-duplicate-transaction-decline/",
-      "clicks": 0,
-      "impressions": 18,
-      "ctr": 0.0,
-      "position": 65.17
-    },
-    {
-      "page": "https://recoverflow.org/compare/",
-      "clicks": 0,
-      "impressions": 17,
-      "ctr": 0.0,
-      "position": 64.35
-    },
-    {
-      "page": "https://recoverflow.org/compare/paddle-retain/",
-      "clicks": 0,
-      "impressions": 16,
-      "ctr": 0.0,
-      "position": 44.25
-    },
-    {
-      "page": "https://recoverflow.org/blog/expired-card-stripe-retries/",
-      "clicks": 0,
-      "impressions": 10,
-      "ctr": 0.0,
-      "position": 26
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-free-dunning-settings-checklist/",
-      "clicks": 0,
-      "impressions": 9,
-      "ctr": 0.0,
-      "position": 5.78
-    },
-    {
-      "page": "https://recoverflow.org/compare/churnkey/",
-      "clicks": 0,
-      "impressions": 8,
-      "ctr": 0.0,
-      "position": 47.88
-    },
-    {
-      "page": "https://recoverflow.org/compare/stripe-native/",
-      "clicks": 0,
-      "impressions": 7,
-      "ctr": 0.0,
-      "position": 15.14
+      "page": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
+      "clicks": 1,
+      "impressions": 194,
+      "ctr": 0.0052,
+      "position": 27.94
     },
     {
       "page": "https://app.recoverflow.org/",
       "clicks": 0,
       "impressions": 7,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 34.86
-    },
-    {
-      "page": "https://recoverflow.org/compare/baremetrics/",
-      "clicks": 0,
-      "impressions": 7,
-      "ctr": 0.0,
-      "position": 40.43
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-incorrect-cvc-decline/",
-      "clicks": 0,
-      "impressions": 6,
-      "ctr": 0.0,
-      "position": 7.17
-    },
-    {
-      "page": "https://recoverflow.org/tools/retry-schedule-builder/",
-      "clicks": 0,
-      "impressions": 5,
-      "ctr": 0.0,
-      "position": 33.6
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-dunning-emails-what-you-control/",
-      "clicks": 0,
-      "impressions": 5,
-      "ctr": 0.0,
-      "position": 34.2
-    },
-    {
-      "page": "https://recoverflow.org/blog/",
-      "clicks": 0,
-      "impressions": 5,
-      "ctr": 0.0,
-      "position": 39.4
-    },
-    {
-      "page": "https://recoverflow.org/compare/stunning/",
-      "clicks": 0,
-      "impressions": 5,
-      "ctr": 0.0,
-      "position": 44.4
-    },
-    {
-      "page": "https://recoverflow.org/tools/recovery-estimator/",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 27.75
-    },
-    {
-      "page": "https://recoverflow.org/blog/is-insufficient-funds-a-hard-decline/",
-      "clicks": 0,
-      "impressions": 4,
-      "ctr": 0.0,
-      "position": 31.75
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-call-issuer-decline/",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 37
-    },
-    {
-      "page": "https://recoverflow.org/docs/connecting-stripe/",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 44.67
-    },
-    {
-      "page": "https://recoverflow.org/blog/stripe-lost-card-stolen-card-declines/",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 71.67
-    },
-    {
-      "page": "https://recoverflow.org/tools/visa-retry-budget/",
-      "clicks": 0,
-      "impressions": 3,
-      "ctr": 0.0,
-      "position": 78.33
-    },
-    {
-      "page": "https://recoverflow.org/terms/",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 5.5
-    },
-    {
-      "page": "https://recoverflow.org/privacy/",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 6
-    },
-    {
-      "page": "https://recoverflow.org/blog/how-to-measure-involuntary-churn/",
-      "clicks": 0,
-      "impressions": 2,
-      "ctr": 0.0,
-      "position": 8.5
     },
     {
       "page": "https://recoverflow.org/audit/",
       "clicks": 0,
       "impressions": 2,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 28
     },
     {
-      "page": "https://recoverflow.org/pricing/",
+      "page": "https://recoverflow.org/blog/",
       "clicks": 0,
-      "impressions": 1,
-      "ctr": 0.0,
-      "position": 1
+      "impressions": 5,
+      "ctr": 0,
+      "position": 39.4
+    },
+    {
+      "page": "https://recoverflow.org/blog/expired-card-stripe-retries/",
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 26
+    },
+    {
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 150,
+      "ctr": 0,
+      "position": 58.85
+    },
+    {
+      "page": "https://recoverflow.org/blog/how-to-measure-involuntary-churn/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 8.5
+    },
+    {
+      "page": "https://recoverflow.org/blog/invoice-payment-failed-vs-payment-intent-payment-failed/",
+      "clicks": 0,
+      "impressions": 18,
+      "ctr": 0,
+      "position": 18.22
+    },
+    {
+      "page": "https://recoverflow.org/blog/is-insufficient-funds-a-hard-decline/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 31.75
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
+      "clicks": 0,
+      "impressions": 50,
+      "ctr": 0,
+      "position": 45.34
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-automatic-card-updates/",
+      "clicks": 0,
+      "impressions": 59,
+      "ctr": 0,
+      "position": 13.76
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-call-issuer-decline/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 37
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 149,
+      "ctr": 0,
+      "position": 20.03
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-currency-not-supported-decline/",
+      "clicks": 0,
+      "impressions": 19,
+      "ctr": 0,
+      "position": 65.47
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-decline-codes-that-stop-retries/",
+      "clicks": 0,
+      "impressions": 23,
+      "ctr": 0,
+      "position": 41.26
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-dunning-emails-what-you-control/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 34.2
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-duplicate-transaction-decline/",
+      "clicks": 0,
+      "impressions": 18,
+      "ctr": 0,
+      "position": 65.17
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-failed-payment-webhooks/",
+      "clicks": 0,
+      "impressions": 54,
+      "ctr": 0,
+      "position": 19.06
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-fraudulent-decline-code/",
+      "clicks": 0,
+      "impressions": 19,
+      "ctr": 0,
+      "position": 67.37
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-free-dunning-settings-checklist/",
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 5.88
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-generic-decline-code/",
+      "clicks": 0,
+      "impressions": 60,
+      "ctr": 0,
+      "position": 60.78
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-incorrect-cvc-decline/",
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 7.17
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-incorrect-number-vs-invalid-number/",
+      "clicks": 0,
+      "impressions": 56,
+      "ctr": 0,
+      "position": 68.79
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-lost-card-stolen-card-declines/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 71.67
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-pickup-card-vs-restricted-card/",
+      "clicks": 0,
+      "impressions": 19,
+      "ctr": 0,
+      "position": 52.05
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "clicks": 0,
+      "impressions": 88,
+      "ctr": 0,
+      "position": 61.05
+    },
+    {
+      "page": "https://recoverflow.org/blog/stripe-try-again-later-decline/",
+      "clicks": 0,
+      "impressions": 67,
+      "ctr": 0,
+      "position": 50.01
+    },
+    {
+      "page": "https://recoverflow.org/blog/visa-excessive-reattempts-rule/",
+      "clicks": 0,
+      "impressions": 108,
+      "ctr": 0,
+      "position": 4.44
+    },
+    {
+      "page": "https://recoverflow.org/compare/",
+      "clicks": 0,
+      "impressions": 16,
+      "ctr": 0,
+      "position": 63
+    },
+    {
+      "page": "https://recoverflow.org/compare/baremetrics/",
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 40.43
+    },
+    {
+      "page": "https://recoverflow.org/compare/churnkey/",
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 47.88
+    },
+    {
+      "page": "https://recoverflow.org/compare/paddle-retain/",
+      "clicks": 0,
+      "impressions": 16,
+      "ctr": 0,
+      "position": 44.25
+    },
+    {
+      "page": "https://recoverflow.org/compare/stripe-native/",
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 15.14
+    },
+    {
+      "page": "https://recoverflow.org/compare/stunning/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 44.4
     },
     {
       "page": "https://recoverflow.org/docs/",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 6
     },
     {
-      "page": "https://recoverflow.org/tools/dunning-email-generator/",
+      "page": "https://recoverflow.org/docs/connecting-stripe/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 44.67
+    },
+    {
+      "page": "https://recoverflow.org/docs/decline-classification/",
+      "clicks": 0,
+      "impressions": 33,
+      "ctr": 0,
+      "position": 81.3
+    },
+    {
+      "page": "https://recoverflow.org/pricing/",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
-      "position": 7
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "page": "https://recoverflow.org/privacy/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 365,
+      "ctr": 0,
+      "position": 75.95
+    },
+    {
+      "page": "https://recoverflow.org/terms/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 5.5
     },
     {
       "page": "https://recoverflow.org/tools/",
       "clicks": 0,
       "impressions": 1,
-      "ctr": 0.0,
+      "ctr": 0,
       "position": 76
+    },
+    {
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 550,
+      "ctr": 0,
+      "position": 63.69
+    },
+    {
+      "page": "https://recoverflow.org/tools/dunning-email-generator/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "page": "https://recoverflow.org/tools/recovery-estimator/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 27.75
+    },
+    {
+      "page": "https://recoverflow.org/tools/retry-schedule-builder/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 33.6
+    },
+    {
+      "page": "https://recoverflow.org/tools/retry-waste-calculator/",
+      "clicks": 0,
+      "impressions": 20,
+      "ctr": 0,
+      "position": 79.25
+    },
+    {
+      "page": "https://recoverflow.org/tools/visa-retry-budget/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 78.33
     }
   ],
-  "query_pages": [],
-  "note": "Imported from Pages.csv. The export carries no date range, so trend comparison against an earlier file assumes both cover the same window length.",
+  "query_pages": [
+    {
+      "query": "recoverflow",
+      "page": "https://recoverflow.org/",
+      "clicks": 1,
+      "impressions": 14,
+      "ctr": 0.0714,
+      "position": 7.36
+    },
+    {
+      "query": "stripe past due",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 1,
+      "impressions": 4,
+      "ctr": 0.25,
+      "position": 6.75
+    },
+    {
+      "query": "4000000000000341",
+      "page": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "query": "530 do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 65
+    },
+    {
+      "query": "ai10325",
+      "page": "https://recoverflow.org/blog/visa-excessive-reattempts-rule/",
+      "clicks": 0,
+      "impressions": 94,
+      "ctr": 0,
+      "position": 4.22
+    },
+    {
+      "query": "authentication_required",
+      "page": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 11.25
+    },
+    {
+      "query": "best tools to recover missed payments from patients",
+      "page": "https://recoverflow.org/compare/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 86
+    },
+    {
+      "query": "best tools to recover missed payments from patients?",
+      "page": "https://recoverflow.org/compare/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 85.4
+    },
+    {
+      "query": "call issuer meaning",
+      "page": "https://recoverflow.org/blog/stripe-call-issuer-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "query": "card declined stripe",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 59
+    },
+    {
+      "query": "card do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "card do not honor means",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 77
+    },
+    {
+      "query": "card limit exceeded",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 51
+    },
+    {
+      "query": "card velocity exceeded",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 16,
+      "ctr": 0,
+      "position": 12.38
+    },
+    {
+      "query": "card velocity exceeded meaning",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 42,
+      "ctr": 0,
+      "position": 8.29
+    },
+    {
+      "query": "card velocity exceeded stripe",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 9.33
+    },
+    {
+      "query": "card velocity exceeded stripe",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "query": "card velocity exceeded stripe meaning",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 7.75
+    },
+    {
+      "query": "card_error authentication_required",
+      "page": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 37.67
+    },
+    {
+      "query": "card_error authentication_required",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 79
+    },
+    {
+      "query": "card_velocity_exceeded",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 19.54
+    },
+    {
+      "query": "card_velocity_exceeded",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 15,
+      "ctr": 0,
+      "position": 43.4
+    },
+    {
+      "query": "card_velocity_exceeded meaning",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    },
+    {
+      "query": "card_velocity_exceeded meaning",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 51
+    },
+    {
+      "query": "card_velocity_exceeded.",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 25.86
+    },
+    {
+      "query": "card_velocity_exceeded.",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 13,
+      "ctr": 0,
+      "position": 43.31
+    },
+    {
+      "query": "churnkey alternative",
+      "page": "https://recoverflow.org/compare/churnkey/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 60
+    },
+    {
+      "query": "churnkey alternatives",
+      "page": "https://recoverflow.org/compare/churnkey/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 68
+    },
+    {
+      "query": "debit card do not honor means",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 69
+    },
+    {
+      "query": "decline code do_not_honor",
+      "page": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 57.5
+    },
+    {
+      "query": "decline do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 70
+    },
+    {
+      "query": "decline recovery",
+      "page": "https://recoverflow.org/docs/decline-classification/",
+      "clicks": 0,
+      "impressions": 31,
+      "ctr": 0,
+      "position": 82.06
+    },
+    {
+      "query": "decline retry",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 94.67
+    },
+    {
+      "query": "decline velocity",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 54
+    },
+    {
+      "query": "decline velocity meaning",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 67
+    },
+    {
+      "query": "declined 12",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "declined do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 84.6
+    },
+    {
+      "query": "do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 78.4
+    },
+    {
+      "query": "do not honor (100) declined",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 76
+    },
+    {
+      "query": "do not honor bank code",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 89
+    },
+    {
+      "query": "do not honor card",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "query": "do not honor card error",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 82.5
+    },
+    {
+      "query": "do not honor card meaning",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 67
+    },
+    {
+      "query": "do not honor code",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 78.5
+    },
+    {
+      "query": "do not honor credit card",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 87
+    },
+    {
+      "query": "do not honor debit card",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 83.6
+    },
+    {
+      "query": "do not honor debit card meaning",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 90
+    },
+    {
+      "query": "do not honor decline",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 68
+    },
+    {
+      "query": "do not honor decline code",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 82
+    },
+    {
+      "query": "do not honor meaning",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 79
+    },
+    {
+      "query": "do not honor means",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 85
+    },
+    {
+      "query": "do not honor stripe",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 66
+    },
+    {
+      "query": "do not honour",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "do not honour decline",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 83
+    },
+    {
+      "query": "do not honour means",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 87
+    },
+    {
+      "query": "do_not_honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 7,
+      "ctr": 0,
+      "position": 40
+    },
+    {
+      "query": "do_not_honor decline code",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 49.5
+    },
+    {
+      "query": "do_not_honor decline code",
+      "page": "https://recoverflow.org/blog/stripe-currency-not-supported-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 83
+    },
+    {
+      "query": "do_not_honor decline code",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 6,
+      "ctr": 0,
+      "position": 84.17
+    },
+    {
+      "query": "failed payment recovery",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 25,
+      "ctr": 0,
+      "position": 95.12
+    },
+    {
+      "query": "failed payment recovery for membership and subscription services",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 89.67
+    },
+    {
+      "query": "failed recurring payment recovery",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 88
+    },
+    {
+      "query": "generic decline",
+      "page": "https://recoverflow.org/blog/stripe-generic-decline-code/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 51
+    },
+    {
+      "query": "generic decline meaning",
+      "page": "https://recoverflow.org/blog/stripe-generic-decline-code/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 60
+    },
+    {
+      "query": "generic decline stripe",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 62
+    },
+    {
+      "query": "generic_decline",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 43.2
+    },
+    {
+      "query": "generic_decline",
+      "page": "https://recoverflow.org/blog/stripe-generic-decline-code/",
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 42.5
+    },
+    {
+      "query": "generic_decline",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 56
+    },
+    {
+      "query": "how do i recover failed payments",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 98.67
+    },
+    {
+      "query": "how to cancel invoice in stripe",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 23
+    },
+    {
+      "query": "how to retry a failed payment in stripe",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 77
+    },
+    {
+      "query": "how to retry payment on stripe",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 78
+    },
+    {
+      "query": "how to void invoice on stripe",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 30
+    },
+    {
+      "query": "i doubt it",
+      "page": "https://recoverflow.org/pricing/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 1
+    },
+    {
+      "query": "incorrect cvc",
+      "page": "https://recoverflow.org/blog/stripe-incorrect-cvc-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 11
+    },
+    {
+      "query": "intelligent failed payment recovery",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 99
+    },
+    {
+      "query": "invoice.payment_failed",
+      "page": "https://recoverflow.org/blog/invoice-payment-failed-vs-payment-intent-payment-failed/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 20.8
+    },
+    {
+      "query": "invoice.payment_failed",
+      "page": "https://recoverflow.org/blog/stripe-failed-payment-webhooks/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 20
+    },
+    {
+      "query": "managing failed payments",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 95.33
+    },
+    {
+      "query": "meaning of do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 89
+    },
+    {
+      "query": "monthly recurring payment recovery",
+      "page": "https://recoverflow.org/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 77.33
+    },
+    {
+      "query": "monthly recurring payment recovery",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 94.5
+    },
+    {
+      "query": "network decline code 83",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 79
+    },
+    {
+      "query": "past due stripe",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "query": "past_due",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 0,
+      "impressions": 11,
+      "ctr": 0,
+      "position": 20.64
+    },
+    {
+      "query": "past_due stripe",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 8.25
+    },
+    {
+      "query": "payment declined do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 59
+    },
+    {
+      "query": "payment failed do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 69.8
+    },
+    {
+      "query": "payment recovery platform",
+      "page": "https://recoverflow.org/compare/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 68
+    },
+    {
+      "query": "payment_intent.payment_failed",
+      "page": "https://recoverflow.org/blog/invoice-payment-failed-vs-payment-intent-payment-failed/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 9.6
+    },
+    {
+      "query": "payment_intent.payment_failed",
+      "page": "https://recoverflow.org/blog/stripe-failed-payment-webhooks/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 22
+    },
+    {
+      "query": "pick up card-sf",
+      "page": "https://recoverflow.org/blog/stripe-pickup-card-vs-restricted-card/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 76
+    },
+    {
+      "query": "pickup_card",
+      "page": "https://recoverflow.org/blog/stripe-pickup-card-vs-restricted-card/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 6
+    },
+    {
+      "query": "previously_declined_do_not_retry",
+      "page": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 78
+    },
+    {
+      "query": "previously_declined_do_not_retry",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 91
+    },
+    {
+      "query": "previously_declined_do_not_retry",
+      "page": "https://recoverflow.org/blog/stripe-not-retrying-failed-invoice/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "query": "previously_declined_do_not_retry",
+      "page": "https://recoverflow.org/blog/visa-excessive-reattempts-rule/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 8.4
+    },
+    {
+      "query": "previously_declined_do_not_retry",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 55
+    },
+    {
+      "query": "processing_error",
+      "page": "https://recoverflow.org/blog/stripe-processing-error-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "query": "processing_error stripe",
+      "page": "https://recoverflow.org/blog/stripe-processing-error-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 5
+    },
+    {
+      "query": "profitwell retain",
+      "page": "https://recoverflow.org/compare/paddle-retain/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 29.25
+    },
+    {
+      "query": "reason do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 71
+    },
+    {
+      "query": "recover failed card payments",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 95.8
+    },
+    {
+      "query": "recover failed payment",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 95.4
+    },
+    {
+      "query": "recover failed payments",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 17,
+      "ctr": 0,
+      "position": 96.06
+    },
+    {
+      "query": "recover failed subscription payments",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 87
+    },
+    {
+      "query": "recoverflow",
+      "page": "https://app.recoverflow.org/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 10
+    },
+    {
+      "query": "recovery payable",
+      "page": "https://recoverflow.org/tools/recovery-estimator/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 88
+    },
+    {
+      "query": "recurring payment recovery",
+      "page": "https://recoverflow.org/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 75.67
+    },
+    {
+      "query": "recurring payment recovery",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 93.5
+    },
+    {
+      "query": "restore flow",
+      "page": "https://app.recoverflow.org/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 77
+    },
+    {
+      "query": "restoreflow",
+      "page": "https://app.recoverflow.org/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 51
+    },
+    {
+      "query": "smart payment retries",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 16,
+      "ctr": 0,
+      "position": 76.31
+    },
+    {
+      "query": "smart payment retry strategies",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 92
+    },
+    {
+      "query": "smart retries",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 28,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "smart retries",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 92
+    },
+    {
+      "query": "smart retries stripe",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 49
+    },
+    {
+      "query": "smart retries stripe",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 85
+    },
+    {
+      "query": "smart retry",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 70.25
+    },
+    {
+      "query": "smart retry logic payments",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 74.33
+    },
+    {
+      "query": "smart retry stripe",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 45.67
+    },
+    {
+      "query": "smart retry stripe",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 82
+    },
+    {
+      "query": "smartretry",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "stripe account recovery form",
+      "page": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 30
+    },
+    {
+      "query": "stripe authentication failed",
+      "page": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 42
+    },
+    {
+      "query": "stripe card declined",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "query": "stripe card declined error",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 62
+    },
+    {
+      "query": "stripe card velocity exceeded",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "query": "stripe card velocity exceeded",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 54
+    },
+    {
+      "query": "stripe card_declined",
+      "page": "https://recoverflow.org/blog/stripe-generic-decline-code/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 65
+    },
+    {
+      "query": "stripe card_declined",
+      "page": "https://recoverflow.org/blog/stripe-incorrect-number-vs-invalid-number/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 59
+    },
+    {
+      "query": "stripe card_velocity_exceeded",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 7.67
+    },
+    {
+      "query": "stripe card_velocity_exceeded",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 68
+    },
+    {
+      "query": "stripe decline card",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 63
+    },
+    {
+      "query": "stripe decline code do_not_honor",
+      "page": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 53
+    },
+    {
+      "query": "stripe decline code do_not_honor",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 59
+    },
+    {
+      "query": "stripe decline codes",
+      "page": "https://recoverflow.org/blog/stripe-decline-codes-that-stop-retries/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 60.67
+    },
+    {
+      "query": "stripe decline codes",
+      "page": "https://recoverflow.org/blog/stripe-fraudulent-decline-code/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 86
+    },
+    {
+      "query": "stripe decline codes",
+      "page": "https://recoverflow.org/blog/stripe-try-again-later-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 65
+    },
+    {
+      "query": "stripe decline codes",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 66
+    },
+    {
+      "query": "stripe decline reasons",
+      "page": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "stripe decline reasons",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 53
+    },
+    {
+      "query": "stripe do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 30.5
+    },
+    {
+      "query": "stripe do not honor",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 62
+    },
+    {
+      "query": "stripe do not honor code",
+      "page": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 59
+    },
+    {
+      "query": "stripe do not honor code",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "query": "stripe do_not_honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 39
+    },
+    {
+      "query": "stripe dunning",
+      "page": "https://recoverflow.org/blog/stripe-dunning-emails-what-you-control/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 43
+    },
+    {
+      "query": "stripe error code",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 61
+    },
+    {
+      "query": "stripe failed card",
+      "page": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 30
+    },
+    {
+      "query": "stripe failed payment retry",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 82
+    },
+    {
+      "query": "stripe failed payment test",
+      "page": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 42.5
+    },
+    {
+      "query": "stripe failure codes",
+      "page": "https://recoverflow.org/blog/stripe-fraudulent-decline-code/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 78
+    },
+    {
+      "query": "stripe failure codes",
+      "page": "https://recoverflow.org/blog/stripe-incorrect-number-vs-invalid-number/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 53
+    },
+    {
+      "query": "stripe failure codes",
+      "page": "https://recoverflow.org/blog/stripe-processing-error-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 51
+    },
+    {
+      "query": "stripe failure codes",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 75
+    },
+    {
+      "query": "stripe generic decline",
+      "page": "https://recoverflow.org/blog/stripe-duplicate-transaction-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 62
+    },
+    {
+      "query": "stripe generic decline",
+      "page": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 60
+    },
+    {
+      "query": "stripe generic decline",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 53
+    },
+    {
+      "query": "stripe incomplete_expired",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 15
+    },
+    {
+      "query": "stripe insufficient funds test card",
+      "page": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 36
+    },
+    {
+      "query": "stripe invalid account error",
+      "page": "https://recoverflow.org/blog/stripe-incorrect-number-vs-invalid-number/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 71
+    },
+    {
+      "query": "stripe network decline code 51",
+      "page": "https://recoverflow.org/blog/stripe-generic-decline-code/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 75
+    },
+    {
+      "query": "stripe network decline code 51",
+      "page": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 74
+    },
+    {
+      "query": "stripe network decline code 51",
+      "page": "https://recoverflow.org/blog/stripe-try-again-later-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "stripe network decline code 51",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 70.5
+    },
+    {
+      "query": "stripe network decline code 59",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 68
+    },
+    {
+      "query": "stripe network decline code 82",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 70
+    },
+    {
+      "query": "stripe network decline code 83",
+      "page": "https://recoverflow.org/blog/stripe-pickup-card-vs-restricted-card/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 61
+    },
+    {
+      "query": "stripe network decline code 83",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 68
+    },
+    {
+      "query": "stripe past_due",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 9.5
+    },
+    {
+      "query": "stripe pickup_card",
+      "page": "https://recoverflow.org/blog/stripe-generic-decline-code/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 65
+    },
+    {
+      "query": "stripe recover",
+      "page": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 51
+    },
+    {
+      "query": "stripe recovery",
+      "page": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 53
+    },
+    {
+      "query": "stripe retries",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 53
+    },
+    {
+      "query": "stripe retries",
+      "page": "https://recoverflow.org/blog/stripe-not-retrying-failed-invoice/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 74
+    },
+    {
+      "query": "stripe retries",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "stripe retries",
+      "page": "https://recoverflow.org/tools/retry-waste-calculator/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 82
+    },
+    {
+      "query": "stripe retry",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 55
+    },
+    {
+      "query": "stripe retry failed payment",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 81
+    },
+    {
+      "query": "stripe retry payment",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 63
+    },
+    {
+      "query": "stripe retry payment",
+      "page": "https://recoverflow.org/blog/stripe-not-retrying-failed-invoice/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 85
+    },
+    {
+      "query": "stripe smart retries",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 46
+    },
+    {
+      "query": "stripe smart retries",
+      "page": "https://recoverflow.org/blog/stripe-not-retrying-failed-invoice/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 72
+    },
+    {
+      "query": "stripe smart retries",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 86
+    },
+    {
+      "query": "stripe smart retries documentation",
+      "page": "https://recoverflow.org/blog/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 56
+    },
+    {
+      "query": "stripe smart retries documentation",
+      "page": "https://recoverflow.org/blog/stripe-decline-codes-that-stop-retries/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 91
+    },
+    {
+      "query": "stripe smart retries documentation",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 85
+    },
+    {
+      "query": "stripe subscription payment failed",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 57
+    },
+    {
+      "query": "stripe subscription status values incomplete incomplete_expired trialing active past_due canceled unpaid paused",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "query": "stripe test cards declined",
+      "page": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 41
+    },
+    {
+      "query": "stripe test cards for failed payment",
+      "page": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 28
+    },
+    {
+      "query": "stripe test declined card",
+      "page": "https://recoverflow.org/blog/stripe-test-cards-for-failed-payments/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 43.5
+    },
+    {
+      "query": "stripe unpaid subscription",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 8.5
+    },
+    {
+      "query": "stripe your card has been declined.",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 60
+    },
+    {
+      "query": "stripe your card was declined for making repeated attempts too frequently",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "query": "stripe your card was declined.",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "subscription billing retries",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 91
+    },
+    {
+      "query": "subscription payment recovery",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 8,
+      "ctr": 0,
+      "position": 91.75
+    },
+    {
+      "query": "subscription payment retries",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 87.67
+    },
+    {
+      "query": "the bank returned the decline code `do_not_honor`.",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 79
+    },
+    {
+      "query": "the bank returned the decline code card_velocity_exceeded",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 65
+    },
+    {
+      "query": "the bank returned the decline code card_velocity_exceeded.",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 60
+    },
+    {
+      "query": "the bank returned the decline code do_not_honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 88
+    },
+    {
+      "query": "the bank returned the decline code do_not_honor",
+      "page": "https://recoverflow.org/blog/stripe-currency-not-supported-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 82
+    },
+    {
+      "query": "the bank returned the decline code do_not_honor",
+      "page": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 65
+    },
+    {
+      "query": "the bank returned the decline code do_not_honor",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 76
+    },
+    {
+      "query": "transaction declined do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "transaction not allowed stripe",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "transaction_not_allowed",
+      "page": "https://recoverflow.org/blog/stripe-decline-codes-that-stop-retries/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 48.33
+    },
+    {
+      "query": "transaction_not_allowed",
+      "page": "https://recoverflow.org/blog/stripe-transaction-not-allowed-decline/",
+      "clicks": 0,
+      "impressions": 5,
+      "ctr": 0,
+      "position": 21.4
+    },
+    {
+      "query": "transaction_not_allowed",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 42.1
+    },
+    {
+      "query": "transaction_not_allowed stripe",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 57
+    },
+    {
+      "query": "velocity exceeded meaning",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 54
+    },
+    {
+      "query": "vindicia retain smart retries",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 48.5
+    },
+    {
+      "query": "vindicia retain smart retries",
+      "page": "https://recoverflow.org/recover-failed-stripe-payments/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 62
+    },
+    {
+      "query": "what are intelligent retries",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 76
+    },
+    {
+      "query": "what are smart retries",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 49
+    },
+    {
+      "query": "what do not honor means",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 83
+    },
+    {
+      "query": "what does card velocity exceeded mean",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 15,
+      "ctr": 0,
+      "position": 9.33
+    },
+    {
+      "query": "what does declined do not honor mean",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 64
+    },
+    {
+      "query": "what does do not honor mean",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 73
+    },
+    {
+      "query": "what does do not honor mean on a credit card transaction",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 92
+    },
+    {
+      "query": "what does do not honor mean on credit card",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 96
+    },
+    {
+      "query": "what does generic decline mean",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 53.5
+    },
+    {
+      "query": "what does it mean do not honor credit card",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 85
+    },
+    {
+      "query": "what is a decline velocity",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 58
+    },
+    {
+      "query": "what is a generic decline",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 61.5
+    },
+    {
+      "query": "what is smart retry",
+      "page": "https://recoverflow.org/blog/how-stripe-smart-retries-work/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 74
+    },
+    {
+      "query": "what is the meaning of do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "what is the meaning of do not honor in credit card",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 84
+    },
+    {
+      "query": "why does my debit card say do not honor",
+      "page": "https://recoverflow.org/blog/do-not-honor-stripe-decline/",
+      "clicks": 0,
+      "impressions": 3,
+      "ctr": 0,
+      "position": 80.67
+    },
+    {
+      "query": "your card has been declined stripe",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 59
+    },
+    {
+      "query": "your card was declined for making repeated attempts too frequently stripe",
+      "page": "https://recoverflow.org/blog/stripe-card-velocity-exceeded/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 75
+    },
+    {
+      "query": "your card was declined for making repeated attempts too frequently stripe",
+      "page": "https://recoverflow.org/blog/stripe-generic-decline-code/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 57
+    },
+    {
+      "query": "your card was declined stripe",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 63
+    },
+    {
+      "query": "your card was declined this transaction requires authentication stripe",
+      "page": "https://recoverflow.org/blog/stripe-authentication-required-recovery/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 62
+    },
+    {
+      "query": "your card was declined this transaction requires authentication stripe",
+      "page": "https://recoverflow.org/tools/decline-code-lookup/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 40
+    },
+    {
+      "query": "your subscription has a failed or incomplete payment. complete the latest invoice to continue usage.",
+      "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    }
+  ],
   "fetched": "2026-08-30"
 }
