@@ -1060,9 +1060,14 @@ ARTICLES.append(dict(
 # does not quote them, so neither does this.
 ARTICLES.append(dict(
     slug="visa-excessive-reattempts-rule",
-    title="Visa's excessive reattempts rule on Stripe | RecoverFlow",
+    # Search Console, 31 July to 27 August 2026: 94 impressions at average
+    # position 4.2 for the bare query "ai10325", and no clicks at all. The
+    # bulletin number was buried in a section heading while the title and the
+    # description both talked about the rule without ever naming the document
+    # the searcher typed in, so the result did not look like an answer.
+    title="Visa AI10325: the excessive reattempts rule on Stripe | RecoverFlow",
     h1="The Visa excessive reattempts rule: 15 tries per card, per 30 days",
-    desc="Visa prohibits more than 15 retries of one payment in 30 calendar days. What Stripe does at the limit, and the declines where the budget is zero.",
+    desc="Visa bulletin AI10325 caps reattempts of one payment at 15 per 30 calendar days, from 17 April 2021. What Stripe does at the limit, and where the budget is zero.",
     published="2026-08-16",
     modified="2026-08-16",
     updated="16 August 2026",
