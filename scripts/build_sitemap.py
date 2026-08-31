@@ -59,6 +59,10 @@ def last_modified(today):
     for falls back to today, which is the old behaviour for that page alone.
     """
     dates = {}
+    # A shallow clone answers `git log` with whatever single commit it has, which
+    # would date the whole site from a checkout. Better to admit we do not know.
+    if (git("rev-parse", "--is-shallow-repository") or "").strip() == "true":
+        return dates
     log = git("log", "--format=%cs", "--name-only", "--no-renames", "--", "docs")
     if log is None:
         return dates
@@ -73,12 +77,17 @@ def last_modified(today):
             # Log is newest first, so the first date a path appears under wins.
             dates.setdefault(line, date)
 
-    # Staged, unstaged or untracked pages are changing right now.
-    status = git("status", "--porcelain", "--", "docs") or ""
-    for line in status.splitlines():
-        path = line[3:].strip().strip('"')
-        if path.endswith("/index.html"):
-            dates[path] = today
+    # Pages that differ from HEAD right now are changing today. This has to be a
+    # content comparison, not `git status --porcelain`: rewriting a file with
+    # identical bytes still moves its mtime, which leaves a stale stat entry that
+    # status reports as modified. Every rebuild would then bump the date of every
+    # page it touched, which is the behaviour this function exists to remove.
+    # `git diff HEAD` covers staged and unstaged alike and compares content.
+    for name in ("diff --name-only HEAD", "ls-files --others --exclude-standard"):
+        for line in (git(*name.split(), "--", "docs") or "").splitlines():
+            path = line.strip().strip('"')
+            if path.endswith("/index.html"):
+                dates[path] = today
 
     return dates
 
