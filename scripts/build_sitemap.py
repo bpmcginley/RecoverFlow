@@ -8,9 +8,11 @@ a page that is not in the sitemap may as well not exist.
 
 import os
 import datetime
+import subprocess
 
 SITE = "https://recoverflow.org"
-DOCS = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "docs")
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DOCS = os.path.join(ROOT, "docs")
 
 # Longest matching prefix wins, so /blog/ can outrank / without ordering games.
 TIERS = [
@@ -37,6 +39,50 @@ def rank(path):
     return best
 
 
+def git(*args):
+    """Run a git command in the repo, or return None if git cannot answer."""
+    try:
+        out = subprocess.run(("git", "-C", ROOT) + args, capture_output=True,
+                             text=True, encoding="utf-8", check=True)
+    except (OSError, subprocess.CalledProcessError):
+        return None
+    return out.stdout
+
+
+def last_modified(today):
+    """Map each page path to the date its index.html last actually changed.
+
+    Stamping every URL with the build date told search engines all 61 pages
+    changed every time anyone ran this script, which is the fastest way to get
+    lastmod ignored entirely. The commit date of the file is the real answer.
+    A page with uncommitted edits changed now, and anything git cannot account
+    for falls back to today, which is the old behaviour for that page alone.
+    """
+    dates = {}
+    log = git("log", "--format=%cs", "--name-only", "--no-renames", "--", "docs")
+    if log is None:
+        return dates
+    date = None
+    for line in log.splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        if len(line) == 10 and line[4] == "-" and line[7] == "-":
+            date = line
+        elif line.endswith("/index.html"):
+            # Log is newest first, so the first date a path appears under wins.
+            dates.setdefault(line, date)
+
+    # Staged, unstaged or untracked pages are changing right now.
+    status = git("status", "--porcelain", "--", "docs") or ""
+    for line in status.splitlines():
+        path = line[3:].strip().strip('"')
+        if path.endswith("/index.html"):
+            dates[path] = today
+
+    return dates
+
+
 def discover():
     out = []
     for root, dirs, files in os.walk(DOCS):
@@ -54,11 +100,13 @@ if __name__ == "__main__":
     lines = ['<?xml version="1.0" encoding="UTF-8"?>',
              '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
     paths = discover()
+    dates = last_modified(today)
     for p in paths:
         pri, freq = rank(p)
+        lastmod = dates.get(f"docs/{p}index.html", today)
         lines += ["  <url>",
                   f"    <loc>{SITE}/{p}</loc>",
-                  f"    <lastmod>{today}</lastmod>",
+                  f"    <lastmod>{lastmod}</lastmod>",
                   f"    <changefreq>{freq}</changefreq>",
                   f"    <priority>{pri}</priority>",
                   "  </url>"]
