@@ -9,22 +9,53 @@ Run this from the repo root. Everything below assumes a clean checkout of `main`
 
 ## The one thing that breaks this site
 
-`docs/` is what recoverflow.org serves and **every file in it is generated**. Hand-editing
-`docs/*.html` looks like it worked and is silently overwritten by the next build. There is
-no exception to this. If you want to change a page, change the script that emits it.
+`docs/` is what recoverflow.org serves. **37 of its 61 pages are generated, and hand-editing
+one of those looks like it worked and is silently overwritten by the next build.** If you
+want to change a generated page, change the script that emits it.
 
 | To change | Edit |
 | --- | --- |
-| A blog post, `/about/`, `/contact/`, `/blog/` | `scripts/build_content_pages.py` |
-| A `/compare/` page | `scripts/build_compare_pages.py` |
-| A `/docs/` page | `scripts/build_docs_pages.py` |
+| A blog post in `ARTICLES`, `/about/`, `/contact/`, `/blog/` | `scripts/build_content_pages.py` |
+| A `/compare/` page other than `/compare/stripe-native/` | `scripts/build_compare_pages.py` |
+| A `/docs/` page, `/changelog/`, `/audit/`, `/tools/retry-waste-calculator/` | `scripts/build_docs_pages.py` |
 | A legal page | `scripts/build_legal_pages.py` |
 | Fonts, CSS, page chrome | `scripts/apply_design_system.py` |
 | `sitemap.xml` | nothing, it is derived from the filesystem |
+| One of the 24 hand-written pages below | the file in `docs/` itself |
 
 Articles live as dicts appended to the module-level `ARTICLES` list in
 `build_content_pages.py`. `HARD_CODES` in that file is the single source of truth for the
 nine hard decline codes, so read from it rather than retyping a code into prose.
+
+### The 24 pages no builder emits
+
+This file used to say every file in `docs/` was generated. It never was, and a run that
+believed it either edited a script that emits nothing or refused to touch a page that was
+perfectly safe to edit. These pages are hand-written and **the only way to change one is to
+edit the file in `docs/` directly**:
+
+`/`, `/pricing/`, `/recover-failed-stripe-payments/`, `/compare/stripe-native/`, `/tools/`
+and its five tool pages other than the retry waste calculator, and fourteen blog posts:
+the twelve single decline-code guides (`call_issuer`, `card_velocity_exceeded`,
+`currency_not_supported`, `duplicate_transaction`, `fraudulent`, `generic_decline`,
+`incorrect_cvc`, `incorrect_number` vs `invalid_number`, `lost_card` and `stolen_card`,
+`pickup_card` vs `restricted_card`, `processing_error`, `transaction_not_allowed`,
+`try_again_later`), plus `invoice-payment-failed-vs-payment-intent-payment-failed`.
+
+Do not take that list on trust and do not retype it. Membership is measured:
+
+```bash
+python3 scripts/audit_page_sources.py
+```
+
+That snapshots modified times, runs every builder, and reports which files were rewritten.
+It exits non-zero if a page gained or lost a builder, and also if rebuilding changed a
+committed file, which means `docs/` and its builder had fallen out of step. It is a CI step,
+so the split cannot drift again without a red build.
+
+Editing a hand-written page directly is correct and expected. It is still published prose,
+so Step 6 still sends it to a pull request. If you ever port one of these into a builder,
+drop it from `HAND_WRITTEN` in that script in the same commit.
 
 ### Build order is not optional
 
@@ -92,16 +123,18 @@ already did, and do not re-propose an idea a previous run recorded as rejected.
 
 ```bash
 python3 scripts/validate_site.py
+python3 scripts/audit_page_sources.py
 ```
 
-If this fails on a clean checkout, that is the week's work. Something landed broken. Fix it
-and stop there. A broken canonical or a dropped sitemap entry costs more than a new article
-gains. Causes, in the order they actually happen:
+If either fails on a clean checkout, that is the week's work. Something landed broken. Fix
+it and stop there. A broken canonical or a dropped sitemap entry costs more than a new
+article gains. Causes, in the order they actually happen:
 
 - a content build ran without `apply_design_system.py` afterwards
 - a `related` link points at a slug that was renamed or never built
 - an edit broke the JSON-LD and it no longer parses
-- someone hand-edited a file in `docs/`
+- someone hand-edited a generated file in `docs/`
+- a builder changed and nobody rebuilt, which only `audit_page_sources.py` sees
 
 ## Step 2. Read the Search Console data
 
@@ -151,6 +184,12 @@ next run re-proposing it.
 dict in `build_content_pages.py`. Keep `desc` at 165 characters or fewer. The title should
 contain the words the query actually uses, not the words we would prefer it used.
 
+On one of the 24 hand-written pages, edit `docs/<page>/index.html` directly. The same text
+is repeated in five places there, and all five have to move together or the page contradicts
+itself: `<title>`, `<meta name="description">`, `og:title`, `og:description`, and the
+`description` in the JSON-LD block. Check the blog index too, which repeats the description
+of every post it lists.
+
 **4b. Internal links.** Add to the `related` list on the source article as a
 `(title, url, blurb)` tuple. The blurb is a sentence, not a keyword string.
 
@@ -172,6 +211,10 @@ Then run the build chain from the top of this file.
 
 ```bash
 python3 scripts/validate_site.py
+```
+
+```bash
+python3 scripts/audit_page_sources.py
 ```
 
 ```bash

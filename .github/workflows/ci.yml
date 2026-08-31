@@ -44,3 +44,10 @@ jobs:
       # lost the design system, and nothing notices until someone looks.
       - name: Validate site
         run: python3 scripts/validate_site.py
+
+      # 24 of the 61 pages have no builder and must be edited by hand, the rest
+      # must never be. Checking the split by measurement rather than by trusting
+      # a list in a doc, which is how it went unnoticed for a month. Also fails
+      # if a builder changed without docs/ being rebuilt from it.
+      - name: Audit page sources
+        run: python3 scripts/audit_page_sources.py
