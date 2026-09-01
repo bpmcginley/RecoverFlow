@@ -126,6 +126,14 @@ python3 scripts/validate_site.py
 python3 scripts/audit_page_sources.py
 ```
 
+`validate_site.py` prints in two registers. Problems exit non-zero and are the week's work.
+Warnings print with a count, exit 0, and are a backlog rather than a break: today they are
+the twelve decline-code guides whose titles run past 60 characters before the brand suffix
+and get cut in a search result. Do not fix all twelve in one week to clear the count. Nine
+of them rank between 44 and 88, where the last run correctly found metadata is not the
+constraint, and rewriting a title with no query behind it is a change with a downside and
+no upside. Take one when a query says the page is close enough for the click to matter.
+
 If either fails on a clean checkout, that is the week's work. Something landed broken. Fix
 it and stop there. A broken canonical or a dropped sitemap entry costs more than a new
 article gains. Causes, in the order they actually happen:
@@ -201,9 +209,10 @@ is the direct answer to the page's question and is what answer engines lift, so 
 stand alone.
 
 **4d. Answer-engine surface.** `docs/robots.txt` already allows GPTBot, ClaudeBot,
-PerplexityBot and Google-Extended and points them at `/llms.txt`. If you added a page, check
-that `docs/llms.txt` still reflects the site. If `llms.txt` is generated, fix the generator;
-if it is static, edit it directly.
+PerplexityBot and Google-Extended and points them at `/llms.txt`. `llms.txt` is static, so
+if you added a page, add it there by hand. `validate_site.py` now checks it against the
+filesystem in both directions the same way it checks the sitemap, so a page left out fails
+the build rather than going quietly missing from every answer engine.
 
 Then run the build chain from the top of this file.
 
