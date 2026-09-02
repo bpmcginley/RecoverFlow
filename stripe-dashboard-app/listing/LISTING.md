@@ -80,10 +80,12 @@ against Stripe's publishing guide on 12 August 2026.
      - Free 90 day scan, no card: BacktestOptions.WindowDays = 90 in
        src/RecoverFlow.Application/Common/Options.cs and docs/pricing/index.html
        ("The 90 day backward-looking scan. That is free and does not require a card.").
-     - Permission set: customer_read, invoice_read, invoice_write in the
-       stripe-dashboard-app manifest; justifications in PERMISSIONS.md. invoice_write
-       was added in v0.0.3 when the server moved off Connect onto Stripe Apps OAuth,
-       so retries now run on the app grant rather than a separate connection. -->
+     - Permission set: customer_read, invoice_read, invoice_write, event_read,
+       charge_read, dispute_read in the stripe-dashboard-app manifest; justifications
+       in PERMISSIONS.md. invoice_write was added in v0.0.3 when the server moved off
+       Connect onto Stripe Apps OAuth, so retries now run on the app grant rather than
+       a separate connection. The three event-delivery reads were added in v0.0.5 so
+       Stripe will send an installed account's invoice, refund and dispute events. -->
 
 ## Works with
 
@@ -141,21 +143,22 @@ for those viewports actually ships.
 
 **Description (300 max):**
 
-> RecoverFlow asks for three permissions: read your customers, read your invoices, and
-> pay an unpaid one. It never creates invoices or charges. Retries are scheduled by
-> decline code, so cards Stripe will not put on the wire without new details are left
-> alone rather than retried into the ground.
+> RecoverFlow reads your customers, invoices, refunds and disputes, is told when an
+> invoice fails or is paid, and pays an unpaid invoice you already issued. It never
+> creates invoices or charges, and a recovery you later refund, or that is disputed,
+> is taken off your bill.
 
-> 293 characters.
+> 270 characters. Replaces the 0.0.4 text, which said "three permissions".
 
-<!-- Verification: permission set is customer_read, invoice_read and invoice_write.
-     charge_read was requested during the v0.0.3 draft and removed again: the only code
-     that reads charges is StripeRetryWasteReader, which serves the free audit on its own
-     Connect read_only grant, not the app grant. Decline code behavior:
-     src/RecoverFlow.Domain/Services/DeclineCodeClassifier.cs (IsBlockedByStripe,
-     ShouldRetry). The single write is the invoice pay in
-     src/RecoverFlow.Infrastructure/Stripe/StripeInvoicePayer.cs, which calls
-     InvoiceService.PayAsync and nothing else. -->
+<!-- Verification: permission set is customer_read, invoice_read, invoice_write,
+     event_read, charge_read and dispute_read (stripe-app.json, v0.0.5). The single
+     write is the invoice pay in src/RecoverFlow.Infrastructure/Stripe/
+     StripeInvoicePayer.cs, which calls InvoiceService.PayAsync and nothing else.
+     "Taken off your bill": MerchantBillingService excludes fully reversed cases
+     (ReversedAmountCents < AmountCents filter), bills partials on NetRecovered, and
+     credits fees already charged (ReversalCreditedCents). Decline code behavior, no
+     longer in this blurb but still on the site:
+     src/RecoverFlow.Domain/Services/DeclineCodeClassifier.cs. -->
 
 ## Pricing
 
@@ -225,7 +228,15 @@ other copy, and a lost draft would otherwise mean rewriting them from memory.
 
 ## App version
 
-`0.0.4`
+`0.0.5`
+
+<!-- 0.0.5 prepared on 2 September 2026: manifest bumped and three read permissions
+     added (event_read, charge_read, dispute_read). Not yet uploaded; `stripe apps
+     upload` is the founder's step. Expect the same "Submitting this version will
+     replace it and restart the review process" warning as on 17 August, when 0.0.4
+     replaced the rejected 0.0.3. Steps 1 and 2 carry over except where noted: key
+     feature 3's description and user journey 1 step 2 both list the permissions and
+     have to be re-entered in the form. -->
 
 <!-- Selected on 17 August 2026. The publish flow warned "Version 0.0.3 is currently in
      review for Marketplace. Submitting this version will replace it and restart the review
@@ -281,8 +292,8 @@ Checked: **This app doesn't require users to sign in**.
 >    receive mail at. No card is required.
 > 2. Submit the form. You are taken to Stripe's app authorization page at
 >    marketplace.stripe.com, which lists the permissions RecoverFlow asks for: read your
->    customers, read your invoices, and pay an unpaid invoice. Approve it for the Stripe
->    account you are reviewing with.
+>    customers, invoices, charges and refunds, and disputes; receive event notices; and
+>    pay an unpaid invoice. Approve it for the Stripe account you are reviewing with.
 > 3. You are returned to RecoverFlow, which reads the last 90 days of that account's failed
 >    payments and shows what it found. That scan is free. To return later, go to
 >    https://app.recoverflow.org and request a sign-in link by email.
@@ -326,6 +337,30 @@ Security incident email: `admin@recoverflow.org`
 Security phone number: left blank (optional).
 
 # Release notes (publish step 3)
+
+For version 0.0.5, drafted 2 September 2026, not yet entered in the form:
+
+> RecoverFlow now receives the failed-payment and paid notices Stripe sends for your
+> invoices, so a recovery case opens the moment a payment fails and closes the moment it
+> is paid. In the previous version an installed account was connected, but Stripe had no
+> permission to send RecoverFlow those notices, so no recovery could start.
+>
+> This version adds three read permissions: receive event notices for your account, read
+> charges and refunds, and read disputes. Refunds and disputes are read for one reason:
+> when a payment RecoverFlow recovered is later handed back, the amount comes off the
+> recovery and is never billed.
+>
+> No new write permission. Paying an unpaid invoice you already issued remains the only
+> one, and RecoverFlow still never creates invoices or charges.
+
+<!-- Merchant-facing, so it describes the symptom. The cause: for an account that
+     installed the app, Stripe delivers events only through the app account's
+     "connected accounts" endpoint (we_1UBGKRLGfYzeGCaiN8OhNHpQ), and only for objects
+     the app has permission to read with event_read declared. That endpoint carried only
+     account.application.deauthorized until 2 September 2026, and the manifest carried
+     none of the three permissions. The one outside install (Artifex Software,
+     25 August 2026) therefore had no way to send a failed invoice. Handling is
+     unchanged: src/RecoverFlow.Infrastructure/Stripe/StripeWebhookProcessor.cs. -->
 
 For version 0.0.4, entered in the form and saved as a draft on 17 August 2026:
 
@@ -377,7 +412,8 @@ uploaded and Approved, and it was uploaded after the commit that added `invoice_
 stale upload does not explain it. A full page reload reproduced it. No Stripe documentation
 was found that explains either line, so the cause is genuinely unknown rather than assumed.
 
-The listing copy describes the three permissions the manifest asks for, because that is the
-claim the repository can back. If Stripe's consent screen turns out to grant only the two
-reads, the retry write in StripeInvoicePayer would fail at run time and both the copy and the
-manifest would need revisiting.
+The listing copy describes the permissions the manifest asks for (three through 0.0.4, six
+from 0.0.5), because that is the claim the repository can back. If Stripe's consent screen
+turns out to grant only the two reads, the retry write in StripeInvoicePayer would fail at
+run time and both the copy and the manifest would need revisiting. The 0.0.5 upload is a
+chance to re-check this: the preview should now list Events, Charges and Disputes as well.

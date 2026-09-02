@@ -2,7 +2,7 @@
   "$schema": "https://stripe.com/stripe-app.schema.json",
   "id": "com.recoverflow.dashboard",
   "name": "RecoverFlow",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "icon": "./icon.png",
   "ui_extension": {
     "views": [
@@ -43,6 +43,18 @@
     {
       "permission": "invoice_write",
       "purpose": "Retries an unpaid invoice at the moment RecoverFlow judges a retry can succeed. RecoverFlow only ever pays an invoice you already issued; it never creates invoices or charges of its own."
+    },
+    {
+      "permission": "event_read",
+      "purpose": "Receives the failed-payment and paid notices Stripe sends for your invoices, so a recovery case opens the moment a payment fails and closes the moment it is paid."
+    },
+    {
+      "permission": "charge_read",
+      "purpose": "Sees when a payment RecoverFlow recovered is later refunded, so the amount handed back is taken off the recovery and never billed."
+    },
+    {
+      "permission": "dispute_read",
+      "purpose": "Sees when a payment RecoverFlow recovered is later disputed, so the amount handed back is taken off the recovery and never billed."
     }
   ],
   "post_install_action": {
