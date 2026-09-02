@@ -147,8 +147,14 @@ article gains. Causes, in the order they actually happen:
 ## Step 2. Read the Search Console data
 
 ```bash
-ls seo/gsc/
+python3 scripts/report_gsc.py
 ```
+
+That reads the newest `seo/gsc/*.json` and prints this step for you. It is read
+only and never fails a build. Run it before reading the raw JSON: this step was
+done by hand for the first three runs, and a real signal sat unread in two
+consecutive files because every run looked at the striking distance table and
+nothing else.
 
 The newest `seo/gsc/*.json` file is the input for Step 3. It is written either by
 `python3 scripts/fetch_gsc.py fetch` using a service account, or by
@@ -166,8 +172,15 @@ Where data exists, pull out:
   title or the meta description answers a different question than the query asks.
 - **Queries where the site gets impressions but has no page dedicated to the question.**
   These are article candidates.
+- **Queries where more than one of our pages ranks.** The report flags the ones that cost
+  something: the page Google shows most often for that query is not the page that ranks
+  best for it. A split is not automatically a problem, and an index page appearing
+  alongside the guide it links to is normal, so read the rows before acting on one.
 - **Pages that lost position since the previous file in `seo/gsc/`.** Compare against the
-  second-newest file, not against memory.
+  second-newest file, not against memory. The report does this only when the two files
+  can honestly support it: a 28 day fetch run weekly overlaps by 26 days, so it measures
+  the shared days and refuses the comparison above 50% rather than printing noise as a
+  number.
 
 ## Step 3. Decide, and write the decision down
 
