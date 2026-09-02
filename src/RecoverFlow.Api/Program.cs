@@ -170,7 +170,17 @@ try
     });
 
     app.UseDefaultFiles();
-    app.UseStaticFiles();
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        // Pages carry no cache header by default, so a browser keeps serving its old copy
+        // after a deploy. no-cache still lets it reuse the file when the ETag matches; it
+        // just has to ask first.
+        OnPrepareResponse = ctx =>
+        {
+            if (ctx.File.Name.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
+                ctx.Context.Response.Headers.CacheControl = "no-cache";
+        },
+    });
 
     // Embedded Stripe app traffic (/app/v1) authenticates by request signature, not the
     // cookie, and needs null-origin CORS. Both live on this branch and nowhere else.
