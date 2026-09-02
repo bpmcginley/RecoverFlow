@@ -114,7 +114,8 @@ public sealed class StripeOAuthClient : IStripeOAuthClient
         var body = await response.Content.ReadAsStringAsync(ct);
 
         if (!response.IsSuccessStatusCode)
-            throw new StripeOAuthException(DescribeFailure(response, body));
+            throw new StripeOAuthException(
+                DescribeFailure(response, body), (int)response.StatusCode, ErrorCode(body));
 
         JsonElement json;
         try
@@ -124,7 +125,8 @@ public sealed class StripeOAuthClient : IStripeOAuthClient
         catch (JsonException e)
         {
             throw new StripeOAuthException(
-                $"Stripe returned {(int)response.StatusCode} with a body that is not JSON.", e);
+                $"Stripe returned {(int)response.StatusCode} with a body that is not JSON.",
+                (int)response.StatusCode, inner: e);
         }
 
         var accessToken = Text(json, "access_token")
@@ -177,6 +179,23 @@ public sealed class StripeOAuthClient : IStripeOAuthClient
         catch (JsonException)
         {
             return $"{prefix}.";
+        }
+    }
+
+    /// <summary>
+    /// The <c>error</c> field on its own, for callers that branch on it rather than log it.
+    /// Null when the body is not the documented error shape, which is why the decision to
+    /// mark a merchant disconnected keys off the status code and treats this as detail.
+    /// </summary>
+    private static string? ErrorCode(string body)
+    {
+        try
+        {
+            return Text(JsonDocument.Parse(body).RootElement, "error");
+        }
+        catch (JsonException)
+        {
+            return null;
         }
     }
 }
