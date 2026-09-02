@@ -230,13 +230,14 @@ other copy, and a lost draft would otherwise mean rewriting them from memory.
 
 `0.0.5`
 
-<!-- 0.0.5 prepared on 2 September 2026: manifest bumped and three read permissions
-     added (event_read, charge_read, dispute_read). Not yet uploaded; `stripe apps
-     upload` is the founder's step. Expect the same "Submitting this version will
-     replace it and restart the review process" warning as on 17 August, when 0.0.4
-     replaced the rejected 0.0.3. Steps 1 and 2 carry over except where noted: key
-     feature 3's description and user journey 1 step 2 both list the permissions and
-     have to be re-entered in the form. -->
+<!-- 0.0.5 uploaded and submitted for review on 2 September 2026: manifest bumped and
+     three read permissions added (event_read, charge_read, dispute_read). The upload
+     needed `npm ci` first (node_modules was absent on the machine). The publish flow
+     showed "Version 0.0.4 is currently approved for Marketplace. Submitting this
+     version will replace it and restart the review process", accepted. Steps 1 and 2
+     carried over from the 0.0.4 draft; key feature 3's description and user journey 1
+     step 2 were re-entered from this file. The Details page then read
+     "Published 0.0.4 -> 0.0.5 (reviewing marketplace listing)". -->
 
 <!-- Selected on 17 August 2026. The publish flow warned "Version 0.0.3 is currently in
      review for Marketplace. Submitting this version will replace it and restart the review
@@ -338,7 +339,8 @@ Security phone number: left blank (optional).
 
 # Release notes (publish step 3)
 
-For version 0.0.5, drafted 2 September 2026, not yet entered in the form:
+For version 0.0.5, saved on the Versions page and submitted with the listing on
+2 September 2026:
 
 > RecoverFlow now receives the failed-payment and paid notices Stripe sends for your
 > invoices, so a recovery case opens the moment a payment fails and closes the moment it
@@ -415,5 +417,11 @@ was found that explains either line, so the cause is genuinely unknown rather th
 The listing copy describes the permissions the manifest asks for (three through 0.0.4, six
 from 0.0.5), because that is the claim the repository can back. If Stripe's consent screen
 turns out to grant only the two reads, the retry write in StripeInvoicePayer would fail at
-run time and both the copy and the manifest would need revisiting. The 0.0.5 upload is a
-chance to re-check this: the preview should now list Events, Charges and Disputes as well.
+run time and both the copy and the manifest would need revisiting.
+
+Re-checked on 2 September 2026 with 0.0.5 selected: the preview no longer shows Customers or
+Invoices at all. It lists **Account and user information: Read-only** and **External access:
+Data sharing (api.recoverflow.org)**, nothing else, while reporting "Allows testing in
+sandboxes". So the preview's permission block does not track the manifest in either direction
+and is not evidence of what the consent screen grants. The consent screen itself, seen on a
+real install, is the only check that counts.
