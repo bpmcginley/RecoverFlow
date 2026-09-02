@@ -81,6 +81,12 @@
     return (cents / 100).toLocaleString(undefined,
       { style: 'currency', currency: (cur || 'usd').toUpperCase(), maximumFractionDigits: 0 });
   }
+  // Amounts arrive grouped by currency and stay that way: "$4,300 + €1,200", never one
+  // number in dollars that was really a sum of two currencies.
+  function moneyList(rows) {
+    if (!rows || !rows.length) return money(0);
+    return rows.map(function (r) { return money(r.cents, r.currency); }).join(' + ');
+  }
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -115,17 +121,22 @@
   function render(d) {
     $('out').hidden = false;
     var t = d.totals;
+    // One row per currency already, so this is a rename rather than a sum.
     var recovered = (d.recoveryCases || []).filter(function (c) { return c.status === 'Recovered'; });
-    var recoveredCents = recovered.reduce(function (s, c) { return s + c.cents; }, 0);
 
-    $('cards').innerHTML = [
+    var cards = [
       ['Merchants', t.merchants],
       ['Stripe connected', t.connected],
       ['New in window', t.signupsInWindow],
-      ['Backtests run', t.backtests],
-      ['Failed revenue scanned', money(t.failedAmountCentsScanned)],
-      ['Recovered to date', money(recoveredCents)]
-    ].map(function (c) {
+      ['Backtest runs', t.backtests],
+      ['Accounts scanned', t.accountsScanned],
+      ['Failed revenue scanned', moneyList(t.failedAmountScanned)],
+      ['Recovered to date', moneyList(recovered)]
+    ];
+    // Only worth a card once it has happened; a permanent zero is just noise.
+    if (t.disconnected) cards.splice(2, 0, ['Uninstalled', t.disconnected]);
+
+    $('cards').innerHTML = cards.map(function (c) {
       return '<div class="card"><div class="l">' + esc(c[0]) + '</div><div class="n">' + esc(c[1]) + '</div></div>';
     }).join('');
 
@@ -144,8 +155,8 @@
     table($('merchants'), ['Company', 'Email', 'Plan', 'Connected', 'Signed up'],
       d.merchants || [], function (m) {
         return '<tr><td>' + esc(m.companyName) + '</td><td>' + esc(m.email) + '</td><td>' +
-          esc(m.plan) + '</td><td><span class="pill ' + (m.connected ? 'yes">yes' : 'no">no') +
-          '</span></td><td>' + esc(new Date(m.createdAt).toLocaleString()) + '</td></tr>';
+          esc(m.plan) + '</td><td>' + connectedPill(m) +
+          '</td><td>' + esc(new Date(m.createdAt).toLocaleString()) + '</td></tr>';
       });
 
     table($('backtests'), ['Status', 'Failed invoices', 'Failed amount', 'Recoverable est.', 'Run'],
@@ -155,6 +166,15 @@
           money(b.recoverableLowCents, b.currency) + ' to ' + money(b.recoverableHighCents, b.currency) +
           '</td><td>' + esc(new Date(b.createdAtUtc).toLocaleString()) + '</td></tr>';
       });
+  }
+
+  // Three states, not two: never installed, installed and live, and installed and since gone.
+  // "no" and "left" both mean we cannot call Stripe for them, but only one of them ever could.
+  function connectedPill(m) {
+    if (m.connected) return '<span class="pill yes">yes</span>';
+    if (!m.disconnectedAtUtc) return '<span class="pill no">no</span>';
+    return '<span class="pill no" title="' +
+      esc(new Date(m.disconnectedAtUtc).toLocaleString()) + '">left</span>';
   }
 
   $('go').addEventListener('click', load);

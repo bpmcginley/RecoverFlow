@@ -60,7 +60,11 @@ public sealed class AdminController(
                 m.Plan,
                 m.CreatedAt,
                 m.StripeAccountId,
-                Connected = m.EncryptedStripeAccessToken != null,
+                // Both halves are needed. The token is never cleared, so on its own it says
+                // "installed at some point"; the timestamp is what an uninstall or a refused
+                // refresh sets, and a reinstall clears.
+                Connected = m.EncryptedStripeAccessToken != null && m.DisconnectedAtUtc == null,
+                m.DisconnectedAtUtc,
             })
             .ToListAsync(ct);
 
@@ -79,10 +83,33 @@ public sealed class AdminController(
             })
             .ToListAsync(ct);
 
-        var payments = await db.FailedPayments.IgnoreQueryFilters()
-            .GroupBy(p => p.Status)
-            .Select(g => new { Status = g.Key, Count = g.Count(), Cents = g.Sum(x => x.AmountCents) })
-            .ToListAsync(ct);
+        // Grouped by currency as well as status. Cents in different currencies are not
+        // addable, and the page used to add them and label the result in dollars.
+        //
+        // Status is named in memory rather than in the query. Nothing configures a string enum
+        // converter, so the enum used to reach the page as an integer and the page's filter
+        // for "Recovered" matched nothing: the recovered total was always zero.
+        var payments = (await db.FailedPayments.IgnoreQueryFilters()
+            .GroupBy(p => new { p.Status, p.Currency })
+            .Select(g => new { g.Key.Status, g.Key.Currency, Count = g.Count(), Cents = g.Sum(x => x.AmountCents) })
+            .ToListAsync(ct))
+            .Select(g => new { Status = g.Status.ToString(), g.Currency, g.Count, g.Cents })
+            .ToList();
+
+        // One scan per account, not every scan: a merchant who reruns their backtest would
+        // otherwise have the same failed revenue counted once per run. Their newest complete
+        // run is their current picture; an account with no complete run contributes nothing.
+        var latestScanPerAccount = backtests
+            .Where(b => b.Status == nameof(BacktestStatus.Complete))
+            .GroupBy(b => b.MerchantId)
+            .Select(g => g.OrderByDescending(b => b.CreatedAtUtc).First())
+            .ToList();
+
+        var failedAmountScanned = latestScanPerAccount
+            .GroupBy(b => b.Currency)
+            .Select(g => new { currency = g.Key, cents = g.Sum(b => b.FailedAmountCents) })
+            .OrderByDescending(x => x.cents)
+            .ToList();
 
         var signupsByDay = merchants
             .Where(m => m.CreatedAt >= since)
@@ -99,10 +126,12 @@ public sealed class AdminController(
             {
                 merchants = merchants.Count,
                 connected = merchants.Count(m => m.Connected),
+                disconnected = merchants.Count(m => m.DisconnectedAtUtc != null),
                 signupsInWindow = merchants.Count(m => m.CreatedAt >= since),
                 backtests = backtests.Count,
                 backtestsComplete = backtests.Count(b => b.Status == nameof(BacktestStatus.Complete)),
-                failedAmountCentsScanned = backtests.Sum(b => b.FailedAmountCents),
+                accountsScanned = latestScanPerAccount.Count,
+                failedAmountScanned,
             },
             signupsByDay,
             recoveryCases = payments,
