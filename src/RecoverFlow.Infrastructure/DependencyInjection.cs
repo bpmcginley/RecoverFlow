@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using RecoverFlow.Application.Admin;
 using RecoverFlow.Application.Audit;
 using RecoverFlow.Application.Backtest;
 using RecoverFlow.Application.Billing;
@@ -31,6 +32,7 @@ public static class DependencyInjection
 
         services.AddScoped<PaymentRecoveryService>();
         services.AddScoped<MerchantDashboardService>();
+        services.AddScoped<AdminStatsService>();
         services.AddScoped<RetryExecutionService>();
         services.AddScoped<IStripeWebhookProcessor, StripeWebhookProcessor>();
         services.AddScoped<IStripeInvoicePayer, StripeInvoicePayer>();

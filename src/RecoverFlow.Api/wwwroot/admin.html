@@ -7,178 +7,710 @@
 <title>RecoverFlow internal</title>
 <style>
   :root {
-    --bg:#0a0b11; --panel:#131623; --line:#232637; --text:#eef0f7;
-    --dim:#a3abbf; --mute:#6f778c; --accent:#818cf8; --pos:#34d399; --warn:#f0c070;
+    color-scheme: dark;
+    --bg:#0d0d0d; --panel:#1a1a19; --panel-2:#222221; --line:#2c2c2a; --line-2:#383835;
+    --text:#ffffff; --dim:#c3c2b7; --mute:#898781;
+    --accent:#818cf8; --accent-ink:#0b0b0b;
+    --s1:#3987e5; --s2:#d95926;                 /* categorical slots 1 and 2 */
+    --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --critical:#d03b3b;
+    --shadow:0 1px 0 rgba(255,255,255,.04) inset;
   }
   @media (prefers-color-scheme: light) {
-    :root { --bg:#f5f6fc; --panel:#fff; --line:#e6e8f0; --text:#0f1222;
-            --dim:#4b5266; --mute:#8a92a6; --accent:#6366f1; --pos:#0e9f6e; --warn:#b7791f; }
+    :root {
+      color-scheme: light;
+      --bg:#f9f9f7; --panel:#fcfcfb; --panel-2:#f3f3f0; --line:#e1e0d9; --line-2:#c3c2b7;
+      --text:#0b0b0b; --dim:#52514e; --mute:#898781;
+      --accent:#4f46e5; --accent-ink:#ffffff;
+      --s1:#2a78d6; --s2:#eb6834;
+      --good:#006300; --shadow:none;
+    }
   }
   *{box-sizing:border-box}
-  body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-  .wrap{max-width:1080px;margin:0 auto;padding:32px 20px 64px}
-  h1{font-size:1.5rem;margin:0 0 4px}
-  .sub{color:var(--mute);font-size:.9rem;margin:0 0 24px}
-  .bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}
-  input,button,select{font:inherit;padding:9px 12px;border-radius:9px;border:1px solid var(--line);
-    background:var(--panel);color:var(--text)}
-  button{background:var(--accent);color:#fff;border:0;cursor:pointer;font-weight:600}
-  button:disabled{opacity:.5;cursor:default}
-  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:28px}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
-  .card .n{font-size:1.7rem;font-weight:700;letter-spacing:-.02em}
-  .card .l{color:var(--mute);font-size:.78rem;text-transform:uppercase;letter-spacing:.05em}
-  h2{font-size:1rem;margin:28px 0 10px;color:var(--dim)}
-  .scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--panel)}
-  table{border-collapse:collapse;width:100%;font-size:.88rem}
-  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
-  th{color:var(--mute);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.04em}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--text);
+    font:14px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  a{color:var(--accent)}
+  button,input,select{font:inherit}
+
+  /* ---- chrome ---------------------------------------------------------------- */
+  .top{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+  .top .row{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .brand{font-weight:700;font-size:1.05rem;letter-spacing:-.01em;margin-right:auto}
+  .brand small{color:var(--mute);font-weight:500;margin-left:8px}
+  .ctl{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  input,select{padding:8px 10px;border-radius:8px;border:1px solid var(--line-2);background:var(--panel);color:var(--text)}
+  input[type=password]{min-width:230px}
+  .btn{padding:8px 14px;border-radius:8px;border:0;background:var(--accent);color:var(--accent-ink);font-weight:600;cursor:pointer}
+  .btn:disabled{opacity:.5;cursor:default}
+  .btn.ghost{background:transparent;color:var(--dim);border:1px solid var(--line-2)}
+  .meta{color:var(--mute);font-size:.8rem}
+  .tabs{max-width:1240px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto}
+  .tabs a{padding:10px 14px;color:var(--dim);text-decoration:none;border-bottom:2px solid transparent;white-space:nowrap;font-weight:500}
+  .tabs a:hover{color:var(--text)}
+  .tabs a.on{color:var(--text);border-color:var(--accent)}
+  .tabs a .badge{margin-left:6px;font-size:.72rem;color:var(--mute);background:var(--panel-2);padding:0 6px;border-radius:99px}
+  main{max-width:1240px;margin:0 auto;padding:22px 20px 80px}
+  section[hidden]{display:none}
+  .err{color:var(--serious);margin:8px 0 0}
+  .note{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:40px;text-align:center;color:var(--mute)}
+  .loading main{opacity:.45;transition:opacity .15s}
+
+  /* ---- layout ----------------------------------------------------------------- */
+  h2{font-size:.82rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mute);margin:26px 0 10px;font-weight:600}
+  h2:first-child{margin-top:0}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:12px}
+  .tile{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:var(--shadow);min-width:0}
+  .tile .l{color:var(--mute);font-size:.78rem}
+  .tile .v{font-size:1.6rem;font-weight:600;letter-spacing:-.02em;line-height:1.2;margin-top:2px;overflow-wrap:anywhere}
+  .tile .v.small{font-size:1.15rem}
+  .tile .s{color:var(--dim);font-size:.78rem;margin-top:4px}
+  .tile.hero .v{font-size:2.4rem}
+  .tile .v .more{font-size:.95rem;font-weight:500;color:var(--dim);letter-spacing:0;margin-top:2px}
+  .tile.hero .v .more{font-size:1.05rem}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .grid3{display:grid;grid-template-columns:2fr 1fr;gap:14px}
+  @media (max-width:860px){.grid2,.grid3{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);min-width:0}
+  .panel .hd{display:flex;align-items:baseline;gap:10px;padding:12px 16px 0}
+  .panel .hd h3{margin:0;font-size:.95rem;font-weight:600}
+  .panel .hd .sub{color:var(--mute);font-size:.8rem}
+  .panel .hd .right{margin-left:auto;display:flex;gap:8px;align-items:center}
+  .panel .bd{padding:12px 16px 16px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+  .filters input{min-width:220px}
+  .linkish{background:none;border:0;color:var(--accent);cursor:pointer;padding:0;font-size:.8rem}
+
+  /* ---- tables ------------------------------------------------------------------ */
+  .scroll{overflow-x:auto}
+  table{border-collapse:collapse;width:100%;font-size:.86rem}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:top}
+  th{color:var(--mute);font-weight:600;font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;user-select:none;position:sticky;top:0;background:var(--panel)}
+  th.sortable{cursor:pointer}
+  th.sortable:hover{color:var(--text)}
+  th .dir{opacity:.7;margin-left:3px}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
   tr:last-child td{border-bottom:0}
-  .pill{display:inline-block;padding:1px 8px;border-radius:99px;font-size:.75rem;border:1px solid var(--line)}
-  .yes{color:var(--pos);border-color:var(--pos)}
-  .no{color:var(--mute)}
-  .spark{display:flex;align-items:flex-end;gap:3px;height:56px;margin-bottom:6px}
-  .spark div{flex:1;background:var(--accent);border-radius:2px 2px 0 0;min-height:2px}
-  .empty{padding:28px;text-align:center;color:var(--mute)}
-  .err{color:var(--warn);margin-top:10px}
+  tr.click{cursor:pointer}
+  tr.click:hover td{background:var(--panel-2)}
+  tr.sel td{background:var(--panel-2)}
+  .empty{padding:26px;text-align:center;color:var(--mute)}
+  .sub-t{color:var(--mute);font-size:.78rem}
+  .trunc{max-width:260px;overflow:hidden;text-overflow:ellipsis}
+
+  /* ---- pills & status (icon + label, never colour alone) ------------------------ */
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:1px 8px;border-radius:99px;font-size:.74rem;border:1px solid var(--line-2);color:var(--dim);white-space:nowrap}
+  .pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--mute)}
+  .pill.ok::before{background:var(--good)}
+  .pill.warn::before{background:var(--warn)}
+  .pill.bad::before{background:var(--critical)}
+  .pill.info::before{background:var(--s1)}
+  .pill.none::before{display:none}
+
+  /* ---- charts ------------------------------------------------------------------ */
+  .chart{position:relative}
+  .chart svg{display:block;width:100%;height:auto;overflow:visible}
+  .chart .grid line{stroke:var(--line);stroke-width:1}
+  .chart .axis text{fill:var(--mute);font-size:11px;font-variant-numeric:tabular-nums}
+  .chart .base{stroke:var(--line-2);stroke-width:1}
+  .chart .hit{fill:transparent}
+  .chart .hit:hover{fill:color-mix(in oklab,var(--text) 6%,transparent)}
+  .legend{display:flex;gap:14px;font-size:.78rem;color:var(--dim);margin:0 0 6px}
+  .legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+  .tip{position:fixed;pointer-events:none;z-index:9;background:var(--panel);border:1px solid var(--line-2);
+       border-radius:8px;padding:8px 10px;font-size:.8rem;box-shadow:0 6px 24px rgba(0,0,0,.25);display:none;min-width:140px}
+  .tip b{display:block;margin-bottom:3px}
+  .tip .r{display:flex;justify-content:space-between;gap:14px;color:var(--dim)}
+  .tip .r i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:6px}
+  .meter{height:8px;border-radius:99px;background:color-mix(in oklab,var(--s1) 22%,var(--panel));overflow:hidden;min-width:80px}
+  .meter i{display:block;height:100%;background:var(--s1);border-radius:99px}
+  .kv{display:grid;grid-template-columns:max-content 1fr;gap:4px 16px;font-size:.86rem}
+  .kv dt{color:var(--mute);margin:0}
+  .kv dd{margin:0;overflow-wrap:anywhere}
+  code{font:.82em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--dim)}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>RecoverFlow internal</h1>
-  <p class="sub">Signups and connect-time backtests, read straight from the database. Traffic and
-     click data are not here, they live in GA4.</p>
+<header class="top">
+  <div class="row">
+    <div class="brand">RecoverFlow <small>internal</small></div>
+    <div class="ctl">
+      <select id="days" title="Window for the per-day charts and the 'in window' figures">
+        <option value="7">7 days</option>
+        <option value="30" selected>30 days</option>
+        <option value="90">90 days</option>
+        <option value="365">1 year</option>
+      </select>
+      <input id="key" type="password" placeholder="Admin key" autocomplete="off">
+      <button id="go" class="btn">Load</button>
+    </div>
+    <div class="meta" id="meta"></div>
+  </div>
+  <nav class="tabs" id="tabs">
+    <a href="#overview" data-tab="overview">Overview</a>
+    <a href="#merchants" data-tab="merchants">Merchants<span class="badge" id="n-merchants"></span></a>
+    <a href="#recovery" data-tab="recovery">Recovery<span class="badge" id="n-cases"></span></a>
+    <a href="#billing" data-tab="billing">Billing<span class="badge" id="n-invoices"></span></a>
+    <a href="#backtests" data-tab="backtests">Backtests<span class="badge" id="n-backtests"></span></a>
+    <a href="#system" data-tab="system">System</a>
+  </nav>
+</header>
 
-  <div class="bar">
-    <input id="key" type="password" placeholder="Admin key" style="flex:1;min-width:220px">
-    <select id="days">
-      <option value="7">7 days</option>
-      <option value="30" selected>30 days</option>
-      <option value="90">90 days</option>
-    </select>
-    <button id="go">Load</button>
-  </div>
+<main>
   <div id="err" class="err"></div>
-  <div id="out" hidden>
-    <div class="cards" id="cards"></div>
-    <h2 id="sparkLabel">Signups per day</h2>
-    <div class="spark" id="spark"></div>
-    <h2>Merchants</h2>
-    <div class="scroll" id="merchants"></div>
-    <h2>Backtests</h2>
-    <div class="scroll" id="backtests"></div>
-  </div>
-</div>
+  <div id="welcome" class="note">Enter the admin key and press Load. Traffic and click data are not here, they live in GA4.</div>
+
+  <section id="tab-overview" hidden>
+    <div class="tiles" id="ov-tiles"></div>
+    <h2>In the window</h2>
+    <div class="grid2">
+      <div class="panel"><div class="hd"><h3>Failures and recoveries per day</h3><span class="sub" id="act-sub"></span>
+        <div class="right"><button class="linkish" data-toggle="act-table">table</button></div></div>
+        <div class="bd"><div class="chart" id="act-chart"></div><div class="scroll" id="act-table" hidden></div></div></div>
+      <div class="panel"><div class="hd"><h3>Signups per day</h3><span class="sub" id="su-sub"></span>
+        <div class="right"><button class="linkish" data-toggle="su-table">table</button></div></div>
+        <div class="bd"><div class="chart" id="su-chart"></div><div class="scroll" id="su-table" hidden></div></div></div>
+    </div>
+    <h2>Who the money came from</h2>
+    <div class="grid3">
+      <div class="panel"><div class="hd"><h3>Recovered by merchant</h3><span class="sub">gross, all time</span></div>
+        <div class="scroll" id="ov-leader"></div></div>
+      <div class="panel"><div class="hd"><h3>Latest cases</h3><span class="sub">newest first</span></div>
+        <div class="scroll" id="ov-latest"></div></div>
+    </div>
+  </section>
+
+  <section id="tab-merchants" hidden>
+    <div class="filters">
+      <input id="m-search" placeholder="Search company, email or account id">
+      <select id="m-conn"><option value="">Any connection</option><option value="yes">Connected</option><option value="left">Uninstalled</option><option value="no">Never connected</option></select>
+      <span class="meta" id="m-count"></span>
+    </div>
+    <div class="panel"><div class="scroll" id="m-table"></div></div>
+    <div id="m-detail"></div>
+  </section>
+
+  <section id="tab-recovery" hidden>
+    <div class="tiles" id="rc-tiles"></div>
+    <h2>Cases</h2>
+    <div class="filters">
+      <select id="c-status"><option value="">Any status</option><option>ActiveRecovery</option><option>Recovered</option><option>Lost</option><option>Cancelled</option></select>
+      <select id="c-merchant"><option value="">Any merchant</option></select>
+      <input id="c-search" placeholder="Search invoice, customer or decline code">
+      <span class="meta" id="c-count"></span>
+    </div>
+    <div class="panel"><div class="scroll" id="c-table"></div></div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="panel"><div class="hd"><h3>Decline codes</h3><span class="sub">all time</span></div><div class="scroll" id="rc-declines"></div></div>
+      <div class="panel"><div class="hd"><h3>How recoveries happened</h3><span class="sub">recovered cases by method</span></div><div class="bd" id="rc-methods"></div></div>
+    </div>
+  </section>
+
+  <section id="tab-billing" hidden>
+    <div class="tiles" id="b-tiles"></div>
+    <h2>Fee invoices</h2>
+    <div class="panel"><div class="scroll" id="b-table"></div></div>
+  </section>
+
+  <section id="tab-backtests" hidden>
+    <div class="tiles" id="bt-tiles"></div>
+    <h2>Runs</h2>
+    <div class="panel"><div class="scroll" id="bt-table"></div></div>
+  </section>
+
+  <section id="tab-system" hidden>
+    <div class="tiles" id="sy-tiles"></div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="panel"><div class="hd"><h3>Webhook events per day</h3><span class="sub" id="wh-sub"></span>
+        <div class="right"><button class="linkish" data-toggle="wh-table">table</button></div></div>
+        <div class="bd"><div class="chart" id="wh-chart"></div><div class="scroll" id="wh-table" hidden></div></div></div>
+      <div class="panel"><div class="hd"><h3>Event types in the window</h3></div><div class="scroll" id="wh-types"></div></div>
+    </div>
+    <div class="grid2" style="margin-top:14px">
+      <div class="panel"><div class="hd"><h3>Smart retries</h3><span class="sub">all time</span></div><div class="bd" id="sy-retries"></div></div>
+      <div class="panel"><div class="hd"><h3>Dunning emails</h3><span class="sub">by sequence step</span></div><div class="scroll" id="sy-emails"></div></div>
+    </div>
+    <h2>Uninstalled</h2>
+    <div class="panel"><div class="scroll" id="sy-left"></div></div>
+  </section>
+</main>
+<div class="tip" id="tip"></div>
 
 <script>
-(function () {
-  var $ = function (id) { return document.getElementById(id); };
+(() => {
+  const $ = id => document.getElementById(id);
+  let data = null;
+  let selectedMerchant = null;
+  const sortState = {};
+
   // sessionStorage, not localStorage: the key dies with the tab rather than
   // sitting on disk on whatever machine this was last opened on.
   $('key').value = sessionStorage.getItem('rf_admin_key') || '';
+  $('days').value = sessionStorage.getItem('rf_admin_days') || '30';
 
-  function money(cents, cur) {
-    return (cents / 100).toLocaleString(undefined,
-      { style: 'currency', currency: (cur || 'usd').toUpperCase(), maximumFractionDigits: 0 });
-  }
+  // ---- formatting ----------------------------------------------------------------
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const money = (cents, cur) => (cents / 100).toLocaleString(undefined,
+    { style: 'currency', currency: (cur || 'usd').toUpperCase(), maximumFractionDigits: 0 });
   // Amounts arrive grouped by currency and stay that way: "$4,300 + €1,200", never one
   // number in dollars that was really a sum of two currencies.
-  function moneyList(rows) {
-    if (!rows || !rows.length) return money(0);
-    return rows.map(function (r) { return money(r.cents, r.currency); }).join(' + ');
+  const moneyList = rows => (rows && rows.length) ? rows.map(r => money(r.cents, r.currency)).join(' + ') : money(0);
+  const n = x => (x || 0).toLocaleString();
+  const when = d => d ? new Date(d).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }) : '';
+  const day = d => d ? new Date(d).toLocaleDateString(undefined, { dateStyle: 'medium' }) : '';
+  const ago = d => {
+    if (!d) return 'never';
+    const h = (Date.now() - new Date(d)) / 36e5;
+    if (h < 1) return Math.max(1, Math.round(h * 60)) + ' min ago';
+    if (h < 48) return Math.round(h) + ' h ago';
+    return Math.round(h / 24) + ' d ago';
+  };
+  const pct = (a, b) => b ? Math.round(a / b * 100) + '%' : '–';
+  const shortDate = s => { const d = new Date(s + 'T00:00:00'); return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }); };
+
+  const pill = (cls, text, title) =>
+    `<span class="pill ${cls}"${title ? ` title="${esc(title)}"` : ''}>${esc(text)}</span>`;
+  // Three states, not two: never installed, installed and live, and installed and since gone.
+  const connPill = m => m.connected ? pill('ok', 'connected')
+    : m.disconnectedAtUtc ? pill('bad', 'uninstalled', 'Left ' + when(m.disconnectedAtUtc))
+    : pill('none', 'never connected');
+  const statusPill = s => ({
+    ActiveRecovery: pill('info', 'active'), Recovered: pill('ok', 'recovered'),
+    Lost: pill('bad', 'lost'), Cancelled: pill('none', 'cancelled'),
+    Sent: pill('ok', 'sent'), Failed: pill('bad', 'failed'), Pending: pill('warn', 'pending'),
+    Complete: pill('ok', 'complete'),
+  })[s] || pill('none', s);
+
+  // ---- tables ------------------------------------------------------------------
+  // cols: { label, key, render(row), sort(row) -> comparable, num:boolean }
+  function table(el, id, cols, rows, opts = {}) {
+    if (!rows.length) { el.innerHTML = `<div class="empty">${esc(opts.empty || 'Nothing yet.')}</div>`; return; }
+    const st = sortState[id] || (sortState[id] = { key: opts.defaultSort || null, dir: opts.defaultDir || -1 });
+    const sorted = rows.slice();
+    const col = cols.find(c => c.key === st.key);
+    if (col) {
+      const val = col.sort || (r => r[col.key]);
+      sorted.sort((a, b) => {
+        const x = val(a), y = val(b);
+        if (x == null && y == null) return 0;
+        if (x == null) return 1;
+        if (y == null) return -1;
+        return (x < y ? -1 : x > y ? 1 : 0) * st.dir;
+      });
+    }
+    const shown = opts.limit ? sorted.slice(0, opts.limit) : sorted;
+    el.innerHTML = '<table><thead><tr>' + cols.map(c =>
+      `<th class="${c.num ? 'num ' : ''}${c.key ? 'sortable' : ''}" data-key="${esc(c.key || '')}">${esc(c.label)}` +
+      (c.key === st.key ? `<span class="dir">${st.dir < 0 ? '↓' : '↑'}</span>` : '') + '</th>').join('') +
+      '</tr></thead><tbody>' + shown.map(r => {
+        const cls = [opts.rowClass ? opts.rowClass(r) : '', opts.onRow ? 'click' : ''].join(' ').trim();
+        return `<tr${cls ? ` class="${cls}"` : ''}${opts.onRow ? ` data-id="${esc(r.id)}"` : ''}>` +
+          cols.map(c => `<td class="${c.num ? 'num' : ''}">${c.render ? c.render(r) : esc(r[c.key])}</td>`).join('') + '</tr>';
+      }).join('') + '</tbody></table>' +
+      (opts.limit && sorted.length > opts.limit ? `<div class="empty">Showing ${opts.limit} of ${sorted.length}.</div>` : '');
+    el.querySelectorAll('th.sortable').forEach(th => th.addEventListener('click', () => {
+      const k = th.dataset.key;
+      if (st.key === k) st.dir = -st.dir; else { st.key = k; st.dir = -1; }
+      table(el, id, cols, rows, opts);
+    }));
+    if (opts.onRow) el.querySelectorAll('tr[data-id]').forEach(tr =>
+      tr.addEventListener('click', () => opts.onRow(rows.find(r => String(r.id) === tr.dataset.id))));
   }
-  function esc(s) {
-    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+
+  // A tile given `m` (amounts by currency) shows the largest currency at full size and the
+  // rest on a smaller line beneath, so a three-currency total never wraps the headline figure.
+  const tiles = (el, items) => {
+    el.innerHTML = items.filter(Boolean).map(t => {
+      let v = t.v, more = '';
+      if (t.m) {
+        const rows = t.m.length ? t.m : [{ cents: 0 }];
+        v = money(rows[0].cents, rows[0].currency);
+        if (rows.length > 1) more = `<div class="more">+ ${esc(rows.slice(1).map(r => money(r.cents, r.currency)).join(' + '))}</div>`;
+      }
+      return `<div class="tile${t.hero ? ' hero' : ''}"><div class="l">${esc(t.l)}</div>` +
+        `<div class="v${t.small ? ' small' : ''}">${esc(v)}${more}</div>${t.s ? `<div class="s">${esc(t.s)}</div>` : ''}</div>`;
+    }).join('');
+  };
+
+  // ---- charts: grouped columns, one shared axis, legend for 2+ series ----------------
+  const tip = $('tip');
+  function columns(el, rows, series) {
+    if (!rows.length) { el.innerHTML = '<div class="empty">No data in this window.</div>'; return; }
+    const W = 600, H = 190, padL = 36, padR = 8, padT = 10, padB = 24;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+    const max = Math.max(1, ...rows.map(r => Math.max(...series.map(s => r[s.key] || 0))));
+    // Every series here is a count, so the axis never steps by halves.
+    const step = Math.max(1, niceStep(max)), top = Math.ceil(max / step) * step;
+    const y = v => padT + plotH - v / top * plotH;
+    const band = plotW / rows.length, gap = 2;
+    const barW = Math.min(24, Math.max(2, (band - gap * (series.length + 1)) / series.length));
+    const groupW = barW * series.length + gap * (series.length - 1);
+    let g = '';
+    for (let v = 0; v <= top; v += step)
+      g += `<line x1="${padL}" x2="${W - padR}" y1="${y(v)}" y2="${y(v)}"/>` +
+        `<text x="${padL - 6}" y="${y(v) + 4}" text-anchor="end" class="t">${v.toLocaleString()}</text>`;
+    let bars = '', hits = '';
+    rows.forEach((r, i) => {
+      const x0 = padL + i * band + (band - groupW) / 2;
+      series.forEach((s, j) => {
+        const v = r[s.key] || 0, h = plotH - (y(v) - padT);
+        if (v > 0) bars += `<path d="${topRounded(x0 + j * (barW + gap), y(v), barW, h, Math.min(4, h))}" fill="${s.color}"/>`;
+      });
+      hits += `<rect class="hit" x="${padL + i * band}" y="${padT}" width="${band}" height="${plotH}" data-i="${i}"/>`;
+    });
+    const ticks = [0, Math.floor(rows.length / 2), rows.length - 1].filter((v, i, a) => a.indexOf(v) === i);
+    const xl = ticks.map(i => `<text x="${padL + i * band + band / 2}" y="${H - 6}" text-anchor="middle">${esc(shortDate(rows[i].date))}</text>`).join('');
+    el.innerHTML = (series.length > 1 ? `<div class="legend">${series.map(s =>
+      `<span><i style="background:${s.color}"></i>${esc(s.name)}</span>`).join('')}</div>` : '') +
+      `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(series.map(s => s.name).join(' and '))} per day">` +
+      `<g class="grid">${g.replace(/<text[^>]*>[^<]*<\/text>/g, '')}</g><g class="axis">${g.replace(/<line[^>]*\/>/g, '')}${xl}</g>` +
+      `<line class="base" x1="${padL}" x2="${W - padR}" y1="${y(0)}" y2="${y(0)}"/>${bars}${hits}</svg>`;
+    el.querySelectorAll('.hit').forEach(h => {
+      h.addEventListener('mousemove', e => {
+        const r = rows[+h.dataset.i];
+        tip.innerHTML = `<b>${esc(day(r.date + 'T00:00:00'))}</b>` + series.map(s =>
+          `<div class="r"><span><i style="background:${s.color}"></i>${esc(s.name)}</span><span>${n(r[s.key])}</span></div>`).join('');
+        tip.style.display = 'block';
+        const tw = tip.offsetWidth, th = tip.offsetHeight;
+        tip.style.left = Math.min(e.clientX + 14, innerWidth - tw - 8) + 'px';
+        tip.style.top = Math.max(8, e.clientY - th - 12) + 'px';
+      });
+      h.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
     });
   }
-  function table(el, cols, rows, render) {
-    if (!rows.length) { el.innerHTML = '<div class="empty">Nothing yet.</div>'; return; }
-    el.innerHTML = '<table><thead><tr>' + cols.map(function (c) {
-      return '<th>' + esc(c) + '</th>';
-    }).join('') + '</tr></thead><tbody>' + rows.map(render).join('') + '</tbody></table>';
-  }
+  const niceStep = max => { const raw = max / 3, p = Math.pow(10, Math.floor(Math.log10(raw))), f = raw / p;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p; };
+  const topRounded = (x, y, w, h, r) =>
+    `M${x},${y + h} V${y + r} Q${x},${y} ${x + r},${y} H${x + w - r} Q${x + w},${y} ${x + w},${y + r} V${y + h} Z`;
+  // Every chart has a table twin: the tooltip enhances, it never gates a value.
+  const chartTable = (el, rows, series) => {
+    el.innerHTML = '<table><thead><tr><th>Day</th>' + series.map(s => `<th class="num">${esc(s.name)}</th>`).join('') +
+      '</tr></thead><tbody>' + rows.filter(r => series.some(s => r[s.key])).map(r =>
+        `<tr><td>${esc(day(r.date + 'T00:00:00'))}</td>${series.map(s => `<td class="num">${n(r[s.key])}</td>`).join('')}</tr>`).join('') +
+      '</tbody></table>';
+    if (!rows.some(r => series.some(s => r[s.key]))) el.innerHTML = '<div class="empty">Nothing in this window.</div>';
+  };
+  document.querySelectorAll('[data-toggle]').forEach(b => b.addEventListener('click', () => {
+    const t = $(b.dataset.toggle); t.hidden = !t.hidden; b.textContent = t.hidden ? 'table' : 'hide table';
+  }));
 
+  // ---- loading -----------------------------------------------------------------------
   function load() {
-    var key = $('key').value.trim();
+    const key = $('key').value.trim();
     if (!key) { $('err').textContent = 'Enter the admin key.'; return; }
     sessionStorage.setItem('rf_admin_key', key);
+    sessionStorage.setItem('rf_admin_days', $('days').value);
     $('err').textContent = '';
     $('go').disabled = true;
-
+    document.body.classList.add('loading');
     fetch('/v1/admin/stats?days=' + $('days').value, { headers: { 'X-Admin-Key': key } })
-      .then(function (r) {
+      .then(r => {
         if (r.status === 401) throw new Error('Key rejected.');
         if (r.status === 404) throw new Error('Admin endpoint is off. Set Admin__ApiKey in Render and redeploy.');
         if (!r.ok) throw new Error('Request failed: ' + r.status);
         return r.json();
       })
-      .then(render)
-      .catch(function (e) { $('err').textContent = e.message; })
-      .finally(function () { $('go').disabled = false; });
+      .then(d => { data = d; renderAll(); })
+      .catch(e => { $('err').textContent = e.message; })
+      .finally(() => { $('go').disabled = false; document.body.classList.remove('loading'); });
   }
 
-  function render(d) {
-    $('out').hidden = false;
-    var t = d.totals;
-    // One row per currency already, so this is a rename rather than a sum.
-    var recovered = (d.recoveryCases || []).filter(function (c) { return c.status === 'Recovered'; });
-
-    var cards = [
-      ['Merchants', t.merchants],
-      ['Stripe connected', t.connected],
-      ['New in window', t.signupsInWindow],
-      ['Backtest runs', t.backtests],
-      ['Accounts scanned', t.accountsScanned],
-      ['Failed revenue scanned', moneyList(t.failedAmountScanned)],
-      ['Recovered to date', moneyList(recovered)]
-    ];
-    // Only worth a card once it has happened; a permanent zero is just noise.
-    if (t.disconnected) cards.splice(2, 0, ['Uninstalled', t.disconnected]);
-
-    $('cards').innerHTML = cards.map(function (c) {
-      return '<div class="card"><div class="l">' + esc(c[0]) + '</div><div class="n">' + esc(c[1]) + '</div></div>';
-    }).join('');
-
-    var days = d.signupsByDay || [];
-    $('sparkLabel').textContent = 'Signups per day (' + d.windowDays + ' days)';
-    if (!days.length) {
-      $('spark').innerHTML = '<div style="flex:1;background:none;color:var(--mute);font-size:.85rem">No signups in this window.</div>';
-    } else {
-      var max = Math.max.apply(null, days.map(function (x) { return x.count; }));
-      $('spark').innerHTML = days.map(function (x) {
-        return '<div title="' + esc(x.date + ': ' + x.count) + '" style="height:' +
-          Math.round(x.count / max * 100) + '%"></div>';
-      }).join('');
-    }
-
-    table($('merchants'), ['Company', 'Email', 'Plan', 'Connected', 'Signed up'],
-      d.merchants || [], function (m) {
-        return '<tr><td>' + esc(m.companyName) + '</td><td>' + esc(m.email) + '</td><td>' +
-          esc(m.plan) + '</td><td>' + connectedPill(m) +
-          '</td><td>' + esc(new Date(m.createdAt).toLocaleString()) + '</td></tr>';
-      });
-
-    table($('backtests'), ['Status', 'Failed invoices', 'Failed amount', 'Recoverable est.', 'Run'],
-      d.backtests || [], function (b) {
-        return '<tr><td>' + esc(b.status) + '</td><td>' + esc(b.failedInvoiceCount) + '</td><td>' +
-          money(b.failedAmountCents, b.currency) + '</td><td>' +
-          money(b.recoverableLowCents, b.currency) + ' to ' + money(b.recoverableHighCents, b.currency) +
-          '</td><td>' + esc(new Date(b.createdAtUtc).toLocaleString()) + '</td></tr>';
-      });
+  function renderAll() {
+    const d = data, t = d.totals;
+    $('welcome').hidden = true;
+    $('meta').textContent = 'Loaded ' + when(d.generatedAtUtc) + ' · ' + d.windowDays + '-day window';
+    $('n-merchants').textContent = t.merchants;
+    $('n-cases').textContent = t.activeCases ? t.activeCases + ' open' : '';
+    $('n-invoices').textContent = d.feeInvoices.length || '';
+    $('n-backtests').textContent = t.backtests || '';
+    renderOverview(); renderMerchants(); renderRecovery(); renderBilling(); renderBacktests(); renderSystem();
+    showTab(location.hash.slice(1) || 'overview');
   }
 
-  // Three states, not two: never installed, installed and live, and installed and since gone.
-  // "no" and "left" both mean we cannot call Stripe for them, but only one of them ever could.
-  function connectedPill(m) {
-    if (m.connected) return '<span class="pill yes">yes</span>';
-    if (!m.disconnectedAtUtc) return '<span class="pill no">no</span>';
-    return '<span class="pill no" title="' +
-      esc(new Date(m.disconnectedAtUtc).toLocaleString()) + '">left</span>';
+  // ---- Overview ------------------------------------------------------------------------
+  function renderOverview() {
+    const d = data, t = d.totals;
+    tiles($('ov-tiles'), [
+      { l: 'Recovered to date', m: (t.recovered), s: n(t.recoveredCases) + ' cases, gross', hero: true },
+      { l: 'Recovered in window', m: (t.recoveredInWindow), s: d.windowDays + ' days' },
+      { l: 'At risk now', m: (t.atRisk), s: n(t.activeCases) + ' open cases' },
+      t.reversed.length ? { l: 'Reversed', m: (t.reversed), s: 'refunds and chargebacks' } : null,
+      { l: 'Fees invoiced', m: (t.feesInvoiced), s: 'sent, paid or not' },
+      { l: 'Merchants', v: n(t.merchants), s: n(t.connected) + ' connected' + (t.disconnected ? ', ' + n(t.disconnected) + ' left' : '') },
+      { l: 'New in window', v: n(t.signupsInWindow) },
+      { l: 'Failed revenue scanned', m: (t.failedAmountScanned), s: n(t.accountsScanned) + ' accounts, newest scan each', small: true },
+    ]);
+
+    const act = [{ name: 'Failed', key: 'failed', color: 'var(--s1)' }, { name: 'Recovered', key: 'recovered', color: 'var(--s2)' }];
+    const failed = d.activityByDay.reduce((a, r) => a + r.failed, 0), rec = d.activityByDay.reduce((a, r) => a + r.recovered, 0);
+    $('act-sub').textContent = n(failed) + ' failed, ' + n(rec) + ' recovered';
+    columns($('act-chart'), d.activityByDay, act);
+    chartTable($('act-table'), d.activityByDay, act);
+
+    const su = [{ name: 'Signups', key: 'count', color: 'var(--s1)' }];
+    $('su-sub').textContent = n(t.signupsInWindow) + ' in ' + d.windowDays + ' days';
+    columns($('su-chart'), d.signupsByDay, su);
+    chartTable($('su-table'), d.signupsByDay, su);
+
+    // Leaderboard: the biggest recovered total per merchant, in that merchant's main currency.
+    const lead = d.merchants.filter(m => m.recovered.length)
+      .map(m => ({ ...m, top: m.recovered[0] })).sort((a, b) => b.top.cents - a.top.cents);
+    const maxCents = lead.length ? lead[0].top.cents : 1;
+    table($('ov-leader'), 'leader', [
+      { label: 'Merchant', key: 'companyName', render: m => `${esc(m.companyName)} <span class="sub-t">${esc(m.plan)}</span>` },
+      { label: 'Recovered', key: 'cents', num: true, sort: m => m.top.cents, render: m => moneyList(m.recovered) },
+      { label: '', render: m => `<div class="meter"><i style="width:${Math.max(2, Math.round(m.top.cents / maxCents * 100))}%"></i></div>` },
+      { label: 'Cases', key: 'recoveredCases', num: true },
+      { label: 'Reversed', num: true, render: m => m.reversed.length ? moneyList(m.reversed) : '' },
+      { label: 'Fees billed', num: true, render: m => m.feesBilled.length ? moneyList(m.feesBilled) : '' },
+    ], lead, { empty: 'No recoveries yet.', onRow: m => openMerchant(m.id) });
+
+    table($('ov-latest'), 'latest', [
+      { label: 'When', render: c => `<span title="${esc(when(c.firstFailedAt))}">${esc(ago(c.firstFailedAt))}</span>` },
+      { label: 'Merchant', render: c => esc(c.companyName) },
+      { label: 'Amount', num: true, render: c => money(c.amountCents, c.currency) },
+      { label: 'Status', render: c => statusPill(c.status) },
+    ], d.cases.slice(0, 8), { empty: 'No failed payments seen yet.' });
   }
+
+  // ---- Merchants -------------------------------------------------------------------------
+  const merchantCols = [
+    { label: 'Company', key: 'companyName', render: m => `${esc(m.companyName)}<div class="sub-t">${esc(m.email)}</div>` },
+    { label: 'Plan', key: 'plan' },
+    { label: 'Connection', key: 'conn', sort: m => m.connected ? 2 : m.disconnectedAtUtc ? 1 : 0, render: connPill },
+    { label: 'Open', key: 'activeCases', num: true },
+    { label: 'Recovered', key: 'rec', num: true, sort: m => m.recovered.length ? m.recovered[0].cents : 0,
+      render: m => m.recovered.length ? `${moneyList(m.recovered)}<div class="sub-t">${n(m.recoveredCases)} cases</div>` : '' },
+    { label: 'At risk', key: 'risk', num: true, sort: m => m.atRisk.length ? m.atRisk[0].cents : 0, render: m => m.atRisk.length ? moneyList(m.atRisk) : '' },
+    { label: 'Fees billed', key: 'fee', num: true, sort: m => m.feesBilled.length ? m.feesBilled[0].cents : 0, render: m => m.feesBilled.length ? moneyList(m.feesBilled) : '' },
+    { label: 'Last scan', key: 'scan', num: true, sort: m => m.latestScan ? m.latestScan.failedAmountCents : null,
+      render: m => m.latestScan ? `${money(m.latestScan.failedAmountCents, m.latestScan.currency)}<div class="sub-t">${n(m.latestScan.failedInvoiceCount)} failed inv.</div>` : '' },
+    { label: 'Last activity', key: 'act', sort: m => m.lastFailureAtUtc || '', render: m => esc(ago(m.lastFailureAtUtc)) },
+    { label: 'Signed up', key: 'createdAt', render: m => esc(day(m.createdAt)) },
+  ];
+  function renderMerchants() {
+    const q = $('m-search').value.trim().toLowerCase(), conn = $('m-conn').value;
+    const rows = data.merchants.filter(m =>
+      (!q || [m.companyName, m.email, m.stripeAccountId].some(s => (s || '').toLowerCase().includes(q))) &&
+      (!conn || (conn === 'yes' ? m.connected : conn === 'left' ? !!m.disconnectedAtUtc : (!m.connected && !m.disconnectedAtUtc))));
+    $('m-count').textContent = rows.length + ' of ' + data.merchants.length;
+    table($('m-table'), 'merchants', merchantCols, rows,
+      { defaultSort: 'createdAt', onRow: m => openMerchant(m.id), rowClass: m => m.id === selectedMerchant ? 'sel' : '', empty: 'No merchants match.' });
+    renderMerchantDetail();
+  }
+  function openMerchant(id) {
+    selectedMerchant = selectedMerchant === id ? null : id;
+    if (location.hash !== '#merchants') location.hash = '#merchants';
+    renderMerchants();
+    if (selectedMerchant) $('m-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function renderMerchantDetail() {
+    const el = $('m-detail');
+    const m = data.merchants.find(x => x.id === selectedMerchant);
+    if (!m) { el.innerHTML = ''; return; }
+    const cases = data.cases.filter(c => c.merchantId === m.id);
+    const invoices = data.feeInvoices.filter(f => f.merchantId === m.id);
+    const scans = data.backtests.filter(b => b.merchantId === m.id);
+    el.innerHTML = `
+      <h2>${esc(m.companyName)} <button class="linkish" id="m-close">close</button></h2>
+      <div class="panel"><div class="bd">
+        <dl class="kv">
+          <dt>Email</dt><dd>${esc(m.email)}</dd>
+          <dt>Stripe account</dt><dd><code>${esc(m.stripeAccountId)}</code></dd>
+          <dt>Connection</dt><dd>${connPill(m)}${m.disconnectedAtUtc ? ' <span class="sub-t">left ' + esc(when(m.disconnectedAtUtc)) + '</span>' : ''}</dd>
+          <dt>Plan</dt><dd>${esc(m.plan)}</dd>
+          <dt>Signed up</dt><dd>${esc(when(m.createdAt))}</dd>
+          <dt>Last failure</dt><dd>${esc(m.lastFailureAtUtc ? when(m.lastFailureAtUtc) : 'none seen')}</dd>
+          <dt>Last recovery</dt><dd>${esc(m.lastRecoveryAtUtc ? when(m.lastRecoveryAtUtc) : 'none yet')}</dd>
+        </dl>
+      </div></div>
+      <div class="tiles" style="margin-top:14px" id="md-tiles"></div>
+      <h2>Cases <span class="sub-t">newest ${cases.length} of the last ${data.cases.length} loaded</span></h2>
+      <div class="panel"><div class="scroll" id="md-cases"></div></div>
+      <h2>Fee invoices</h2>
+      <div class="panel"><div class="scroll" id="md-invoices"></div></div>
+      <h2>Backtests</h2>
+      <div class="panel"><div class="scroll" id="md-scans"></div></div>`;
+    $('m-close').addEventListener('click', () => { selectedMerchant = null; renderMerchants(); });
+    tiles($('md-tiles'), [
+      { l: 'Recovered', m: (m.recovered), s: n(m.recoveredCases) + ' cases' },
+      { l: 'At risk', m: (m.atRisk), s: n(m.activeCases) + ' open' },
+      { l: 'Lost', v: n(m.lostCases), s: 'cases' },
+      { l: 'Reversed', m: (m.reversed) },
+      { l: 'Fees billed', m: (m.feesBilled) },
+    ]);
+    table($('md-cases'), 'md-cases', caseCols.filter(c => c.key !== 'companyName'), cases, { empty: 'No cases for this merchant in the loaded set.' });
+    table($('md-invoices'), 'md-invoices', invoiceCols.filter(c => c.key !== 'companyName'), invoices);
+    table($('md-scans'), 'md-scans', backtestCols.filter(c => c.key !== 'companyName'), scans);
+  }
+
+  // ---- Recovery ---------------------------------------------------------------------------
+  const caseCols = [
+    { label: 'Failed', key: 'firstFailedAt', render: c => `<span title="${esc(when(c.firstFailedAt))}">${esc(day(c.firstFailedAt))}</span>` },
+    { label: 'Merchant', key: 'companyName' },
+    { label: 'Customer', key: 'customerEmail', render: c => `<div class="trunc" title="${esc(c.customerEmail)}">${esc(c.customerEmail || '')}</div><div class="sub-t"><code>${esc(c.stripeInvoiceId)}</code></div>` },
+    { label: 'Amount', key: 'amountCents', num: true, render: c => money(c.amountCents, c.currency) +
+      (c.reversedAmountCents ? `<div class="sub-t">−${money(c.reversedAmountCents, c.currency)} ${esc(c.reversalReason || 'reversed')}</div>` : '') },
+    { label: 'Status', key: 'status', render: c => statusPill(c.status) },
+    { label: 'Decline', key: 'declineCode', render: c => `${esc(c.declineCode || '')}<div class="sub-t">${esc(c.failureType)}</div>` },
+    { label: 'Method', key: 'method', render: c => esc(c.status === 'Recovered' ? c.method : '') },
+    { label: 'Retries', key: 'retries', num: true },
+    { label: 'Emails', key: 'emails', num: true },
+    { label: 'Closed', key: 'closed', sort: c => c.recoveredAt || c.lostAt || '', render: c => esc(day(c.recoveredAt || c.lostAt)) },
+    { label: 'Billed', key: 'billedAtUtc', render: c => esc(day(c.billedAtUtc)) },
+  ];
+  function renderRecovery() {
+    const d = data, t = d.totals, closed = t.recoveredCases + t.lostCases;
+    tiles($('rc-tiles'), [
+      { l: 'Open', v: n(t.activeCases), s: moneyList(t.atRisk) + ' at risk' },
+      { l: 'Recovered', v: n(t.recoveredCases), s: moneyList(t.recovered) },
+      { l: 'Lost', v: n(t.lostCases) },
+      { l: 'Cancelled', v: n(t.cancelledCases), s: 'subscription ended before we could' },
+      { l: 'Recovered of closed', v: pct(t.recoveredCases, closed), s: n(closed) + ' closed cases, internal figure' },
+      { l: 'Reversed', m: (t.reversed), s: 'refunds and chargebacks' },
+    ]);
+    const sel = $('c-merchant'), keep = sel.value;
+    sel.innerHTML = '<option value="">Any merchant</option>' + d.merchants.map(m =>
+      `<option value="${esc(m.id)}">${esc(m.companyName)}</option>`).join('');
+    sel.value = keep;
+    renderCases();
+
+    const decl = d.declines.map((x, i) => ({ ...x, id: i }));
+    table($('rc-declines'), 'declines', [
+      { label: 'Code', key: 'declineCode', render: x => `<code>${esc(x.declineCode)}</code><div class="sub-t">${esc(x.failureType)}</div>` },
+      { label: 'Cases', key: 'count', num: true },
+      { label: 'Recovered', key: 'recovered', num: true },
+      { label: 'Lost', key: 'lost', num: true },
+      { label: 'Recovered of closed', num: true, render: x => pct(x.recovered, x.recovered + x.lost) },
+    ], decl, { defaultSort: 'count', empty: 'No declines recorded.' });
+
+    const maxM = Math.max(1, ...d.methods.map(m => m.count));
+    $('rc-methods').innerHTML = d.methods.length ? '<table>' + d.methods.map(m =>
+      `<tr><td>${esc(m.method)}</td><td class="num">${n(m.count)}</td><td style="width:45%"><div class="meter"><i style="width:${Math.round(m.count / maxM * 100)}%"></i></div></td></tr>`).join('') + '</table>'
+      : '<div class="empty">No recoveries yet.</div>';
+  }
+  function renderCases() {
+    const s = $('c-status').value, m = $('c-merchant').value, q = $('c-search').value.trim().toLowerCase();
+    const rows = data.cases.filter(c => (!s || c.status === s) && (!m || c.merchantId === m) &&
+      (!q || [c.stripeInvoiceId, c.customerEmail, c.declineCode, c.companyName].some(x => (x || '').toLowerCase().includes(q))));
+    $('c-count').textContent = rows.length + ' of the newest ' + data.cases.length;
+    table($('c-table'), 'cases', caseCols, rows, { defaultSort: 'firstFailedAt', empty: 'No cases match.' });
+  }
+
+  // ---- Billing ------------------------------------------------------------------------------
+  const invoiceCols = [
+    { label: 'Period', key: 'periodLabel' },
+    { label: 'Merchant', key: 'companyName' },
+    { label: 'Status', key: 'status', render: f => statusPill(f.status) + (f.failureReason ? `<div class="sub-t trunc" title="${esc(f.failureReason)}">${esc(f.failureReason)}</div>` : '') },
+    { label: 'Recovered base', key: 'billableRecoveredCents', num: true, render: f => money(f.billableRecoveredCents, f.currency) + `<div class="sub-t">${n(f.recoveredCaseCount)} cases</div>` },
+    { label: 'Fee', key: 'feeCents', num: true, render: f => money(f.feeCents, f.currency) },
+    { label: 'Credit', key: 'reversalCreditCents', num: true, render: f => f.reversalCreditCents ? '−' + money(f.reversalCreditCents, f.currency) : '' },
+    { label: 'Floor top-up', key: 'floorTopUpCents', num: true, render: f => f.floorTopUpCents ? money(f.floorTopUpCents, f.currency) : '' },
+    { label: 'Total', key: 'totalCents', num: true, render: f => `<b>${money(f.totalCents, f.currency)}</b>` },
+    { label: 'Sent', key: 'sentAtUtc', render: f => esc(day(f.sentAtUtc)) },
+    { label: 'Stripe', render: f => f.hostedInvoiceUrl ? `<a href="${esc(f.hostedInvoiceUrl)}" target="_blank" rel="noopener">open</a>` : (f.stripeInvoiceId ? `<code>${esc(f.stripeInvoiceId)}</code>` : '') },
+  ];
+  function renderBilling() {
+    const d = data, inv = d.feeInvoices;
+    const by = s => inv.filter(f => f.status === s);
+    const sum = rows => { const g = {}; rows.forEach(f => { g[f.currency] = (g[f.currency] || 0) + f.totalCents; });
+      return Object.keys(g).map(c => ({ currency: c, cents: g[c] })); };
+    tiles($('b-tiles'), [
+      { l: 'Fees invoiced', m: (d.totals.feesInvoiced), s: 'all sent invoices', hero: true },
+      { l: 'Sent', v: n(by('Sent').length), s: 'invoices' },
+      { l: 'Failed to send', v: n(by('Failed').length), s: by('Failed').length ? moneyList(sum(by('Failed'))) + ' stuck' : '' },
+      { l: 'Pending', v: n(by('Pending').length) },
+      { l: 'Billed on cases', m: (d.merchants.flatMap(m => m.feesBilled).reduce((acc, x) => {
+          const hit = acc.find(a => a.currency === x.currency); if (hit) hit.cents += x.cents; else acc.push({ ...x }); return acc; }, [])),
+        s: 'fee stamped on recovered cases' },
+    ]);
+    table($('b-table'), 'invoices', invoiceCols, inv, { defaultSort: 'periodLabel', empty: 'No fee invoices yet. Billing runs monthly and skips merchants still on trial.' });
+  }
+
+  // ---- Backtests ------------------------------------------------------------------------------
+  const backtestCols = [
+    { label: 'Run', key: 'createdAtUtc', render: b => esc(when(b.createdAtUtc)) },
+    { label: 'Merchant', key: 'companyName' },
+    { label: 'Status', key: 'status', render: b => statusPill(b.status) + (b.failureReason ? `<div class="sub-t trunc" title="${esc(b.failureReason)}">${esc(b.failureReason)}</div>` : '') },
+    { label: 'Window', key: 'windowDays', num: true, render: b => b.windowDays ? b.windowDays + ' d' : '' },
+    { label: 'Failed invoices', key: 'failedInvoiceCount', num: true },
+    { label: 'Failed amount', key: 'failedAmountCents', num: true, render: b => money(b.failedAmountCents, b.currency) },
+    { label: 'Recoverable est.', key: 'recoverableHighCents', num: true, render: b => money(b.recoverableLowCents, b.currency) + ' – ' + money(b.recoverableHighCents, b.currency) },
+    { label: 'Completed', key: 'completedAtUtc', render: b => esc(when(b.completedAtUtc)) },
+  ];
+  function renderBacktests() {
+    const d = data, t = d.totals;
+    tiles($('bt-tiles'), [
+      { l: 'Runs', v: n(t.backtests), s: n(t.backtestsComplete) + ' complete' },
+      { l: 'Accounts scanned', v: n(t.accountsScanned), s: 'newest complete run each' },
+      { l: 'Failed revenue found', m: (t.failedAmountScanned), s: 'across those accounts' },
+      { l: 'Failed runs', v: n(d.backtests.filter(b => b.status === 'Failed').length) },
+    ]);
+    table($('bt-table'), 'backtests', backtestCols, d.backtests, { defaultSort: 'createdAtUtc', empty: 'No backtests yet.' });
+  }
+
+  // ---- System ------------------------------------------------------------------------------------
+  function renderSystem() {
+    const d = data, w = d.webhooks, r = d.retries;
+    const quiet = w.lastAtUtc && (Date.now() - new Date(w.lastAtUtc)) > 7 * 864e5;
+    tiles($('sy-tiles'), [
+      { l: 'Last webhook', v: ago(w.lastAtUtc), s: w.lastAtUtc ? when(w.lastAtUtc) + (quiet ? ' · quiet for over a week' : '') : 'nothing has ever arrived', small: true },
+      { l: 'Webhook events', v: n(w.total), s: 'all time, deduped' },
+      { l: 'Retries scheduled', v: n(r.pending), s: 'waiting to run' },
+      { l: 'Retries run', v: n(r.total - r.pending), s: n(r.succeeded) + ' succeeded' },
+      { l: 'Dunning emails sent', v: n(d.emails.reduce((a, e) => a + e.sent, 0)) },
+      { l: 'Uninstalled', v: n(d.totals.disconnected), s: 'merchants who left' },
+    ]);
+    const wh = [{ name: 'Events', key: 'count', color: 'var(--s1)' }];
+    $('wh-sub').textContent = n(w.byDay.reduce((a, x) => a + x.count, 0)) + ' in ' + d.windowDays + ' days';
+    columns($('wh-chart'), w.byDay, wh);
+    chartTable($('wh-table'), w.byDay, wh);
+    table($('wh-types'), 'whtypes', [
+      { label: 'Event', key: 'eventType', render: x => `<code>${esc(x.eventType)}</code>` },
+      { label: 'Count', key: 'count', num: true },
+    ], w.byTypeInWindow.map((x, i) => ({ ...x, id: i })), { defaultSort: 'count', empty: 'No webhook events in this window.' });
+
+    const run = r.total - r.pending;
+    $('sy-retries').innerHTML = r.total ? `<dl class="kv">
+        <dt>Succeeded</dt><dd>${n(r.succeeded)} <span class="sub-t">${pct(r.succeeded, run)} of run</span></dd>
+        <dt>Failed</dt><dd>${n(r.failed)}</dd>
+        <dt>Skipped</dt><dd>${n(r.skipped)} <span class="sub-t">case closed before the slot came up</span></dd>
+        <dt>Scheduled</dt><dd>${n(r.pending)}</dd></dl>`
+      : '<div class="empty">No retries scheduled yet.</div>';
+
+    table($('sy-emails'), 'emails', [
+      { label: 'Step', key: 'step', num: true },
+      { label: 'Type', key: 'emailType', render: e => `<code>${esc(e.emailType)}</code>` },
+      { label: 'Sent', key: 'sent', num: true },
+      { label: 'Opened', key: 'opened', num: true, render: e => n(e.opened) + ` <span class="sub-t">${pct(e.opened, e.sent)}</span>` },
+      { label: 'Clicked', key: 'clicked', num: true, render: e => n(e.clicked) + ` <span class="sub-t">${pct(e.clicked, e.sent)}</span>` },
+      { label: 'Recovered after', key: 'recoveredAfter', num: true },
+    ], d.emails.map((e, i) => ({ ...e, id: i })), { defaultSort: 'step', defaultDir: 1, empty: 'No dunning emails sent yet.' });
+
+    table($('sy-left'), 'left', [
+      { label: 'Company', key: 'companyName', render: m => `${esc(m.companyName)}<div class="sub-t">${esc(m.email)}</div>` },
+      { label: 'Left', key: 'disconnectedAtUtc', render: m => esc(when(m.disconnectedAtUtc)) },
+      { label: 'Was with us', num: true, render: m => Math.round((new Date(m.disconnectedAtUtc) - new Date(m.createdAt)) / 864e5) + ' d' },
+      { label: 'Recovered while here', num: true, render: m => moneyList(m.recovered) },
+      { label: 'Open cases', key: 'activeCases', num: true },
+    ], d.merchants.filter(m => m.disconnectedAtUtc), { defaultSort: 'disconnectedAtUtc', empty: 'Nobody has uninstalled.', onRow: m => openMerchant(m.id) });
+  }
+
+  // ---- tabs ------------------------------------------------------------------------------------
+  function showTab(name) {
+    if (!document.querySelector(`[data-tab="${name}"]`)) name = 'overview';
+    document.querySelectorAll('#tabs a').forEach(a => a.classList.toggle('on', a.dataset.tab === name));
+    document.querySelectorAll('main > section').forEach(s => { s.hidden = !data || s.id !== 'tab-' + name; });
+  }
+  addEventListener('hashchange', () => showTab(location.hash.slice(1) || 'overview'));
+  showTab(location.hash.slice(1) || 'overview');
 
   $('go').addEventListener('click', load);
-  $('key').addEventListener('keydown', function (e) { if (e.key === 'Enter') load(); });
+  $('key').addEventListener('keydown', e => { if (e.key === 'Enter') load(); });
+  $('days').addEventListener('change', () => { if (data) load(); });
+  ['m-search', 'm-conn'].forEach(id => $(id).addEventListener('input', () => data && renderMerchants()));
+  ['c-status', 'c-merchant', 'c-search'].forEach(id => $(id).addEventListener('input', () => data && renderCases()));
+  if ($('key').value) load();
 })();
 </script>
 </body>
