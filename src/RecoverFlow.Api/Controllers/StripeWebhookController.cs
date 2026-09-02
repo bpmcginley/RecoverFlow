@@ -30,18 +30,12 @@ public sealed class StripeWebhookController(
             return BadRequest();
         }
 
-        Event stripeEvent;
-        try
+        // Two endpoints post here — the Connect platform's and the Stripe App account's — and
+        // each signs with its own secret, so a delivery is checked against every configured one.
+        var stripeEvent = Verify(json, signature);
+        if (stripeEvent is null)
         {
-            stripeEvent = EventUtility.ConstructEvent(
-                json,
-                signature,
-                stripeOptions.Value.WebhookSecret,
-                throwOnApiVersionMismatch: false);
-        }
-        catch (StripeException ex)
-        {
-            log.LogWarning(ex, "Rejected webhook with invalid Stripe signature");
+            log.LogWarning("Rejected webhook with invalid Stripe signature");
             return BadRequest();
         }
 
@@ -49,5 +43,22 @@ public sealed class StripeWebhookController(
 
         log.LogInformation("Accepted webhook {EventId} ({EventType})", stripeEvent.Id, stripeEvent.Type);
         return Ok();
+    }
+
+    private Event? Verify(string json, string signature)
+    {
+        foreach (var secret in stripeOptions.Value.WebhookSecrets)
+        {
+            try
+            {
+                return EventUtility.ConstructEvent(json, signature, secret, throwOnApiVersionMismatch: false);
+            }
+            catch (StripeException)
+            {
+                // Signed by the other endpoint, or by nobody: the next secret decides which.
+            }
+        }
+
+        return null;
     }
 }
