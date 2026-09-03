@@ -167,6 +167,14 @@ Steps 1, 4d and 5 need no Search Console data at all, and they are most of the v
 
 Where data exists, pull out:
 
+- **Queries ranking better than position 5 that still get no clicks.** The two
+  position tables cannot reach this band, which is why the report prints it first
+  and prints each row's share of total impressions beside it. A large row here is
+  usually not a metadata problem. Before treating its impressions as demand,
+  search the query itself and see what else it means: `ai10325` is 17% of every
+  impression the site gets at position 4.1, and it is also an antibody catalogue
+  number, an Intel CPU SKU and a shoe SKU, so most of that number was never ours
+  to convert.
 - **Queries at position 5 to 20 with impressions and few clicks.** These are the highest
   return target on the site. The page already ranks; it is losing the click. Usually the
   title or the meta description answers a different question than the query asks.

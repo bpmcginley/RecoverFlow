@@ -9,7 +9,8 @@ distance table.
 
 Read only. This prints, it never writes, and it never fails a build. It answers
 the three questions Step 2 asks, in the order Step 2 asks them, plus the split
-above.
+above, plus the band above position 5 that none of those three questions
+covers and that hid the site's single largest query for two runs.
 
     python3 scripts/report_gsc.py            # newest file in seo/gsc/
     python3 scripts/report_gsc.py FILE.json  # a specific one
@@ -87,6 +88,26 @@ print(f"{impressions} impressions, {clicks} clicks, "
 age = (datetime.date.today() - datetime.date.fromisoformat(d["fetched"])).days
 if age > 30:
     print(f"\nSTALE: this file is {age} days old. Say so once in the report and continue.")
+
+# 0. The band neither of the tables below can reach. The striking distance
+#    table starts at position 5 and the "nothing of ours ranks" table starts
+#    at 20, so a query we rank 1 to 4 for prints nowhere at all. That is not
+#    hypothetical: ai10325 was 121 of 718 impressions at position 4.1 with no
+#    clicks, 17% of everything the site got, and it stayed invisible to this
+#    script for the two runs after the script was written to stop exactly this.
+print(f"\n== Ranks better than {NEAR_TOP:.0f}, and what it does with it ==")
+print("   Neither table below reaches this band. A big row here with no clicks")
+print("   is rarely a metadata problem: check what else the query means before")
+print("   reading its impressions as demand for the page.")
+top = [r for r in d["query_pages"]
+       if r["position"] < NEAR_TOP and r["impressions"] >= FLOOR]
+top.sort(key=lambda r: -r["impressions"])
+table([[r["impressions"], r["clicks"], f"{r['position']:.1f}",
+        f"{r['impressions'] / impressions:.0%}" if impressions else "-",
+        r["query"], path_of(r["page"])] for r in top],
+      ["impr", "clk", "pos", "share", "query", "page"])
+if not top:
+    print("  nothing above the floor")
 
 # 1. The cheapest possible win, and the reason Step 2 exists.
 print(f"\n== Ranks {NEAR_TOP:.0f} to {NEAR_BOTTOM:.0f}, losing the click ==")
