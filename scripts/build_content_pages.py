@@ -671,6 +671,7 @@ ARTICLES.append(dict(
         ("The nine codes in full", "/blog/stripe-decline-codes-that-stop-retries/", "What each one means and what to do instead of retrying."),
         ("Free decline code lookup", "/tools/decline-code-lookup/", "48 codes, searchable, filterable by whether Stripe will retry."),
         ("How Smart Retries work", "/blog/how-stripe-smart-retries-work/", "Choosing the retry window that suits your failure mix."),
+        ("card_velocity_exceeded on Stripe", "/blog/stripe-card-velocity-exceeded/", "The nearest neighbour: a balance, credit limit or per transaction cap, and Stripe retries it too."),
     ],
 ))
 
@@ -993,6 +994,7 @@ ARTICLES.append(dict(
         ("The nine decline codes that stop retries dead", "/blog/stripe-decline-codes-that-stop-retries/", "do_not_honor is not one of them, and that matters."),
         ("Decline code lookup", "/tools/decline-code-lookup/", "All 48 codes, searchable, free."),
         ("Is insufficient_funds a hard decline?", "/blog/is-insufficient-funds-a-hard-decline/", "Another code widely mislabelled in published guidance."),
+        ("card_velocity_exceeded on Stripe", "/blog/stripe-card-velocity-exceeded/", "The other issuer decline that gives a reason without saying which limit it was."),
     ],
 ))
 
