@@ -22,6 +22,17 @@ public class Merchant
     /// </summary>
     public DateTime? StripeAccessTokenExpiresAtUtc { get; set; }
 
+    /// <summary>
+    /// When the merchant's authorization stopped working: they uninstalled the app, or Stripe
+    /// refused a refresh outright. Cleared when they reinstall, since a reconnect reuses this
+    /// same row rather than creating a second one.
+    ///
+    /// Needed because nothing ever nulls <see cref="EncryptedStripeAccessToken"/> — an uninstall
+    /// leaves the dead ciphertext in place — so "has a token" only means "installed at some
+    /// point". A connected count read off that alone can only ever go up.
+    /// </summary>
+    public DateTime? DisconnectedAtUtc { get; set; }
+
     /// <summary>Customer on the platform's own Stripe account, used to invoice our fees. Created lazily on first bill.</summary>
     public string? StripePlatformCustomerId { get; set; }
     public string Plan { get; set; } = "free_trial"; // free_trial, starter, growth, scale

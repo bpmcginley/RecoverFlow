@@ -87,7 +87,7 @@ progress, so make the sequence states legible at gallery size.
 The app settings page showing the connection state to RecoverFlow (connected account,
 link to the merchant dashboard at app.recoverflow.org, support contact). This shot
 backs key feature 3's permissions claim. If the view shows a permissions summary, it
-must read the same as stripe-app.json now does: two reads plus invoice_write. Any
+must read the same as stripe-app.json now does: five reads plus invoice_write. Any
 "read access only" copy left in the app settings view is stale as of v0.0.3 and has to
 be fixed in the view before this shot is recaptured, not cropped out of the shot.
 

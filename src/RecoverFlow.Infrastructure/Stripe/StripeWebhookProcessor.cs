@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RecoverFlow.Application.Common;
+using RecoverFlow.Application.Connect;
 using RecoverFlow.Application.Recovery;
 using RecoverFlow.Domain.Entities;
 using Stripe;
@@ -14,6 +15,7 @@ namespace RecoverFlow.Infrastructure.Stripe;
 public sealed class StripeWebhookProcessor(
     IAppDbContext db,
     PaymentRecoveryService recovery,
+    MerchantStripeTokenProvider tokens,
     ILogger<StripeWebhookProcessor> log) : IStripeWebhookProcessor
 {
     public async Task ProcessAsync(string eventJson)
@@ -53,6 +55,13 @@ public sealed class StripeWebhookProcessor(
                     stripeEvent.Account, dispute.ChargeId, dispute.Amount, "dispute", stripeEvent.Created));
                 break;
 
+            // The only notice Stripe gives that an install is over. Without it the merchant
+            // keeps a stored token that stopped working, and every count of "connected"
+            // accounts is really a count of accounts that connected once.
+            case EventTypes.AccountApplicationDeauthorized:
+                await HandleDeauthorizedAsync(stripeEvent);
+                break;
+
             default:
                 log.LogDebug("Unhandled webhook event type {EventType}", stripeEvent.Type);
                 break;
@@ -74,6 +83,34 @@ public sealed class StripeWebhookProcessor(
             // Lost the idempotency race to a concurrent delivery of the same event.
             log.LogInformation("Webhook event {EventId} was processed concurrently", stripeEvent.Id);
         }
+    }
+
+    /// <summary>
+    /// Marks the uninstalling merchant disconnected. The event's data object is the application,
+    /// not the account, so the account id comes from the event envelope like every other case
+    /// here does.
+    /// </summary>
+    private async Task HandleDeauthorizedAsync(Event stripeEvent)
+    {
+        if (string.IsNullOrEmpty(stripeEvent.Account))
+        {
+            log.LogWarning("Deauthorization event {EventId} named no account", stripeEvent.Id);
+            return;
+        }
+
+        var merchant = await db.Merchants
+            .FirstOrDefaultAsync(m => m.StripeAccountId == stripeEvent.Account);
+
+        if (merchant is null)
+        {
+            // An account that authorized the read-only audit and never installed the app has no
+            // row here, so this is expected rather than a fault.
+            log.LogInformation(
+                "Deauthorization for unknown account {StripeAccountId}", stripeEvent.Account);
+            return;
+        }
+
+        await tokens.MarkDisconnectedAsync(merchant, "app uninstalled");
     }
 
     // Modern Stripe invoices no longer carry a single charge id; they carry a list of payments.

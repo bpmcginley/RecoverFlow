@@ -68,10 +68,26 @@ public sealed class MerchantStripeTokenProvider(
     private async Task<string> RefreshAsync(Merchant merchant, CancellationToken ct)
     {
         if (merchant.EncryptedStripeRefreshToken is null)
+        {
+            await MarkDisconnectedAsync(merchant, "no refresh token stored", ct);
             throw new MerchantNotAuthorizedException(merchant.Id, "access token expired and no refresh token stored");
+        }
 
-        var token = await oauthClient.RefreshAsync(
-            encryptor.Decrypt(merchant.EncryptedStripeRefreshToken), ct);
+        StripeOAuthTokenResult token;
+        try
+        {
+            token = await oauthClient.RefreshAsync(
+                encryptor.Decrypt(merchant.EncryptedStripeRefreshToken), ct);
+        }
+        catch (StripeOAuthException e) when (e.IsGrantRejected)
+        {
+            // Stripe answered and said no, which only happens once the grant is gone: the
+            // merchant uninstalled, or spent this refresh token elsewhere. A 5xx or a timeout
+            // does not come through here on purpose — it propagates so the job retries rather
+            // than writing off a live merchant over one bad minute at Stripe.
+            await MarkDisconnectedAsync(merchant, e.Error ?? $"refresh rejected with {e.StatusCode}", ct);
+            throw new MerchantNotAuthorizedException(merchant.Id, "Stripe refused the refresh token");
+        }
 
         Store(merchant, token, encryptor);
         await db.SaveChangesAsync(ct);
@@ -84,6 +100,28 @@ public sealed class MerchantStripeTokenProvider(
     }
 
     /// <summary>
+    /// Records that a merchant's authorization is gone. Called from the refresh path above and
+    /// from the <c>account.application.deauthorized</c> webhook, which is the only notice Stripe
+    /// gives when someone uninstalls.
+    /// </summary>
+    /// <remarks>
+    /// The stored tokens are left alone. They are already dead, and keeping them means a support
+    /// question about what a merchant had connected still has an answer. What changes is the
+    /// timestamp, which is what "connected" is read from.
+    /// </remarks>
+    public async Task MarkDisconnectedAsync(Merchant merchant, string reason, CancellationToken ct = default)
+    {
+        if (merchant.DisconnectedAtUtc is not null) return;
+
+        merchant.DisconnectedAtUtc = DateTime.UtcNow;
+        await db.SaveChangesAsync(ct);
+
+        log.LogWarning(
+            "Merchant {MerchantId} ({StripeAccountId}) is disconnected from Stripe: {Reason}",
+            merchant.Id, merchant.StripeAccountId, reason);
+    }
+
+    /// <summary>
     /// Writes a token exchange onto the merchant. Shared with the install flow so both paths
     /// keep the same rule: whatever refresh token came back replaces the one we spent.
     /// </summary>
@@ -93,5 +131,9 @@ public sealed class MerchantStripeTokenProvider(
         merchant.StripeAccessTokenExpiresAtUtc = token.ExpiresAtUtc;
         if (token.RefreshToken is not null)
             merchant.EncryptedStripeRefreshToken = encryptor.Encrypt(token.RefreshToken);
+
+        // A reinstall reuses the existing merchant row, so clearing here covers both the new
+        // install and a refresh that succeeded after a spell of failures.
+        merchant.DisconnectedAtUtc = null;
     }
 }

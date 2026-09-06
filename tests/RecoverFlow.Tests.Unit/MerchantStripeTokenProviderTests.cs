@@ -114,4 +114,85 @@ public class MerchantStripeTokenProviderTests
         await Assert.ThrowsAsync<MerchantNotAuthorizedException>(
             () => TestTokens.Provider(_db).GetAccessTokenAsync(merchant));
     }
+
+    [Fact]
+    public async Task A_refusal_from_stripe_marks_the_merchant_disconnected()
+    {
+        // 400 invalid_grant is what an uninstall looks like from the refresh endpoint: the
+        // grant is gone, so no amount of retrying brings it back.
+        var merchant = Seed("at_stale", "rt_dead", DateTime.UtcNow.AddMinutes(-1));
+        var oauth = new FakeStripeOAuthClient
+        {
+            NextRefreshError = new StripeOAuthException("refused", 400, "invalid_grant"),
+        };
+
+        await Assert.ThrowsAsync<MerchantNotAuthorizedException>(
+            () => TestTokens.Provider(_db, oauth).GetAccessTokenAsync(merchant));
+
+        var saved = await _db.Merchants.SingleAsync();
+        Assert.NotNull(saved.DisconnectedAtUtc);
+    }
+
+    [Fact]
+    public async Task A_stripe_outage_does_not_mark_anyone_disconnected()
+    {
+        // The whole point of separating the two: one bad minute at Stripe must not write off
+        // every merchant whose token happened to need refreshing during it.
+        var merchant = Seed("at_stale", "rt_fine", DateTime.UtcNow.AddMinutes(-1));
+        var oauth = new FakeStripeOAuthClient
+        {
+            NextRefreshError = new StripeOAuthException("bad gateway", 502),
+        };
+
+        await Assert.ThrowsAsync<StripeOAuthException>(
+            () => TestTokens.Provider(_db, oauth).GetAccessTokenAsync(merchant));
+
+        var saved = await _db.Merchants.SingleAsync();
+        Assert.Null(saved.DisconnectedAtUtc);
+    }
+
+    [Fact]
+    public async Task An_expired_token_with_no_refresh_token_marks_the_merchant_disconnected()
+    {
+        var merchant = Seed("at_stale", refresh: null, expiresAt: DateTime.UtcNow.AddMinutes(-1));
+
+        await Assert.ThrowsAsync<MerchantNotAuthorizedException>(
+            () => TestTokens.Provider(_db).GetAccessTokenAsync(merchant));
+
+        Assert.NotNull((await _db.Merchants.SingleAsync()).DisconnectedAtUtc);
+    }
+
+    [Fact]
+    public async Task A_reconnect_clears_the_disconnect_timestamp()
+    {
+        // Reinstalling reuses the same merchant row, so a stale timestamp would leave a
+        // merchant who came back looking like one who never did.
+        var merchant = Seed("at_stale", "rt_old", DateTime.UtcNow.AddMinutes(-1));
+        merchant.DisconnectedAtUtc = DateTime.UtcNow.AddDays(-3);
+        await _db.SaveChangesAsync();
+
+        var oauth = new FakeStripeOAuthClient
+        {
+            NextResult = new("acct_123", "at_fresh", "rt_new", null, DateTime.UtcNow.AddHours(1)),
+        };
+        await TestTokens.Provider(_db, oauth).GetAccessTokenAsync(merchant);
+
+        Assert.Null((await _db.Merchants.SingleAsync()).DisconnectedAtUtc);
+    }
+
+    [Fact]
+    public async Task Marking_an_already_disconnected_merchant_keeps_the_first_timestamp()
+    {
+        // The uninstall webhook can be redelivered. The date we care about is when they left,
+        // not when Stripe last told us about it.
+        var merchant = Seed("at_dead", "rt_dead", DateTime.UtcNow.AddMinutes(-1));
+        var provider = TestTokens.Provider(_db);
+
+        await provider.MarkDisconnectedAsync(merchant, "app uninstalled");
+        var first = merchant.DisconnectedAtUtc;
+
+        await provider.MarkDisconnectedAsync(merchant, "app uninstalled");
+
+        Assert.Equal(first, merchant.DisconnectedAtUtc);
+    }
 }

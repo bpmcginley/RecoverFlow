@@ -6,8 +6,23 @@ namespace RecoverFlow.Application.Connect;
 /// error shape from the rest of the API, and because a failed exchange is a dead end for that
 /// install: the code is one-time use, so there is nothing to retry.
 /// </summary>
-public sealed class StripeOAuthException(string message, Exception? inner = null)
-    : Exception(message, inner);
+public sealed class StripeOAuthException(
+    string message, int? statusCode = null, string? error = null, Exception? inner = null)
+    : Exception(message, inner)
+{
+    /// <summary>The HTTP status Stripe answered with, or null if it never answered readably.</summary>
+    public int? StatusCode { get; } = statusCode;
+
+    /// <summary>Stripe's machine-readable <c>error</c> field, such as <c>invalid_grant</c>.</summary>
+    public string? Error { get; } = error;
+
+    /// <summary>
+    /// True when Stripe refused the grant itself rather than failing to answer. Only a refusal
+    /// says the authorization is gone; a 500 or a timeout says Stripe is having a bad minute.
+    /// Treating the two alike would mark every merchant disconnected during one outage.
+    /// </summary>
+    public bool IsGrantRejected => StatusCode is >= 400 and < 500;
+}
 
 /// <param name="ExpiresAtUtc">
 /// Null when Stripe returned no expiry, which is the Connect OAuth case: those tokens live
