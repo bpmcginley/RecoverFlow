@@ -35,6 +35,9 @@ internal sealed class FakeStripeOAuthClient : IStripeOAuthClient
         new("acct_123", "sk_refreshed", "rt_new", null, DateTime.UtcNow.AddHours(1));
     public List<string> RefreshedWith { get; } = [];
 
+    /// <summary>Thrown instead of returning <see cref="NextResult"/>, for the refusal paths.</summary>
+    public Exception? NextRefreshError { get; set; }
+
     public Task<StripeOAuthTokenResult> ExchangeAppInstallCodeAsync(string code, CancellationToken ct = default) =>
         Task.FromResult(NextResult);
 
@@ -44,6 +47,7 @@ internal sealed class FakeStripeOAuthClient : IStripeOAuthClient
     public Task<StripeOAuthTokenResult> RefreshAsync(string refreshToken, CancellationToken ct = default)
     {
         RefreshedWith.Add(refreshToken);
+        if (NextRefreshError is not null) throw NextRefreshError;
         return Task.FromResult(NextResult);
     }
 }

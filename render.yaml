@@ -71,7 +71,14 @@ services:
       # permissions error, not at startup. Leave unset only if the app moves onto the platform.
       - key: Stripe__AppSecretKey
         sync: false
+      # Signing secret of the Connect platform's endpoint (we_1TsTzELjCE5YmPhUJBCW2CVR).
       - key: Stripe__WebhookSecret
+        sync: false
+      # Signing secret of the endpoint on the account that OWNS the Stripe App
+      # (we_1UBGKRLGfYzeGCaiN8OhNHpQ on acct_1U3nACLGfYzeGCai, scope "connected accounts").
+      # Events from accounts that installed the app, the uninstall notice included, only ever
+      # arrive through that endpoint. Both post to /webhooks/stripe, which tries each secret.
+      - key: Stripe__AppWebhookSecret
         sync: false
       # Signing secret of the embedded Stripe Dashboard app (absec_...). Stripe only
       # generates it after the app's first upload; until it is set, /app/v1 answers 503.

@@ -147,8 +147,14 @@ article gains. Causes, in the order they actually happen:
 ## Step 2. Read the Search Console data
 
 ```bash
-ls seo/gsc/
+python3 scripts/report_gsc.py
 ```
+
+That reads the newest `seo/gsc/*.json` and prints this step for you. It is read
+only and never fails a build. Run it before reading the raw JSON: this step was
+done by hand for the first three runs, and a real signal sat unread in two
+consecutive files because every run looked at the striking distance table and
+nothing else.
 
 The newest `seo/gsc/*.json` file is the input for Step 3. It is written either by
 `python3 scripts/fetch_gsc.py fetch` using a service account, or by
@@ -161,13 +167,28 @@ Steps 1, 4d and 5 need no Search Console data at all, and they are most of the v
 
 Where data exists, pull out:
 
+- **Queries ranking better than position 5 that still get no clicks.** The two
+  position tables cannot reach this band, which is why the report prints it first
+  and prints each row's share of total impressions beside it. A large row here is
+  usually not a metadata problem. Before treating its impressions as demand,
+  search the query itself and see what else it means: `ai10325` is 17% of every
+  impression the site gets at position 4.1, and it is also an antibody catalogue
+  number, an Intel CPU SKU and a shoe SKU, so most of that number was never ours
+  to convert.
 - **Queries at position 5 to 20 with impressions and few clicks.** These are the highest
   return target on the site. The page already ranks; it is losing the click. Usually the
   title or the meta description answers a different question than the query asks.
 - **Queries where the site gets impressions but has no page dedicated to the question.**
   These are article candidates.
+- **Queries where more than one of our pages ranks.** The report flags the ones that cost
+  something: the page Google shows most often for that query is not the page that ranks
+  best for it. A split is not automatically a problem, and an index page appearing
+  alongside the guide it links to is normal, so read the rows before acting on one.
 - **Pages that lost position since the previous file in `seo/gsc/`.** Compare against the
-  second-newest file, not against memory.
+  second-newest file, not against memory. The report does this only when the two files
+  can honestly support it: a 28 day fetch run weekly overlaps by 26 days, so it measures
+  the shared days and refuses the comparison above 50% rather than printing noise as a
+  number.
 
 ## Step 3. Decide, and write the decision down
 

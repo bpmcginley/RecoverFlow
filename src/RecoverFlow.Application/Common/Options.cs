@@ -6,8 +6,27 @@ public sealed class StripeOptions
 
     public string SecretKey { get; set; } = "";
     public string ClientId { get; set; } = "";
+    /// <summary>
+    /// Signing secret of the Connect platform's webhook endpoint, which carries events from
+    /// merchants who authorized through Connect OAuth and the platform's own fee invoices.
+    /// </summary>
     public string WebhookSecret { get; set; } = "";
+
+    /// <summary>
+    /// Signing secret of the webhook endpoint on the account that owns the Stripe App
+    /// (acct_1U3nACLGfYzeGCai). Stripe delivers events from accounts that installed the app —
+    /// including the uninstall notice — to a "connected accounts" endpoint on <em>that</em>
+    /// account, never to the Connect platform's, and each endpoint signs with its own secret.
+    /// Both endpoints post to the same URL, so /webhooks/stripe checks a delivery against
+    /// whichever of the two secrets are set. Leave blank if the app account has no endpoint.
+    /// </summary>
+    public string AppWebhookSecret { get; set; } = "";
+
     public string OAuthRedirectUri { get; set; } = "";
+
+    /// <summary>Every webhook signing secret that is configured, in the order to try them.</summary>
+    public IEnumerable<string> WebhookSecrets =>
+        new[] { WebhookSecret, AppWebhookSecret }.Where(s => !string.IsNullOrEmpty(s));
 
     /// <summary>
     /// OAuth client ID of the published Stripe App, which is a different credential from the
