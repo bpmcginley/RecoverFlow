@@ -362,6 +362,15 @@ ARTICLES.append(dict(
         ("Free decline code lookup", "/tools/decline-code-lookup/", "All 48 codes, searchable, with the nine flagged and guidance on what to say."),
         ("How Stripe Smart Retries actually work", "/blog/how-stripe-smart-retries-work/", "The default schedule, what you can configure, and what the ML is doing."),
         ("Why retrying an expired card rarely works", "/blog/expired-card-stripe-retries/", "The code Stripe will retry that it probably should not."),
+        # This page names nine codes and, before this line, linked to the guide for
+        # none of them. transaction_not_allowed goes first because it is the only one
+        # the query data says is costing something: on that query the guide ranks 21.4
+        # and takes 5 impressions while /tools/decline-code-lookup/ ranks 42.1 and takes
+        # 10, and the guide's only inbound links were /blog/ and that lookup. The other
+        # four guides (incorrect_number, lost_card/stolen_card, pickup_card,
+        # authentication_required) are still unlinked from here and want the same
+        # treatment once a query justifies one. Source: seo/gsc/2026-09-01.json.
+        ("transaction_not_allowed, decoded", "/blog/stripe-transaction-not-allowed-decline/", "One of the nine above, and the one issuers send when the card is not allowed to do this at all."),
     ],
 ))
 
