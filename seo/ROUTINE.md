@@ -167,9 +167,20 @@ Steps 1, 4d and 5 need no Search Console data at all, and they are most of the v
 
 Where data exists, pull out:
 
+- **Pages in the striking band, before any query table.** Google withholds the query on
+  any search too rare to report, so roughly three quarters of the site's impressions arrive
+  with a page attached and no query, and reach none of the four query tables below. The
+  report prints the page dimension first for that reason, with a `dark` column giving the
+  share of each page's impressions that no query table can see. Read a page that is large
+  here and absent below as losing clicks to searches you cannot read: you can tell that it
+  is losing them, but not to what, so this band justifies attention rather than a blind
+  title rewrite. It is also the correction to a specific mistake. Four consecutive runs
+  read `/blog/stripe-subscription-past-due-vs-unpaid/` as the 15 impressions its named
+  queries carry and declined to touch it on that basis. It is 401, third largest on the
+  site.
 - **Queries ranking better than position 5 that still get no clicks.** The two
-  position tables cannot reach this band, which is why the report prints it first
-  and prints each row's share of total impressions beside it. A large row here is
+  position tables cannot reach this band, which is why the report gives it a table
+  of its own and prints each row's share of total impressions beside it. A large row here is
   usually not a metadata problem. Before treating its impressions as demand,
   search the query itself and see what else it means: `ai10325` is 17% of every
   impression the site gets at position 4.1, and it is also an antibody catalogue

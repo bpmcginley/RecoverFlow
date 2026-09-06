@@ -10,7 +10,9 @@ distance table.
 Read only. This prints, it never writes, and it never fails a build. It answers
 the three questions Step 2 asks, in the order Step 2 asks them, plus the split
 above, plus the band above position 5 that none of those three questions
-covers and that hid the site's single largest query for two runs.
+covers and that hid the site's single largest query for two runs, plus the page
+dimension, because the query dimension is only a quarter of the site and four
+runs read the biggest page on it as one of the smallest.
 
     python3 scripts/report_gsc.py            # newest file in seo/gsc/
     python3 scripts/report_gsc.py FILE.json  # a specific one
@@ -88,6 +90,39 @@ print(f"{impressions} impressions, {clicks} clicks, "
 age = (datetime.date.today() - datetime.date.fromisoformat(d["fetched"])).days
 if age > 30:
     print(f"\nSTALE: this file is {age} days old. Say so once in the report and continue.")
+
+# The tables below all read the query dimension, and that dimension is a
+#    minority of the site. Google withholds the query on any search too rare to
+#    report, so those impressions arrive with a page and no query attached and
+#    reach none of the four tables. On 2026-09-01 that was 2,199 of 2,938
+#    impressions, 75%, and it made the routine's biggest page look like one of
+#    its smallest: every run to date read /blog/stripe-subscription-past-due-vs-
+#    unpaid/ as the 15 impressions its named queries carry, and rejected work on
+#    it on that basis. Its real figure is 401, third largest on the site, at
+#    position 18.5 with one click. This table is the only place that is visible.
+print("\n== Pages in the striking band, counting queries Google will not name ==")
+print("   Impressions Google reports against a page but not a query reach none")
+print("   of the tables below. 'dark' is that share. A page that is large here")
+print("   and absent below is losing clicks to searches you cannot read.")
+named = {}
+for r in d["query_pages"]:
+    named[r["page"]] = named.get(r["page"], 0) + r["impressions"]
+page_impr = sum(p["impressions"] for p in d["pages"])
+dark = page_impr - sum(named.values())
+band = [p for p in d["pages"]
+        if NEAR_TOP <= p["position"] <= NEAR_BOTTOM and p["impressions"] >= FLOOR]
+band.sort(key=lambda p: -p["impressions"])
+table([[p["impressions"], p["clicks"], f"{p['position']:.1f}",
+        p["impressions"] - named.get(p["page"], 0),
+        f"{(p['impressions'] - named.get(p['page'], 0)) / p['impressions']:.0%}",
+        path_of(p["page"])] for p in band],
+      ["impr", "clk", "pos", "dark", "", "page"])
+if not band:
+    print("  nothing above the floor")
+if page_impr:
+    print(f"\n   {dark} of {page_impr} impressions site wide ({dark / page_impr:.0%}) "
+          f"carry no query")
+    print(f"   the tables below are drawn from the other {page_impr - dark}.")
 
 # 0. The band neither of the tables below can reach. The striking distance
 #    table starts at position 5 and the "nothing of ours ranks" table starts

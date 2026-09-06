@@ -680,6 +680,7 @@ ARTICLES.append(dict(
         ("The nine codes in full", "/blog/stripe-decline-codes-that-stop-retries/", "What each one means and what to do instead of retrying."),
         ("Free decline code lookup", "/tools/decline-code-lookup/", "48 codes, searchable, filterable by whether Stripe will retry."),
         ("How Smart Retries work", "/blog/how-stripe-smart-retries-work/", "Choosing the retry window that suits your failure mix."),
+        ("card_velocity_exceeded on Stripe", "/blog/stripe-card-velocity-exceeded/", "The nearest neighbour: a balance, credit limit or per transaction cap, and Stripe retries it too."),
     ],
 ))
 
@@ -1002,6 +1003,7 @@ ARTICLES.append(dict(
         ("The nine decline codes that stop retries dead", "/blog/stripe-decline-codes-that-stop-retries/", "do_not_honor is not one of them, and that matters."),
         ("Decline code lookup", "/tools/decline-code-lookup/", "All 48 codes, searchable, free."),
         ("Is insufficient_funds a hard decline?", "/blog/is-insufficient-funds-a-hard-decline/", "Another code widely mislabelled in published guidance."),
+        ("card_velocity_exceeded on Stripe", "/blog/stripe-card-velocity-exceeded/", "The other issuer decline that gives a reason without saying which limit it was."),
     ],
 ))
 
@@ -1069,9 +1071,14 @@ ARTICLES.append(dict(
 # does not quote them, so neither does this.
 ARTICLES.append(dict(
     slug="visa-excessive-reattempts-rule",
-    title="Visa's excessive reattempts rule on Stripe | RecoverFlow",
+    # Search Console, 31 July to 27 August 2026: 94 impressions at average
+    # position 4.2 for the bare query "ai10325", and no clicks at all. The
+    # bulletin number was buried in a section heading while the title and the
+    # description both talked about the rule without ever naming the document
+    # the searcher typed in, so the result did not look like an answer.
+    title="Visa AI10325: the excessive reattempts rule on Stripe | RecoverFlow",
     h1="The Visa excessive reattempts rule: 15 tries per card, per 30 days",
-    desc="Visa prohibits more than 15 retries of one payment in 30 calendar days. What Stripe does at the limit, and the declines where the budget is zero.",
+    desc="Visa bulletin AI10325 caps reattempts of one payment at 15 per 30 calendar days, from 17 April 2021. What Stripe does at the limit, and where the budget is zero.",
     published="2026-08-16",
     modified="2026-08-16",
     updated="16 August 2026",
