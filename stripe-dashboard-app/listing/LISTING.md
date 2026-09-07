@@ -237,7 +237,13 @@ other copy, and a lost draft would otherwise mean rewriting them from memory.
      version will replace it and restart the review process", accepted. Steps 1 and 2
      carried over from the 0.0.4 draft; key feature 3's description and user journey 1
      step 2 were re-entered from this file. The Details page then read
-     "Published 0.0.4 -> 0.0.5 (reviewing marketplace listing)". -->
+     "Published 0.0.4 -> 0.0.5 (reviewing marketplace listing)".
+
+     Approved and published on 7 September 2026. 0.0.5 is now the live Marketplace
+     version, replacing 0.0.4. This is the first version whose approved permission set
+     includes event_read, charge_read and dispute_read, so an installed account now
+     gets Stripe event delivery through the app rather than a separate Connect
+     authorization. -->
 
 <!-- Selected on 17 August 2026. The publish flow warned "Version 0.0.3 is currently in
      review for Marketplace. Submitting this version will replace it and restart the review
