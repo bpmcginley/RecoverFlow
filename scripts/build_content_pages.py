@@ -1004,6 +1004,7 @@ ARTICLES.append(dict(
         ("Decline code lookup", "/tools/decline-code-lookup/", "All 48 codes, searchable, free."),
         ("Is insufficient_funds a hard decline?", "/blog/is-insufficient-funds-a-hard-decline/", "Another code widely mislabelled in published guidance."),
         ("card_velocity_exceeded on Stripe", "/blog/stripe-card-velocity-exceeded/", "The other issuer decline that gives a reason without saying which limit it was."),
+        ("What generic_decline means on Stripe", "/blog/stripe-generic-decline-code/", "The relative to separate out first, because Radar can block it before the issuer ever sees it."),
     ],
 ))
 
