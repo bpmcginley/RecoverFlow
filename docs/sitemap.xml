@@ -158,13 +158,13 @@
   </url>
   <url>
     <loc>https://recoverflow.org/blog/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://recoverflow.org/blog/do-not-honor-stripe-decline/</loc>
-    <lastmod>2026-09-01</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -188,13 +188,13 @@
   </url>
   <url>
     <loc>https://recoverflow.org/blog/invoice-payment-failed-vs-payment-intent-payment-failed/</loc>
-    <lastmod>2026-09-01</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://recoverflow.org/blog/is-insufficient-funds-a-hard-decline/</loc>
-    <lastmod>2026-09-01</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -218,7 +218,7 @@
   </url>
   <url>
     <loc>https://recoverflow.org/blog/stripe-card-velocity-exceeded/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -230,7 +230,7 @@
   </url>
   <url>
     <loc>https://recoverflow.org/blog/stripe-decline-codes-that-stop-retries/</loc>
-    <lastmod>2026-09-06</lastmod>
+    <lastmod>2026-09-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -302,7 +302,7 @@
   </url>
   <url>
     <loc>https://recoverflow.org/blog/stripe-processing-error-decline/</loc>
-    <lastmod>2026-08-16</lastmod>
+    <lastmod>2026-09-08</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -332,7 +332,7 @@
   </url>
   <url>
     <loc>https://recoverflow.org/blog/visa-excessive-reattempts-rule/</loc>
-    <lastmod>2026-08-31</lastmod>
+    <lastmod>2026-09-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

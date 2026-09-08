@@ -371,6 +371,15 @@ ARTICLES.append(dict(
         # authentication_required) are still unlinked from here and want the same
         # treatment once a query justifies one. Source: seo/gsc/2026-09-01.json.
         ("transaction_not_allowed, decoded", "/blog/stripe-transaction-not-allowed-decline/", "One of the nine above, and the one issuers send when the card is not allowed to do this at all."),
+        # authentication_required is the second of those four to earn a link, and the
+        # only one of the remaining four with a named query at all. On
+        # `authentication_required` the guide takes 4 impressions at position 11.2 with
+        # no clicks, and on `card_error authentication_required` it ranks 37.7 and takes
+        # 3 of 6 impressions while /tools/decline-code-lookup/ ranks 79.0 and takes the
+        # other 3. This page names the code three times and linked to its guide zero
+        # times. incorrect_number, lost_card/stolen_card and pickup_card still have no
+        # query behind them, so they still wait. Source: seo/gsc/2026-09-01.json.
+        ("authentication_required, and how to recover it", "/blog/stripe-authentication-required-recovery/", "One of the nine above, and the one no retry can satisfy because only the cardholder can authenticate."),
     ],
 ))
 
