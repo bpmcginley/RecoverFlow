@@ -1,0 +1,89 @@
+{
+  "site": "sc-domain:recoverflow.org",
+  "source": "api-page-filter",
+  "page": "https://recoverflow.org/blog/stripe-subscription-past-due-vs-unpaid/",
+  "range": {
+    "start": "2026-08-02",
+    "end": "2026-08-29"
+  },
+  "note": "Page-filtered query export, matches the window of seo/gsc/2026-09-01.json. Requested manually 2026-09-13 to read the 401-impression dark page named in seo/log/2026-09-11.md.",
+  "queries": [
+    {
+      "query": "stripe past due",
+      "clicks": 1,
+      "impressions": 4,
+      "ctr": 0.25,
+      "position": 6.75
+    },
+    {
+      "query": "how to cancel invoice in stripe",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 23
+    },
+    {
+      "query": "how to void invoice on stripe",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 30
+    },
+    {
+      "query": "past due stripe",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "query": "past_due",
+      "clicks": 0,
+      "impressions": 10,
+      "ctr": 0,
+      "position": 21.3
+    },
+    {
+      "query": "past_due stripe",
+      "clicks": 0,
+      "impressions": 4,
+      "ctr": 0,
+      "position": 8.25
+    },
+    {
+      "query": "stripe incomplete_expired",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 15
+    },
+    {
+      "query": "stripe past_due",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 9.5
+    },
+    {
+      "query": "stripe subscription status values incomplete incomplete_expired trialing active past_due canceled unpaid paused",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 8
+    },
+    {
+      "query": "stripe unpaid subscription",
+      "clicks": 0,
+      "impressions": 2,
+      "ctr": 0,
+      "position": 8.5
+    },
+    {
+      "query": "your subscription has a failed or incomplete payment. complete the latest invoice to continue usage.",
+      "clicks": 0,
+      "impressions": 1,
+      "ctr": 0,
+      "position": 7
+    }
+  ]
+}
