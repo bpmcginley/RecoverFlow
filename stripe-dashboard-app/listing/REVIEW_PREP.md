@@ -1,8 +1,11 @@
 # Review preparation checklist
 
-> **Status: SUBMITTED.** RecoverFlow 0.0.2 went into Stripe App Marketplace review on
-> 13 Aug 2026 (app page reads "0.0.2 (reviewing marketplace listing)"). The checklist
-> below is the historical prep record, not a list of open work.
+> **Status: PUBLISHED.** RecoverFlow 0.0.5 was approved and published to the Stripe
+> App Marketplace on 7 September 2026, replacing 0.0.4 (approved from the 17 Aug 2026
+> submission) as the live version. Review history: 0.0.2 submitted 13 Aug 2026 and
+> rejected for a stale install link, 0.0.3 replaced in review, 0.0.4 approved, 0.0.5
+> submitted 2 Sep 2026 and approved. The checklist below is the historical prep
+> record, not a list of open work.
 
 App id `com.recoverflow.dashboard`. What must be true before Bruce clicks Submit.
 Requirements per Stripe's publishing guide and review requirements, as recorded in

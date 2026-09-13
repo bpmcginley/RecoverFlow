@@ -215,6 +215,26 @@ that ships twelve edits nobody reviewed. Prefer, in this order:
 4. Writing one new article, and only if the query evidence supports it and you can source
    every claim in it.
 
+### Before shipping prose, count what is not yet measured
+
+This cycle is designed weekly. The scheduler fires it daily, `0 10 * * *`, measured on
+2026-09-09. Seven runs happened in the nine days to that date and every one of them read
+the same Search Console file, so a run's time goes mostly on re-deciding candidates an
+earlier run already decided.
+
+The consequence is a queue. Prose shipped after the newest `seo/gsc/*.json` window closes
+is unreadable by any file that exists, and each further change makes the next file harder
+to attribute to any one of them.
+
+**Count the prose changes shipped since that window's end date, merged and open pull
+requests together. At five, stop shipping prose.** Run Steps 0, 1, 2 and 7, do whatever
+maintenance the validator asks for, and say in the report that the ceiling is why. It
+lifts by itself as soon as a fresher file lands, so it costs a run and not a direction.
+
+Maintenance is never gated by this. Titles, descriptions, answers, new articles and new
+link blurbs are prose. A validator fix, a sitemap regeneration or a build-order repair is
+not.
+
 Anything you consider and reject goes in the log with the reason. That is what stops the
 next run re-proposing it.
 
