@@ -66,7 +66,7 @@ def table(rows, headers):
         print("  " + "  ".join(str(c).ljust(w) for c, w in zip(r, widths)).rstrip())
 
 
-files = sorted(glob.glob(os.path.join(GSC, "*.json")))
+files = sorted(glob.glob(os.path.join(GSC, "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].json")))
 if len(sys.argv) > 1:
     newest, previous = sys.argv[1], None
 elif not files:
