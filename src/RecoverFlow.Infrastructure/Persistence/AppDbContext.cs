@@ -67,6 +67,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options, ITenantContext
             e.Property(f => f.HostedInvoiceUrl).HasMaxLength(2048);
             e.Property(f => f.FailureReason).HasMaxLength(1000);
             e.HasIndex(f => f.MerchantId);
+            e.HasIndex(f => new { f.MerchantId, f.PeriodLabel }).IsUnique();
             e.HasIndex(f => f.Status);
             e.HasOne(f => f.Merchant).WithMany().HasForeignKey(f => f.MerchantId);
             e.HasQueryFilter(f => CurrentMerchantId == null || f.MerchantId == CurrentMerchantId);

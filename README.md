@@ -35,11 +35,17 @@ Subscription payment recovery for indie SaaS founders on Stripe. Detects failed 
 
 `POST /webhooks/stripe` verifies the `Stripe-Signature` header (`EventUtility.ConstructEvent`), returns 200 immediately, and enqueues a Hangfire job. The job dedupes by event id (`processed_webhook_events`), then routes `invoice.payment_failed` (create/refresh a `failed_payments` row, classify decline, schedule the next smart retry) and `invoice.paid` (mark recovered, attribute the recovery method, skip pending retries).
 
-## Stripe Connect (merchant linking)
+## Stripe App install (merchant linking)
 
-`GET /connect/stripe/authorize?email=...&companyName=...` redirects to Stripe's Standard OAuth authorize page. The `state` parameter is a Data-Protection-sealed, 15-minute-lived token (nonce + email/company + issued-at) — CSRF-safe per Stripe's OAuth guidance, no server-side session storage needed.
+`GET /connect/stripe/authorize?email=...&companyName=...` redirects to the Stripe App Marketplace OAuth 2.0 install page. The `state` parameter is a Data-Protection-sealed, 15-minute-lived token (nonce + email/company + issued-at).
 
-`GET /connect/stripe/callback?code=...&state=...` validates and unseals `state`, exchanges `code` for the merchant's access token via the platform secret key (`OAuthTokenService`), encrypts the access token (AES-256-GCM, `Encryption:Key`), and upserts the `Merchant` row by Stripe account id. RecoverFlow only reads/acts on data the merchant already owns via Standard Connect — it never creates or configures connected accounts, so Connect's Accounts v2 API doesn't apply here.
+`GET /connect/stripe/callback?code=...&state=...` validates `state`, exchanges `code` using the app owner's Stripe key, encrypts the access and refresh tokens, and upserts the `Merchant` row by Stripe account id. The current embedded app is in `stripe-dashboard-app/`; the old `stripe-app/` is retired.
+
+## Billing and trial
+
+Production billing is controlled by `Billing__Enabled` in the service environment. The first 30 days after each merchant's `CreatedAt` are free. A recovery's `RecoveredAt` determines whether it is free, even if the monthly billing run happens later. Trial recoveries are stamped with `TrialWaivedAtUtc` so they cannot enter a later invoice. A connected merchant can receive at most one new invoice per UTC run month; existing pending or failed invoices may still be resumed. Uninstalled merchants do not receive new invoices even though their encrypted token remains stored.
+
+The admin page calculates trial state from signup time and shows fee invoices sent separately. An invoice being sent does not prove it was paid; payment status is not tracked here. See `docs/pricing/`, `docs/terms/`, and `docs/docs/attribution-and-billing/` for customer-facing policy.
 
 ## Tests
 

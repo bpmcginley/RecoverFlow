@@ -112,7 +112,7 @@ public sealed class BillingOptions
     /// fine, raising it is a price rise on everyone who signed up under the published number.
     /// </summary>
     public long MonthlyCapCents { get; set; } = 29_900;
-    /// <summary>Days after signup during which the monthly minimum is waived (the % still applies).</summary>
+    /// <summary>Free days after signup: recoveries in this window carry no fee or monthly minimum.</summary>
     public int TrialDays { get; set; } = 30;
     public int InvoiceDueDays { get; set; } = 7;
     /// <summary>Stripe won't collect payments under $0.50; totals below this roll into next month.</summary>

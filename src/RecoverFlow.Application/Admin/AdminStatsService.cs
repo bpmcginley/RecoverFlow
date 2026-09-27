@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using RecoverFlow.Application.Common;
 using RecoverFlow.Domain;
 
@@ -13,7 +14,7 @@ namespace RecoverFlow.Application.Admin;
 /// the in-memory half is cheap, and it keeps every enum-to-string and currency split
 /// out of the query translator.
 /// </summary>
-public sealed class AdminStatsService(IAppDbContext db)
+public sealed class AdminStatsService(IAppDbContext db, IOptions<BillingOptions> billingOptions)
 {
     /// <summary>Newest cases shipped to the page. The drill-down filters these per merchant.</summary>
     public const int CaseLimit = 200;
@@ -29,7 +30,7 @@ public sealed class AdminStatsService(IAppDbContext db)
             .OrderByDescending(m => m.CreatedAt)
             .Select(m => new
             {
-                m.Id, m.Email, m.CompanyName, m.Plan, m.CreatedAt, m.StripeAccountId,
+                m.Id, m.Email, m.CompanyName, m.CreatedAt, m.StripeAccountId,
                 Connected = m.EncryptedStripeAccessToken != null && m.DisconnectedAtUtc == null,
                 m.DisconnectedAtUtc,
             })
@@ -206,7 +207,10 @@ public sealed class AdminStatsService(IAppDbContext db)
             var groups = groupsByMerchant[m.Id].ToList();
             caseTimes.TryGetValue(m.Id, out var times);
             return new AdminMerchant(
-                m.Id, m.Email, m.CompanyName, m.Plan, m.CreatedAt, m.StripeAccountId,
+                m.Id, m.Email, m.CompanyName,
+                TrialEndsAtUtc: m.CreatedAt.AddDays(billingOptions.Value.TrialDays),
+                InTrial: m.CreatedAt.AddDays(billingOptions.Value.TrialDays) > now,
+                m.CreatedAt, m.StripeAccountId,
                 m.Connected, m.DisconnectedAtUtc,
                 ActiveCases: CountWith(groups, RecoveryStatus.ActiveRecovery),
                 RecoveredCases: CountWith(groups, RecoveryStatus.Recovered),

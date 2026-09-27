@@ -35,7 +35,9 @@ public class Merchant
 
     /// <summary>Customer on the platform's own Stripe account, used to invoice our fees. Created lazily on first bill.</summary>
     public string? StripePlatformCustomerId { get; set; }
-    public string Plan { get; set; } = "free_trial"; // free_trial, starter, growth, scale
+    // Legacy column retained for schema compatibility. Use CreatedAt and BillingOptions
+    // for trial state; a stored "free_trial" value does not change when the trial ends.
+    public string Plan { get; set; } = "free_trial";
     public DateTime CreatedAt { get; set; }
     public string SettingsJson { get; set; } = "{}";
     public ICollection<FailedPayment> FailedPayments { get; set; } = [];

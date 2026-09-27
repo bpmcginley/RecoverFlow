@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using RecoverFlow.Application.Admin;
+using RecoverFlow.Application.Common;
 using RecoverFlow.Domain;
 using RecoverFlow.Domain.Entities;
 using RecoverFlow.Infrastructure.Persistence;
@@ -57,7 +59,7 @@ public class AdminStatsServiceTests
         return p;
     }
 
-    private AdminStatsService Service() => new(_db);
+    private AdminStatsService Service() => new(_db, Options.Create(new BillingOptions()));
 
     [Fact]
     public async Task Recovered_revenue_is_credited_to_the_merchant_it_belongs_to()
@@ -79,6 +81,8 @@ public class AdminStatsServiceTests
         Assert.Equal([new Money("usd", 700)], g.Recovered);
         Assert.Equal([new Money("usd", 300)], g.AtRisk);
         Assert.Equal(1, g.ActiveCases);
+        Assert.True(a.InTrial);
+        Assert.Equal(acme.CreatedAt.AddDays(30), a.TrialEndsAtUtc);
     }
 
     [Fact]

@@ -330,7 +330,7 @@
     <ul>
       <li><strong>Failing per month</strong> is your MRR multiplied by the failure rate you set.</li>
       <li><strong>Recovered</strong> is that figure multiplied by the recovery rate you set.</li>
-      <li><strong>RecoverFlow cost</strong> is 25% of the recovered amount, floored at $29 and capped at $299 a month. The $29 floor does not apply during your first 30 days; the $299 cap always applies.</li>
+      <li><strong>RecoverFlow cost</strong> models a regular month after your free first 30 days: 25% of the recovered amount, floored at $29 and capped at $299. Recoveries made during the first 30 days cost nothing.</li>
       <li><strong>Competitor costs</strong> are flat monthly fees and do not change with how much is recovered, which is exactly why they win at high volume and lose at low volume.</li>
       <li><strong>You keep</strong> is recovered revenue minus the tool cost.</li>
     </ul>
@@ -406,8 +406,8 @@
       note: 'Starter is limited to under $5,000/mo churn volume. Above that Churnkey quotes custom pricing.'
     }
   ];
-  // The fee is a percentage bounded on both sides: a $29 floor once the first 30 days
-  // are up, and a $299 ceiling that never lifts. Without the ceiling this tool quotes a
+  // This comparison models a regular month after the free first 30 days. The fee is a
+  // percentage bounded by a $29 floor and a $299 ceiling. Without the ceiling it quotes a
   // price we do not charge, and quotes it high, which would make the comparison wrong
   // in our own favour on the honesty side and against us on the arithmetic.
   var FEE = 0.25, FLOOR = 29, CAP = 299;

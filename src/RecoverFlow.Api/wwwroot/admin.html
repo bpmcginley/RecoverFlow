@@ -476,7 +476,8 @@
   // ---- Merchants -------------------------------------------------------------------------
   const merchantCols = [
     { label: 'Company', key: 'companyName', render: m => `${esc(m.companyName)}<div class="sub-t">${esc(m.email)}</div>` },
-    { label: 'Plan', key: 'plan' },
+    { label: 'Trial', key: 'trial', sort: m => m.trialEndsAtUtc,
+      render: m => m.inTrial ? `Active<div class="sub-t">ends ${esc(day(m.trialEndsAtUtc))}</div>` : `Ended<div class="sub-t">${esc(day(m.trialEndsAtUtc))}</div>` },
     { label: 'Connection', key: 'conn', sort: m => m.connected ? 2 : m.disconnectedAtUtc ? 1 : 0, render: connPill },
     { label: 'Open', key: 'activeCases', num: true },
     { label: 'Recovered', key: 'rec', num: true, sort: m => m.recovered.length ? m.recovered[0].cents : 0,
@@ -518,7 +519,8 @@
           <dt>Email</dt><dd>${esc(m.email)}</dd>
           <dt>Stripe account</dt><dd><code>${esc(m.stripeAccountId)}</code></dd>
           <dt>Connection</dt><dd>${connPill(m)}${m.disconnectedAtUtc ? ' <span class="sub-t">left ' + esc(when(m.disconnectedAtUtc)) + '</span>' : ''}</dd>
-          <dt>Plan</dt><dd>${esc(m.plan)}</dd>
+          <dt>Trial</dt><dd>${m.inTrial ? 'Active until ' : 'Ended '}${esc(when(m.trialEndsAtUtc))}</dd>
+          <dt>Billing</dt><dd>${invoices.filter(f => f.status === 'Sent').length} fee invoices sent; payment status is not tracked here</dd>
           <dt>Signed up</dt><dd>${esc(when(m.createdAt))}</dd>
           <dt>Last failure</dt><dd>${esc(m.lastFailureAtUtc ? when(m.lastFailureAtUtc) : 'none seen')}</dd>
           <dt>Last recovery</dt><dd>${esc(m.lastRecoveryAtUtc ? when(m.lastRecoveryAtUtc) : 'none yet')}</dd>
@@ -624,7 +626,7 @@
           const hit = acc.find(a => a.currency === x.currency); if (hit) hit.cents += x.cents; else acc.push({ ...x }); return acc; }, [])),
         s: 'fee stamped on recovered cases' },
     ]);
-    table($('b-table'), 'invoices', invoiceCols, inv, { defaultSort: 'periodLabel', empty: 'No fee invoices yet. Billing runs monthly and skips merchants still on trial.' });
+    table($('b-table'), 'invoices', invoiceCols, inv, { defaultSort: 'periodLabel', empty: 'No fee invoices yet. Billing runs monthly; trial recoveries are free.' });
   }
 
   // ---- Backtests ------------------------------------------------------------------------------

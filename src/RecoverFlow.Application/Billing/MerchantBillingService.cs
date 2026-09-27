@@ -13,8 +13,8 @@ public sealed class BillingRunIncompleteException(int failedMerchants)
     : Exception($"Billing failed for {failedMerchants} merchant(s); see logs. Rerun resumes them.");
 
 /// <summary>
-/// Monthly billing: 25% of attributably-recovered revenue, trimmed to the published monthly cap
-/// (never waived) and raised to the monthly minimum by a top-up (waived during the trial window).
+/// Monthly billing: 25% of attributable recoveries after the free trial, trimmed to the
+/// published monthly cap and raised to the monthly minimum by a top-up.
 /// Recoveries later refunded or charged back are credited back off the whole bill, minimum
 /// included, and a credit too large for one month finishes on the next rather than being written
 /// off. Crash-safety order per merchant: reserve the
@@ -48,7 +48,7 @@ public sealed class MerchantBillingService(
                 // Resume runs even for disconnected merchants: a reserved invoice is money
                 // already owed. Only *new* billing requires an active connection.
                 await ResumePendingInvoicesAsync(merchant, now, ct);
-                if (merchant.EncryptedStripeAccessToken is not null)
+                if (merchant.EncryptedStripeAccessToken is not null && merchant.DisconnectedAtUtc is null)
                     await BillUnbilledRecoveriesAsync(merchant, now, ct);
             }
             catch (Exception ex)
@@ -85,12 +85,34 @@ public sealed class MerchantBillingService(
         var unbilled = await db.FailedPayments
             .Where(p => p.MerchantId == merchant.Id
                 && p.Status == RecoveryStatus.Recovered
+                // Without a recovery timestamp we cannot prove it happened after the free trial.
+                && p.RecoveredAt != null
                 && p.RecoveryMethod != RecoveryMethod.Unknown
                 && p.FeeInvoiceId == null
+                && p.TrialWaivedAtUtc == null
                 // A recovery handed straight back is not a recovery. Fully reversed cases drop
                 // out here and are never billed at all; partial ones bill on what's left.
                 && p.ReversedAmountCents < p.AmountCents)
             .ToListAsync(ct);
+
+        // A monthly run can happen after a merchant's trial ends. Use each recovery's timestamp,
+        // not the run date, or the first invoice would retroactively charge trial recoveries.
+        var trialEndsAt = merchant.CreatedAt.AddDays(_opts.TrialDays);
+        var trialRecoveries = unbilled.Where(p => p.RecoveredAt < trialEndsAt).ToList();
+        foreach (var p in trialRecoveries) p.TrialWaivedAtUtc = now;
+        if (trialRecoveries.Count > 0)
+        {
+            await db.SaveChangesAsync(ct);
+            log.LogInformation("Waived {Count} trial recoveries for merchant {MerchantId}",
+                trialRecoveries.Count, merchant.Id);
+        }
+        unbilled = unbilled.Except(trialRecoveries).ToList();
+
+        // Hangfire may retry the monthly run. A merchant gets at most one new invoice for
+        // that run month, including a floor-only invoice with no recovery cases to stamp.
+        var period = now.ToString("yyyy-MM");
+        if (await db.FeeInvoices.AnyAsync(f => f.MerchantId == merchant.Id && f.PeriodLabel == period, ct))
+            return;
 
         // v1 bills USD only; other currencies stay unstamped so nothing is silently swallowed.
         var (usd, other) = (unbilled.Where(Usd).ToList(), unbilled.Count(p => !Usd(p)));
@@ -99,7 +121,7 @@ public sealed class MerchantBillingService(
 
         var baseCents = usd.Sum(NetRecovered);
         var feeCents = baseCents * _opts.FeeBasisPoints / 10_000; // integer division rounds down, in the merchant's favor
-        var inTrial = merchant.CreatedAt.AddDays(_opts.TrialDays) > now;
+        var inTrial = trialEndsAt > now;
         var floorTopUp = inTrial ? 0 : Math.Max(0, _opts.MonthlyMinimumCents - feeCents);
 
         // The published monthly ceiling. It binds far above the floor, so the excess always
@@ -134,7 +156,7 @@ public sealed class MerchantBillingService(
         {
             Id = Guid.NewGuid(),
             MerchantId = merchant.Id,
-            PeriodLabel = now.ToString("yyyy-MM"),
+            PeriodLabel = period,
             BillableRecoveredCents = baseCents,
             RecoveredCaseCount = usd.Count,
             FeeCents = feeCents,

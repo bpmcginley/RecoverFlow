@@ -28,6 +28,8 @@ public class FailedPayment
     public Guid? FeeInvoiceId { get; set; }
     /// <summary>Set only once the fee invoice was successfully sent.</summary>
     public DateTime? BilledAtUtc { get; set; }
+    /// <summary>Recovery occurred in the merchant's free first 30 days, so it can never be billed later.</summary>
+    public DateTime? TrialWaivedAtUtc { get; set; }
     /// <summary>The part of <see cref="AmountCents"/> that actually went onto an invoice, after
     /// anything already reversed at that moment was taken off. Zero until billed.</summary>
     public long BilledBaseCents { get; set; }

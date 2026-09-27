@@ -199,7 +199,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
       "name": "What does RecoverFlow cost?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "25% of attributably-recovered revenue, with a $29 monthly minimum that is waived for the first 30 days and a $299 monthly maximum that always applies. The percentage applies during those 30 days; only the minimum is waived. Invoices are issued monthly through Stripe with 7 day terms."
+        "text": "The first 30 days after signup are free: recoveries made during that period are never billed. After that, 25% of attributably-recovered revenue, with a $29 monthly minimum and a $299 monthly maximum. Invoices are issued monthly through Stripe with 7 day terms."
       }
     },
     {
@@ -256,10 +256,10 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
     <div class="table-scroll">
       <table>
         <tbody>
-          <tr><th scope="row">Performance fee</th><td>25% of attributably-recovered revenue</td></tr>
+          <tr><th scope="row">Performance fee</th><td>25% of attributable recoveries made after the first 30 days</td></tr>
           <tr><th scope="row">Monthly minimum</th><td>$29, waived for the first 30 days after signup</td></tr>
-          <tr><th scope="row">Monthly maximum</th><td>$299, however much is recovered. It applies from day one, including during the first 30 days.</td></tr>
-          <tr><th scope="row">During those 30 days</th><td>The percentage still applies. The minimum does not.</td></tr>
+          <tr><th scope="row">Monthly maximum</th><td>$299, however much is recovered after the trial.</td></tr>
+          <tr><th scope="row">During those 30 days</th><td>No percentage and no minimum. Recoveries made during the trial remain free even when the monthly billing run happens later.</td></tr>
           <tr><th scope="row">Invoice terms</th><td>Billed monthly through Stripe, 7 days to pay</td></tr>
           <tr><th scope="row">Very small totals</th><td>Stripe will not collect under $0.50, so amounts below that roll into the next month rather than being written off or rounded up</td></tr>
           <tr><th scope="row">Contract</th><td>None. No minimum term, no exit fee.</td></tr>
@@ -274,7 +274,7 @@ s.parentNode.insertBefore(b, s);})(window.lintrk);
 <div class="faq">
   <details><summary>Does RecoverFlow charge for payments that would have recovered anyway?</summary><p>Not when we can tell. If no retry ran, no card update completed through our flow, and no email had been sent, the recovery is recorded as happening without our involvement and is not billable.</p></details>
   <details><summary>How does RecoverFlow decide a recovery was caused by its email?</summary><p>Only when no retry attempt ran and no card update completed through our flow, but at least one sequence email had been sent. This is the weakest link in the attribution chain and the one most worth disputing if it looks wrong to you.</p></details>
-  <details><summary>What does RecoverFlow cost?</summary><p>25% of attributably-recovered revenue, with a $29 monthly minimum that is waived for the first 30 days and a $299 monthly maximum that always applies. The percentage applies during those 30 days; only the minimum is waived. Invoices are issued monthly through Stripe with 7 day terms.</p></details>
+  <details><summary>What does RecoverFlow cost?</summary><p>The first 30 days are free, including any recoveries made then. After that, 25% of attributable recoveries with a $29 monthly minimum and a $299 monthly maximum. Invoices are issued monthly through Stripe with 7 day terms.</p></details>
   <details><summary>Is there a contract?</summary><p>No minimum term and no exit fee. You revoke access from your own Stripe dashboard and nothing further is billed beyond recoveries already attributed.</p></details>
 </div>
   </article>

@@ -59,11 +59,21 @@ public class MerchantBillingServiceTests
         new(db, invoicer, Options.Create(new BillingOptions { Enabled = enabled }),
             NullLogger<MerchantBillingService>.Instance);
 
+    // Billing tests run without a clock. Shift existing invoices to prior, distinct months
+    // when a test simulates the next monthly run.
+    private static void AdvanceBillingPeriod(AppDbContext db)
+    {
+        var invoices = db.FeeInvoices.OrderBy(f => f.CreatedAtUtc).ToList();
+        for (var i = 0; i < invoices.Count; i++)
+            invoices[i].PeriodLabel = DateTime.UtcNow.AddMonths(i - invoices.Count).ToString("yyyy-MM");
+        db.SaveChanges();
+    }
+
     [Fact]
     public async Task Fee_base_is_25_percent_of_attributable_recoveries_only()
     {
         using var db = CreateDb();
-        var merchant = SeedMerchant(db, createdDaysAgo: 5); // in trial: no floor noise
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
         var billable = SeedCase(db, merchant, 10_000, RecoveryStatus.Recovered, RecoveryMethod.SmartRetry);
         var unknown = SeedCase(db, merchant, 50_000, RecoveryStatus.Recovered, RecoveryMethod.Unknown);
         SeedCase(db, merchant, 30_000, RecoveryStatus.ActiveRecovery);
@@ -75,7 +85,7 @@ public class MerchantBillingServiceTests
         var invoice = Assert.Single(db.FeeInvoices);
         Assert.Equal(10_000, invoice.BillableRecoveredCents);
         Assert.Equal(2_500, invoice.FeeCents);
-        Assert.Equal(0, invoice.FloorTopUpCents);
+        Assert.Equal(400, invoice.FloorTopUpCents);
         Assert.Equal(1, invoice.RecoveredCaseCount);
         Assert.Equal(invoice.Id, db.FailedPayments.Single(p => p.Id == billable.Id).FeeInvoiceId);
         Assert.Null(db.FailedPayments.Single(p => p.Id == unknown.Id).FeeInvoiceId);
@@ -100,7 +110,7 @@ public class MerchantBillingServiceTests
     }
 
     [Fact]
-    public async Task Floor_waived_during_trial()
+    public async Task Trial_recovery_is_waived_and_never_invoiced()
     {
         using var db = CreateDb();
         var merchant = SeedMerchant(db, createdDaysAgo: 29);
@@ -109,9 +119,47 @@ public class MerchantBillingServiceTests
 
         await Service(db, invoicer).RunMonthlyBillingAsync();
 
+        Assert.Empty(db.FeeInvoices);
+        Assert.Empty(invoicer.SendCalls);
+        Assert.NotNull(Assert.Single(db.FailedPayments).TrialWaivedAtUtc);
+    }
+
+    [Fact]
+    public async Task Trial_recovery_stays_free_when_billing_runs_after_trial_ends()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 31);
+        var trialCase = SeedCase(db, merchant, 40_000); // recovered two days ago, before day 30
+        var invoicer = new FakePlatformFeeInvoicer();
+
+        await Service(db, invoicer).RunMonthlyBillingAsync();
+
+        Assert.NotNull(trialCase.TrialWaivedAtUtc);
+        Assert.Null(trialCase.FeeInvoiceId);
+        Assert.Equal(0, Assert.Single(db.FeeInvoices).BillableRecoveredCents);
+        Assert.Equal(2_900, Assert.Single(db.FeeInvoices).TotalCents); // post-trial floor only
+        Assert.Single(invoicer.SendCalls);
+    }
+
+    [Fact]
+    public async Task Billing_run_charges_only_recoveries_after_trial_end()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 31);
+        var trialCase = SeedCase(db, merchant, 40_000);
+        var paidCase = SeedCase(db, merchant, 20_000);
+        paidCase.RecoveredAt = DateTime.UtcNow;
+        db.SaveChanges();
+        var invoicer = new FakePlatformFeeInvoicer();
+
+        await Service(db, invoicer).RunMonthlyBillingAsync();
+
         var invoice = Assert.Single(db.FeeInvoices);
-        Assert.Equal(0, invoice.FloorTopUpCents);
-        Assert.Equal(2_500, invoice.TotalCents);
+        Assert.Equal(20_000, invoice.BillableRecoveredCents);
+        Assert.Equal(5_000, invoice.TotalCents);
+        Assert.NotNull(trialCase.TrialWaivedAtUtc);
+        Assert.Null(trialCase.FeeInvoiceId);
+        Assert.Equal(invoice.Id, paidCase.FeeInvoiceId);
     }
 
     [Fact]
@@ -196,7 +244,7 @@ public class MerchantBillingServiceTests
     public async Task Partly_refunded_recovery_bills_on_what_the_merchant_kept()
     {
         using var db = CreateDb();
-        var merchant = SeedMerchant(db, createdDaysAgo: 5);
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
         var payment = SeedCase(db, merchant, 40_000);
         Reverse(db, payment, 10_000); // $100 handed back, $300 kept
         var invoicer = new FakePlatformFeeInvoicer();
@@ -219,6 +267,8 @@ public class MerchantBillingServiceTests
         var svc = Service(db, invoicer);
         await svc.RunMonthlyBillingAsync();
         Assert.Equal(10_000, db.FeeInvoices.Single().TotalCents);
+
+        AdvanceBillingPeriod(db);
 
         Reverse(db, reversed, 40_000);
         SeedCase(db, merchant, 60_000); // next month: fee $150, so the $100 credit fits
@@ -247,6 +297,8 @@ public class MerchantBillingServiceTests
         await svc.RunMonthlyBillingAsync();
         Assert.Equal(29_900, db.FeeInvoices.Single().TotalCents);
 
+        AdvanceBillingPeriod(db);
+
         // Charged back in full: we owe back the $299 we actually took, not 25% of $4,000.
         Reverse(db, big, 400_000, "dispute");
         SeedCase(db, merchant, 40_000); // fee $100 + floor 0 => only $100 of the credit fits
@@ -265,6 +317,7 @@ public class MerchantBillingServiceTests
 
         // A third month with nothing recovered: the floor is billed and the rest of the credit
         // lands on it, so the leftover cannot sit on the account forever.
+        AdvanceBillingPeriod(db);
         await svc.RunMonthlyBillingAsync();
         Assert.Equal(12_900, db.FailedPayments.Single(p => p.Id == big.Id).ReversalCreditedCents);
         Assert.Single(invoicer.SendCalls);
@@ -274,13 +327,15 @@ public class MerchantBillingServiceTests
     public async Task Reversal_of_the_part_that_was_never_billed_is_not_credited_again()
     {
         using var db = CreateDb();
-        var merchant = SeedMerchant(db, createdDaysAgo: 5); // trial: no floor in the arithmetic
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
         var payment = SeedCase(db, merchant, 40_000);
         Reverse(db, payment, 10_000); // refunded before billing: bills on $300, fee $75
         var invoicer = new FakePlatformFeeInvoicer();
         var svc = Service(db, invoicer);
         await svc.RunMonthlyBillingAsync();
         Assert.Equal(7_500, db.FeeInvoices.Single().TotalCents);
+
+        AdvanceBillingPeriod(db);
 
         Reverse(db, payment, 40_000); // the rest goes back later
         SeedCase(db, merchant, 40_000);
@@ -295,7 +350,7 @@ public class MerchantBillingServiceTests
     public async Task Credit_is_split_across_the_cases_that_earned_the_fee()
     {
         using var db = CreateDb();
-        var merchant = SeedMerchant(db, createdDaysAgo: 5);
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
         var a = SeedCase(db, merchant, 30_000);
         var b = SeedCase(db, merchant, 10_000);
         var invoicer = new FakePlatformFeeInvoicer();
@@ -357,7 +412,7 @@ public class MerchantBillingServiceTests
     public async Task Second_run_bills_nothing_new()
     {
         using var db = CreateDb();
-        var merchant = SeedMerchant(db, createdDaysAgo: 5);
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
         SeedCase(db, merchant, 10_000);
         var invoicer = new FakePlatformFeeInvoicer();
         var service = Service(db, invoicer);
@@ -373,7 +428,7 @@ public class MerchantBillingServiceTests
     public async Task NonUsd_recoveries_are_excluded_and_left_unstamped()
     {
         using var db = CreateDb();
-        var merchant = SeedMerchant(db, createdDaysAgo: 5);
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
         SeedCase(db, merchant, 10_000, currency: "usd");
         var eur = SeedCase(db, merchant, 99_000, currency: "eur");
         var invoicer = new FakePlatformFeeInvoicer();
@@ -388,7 +443,7 @@ public class MerchantBillingServiceTests
     public async Task Stripe_failure_marks_invoice_failed_and_keeps_cases_reserved()
     {
         using var db = CreateDb();
-        var merchant = SeedMerchant(db, createdDaysAgo: 5);
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
         var payment = SeedCase(db, merchant, 10_000);
         var invoicer = new FakePlatformFeeInvoicer
         {
@@ -486,9 +541,9 @@ public class MerchantBillingServiceTests
     public async Task One_merchant_failure_does_not_block_others()
     {
         using var db = CreateDb();
-        var first = SeedMerchant(db, createdDaysAgo: 5);
+        var first = SeedMerchant(db, createdDaysAgo: 60);
         SeedCase(db, first, 10_000);
-        var second = SeedMerchant(db, createdDaysAgo: 5);
+        var second = SeedMerchant(db, createdDaysAgo: 60);
         SeedCase(db, second, 10_000);
         var invoicer = new FakePlatformFeeInvoicer();
         invoicer.SendResults.Enqueue(new(false, null, null, "boom"));
@@ -508,6 +563,22 @@ public class MerchantBillingServiceTests
         using var db = CreateDb();
         var merchant = SeedMerchant(db, createdDaysAgo: 60, connected: false);
         SeedCase(db, merchant, 10_000);
+        var invoicer = new FakePlatformFeeInvoicer();
+
+        await Service(db, invoicer).RunMonthlyBillingAsync();
+
+        Assert.Empty(db.FeeInvoices);
+        Assert.Empty(invoicer.SendCalls);
+    }
+
+    [Fact]
+    public async Task Uninstalled_merchant_with_retained_token_gets_no_new_billing()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
+        merchant.DisconnectedAtUtc = DateTime.UtcNow.AddDays(-1);
+        SeedCase(db, merchant, 20_000);
+        db.SaveChanges();
         var invoicer = new FakePlatformFeeInvoicer();
 
         await Service(db, invoicer).RunMonthlyBillingAsync();

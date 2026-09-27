@@ -35,7 +35,8 @@ public sealed record AdminMerchant(
     Guid Id,
     string Email,
     string CompanyName,
-    string Plan,
+    DateTime TrialEndsAtUtc,
+    bool InTrial,
     DateTime CreatedAt,
     string StripeAccountId,
     /// <summary>Has a token and has not uninstalled. The token alone only says "installed once".</summary>
