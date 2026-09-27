@@ -122,7 +122,10 @@ public sealed class MerchantBillingService(
         var baseCents = usd.Sum(NetRecovered);
         var feeCents = baseCents * _opts.FeeBasisPoints / 10_000; // integer division rounds down, in the merchant's favor
         var inTrial = trialEndsAt > now;
-        var floorTopUp = inTrial ? 0 : Math.Max(0, _opts.MonthlyMinimumCents - feeCents);
+        var minimumGrace = _opts.MinimumGracePeriods.Any(p =>
+            string.Equals(p.StripeAccountId, merchant.StripeAccountId, StringComparison.Ordinal)
+            && p.UntilUtc.ToUniversalTime() > now);
+        var floorTopUp = inTrial || minimumGrace ? 0 : Math.Max(0, _opts.MonthlyMinimumCents - feeCents);
 
         // The published monthly ceiling. It binds far above the floor, so the excess always
         // comes off the percentage line and the two lines still sum to the total. Trimming

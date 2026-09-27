@@ -45,6 +45,8 @@ Subscription payment recovery for indie SaaS founders on Stripe. Detects failed 
 
 Production billing is controlled by `Billing__Enabled` in the service environment. The first 30 days after each merchant's `CreatedAt` are free. A recovery's `RecoveredAt` determines whether it is free, even if the monthly billing run happens later. Trial recoveries are stamped with `TrialWaivedAtUtc` so they cannot enter a later invoice. A connected merchant can receive at most one new invoice per UTC run month; existing pending or failed invoices may still be resumed. Uninstalled merchants do not receive new invoices even though their encrypted token remains stored.
 
+To give a specific account time to finish setup without a floor-only bill, configure `Billing__MinimumGracePeriods__0__StripeAccountId` and `Billing__MinimumGracePeriods__0__UntilUtc` (ISO 8601 UTC, exclusive). Increment the index for another account. During the grace period, the monthly $29 minimum is waived for that Stripe account; the standard percentage fee still applies to actual post-trial recoveries. After the date, the usual minimum applies on future billing runs. Remove both settings to end a grace period early. This setting never changes an invoice already reserved or sent, so set it before the first-of-month 06:00 UTC billing run. Verify the Render environment after deployment and check the next billing run's fee invoices before describing the waiver as active to a customer.
+
 The admin page calculates trial state from signup time and shows fee invoices sent separately. An invoice being sent does not prove it was paid; payment status is not tracked here. See `docs/pricing/`, `docs/terms/`, and `docs/docs/attribution-and-billing/` for customer-facing policy.
 
 ## Tests

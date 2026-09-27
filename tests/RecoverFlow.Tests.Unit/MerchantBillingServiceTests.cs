@@ -55,8 +55,9 @@ public class MerchantBillingServiceTests
         return payment;
     }
 
-    private static MerchantBillingService Service(AppDbContext db, FakePlatformFeeInvoicer invoicer, bool enabled = true) =>
-        new(db, invoicer, Options.Create(new BillingOptions { Enabled = enabled }),
+    private static MerchantBillingService Service(AppDbContext db, FakePlatformFeeInvoicer invoicer, bool enabled = true,
+        BillingOptions? options = null) =>
+        new(db, invoicer, Options.Create(options ?? new BillingOptions { Enabled = enabled }),
             NullLogger<MerchantBillingService>.Instance);
 
     // Billing tests run without a clock. Shift existing invoices to prior, distinct months
@@ -122,6 +123,53 @@ public class MerchantBillingServiceTests
         Assert.Empty(db.FeeInvoices);
         Assert.Empty(invoicer.SendCalls);
         Assert.NotNull(Assert.Single(db.FailedPayments).TrialWaivedAtUtc);
+    }
+
+    [Fact]
+    public async Task Account_grace_waives_floor_but_still_bills_recovery_fee()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
+        SeedCase(db, merchant, 10_000);
+        var invoicer = new FakePlatformFeeInvoicer();
+        var options = new BillingOptions { Enabled = true, MinimumGracePeriods =
+            [new() { StripeAccountId = merchant.StripeAccountId, UntilUtc = DateTime.UtcNow.AddDays(14) }] };
+
+        await Service(db, invoicer, options: options).RunMonthlyBillingAsync();
+
+        var invoice = Assert.Single(db.FeeInvoices);
+        Assert.Equal(2_500, invoice.FeeCents);
+        Assert.Equal(0, invoice.FloorTopUpCents);
+        Assert.Equal(2_500, invoice.TotalCents);
+    }
+
+    [Fact]
+    public async Task Account_grace_with_no_recoveries_sends_no_invoice_and_does_not_affect_other_accounts()
+    {
+        using var db = CreateDb();
+        var graced = SeedMerchant(db, createdDaysAgo: 60);
+        SeedMerchant(db, createdDaysAgo: 60);
+        var invoicer = new FakePlatformFeeInvoicer();
+        var options = new BillingOptions { Enabled = true, MinimumGracePeriods =
+            [new() { StripeAccountId = graced.StripeAccountId, UntilUtc = DateTime.UtcNow.AddDays(14) }] };
+
+        await Service(db, invoicer, options: options).RunMonthlyBillingAsync();
+
+        Assert.DoesNotContain(db.FeeInvoices, i => i.MerchantId == graced.Id);
+        Assert.Equal(2_900, Assert.Single(db.FeeInvoices).TotalCents);
+    }
+
+    [Fact]
+    public async Task Expired_account_grace_restores_monthly_minimum()
+    {
+        using var db = CreateDb();
+        var merchant = SeedMerchant(db, createdDaysAgo: 60);
+        var options = new BillingOptions { Enabled = true, MinimumGracePeriods =
+            [new() { StripeAccountId = merchant.StripeAccountId, UntilUtc = DateTime.UtcNow.AddDays(-1) }] };
+
+        await Service(db, new FakePlatformFeeInvoicer(), options: options).RunMonthlyBillingAsync();
+
+        Assert.Equal(2_900, Assert.Single(db.FeeInvoices).TotalCents);
     }
 
     [Fact]

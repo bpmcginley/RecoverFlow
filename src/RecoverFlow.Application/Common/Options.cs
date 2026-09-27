@@ -106,6 +106,8 @@ public sealed class BillingOptions
     public bool Enabled { get; set; }
     public int FeeBasisPoints { get; set; } = 2500;
     public long MonthlyMinimumCents { get; set; } = 2900;
+    /// <summary>Per-account dates through which the monthly minimum is waived. Recovery fees still apply.</summary>
+    public List<BillingMinimumGracePeriod> MinimumGracePeriods { get; set; } = [];
     /// <summary>
     /// Absolute ceiling on a single monthly invoice, published at /pricing/ and in the terms.
     /// Unlike the minimum it is never waived, and it is a one-way commitment: lowering it is
@@ -117,6 +119,12 @@ public sealed class BillingOptions
     public int InvoiceDueDays { get; set; } = 7;
     /// <summary>Stripe won't collect payments under $0.50; totals below this roll into next month.</summary>
     public long MinimumInvoiceableCents { get; set; } = 50;
+}
+
+public sealed class BillingMinimumGracePeriod
+{
+    public string StripeAccountId { get; set; } = "";
+    public DateTime UntilUtc { get; set; }
 }
 
 public sealed class BacktestOptions
