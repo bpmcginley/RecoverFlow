@@ -160,6 +160,80 @@ COMPETITORS = [
              "Yes. ProfitWell was acquired by Paddle and Retain is the same product line under the Paddle name."),
         ],
     },
+    {
+        "slug": "churnbuster",
+        "name": "ChurnBuster",
+        "title": "RecoverFlow vs ChurnBuster",
+        "meta": "ChurnBuster versus RecoverFlow for Stripe failed payment recovery: flat MRR-based pricing against a percentage of what is actually recovered, and the crossover point.",
+        "source_label": "churnbuster.io/pricing",
+        "source_url": "https://churnbuster.io/pricing",
+        "flat_monthly": 269,
+        "flat_label": "$269/month for Dunning or Cancel Flows alone; $430/month for both, banded by MRR",
+        "verified_on": "8 October 2026",
+        "updated": "October 2026",
+        "date_published": "2026-10-08",
+        "what_it_is": [
+            "ChurnBuster is a dedicated failed payment recovery and cancellation deflection product for Stripe. Recovery is the core of what it does, not one feature among many.",
+            "Pricing is a <strong>flat monthly fee banded by your MRR</strong>: Dunning or Cancel Flows alone starts at <strong>$269 per month</strong>, and the bundle of both starts at <strong>$430 per month</strong>. The fee scales at roughly 0.1% of MRR. Plans are month to month with no contract.",
+            "It is one of the longest-running products in this category, and its whole pitch is that a flat fee means no arguments about which tool gets credit for a recovery.",
+        ],
+        "choose_them": [
+            "You want a vendor with years of track record in this exact category. ChurnBuster has been doing Stripe dunning far longer than we have.",
+            "You want cancellation deflection as well as dunning. The bundle covers both.",
+            "Your recovery volume is above roughly $1,076 per month, where their flat fee is cheaper than our percentage.",
+            "You prefer a predictable flat fee to a percentage that moves with your recoveries.",
+        ],
+        "choose_us": [
+            "Your recovery volume is modest. Below roughly $1,076 per month of recovered revenue, our percentage costs less than their $269 entry fee.",
+            "You would rather pay nothing in the months when nothing gets recovered. Our $29 floor only starts after the first 30 days.",
+            "You want to see your own 90 day history free before spending anything.",
+        ],
+        "faq": [
+            ("How much does ChurnBuster cost?",
+             "Dunning or Cancel Flows alone starts at $269 per month, and the bundle of both starts at $430 per month. The exact fee is banded by your MRR at roughly 0.1% of MRR, and plans are month to month with no contract. Those figures are from ChurnBuster's own pricing page as of October 2026."),
+            ("Is ChurnBuster better than RecoverFlow?",
+             "It is more established. ChurnBuster has been doing Stripe dunning for years, while RecoverFlow launched in July 2026. ChurnBuster charges a flat MRR-based fee; RecoverFlow charges 25% of what it recovers, with a $29 monthly floor after the first 30 days and a $299 ceiling. Which is better depends on your recovery volume and whether you value a flat predictable fee or paying only when money comes back."),
+            ("Which one is cheaper?",
+             "Below roughly $1,076 per month of recovered revenue, RecoverFlow's percentage is cheaper than ChurnBuster's $269 entry fee. Above that, the flat fee wins. Note our fee can never exceed $299 a month, so the most we can ever cost you over ChurnBuster is $30 a month."),
+        ],
+    },
+    {
+        "slug": "reecova",
+        "name": "Reecova",
+        "title": "RecoverFlow vs Reecova",
+        "meta": "Reecova versus RecoverFlow for Stripe failed payment recovery: $49.99/month plus 10% of recovered revenue against 25% with a floor and ceiling, and the two crossovers.",
+        "source_label": "reecova.io",
+        "source_url": "https://www.reecova.io/",
+        "flat_monthly": 50,
+        "flat_label": "$49.99/month plus 10% of recovered revenue",
+        "hybrid": {"base": 49.99, "rate": 0.10},
+        "verified_on": "8 October 2026",
+        "updated": "October 2026",
+        "date_published": "2026-10-08",
+        "what_it_is": [
+            "Reecova is a Stripe failed payment recovery tool with a hybrid price: a <strong>$49.99 per month base fee plus 10% of what it recovers</strong>. There is a 14 day free trial and no credit card is required to start.",
+            "Like us, it opens with a free scan. Theirs reads 90 days of Stripe history, prices the leak in dollars, and revokes its own access when it finishes. That is a good front door and we do the same thing.",
+            "The hybrid model means you always pay the base fee even in months when nothing is recovered, but the 10% rate is less than half of our 25% once there is real volume to take a percentage of.",
+        ],
+        "choose_them": [
+            "Your recovery volume sits consistently between roughly $333 and $2,490 per month, where their 10% plus base fee is cheaper than our 25%.",
+            "You prefer a lower percentage rate and accept paying a base fee in quiet months.",
+            "You want a 14 day trial before running any scan.",
+        ],
+        "choose_us": [
+            "Your recovery volume is below roughly $333 per month, where our straight 25% costs less than their base fee plus 10%.",
+            "You want no base fee in quiet months. Our $29 floor only starts after the first 30 days; their $49.99 base runs from day one of paid use.",
+            "Your volume is very high. Above roughly $2,490 per month of recovered revenue, our $299 monthly ceiling makes us cheaper again, because their fee has no ceiling and keeps growing.",
+        ],
+        "faq": [
+            ("How much does Reecova cost?",
+             "Reecova charges $49.99 per month plus 10% of recovered revenue, with a 14 day free trial that needs no credit card. Those figures are from Reecova's own site as of October 2026."),
+            ("What is the difference between Reecova and RecoverFlow?",
+             "Both charge based on results rather than a flat fee, but the structures differ. Reecova pairs a $49.99 monthly base with a 10% recovery fee and no ceiling. RecoverFlow charges 25% with no base fee beyond a $29 monthly floor after the first 30 days, and its fee can never exceed $299 a month."),
+            ("Which one is cheaper?",
+             "It depends on the band. Below roughly $333 per month of recovered revenue, RecoverFlow's 25% is cheaper than Reecova's base plus 10%. Between roughly $333 and $2,490, Reecova's lower percentage wins. Above roughly $2,490, our $299 ceiling makes us cheaper again because their fee has no ceiling."),
+        ],
+    },
 ]
 
 CSS = """
@@ -424,7 +498,12 @@ def crossover_table(c):
     rows = []
     for rec in (0, 250, 500, 1000, 2500):
         ours = min(CEILING, max(FLOOR, round(rec * FEE_RATE)))
-        if c["flat_monthly"] is None:
+        if c.get("hybrid"):
+            base, rate = c["hybrid"]["base"], c["hybrid"]["rate"]
+            t = base + rate * rec
+            theirs = f"${base:g}/mo + {rate:.0%}"
+            winner = "RecoverFlow" if ours < t else (c["name"] if t < ours else "Level")
+        elif c["flat_monthly"] is None:
             theirs = "Not published"
             winner = "Cannot compare without their price"
         else:
@@ -455,8 +534,8 @@ def build_competitor(c):
         '        "name": "RecoverFlow",\n'
         '        "logo": { "@type": "ImageObject", "url": "https://recoverflow.org/assets/logo-mark.png" }\n'
         '      },\n'
-        '      "datePublished": "2026-07-27",\n'
-        '      "dateModified": "2026-07-27",\n'
+        f'      "datePublished": "{c.get("date_published", "2026-07-27")}",\n'
+        f'      "dateModified": "{c.get("date_published", "2026-07-27")}",\n'
         f'      "mainEntityOfPage": "{canonical}"\n'
         '    }'
     )
@@ -467,7 +546,18 @@ def build_competitor(c):
     ours = "\n".join(f"        <li>{p}</li>" for p in c["choose_us"])
     faqs = "\n\n".join(f"      <h3>{esc(q)}</h3>\n      <p>{esc(a)}</p>" for q, a in c["faq"])
 
-    if c["flat_monthly"] is None:
+    if c.get("hybrid"):
+        base, rate = c["hybrid"]["base"], c["hybrid"]["rate"]
+        cross1 = round(base / (FEE_RATE - rate))
+        cross2 = round((CEILING - base) / rate)
+        crossover_note = (
+            f'<div class="warn-box"><p><strong>There are two crossovers here, not one.</strong> '
+            f'Below about ${cross1:,} per month of recovered revenue, our 25% costs you less than {c["name"]}\'s '
+            f'${base:g} base fee plus {rate:.0%}. Between about ${cross1:,} and ${cross2:,}, their lower percentage '
+            f'wins. Above about ${cross2:,}, our ${CEILING:,} monthly ceiling makes us cheaper again, because their '
+            f'fee has no ceiling and keeps growing. Work out which band your volume sits in before you decide.</p></div>'
+        )
+    elif c["flat_monthly"] is None:
         crossover_note = (
             f'<div class="warn-box"><p><strong>We cannot give you a straight cost comparison here.</strong> '
             f'{c["name"]} does not publish standalone pricing, and we are not going to invent a number or repeat '
@@ -495,10 +585,10 @@ def build_competitor(c):
   <div class="wrap">
     <p class="eyebrow">Comparison</p>
     <h1>{esc(c['title'])}</h1>
-    <p class="byline">By Bruce McGinley, founder of RecoverFlow &middot; Updated July 2026</p>
+    <p class="byline">By Bruce McGinley, founder of RecoverFlow &middot; Updated {c.get("updated", "July 2026")}</p>
 
     <div class="verified">
-      <p><strong>Pricing verified {VERIFIED_ON}</strong> from <a href="{c['source_url']}" rel="nofollow noopener" target="_blank">{c['source_label']}</a>.
+      <p><strong>Pricing verified {c.get("verified_on", VERIFIED_ON)}</strong> from <a href="{c['source_url']}" rel="nofollow noopener" target="_blank">{c['source_label']}</a>.
       Vendors change prices, so check theirs before deciding. If anything here is out of date or unfair, email
       <a href="mailto:admin@recoverflow.org">admin@recoverflow.org</a> and it gets corrected.</p>
     </div>
@@ -629,7 +719,7 @@ def build_index():
     </div>
 
     <h2>The rest of the market, as of 30 July 2026</h2>
-    <p>The five pages above are the tools most people shortlist. They are not the whole market. There are around
+    <p>The seven pages above are the tools most people shortlist. They are not the whole market. There are around
     twenty-five live failed-payment recovery apps on the Stripe App Marketplace alone. Every price below was read from
     the vendor's own pricing page or their marketplace listing on 30 July 2026. Where a vendor does not publish a
     number, this says so rather than estimating one.</p>
@@ -638,8 +728,6 @@ def build_index():
       <table>
         <thead><tr><th scope="col">Tool</th><th scope="col">Published price</th><th scope="col">Worth knowing</th></tr></thead>
         <tbody>
-          <tr><th scope="row">Churn Buster</th><td>From $149/mo, banded by MRR. Advisory from $1,000 one-off.</td>
-              <td>Calls itself the gold standard. Flat fee rather than revenue share. Free 20 minute call with a co-founder, credited back if you buy within 90 days.</td></tr>
           <tr><th scope="row">FlyCode</th><td>Outcome based. Rate not published.</td>
               <td>Charges only on revenue recovered above your existing baseline, which is a fairer basis than most. Free payment audit, 45 day money back.</td></tr>
           <tr><th scope="row">Butter Payments</th><td>Revenue share. Not published.</td>
