@@ -697,9 +697,9 @@ ARTICLES.append(dict(
 # 7 ------------------------------------------------------------------------
 ARTICLES.append(dict(
     slug="stripe-subscription-past-due-vs-unpaid",
-    title="Stripe past_due vs unpaid vs canceled explained | RecoverFlow",
+    title="Stripe past_due vs unpaid, and when to cut off access | RecoverFlow",
     h1="<code>past_due</code>, <code>unpaid</code>, <code>canceled</code>: what each Stripe subscription status means",
-    desc="past_due means Stripe is still trying. unpaid means it stopped but kept the subscription. canceled is terminal. Which one you get is a setting you choose.",
+    desc="past_due means Stripe is still retrying, so access usually stays on. unpaid means retries stopped, which is where Stripe says to revoke access. canceled is terminal.",
     answer="""      <p><strong><code>past_due</code></strong> means the latest finalised invoice failed or was not attempted, and Stripe is still working on it. <strong><code>unpaid</code></strong> means Stripe has finished retrying, kept the subscription alive, and stopped attempting payment. <strong><code>canceled</code></strong> is terminal and cannot be updated.</p>
       <p>Which of the three you end up in when the retry window closes is not fixed behaviour. It is a choice in your Stripe subscription settings, and most people have never looked at it.</p>""",
     sections=[
